@@ -1,0 +1,57 @@
+/* styles/contact-us.scss */
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.contact-us-container {
+    max-width: 400px;
+    //height: 70px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+    h1 {
+        font: 600 3rem "Roboto";
+      text-align: center;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+  
+      label {
+        margin-top: 10px;
+      }
+  
+      input,
+      textarea {
+        margin-top: 5px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+  
+      button {
+        margin-top: 35px;
+        padding: 10px;
+        background-color: rgb(100, 7, 64);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+  
+        &:hover {
+          background-color: #45a049;
+        }
+      }
+    }
+  
+    p {
+      text-align: center;
+      color: #4caf50;
+    }
+  }
+  

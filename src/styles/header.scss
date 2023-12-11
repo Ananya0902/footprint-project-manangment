@@ -1,0 +1,67 @@
+nav {
+  background-color: rgb(77, 25, 77);
+  padding: 10px;
+  color: white;
+  z-index: 10;
+  position: sticky;
+  top: 0;
+
+  h1 {
+    margin: 5px;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  hr {
+    border: 0.2px solid grey;
+  }
+
+  main {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5px;
+   //margin: 0px;
+    padding: 2px;
+    //width: 100%;
+
+    a {
+      text-decoration: none;
+      color: white;
+      padding: 5px;
+      font: 600 1rem "Roboto";
+      margin: 5px;
+
+      &:hover {
+        color: black;
+        padding: 3px;
+      }
+
+      &.active-link {
+        border: 3px solid white;
+      }
+    }
+
+    .btnLogin-popup {
+      margin-left: auto; /* Shift to the rightmost end */
+      width: 100px;
+      height: 30px;
+      padding: 3px;
+      font: 600 1rem "Roboto";
+      color: white;
+      background: transparent;
+      border: 2px solid white;
+      border-radius: 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    main {
+      flex-direction: column;
+      align-items: center;
+
+      a {
+        margin: 5px 0;
+      }
+    }
+  }
+}
