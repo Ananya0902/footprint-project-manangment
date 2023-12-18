@@ -1,6 +1,7 @@
-// components/Register.js
+
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import '../styles/register.scss';
 
 const Register = ({ onRegister, onSwitchToLogin }) => {
   const [name, setName] = useState('');
@@ -12,6 +13,7 @@ const Register = ({ onRegister, onSwitchToLogin }) => {
   const handleRegister = () => {
     // Perform registration logic here
     onRegister({ name, email, password, province, userType });
+    
   };
 
   return (

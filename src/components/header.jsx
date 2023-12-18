@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
+// import '../styles/header.scss';
 
 const Header = () => {
   return (

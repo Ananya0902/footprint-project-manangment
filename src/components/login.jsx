@@ -9,6 +9,7 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
   const handleLogin = () => {
     // Perform login logic here
     onLogin({ email, password });
+    
   };
 
   return (
@@ -18,7 +19,7 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <label>Password:</label>
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
+      <button  className='log' onClick={handleLogin}>Login</button>
       <p>
         Don't have an account?{' '}
         <span className="switch-link" onClick={onSwitchToRegister}>
