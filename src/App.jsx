@@ -30,6 +30,7 @@ import './styles/profile.scss';
 import './styles/submissionlist.scss';
 import './styles/reviewlist.scss';
 import './styles/projects.scss';
+import EmailVerificationPage from './components/EmailVerificationPage';
 
 //import './styles/newSubmission.scss'
 
@@ -82,6 +83,7 @@ const App = () => {
         <Route path="/newSubmission" element={<ProjectForm/>} />
         <Route path="/newReview" element={<ReviewForm/>} />
         <Route path="/newApprove" element={<ApproveForm/>} />
+        <Route path="/EmailVerificationPage" element={<EmailVerificationPage/>} />
 
       </Routes>
       {/* <Spacer gap={val} /> */}
