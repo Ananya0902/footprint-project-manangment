@@ -1,59 +1,187 @@
-import React, { useState } from 'react';
-import '../styles/EmailVerificationPage.scss'; 
+import React, { useState, useEffect } from "react";
+import "../styles/EmailVerificationPage.scss";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  PinInput,
+  PinInputField,
+  HStack,
+  Center,
+  Text,
+  Box,
+  Link
+} from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const EmailVerificationPage = () => {
-  const [email, setEmail] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isVerified, setIsVerified] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const navigate = useNavigate();
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleVerificationCodeChange = (e) => {
-    setVerificationCode(e.target.value);
-  };
-
-  const handleVerifyEmail = async () => {
-    try {
-      // Call your backend API to generate and send a unique verification code to the given email
-      // Example: const response = await api.generateVerificationCode(email);
-      // Replace the following line with actual logic based on your backend response
-      const generatedVerificationCode = '123456'; // Replace with actual verification code
-
-      // Simulate the verification process by comparing the entered code with the generated one
-      if (verificationCode === generatedVerificationCode) {
-        setIsVerified(true);
-        // Call your backend API to mark the email as verified
-        // Example: await api.markEmailAsVerified(email);
-      } else {
-        alert('Invalid verification code. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error during email verification:', error);
+  useEffect(() => {
+    const token1 = localStorage.getItem("email_token");
+    const user1 = localStorage.getItem("user");
+    if (!token1 || !user1) {
+      navigate("/register");
+      return;
     }
+
+    toast.info("Please varify your Email", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }, []);
+
+  const handleChange = async (value) => {
+    const token = localStorage.getItem("email_token");
+    const user = localStorage.getItem("user");
+
+    if (!token || !user) {
+      navigate("/register");
+      return;
+    }
+
+    setOtpValue(value);
+
+    if (value.length === 6) {
+      setOtpValue(value);
+      if (user === "applicant") {
+        const response = await fetch(
+          "http://localhost:5000/api/user/verify_email",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: token,
+              otp: value,
+            }),
+          }
+        );
+        const result = await response.json();
+        // console.log(result);
+        if (result.error === "Incorrect OTP") {
+          toast.error("Enter Correct OTP", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          return;
+        }
+        if (!response.ok) {
+          navigate("/login");
+        }
+
+        if (result.success === true) {
+          toast.success("Email varified Successfully, sign in to continue", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          // navigate('/login')
+        }
+      }
+
+
+      if(user === "reviewer"){
+        const response = await fetch(
+          "http://localhost:5000/api/reviewer/verify_email",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: token,
+              otp: value,
+            }),
+          }
+        );
+        const result = await response.json();
+        // console.log(result);
+        if (result.error === "Incorrect OTP") {
+          toast.error("Enter Correct OTP", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          return;
+        }
+        if (!response.ok) {
+          navigate("/login");
+        }
+
+        if (result.success === true) {
+          toast.success("Email varified Successfully, sign in to continue", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      }
+
+    }
+
+
+    
   };
 
   return (
-    <div className="containerVerify"> 
+    <div className="containerVerify">
+      <ToastContainer></ToastContainer>
       <h2 className="header">Email Verification</h2>
-
-      {!isVerified ? (
-        <div>
-          <label className="email-label">Email:</label>
-          <input type="email" value={email} onChange={handleEmailChange} className="email-input" />
-          <br />
-          <label className="code-label">Verification Code:</label>
-          <input type="text" value={verificationCode} onChange={handleVerificationCodeChange} className="code-input" />
-          <br />
-          <button onClick={handleVerifyEmail} className="verify-button">Verify Email</button>
-        </div>
-      ) : (
-        <p className="success-message">Email successfully verified!</p>
-      )}
+      <ChakraProvider>
+        <Center display={"flex"} flexDirection={"column"} gap={4}>
+          <Text fontStyle={"20px"} fontWeight={"40px"}>
+            Enter OTP
+          </Text>
+          <HStack>
+            <PinInput value={otpValue} onChange={handleChange}>
+              <PinInputField border={"1px solid black"} />
+              <PinInputField border={"1px solid black"} />
+              <PinInputField border={"1px solid black"} />
+              <PinInputField border={"1px solid black"} />
+              <PinInputField border={"1px solid black"} />
+              <PinInputField border={"1px solid black"} />
+            </PinInput>
+          </HStack>
+          <Box width={'82%'} display={'flex'} flexDirection={'row-reverse'}>
+            
+            <Link href="/login">Login</Link>
+              </Box>
+        </Center>
+      
+      </ChakraProvider>
     </div>
   );
 };
 
 export default EmailVerificationPage;
-
