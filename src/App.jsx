@@ -84,9 +84,8 @@ const App = () => {
         <Route path="/newReview" element={<ReviewForm/>} />
         <Route path="/newApprove" element={<ApproveForm/>} />
         <Route path="/EmailVerificationPage" element={<EmailVerificationPage/>} />
-
       </Routes>
-      {/* <Spacer gap={val} /> */}
+      {/* <Spacer gap={100} /> */}
       <Footer />
     </Router>
   );
