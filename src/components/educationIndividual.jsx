@@ -478,6 +478,7 @@ Personal Information of the Beneficiary
       />
     )}
   </FormControl>
+  </VStack> 
   <VStack align="start" spacing={4} mb={8}>
   <Heading as="h1" size="xl" mb={6}>
     Family Situation and Employment

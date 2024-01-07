@@ -49,15 +49,17 @@ const RegisterPage = () => {
           .matches(/^\d{10}$/, "Phone number must be 10 digits"),
         province: Yup.string().required("Required"),
         apostolate: Yup.string().when("userType", {
-          is: "reviewer",
-          then: Yup.string().notRequired(),
-          otherwise: Yup.string().required("Required"),
+          is:(value)=> "reviewer",
+          then: ()=>Yup.string().notRequired(),
+          otherwise: ()=>Yup.string().required("Required"),
         }),
+        // apostolate: Yup.string().required("Required"),
         reviewer: Yup.string().when("userType", {
-          is: "reviewer",
-          then: Yup.string().required("Required"),
-          otherwise: Yup.string().notRequired(),
+          is: (value)=>value === "reviewer",
+          then: ()=>Yup.string().required("Required"),
+          otherwise: ()=>Yup.string().notRequired(),
         }),
+        // reviewer: Yup.string().required("Required"),
       }),
       
       onSubmit: (values) => {
