@@ -1,25 +1,59 @@
-import React from 'react';
-import '../styles/home.scss';
-import { Link } from 'react-router-dom';
+// Home.jsx
+import React from "react";
+import { VStack, Heading, Button, Link } from "@chakra-ui/react";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 const Home = () => {
-  return (<>
-  
-    <div className="homeclass" id="home">
-      <main>
-        <h1>WELCOME TO FOOTPRINT</h1>
-        <p>A project management website...</p>
-        <Link to="/learn">
-          <button>learn more</button>
+  return (
+    <VStack
+      height="100vh"
+      justify="center"
+      align="center"
+      bgGradient="linear(to-r, teal.200, cyan.400)"
+      color="white"
+      spacing={6}
+      p={4}
+    >
+      {/* Welcome Text */}
+      <VStack>
+        <Heading mb={2} fontSize={{ base: "xl", md: "2xl", lg: "3xl" }}>
+          Welcome to -
+        </Heading>
+        <Heading as="h1" size={{ base: "2xl", md: "3xl", lg: "4xl" }}>
+          Salsproject
+        </Heading>
+      </VStack>
+
+      {/* Buttons */}
+      <VStack width="100%" spacing={4} align="center" justify="center"> 
+        <Link as={ReactRouterLink} to="/login" width="100%">
+          <Button
+            colorScheme="teal"
+            size="lg"
+            w="20%"
+            bgGradient="linear(to-r, teal.500, teal.300)"
+            _hover={{ bgGradient: "linear(to-r, teal.600, teal.200)" }}
+          >
+            Login
+          </Button>
         </Link>
-      </main>
-    </div>
-    <div className="homeclass1" id="about">
-      <h2>About Us</h2>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, tenetur porro! Odit recusandae sapiente ut, fuga temporibus veritatis nesciunt? Quam minus amet doloribus perspiciatis magnam, magni excepturi voluptatem iure molestiae! Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, cum impedit quasi recusandae perferendis numquam, commodi cumque alias omnis molestias aliquam odio dolorum ad illo laboriosam doloremque unde deserunt. Architecto.</p>
-    </div>
-    </>
+        <Link as={ReactRouterLink} to="/register" width="100%">
+          <Button
+            colorScheme="purple"
+            size="lg"
+            w="20%"
+            bgGradient="linear(to-r, purple.500, purple.300)"
+            _hover={{ bgGradient: "linear(to-r, purple.600, purple.200)" }}
+          >
+            Register Now
+          </Button>
+        </Link>
+      </VStack>
+    </VStack>
   );
-}
+};
 
 export default Home;
+
+
+  

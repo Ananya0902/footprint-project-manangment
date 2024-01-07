@@ -1,103 +1,253 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import '../styles/register.scss';
-import EmailVerificationPage from './EmailVerificationPage';
+// RegisterPage.jsx
+import React from "react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
+  VStack,
+  Text,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { FaKey, FaMobileAlt, FaUser, FaEnvelope, FaGlobe, FaUsers } from "react-icons/fa";
 
-const Register = ({ onRegister, onSwitchToLogin }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [province, setProvince] = useState('north');
-  const [userType, setUserType] = useState('applicant');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isVerificationComplete, setIsVerificationComplete] = useState(false);
-  const [isRegisterButtonDisabled, setIsRegisterButtonDisabled] = useState(true);
-
-  const handleRegister = async () => {
-    try {
-      // Perform registration logic here
-      const response = await onRegister({ name, email, password, province, userType });
-
-      // Assuming the registration returns success and includes the verification code
-      const generatedVerificationCode = response.verificationCode;
-
-      // Simulate the email verification process by setting the verification code
-      setVerificationCode(generatedVerificationCode);
-
-      // Move to the email verification step
-      setIsVerificationComplete(true);
-
-      // Enable the Register button after successful registration
-      setIsRegisterButtonDisabled(false);
-    } catch (error) {
-      console.error('Registration error:', error);
-    }
-  };
-
-  const handleVerifyEmail = async () => {
-    // Redirect to EmailVerificationPage for the user to enter and verify the code
-    // You may use a routing library for this, like react-router-dom
-    // For simplicity, alerting the verification code here
-    alert(`Verification Code: ${verificationCode}`);
-  };
-
-  const handleVerificationCodeChange = (e) => {
-    setVerificationCode(e.target.value);
-    // Enable or disable the Register button based on whether the verification code is entered
-    setIsRegisterButtonDisabled(!e.target.value);
-  };
+// RegisterPage component
+const RegisterPage = () => {
+  // Formik for form management
+  const formik = useFormik({
+    initialValues: {
+      userType: "applicant",
+      name: "",
+      email: "",
+      password: "",
+      mobileNumber: "",
+      province: "",
+      apostolate: "",
+      reviewer: "",
+    },
+    validationSchema: Yup.object({
+        userType: Yup.string().required("Required"),
+        name: Yup.string().required("Required"),
+        email: Yup.string().email("Invalid email address").required("Required"),
+        password: Yup.string()
+          .required("Required")
+          .min(6, "Password must be at least 6 characters")
+          .matches(
+            /^(?=.*[!@#$%^&*(),.?":{}|<>])/,
+            "Password must contain at least 1 special character"
+          ),
+        mobileNumber: Yup.string()
+          .required("Required")
+          .matches(/^\d{10}$/, "Phone number must be 10 digits"),
+        province: Yup.string().required("Required"),
+        apostolate: Yup.string().when("userType", {
+          is: "reviewer",
+          then: Yup.string().notRequired(),
+          otherwise: Yup.string().required("Required"),
+        }),
+        reviewer: Yup.string().when("userType", {
+          is: "reviewer",
+          then: Yup.string().required("Required"),
+          otherwise: Yup.string().notRequired(),
+        }),
+      }),
+      
+      onSubmit: (values) => {
+        console.log("Registering with:", values);
+      },
+    });
 
   return (
-    <div className="form-container">
-      <h2>Register</h2>
-      <label>Email:</label>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-
-      {isVerificationComplete || (
-        <div>
-          <button onClick={handleVerifyEmail} disabled={!email} className="verify-button">
-            Verify Email
-          </button>
-        </div>
-      )}
-
-      <label>Name:</label>
-      <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-      <label>Password:</label>
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <label>Province:</label>
-      <select value={province} onChange={(e) => setProvince(e.target.value)}>
-        <option value="north">North</option>
-        <option value="south">South</option>
-        <option value="central">Central</option>
-      </select>
-      <label>User Type:</label>
-      <select value={userType} onChange={(e) => setUserType(e.target.value)}>
-        <option value="applicant">Applicant</option>
-        <option value="reviewer">Reviewer</option>
-        <option value="approval">Approval</option>
-      </select>
-      <button onClick={handleRegister} disabled={isRegisterButtonDisabled}>
+    <VStack
+      spacing={8}
+      p={8}
+      align="center" // Center the content horizontally
+      justify="center" // Center the content vertically
+    >
+      <Heading mb={4} fontSize="3xl" fontWeight="bold">
         Register
-      </button>
-      <p>
-        Already have an account?{' '}
-        <span className="switch-link" onClick={onSwitchToLogin}>
-          <NavLink to="/login">Login here.</NavLink>
-        </span>
-      </p>
-
-      {isVerificationComplete && (
-        <EmailVerificationPage
-          email={email}
-          verificationCode={verificationCode}
-        />
-      )}
-    </div>
+      </Heading>
+      <Box width="100%" maxW="400px">
+        {/* Form element with Formik handleSubmit */}
+        <form onSubmit={formik.handleSubmit}>
+          {/* User Type dropdown */}
+          <FormControl
+            id="userType"
+            isInvalid={formik.touched.userType && formik.errors.userType}
+            isRequired
+          >
+            <FormLabel>User Type</FormLabel>
+            <Select {...formik.getFieldProps("userType")}>
+              <option value="applicant">Applicant</option>
+              <option value="reviewer">Reviewer</option>
+            </Select>
+            <FormErrorMessage>{formik.errors.userType}</FormErrorMessage>
+          </FormControl>
+          {/* Name input */}
+          <FormControl
+            id="name"
+            isInvalid={formik.touched.name && formik.errors.name}
+            isRequired
+            mt={2}
+          >
+            <FormLabel>
+              <Box as={FaUser} mr={2} />
+              Name
+            </FormLabel>
+            <Input
+              type="text"
+              placeholder="John Doe"
+              {...formik.getFieldProps("name")}
+            />
+            <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+          </FormControl>
+          {/* Email input */}
+          <FormControl
+            id="email"
+            isInvalid={formik.touched.email && formik.errors.email}
+            isRequired
+            mt={2}
+          >
+            <FormLabel>
+              <Box as={FaEnvelope} mr={2} />
+              Email address
+            </FormLabel>
+            <Input
+              type="email"
+              placeholder="john.doe@example.com"
+              {...formik.getFieldProps("email")}
+            />
+            <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+          </FormControl>
+          {/* Password input */}
+          <FormControl
+            id="password"
+            isInvalid={formik.touched.password && formik.errors.password}
+            isRequired
+            mt={2}
+          >
+            <FormLabel>
+              <Box as={FaKey} mr={2} />
+              Password
+            </FormLabel>
+            <InputGroup>
+              <Input
+                type="password"
+                placeholder="********"
+                {...formik.getFieldProps("password")}
+              />
+              {/* Toggle password visibility button */}
+              <InputLeftElement>
+                {/* You can customize the eye icon as needed */}
+                <Box as={FaKey} color="gray.300" />
+              </InputLeftElement>
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+          </FormControl>
+          {/* Mobile Number input */}
+          <FormControl
+            id="mobileNumber"
+            isInvalid={formik.touched.mobileNumber && formik.errors.mobileNumber}
+            isRequired
+            mt={2}
+          >
+            <FormLabel>
+              <Box as={FaMobileAlt} mr={2} />
+              Mobile Number
+            </FormLabel>
+            <Input
+              type="tel"
+              placeholder="1234567890"
+              {...formik.getFieldProps("mobileNumber")}
+            />
+            <FormErrorMessage>{formik.errors.mobileNumber}</FormErrorMessage>
+          </FormControl>
+          {/* Province input */}
+          <FormControl
+            id="province"
+            isInvalid={formik.touched.province && formik.errors.province}
+            isRequired
+            mt={2}
+          >
+            <FormLabel>
+              <Box as={FaGlobe} mr={2} />
+              Province
+            </FormLabel>
+            <Input
+              type="text"
+              placeholder="Your Province"
+              {...formik.getFieldProps("province")}
+            />
+            <FormErrorMessage>{formik.errors.province}</FormErrorMessage>
+          </FormControl>
+          {/* Apostolate dropdown */}
+          <FormControl
+            id="apostolate"
+            isInvalid={formik.touched.apostolate && formik.errors.apostolate}
+            isRequired
+            mt={2}
+          >
+            <FormLabel>
+              <Box as={FaGlobe} mr={2} />
+              Apostolate
+            </FormLabel>
+            <Select {...formik.getFieldProps("apostolate")} placeholder="Select">
+              <option value="social">Social</option>
+              <option value="education">Education</option>
+              <option value="health">Health</option>
+              <option value="others">Others</option>
+            </Select>
+            <FormErrorMessage>{formik.errors.apostolate}</FormErrorMessage>
+          </FormControl>
+          {/* Reviewer dropdown */}
+          <FormControl
+            id="reviewer"
+            isInvalid={formik.touched.reviewer && formik.errors.reviewer}
+            isRequired
+            mt={2}
+            isDisabled={formik.values.userType === "reviewer"}
+          >
+            <FormLabel>
+              <Box as={FaUsers} mr={2} />
+              Reviewer
+            </FormLabel>
+            <Select {...formik.getFieldProps("reviewer")} placeholder="Select">
+              {/* Add options for reviewers here */}
+              <option value="reviewer1">Reviewer 1</option>
+              <option value="reviewer2">Reviewer 2</option>
+              <option value="reviewer3">Reviewer 3</option>
+            </Select>
+            <FormErrorMessage>{formik.errors.reviewer}</FormErrorMessage>
+          </FormControl>
+          {/* Submit button */}
+          <Button
+            colorScheme="blue"
+            type="submit"
+            mt={4}
+            width="100%"
+            borderRadius="full"
+          >
+            Register
+          </Button>
+        </form>
+      </Box>
+      {/* Already have an account link */}
+      <Text mt={4} fontSize="sm" color="gray.600">
+        Already have an account?{" "}
+        <ChakraLink color="blue.500" onClick={() => console.log("Navigate to login")}>
+        Login here.
+        </ChakraLink>
+      </Text>
+    </VStack>
   );
 };
 
-export default Register;
-
-
-
+export default RegisterPage;
