@@ -652,10 +652,6 @@ Personal Information of the Beneficiary
   </FormControl>
 </VStack>
 
-
-
-
-
 {/* Submit Button */}
 <Button colorScheme="blue" type="submit">
             Submit

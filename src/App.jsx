@@ -9,6 +9,9 @@ import RegisterPage from "./components/register";
 import HealthIndividualOngoing from "./components/healthIndividiualOngoing";
 import EducationIndividualOngoing from "./components/educationIndividualOngoing";
 import SocialIndividualOngoing from "./components/socialIndividualOngoing";
+import EducationIndividual from "./components/educationIndividual";
+import HealthIndividual from "./components/healthIndividual";
+import SocialIndividual from "./components/socialIndividual";
 
 // App component
 const App = () => {
@@ -22,6 +25,9 @@ const App = () => {
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/socialIndividualOngoing" element={<SocialIndividualOngoing />} />
+          <Route path="/healthIndividual" element={<HealthIndividual />} />
+          <Route path="/educationIndividual" element={<EducationIndividual />} />
+          <Route path="/socialIndividual" element={<SocialIndividual />} />
          
         </Routes>
       </Router>

@@ -15,6 +15,7 @@ import {
   Text,
   Link as ChakraLink,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FaKey, FaMobileAlt, FaUser, FaEnvelope, FaGlobe, FaUsers } from "react-icons/fa";
@@ -49,14 +50,15 @@ const RegisterPage = () => {
           .matches(/^\d{10}$/, "Phone number must be 10 digits"),
         province: Yup.string().required("Required"),
         apostolate: Yup.string().when("userType", {
-          is: "reviewer",
-          then: Yup.string().notRequired(),
-          otherwise: Yup.string().required("Required"),
+          is: (value)=>value === "reviewer",
+          then: ()=>Yup.string().required("Required"),
+          otherwise: ()=>Yup.string().notRequired(),
         }),
+        
         reviewer: Yup.string().when("userType", {
-          is: "reviewer",
-          then: Yup.string().required("Required"),
-          otherwise: Yup.string().notRequired(),
+          is: (value)=>value === "reviewer",
+          then: ()=>Yup.string().required("Required"),
+          otherwise: ()=>Yup.string().notRequired(),
         }),
       }),
       
@@ -194,6 +196,7 @@ const RegisterPage = () => {
             isInvalid={formik.touched.apostolate && formik.errors.apostolate}
             isRequired
             mt={2}
+            isDisabled={formik.values.userType === "reviewer"}
           >
             <FormLabel>
               <Box as={FaGlobe} mr={2} />
@@ -242,9 +245,10 @@ const RegisterPage = () => {
       {/* Already have an account link */}
       <Text mt={4} fontSize="sm" color="gray.600">
         Already have an account?{" "}
-        <ChakraLink color="blue.500" onClick={() => console.log("Navigate to login")}>
+        <ChakraLink color="blue.500" as={Link} to="/login">
         Login here.
-        </ChakraLink>
+      </ChakraLink>
+
       </Text>
     </VStack>
   );

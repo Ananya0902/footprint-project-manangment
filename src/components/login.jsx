@@ -11,10 +11,11 @@ import {
   IconButton,
   InputGroup,
   InputRightElement,
-  Link,
+  Link as ChakraLink,
   VStack,
   Text,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -123,9 +124,9 @@ const LoginPage = () => {
       {/* Registration link */}
       <Text mt={4} fontSize="sm" color="gray.600">
         Don't have an account?{" "}
-        <Link color="blue.500" onClick={() => console.log("Navigate to registration")}>
-          Register here.
-        </Link>
+        <ChakraLink color="blue.500" as={Link} to="/register">
+        Register here.
+      </ChakraLink>
       </Text>
     </VStack>
   );
