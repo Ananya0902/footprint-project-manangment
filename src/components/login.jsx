@@ -14,6 +14,7 @@ import {
   Link as ChakraLink,
   VStack,
   Text,
+  Select,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -25,11 +26,13 @@ const LoginPage = () => {
   const formik = useFormik({
     // Initial values and form validation schema using Yup
     initialValues: {
+      userType: "applicant",
       email: "",
       password: "",
       showPassword: false,
     },
     validationSchema: Yup.object({
+      userType: Yup.string().required("Required"),
       email: Yup.string().email("Invalid email address").required("Required"),
       password: Yup.string()
         .required("Required")
@@ -64,6 +67,20 @@ const LoginPage = () => {
       <Box width="100%" maxW="400px">
         {/* Form element with Formik handleSubmit */}
         <form onSubmit={formik.handleSubmit}>
+          {/*user type */}
+        <FormControl
+            id="userType"
+            isInvalid={formik.touched.userType && formik.errors.userType}
+            isRequired
+          >
+            <FormLabel>User Type</FormLabel>
+            <Select {...formik.getFieldProps("userType")}>
+              <option value="applicant">Applicant</option>
+              <option value="reviewer">Reviewer</option>
+              <option value="approver">Approver</option>
+            </Select>
+            <FormErrorMessage>{formik.errors.userType}</FormErrorMessage>
+          </FormControl>
           {/* Email input */}
           <FormControl
             id="email"
