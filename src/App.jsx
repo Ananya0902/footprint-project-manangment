@@ -12,6 +12,7 @@ import SocialIndividualOngoing from "./components/socialIndividualOngoing";
 import EducationIndividual from "./components/educationIndividual";
 import HealthIndividual from "./components/healthIndividual";
 import SocialIndividual from "./components/socialIndividual";
+import Common from "./components/pg";
 
 // App component
 const App = () => {
@@ -19,7 +20,8 @@ const App = () => {
     <ChakraProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Home />} /> */}
+          <Route path="/" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />

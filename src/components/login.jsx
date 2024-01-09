@@ -1,5 +1,8 @@
 // Import necessary libraries and components
 import React from "react";
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
+
 import {
   Box,
   Button,
@@ -22,6 +25,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const LoginPage = () => {
+  const showToast = useToast();
   // Use Formik for form management
   const formik = useFormik({
     // Initial values and form validation schema using Yup
@@ -42,12 +46,83 @@ const LoginPage = () => {
           "Password must contain at least 1 special character"
         ),
     }),
-    // Form submission logic
-    onSubmit: (values) => {
-      // Implement your login logic here
-      console.log("Logging in with:", values.email, values.password);
+    onSubmit: async (values) => {
+      try {
+        var req = {
+          userType: values.userType,
+          email: values.email,
+          password: values.password,
+        };
+        let response;
+        if (values.userType === "applicant") {
+          response = await axios.post("/applicantlogin",req);
+          if (response.data.isVerified !== true) {
+            await showToast({
+              title: "Await verification by the reviewer",
+              status: "loading",
+              duration: 5000,
+              isClosable: true,
+            });
+          } else {
+            // Navigate if verified 
+          }
+        } else if (values.userType === "reviewer") {
+          response = await axios.post("/reviewerlogin", req);
+          if (response.data.isVerified !== true) {
+            showToast({
+              title: "Await verification by the approver",
+              status: "loading",
+              duration: 5000,
+              isClosable: true,
+            });
+          } else {
+            // naviagte if verified
+          }
+        } else if (values.userType === "approver") {
+          response = await axios.post("/approverlogin", req);
+          if (response.data.isVerified !== true) {
+            showToast({
+              title: "Welcome sir, logging you in soon",
+              status: "loading",
+              duration: 5000,
+              isClosable: true,
+            });
+            // navigate to the page 
+          }
+        } else {
+          showToast({
+            title: "Invalid User Type",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          return;
+        }
+        localStorage.setItem("userToken", response.data.token);
+      } catch (error) {
+        try {
+          if (error.response.status === 400) {
+            showToast({
+              title: "Invalid Credentials",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          } else {
+            throw error;
+          }
+        } catch (error) {
+          showToast({
+            title: "Some error has occured. Please contact developer.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      }
     },
   });
+  // });
 
   // Function to toggle password visibility
   const handleTogglePasswordVisibility = () => {
@@ -55,6 +130,8 @@ const LoginPage = () => {
     formik.setFieldTouched("password", false); // Reset touched state
     formik.setFieldValue("showPassword", !formik.values.showPassword);
   };
+
+  // Function to handle any change in zone and correspondingly get reviewers 
 
   return (
     <VStack spacing={8} p={8} align="center" justify="center">
@@ -68,7 +145,7 @@ const LoginPage = () => {
         {/* Form element with Formik handleSubmit */}
         <form onSubmit={formik.handleSubmit}>
           {/*user type */}
-        <FormControl
+          <FormControl
             id="userType"
             isInvalid={formik.touched.userType && formik.errors.userType}
             isRequired
@@ -113,9 +190,7 @@ const LoginPage = () => {
               <InputRightElement>
                 <IconButton
                   variant="ghost"
-                  icon={
-                    formik.values.showPassword ? <FaEyeSlash /> : <FaEye />
-                  }
+                  icon={formik.values.showPassword ? <FaEyeSlash /> : <FaEye />}
                   onClick={handleTogglePasswordVisibility}
                 />
               </InputRightElement>
@@ -142,8 +217,8 @@ const LoginPage = () => {
       <Text mt={4} fontSize="sm" color="gray.600">
         Don't have an account?{" "}
         <ChakraLink color="blue.500" as={Link} to="/register">
-        Register here.
-      </ChakraLink>
+          Register here.
+        </ChakraLink>
       </Text>
     </VStack>
   );
