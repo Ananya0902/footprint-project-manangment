@@ -20,7 +20,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 
-export const Common = () => {
+export const DevProjectLivlihoodGroup = () => {
   const [formData, setFormData] = useState({
     logicalFramework: {
       goal: "",
@@ -58,13 +58,6 @@ export const Common = () => {
 
     setFormData(updatedData);
   };
-
-//   const handleMonthChange = (month) => {
-//     const updatedMonths = selectedMonths.includes(month)
-//       ? selectedMonths.filter((selectedMonth) => selectedMonth !== month)
-//       : [...selectedMonths, month];
-//     setSelectedMonths(updatedMonths);
-//   };
 
   const handleAddObjective = () => {
     const updatedData = { ...formData };
@@ -168,6 +161,88 @@ export const Common = () => {
     );
   };
 
+  const TargetGroup = () => {
+    const [studiesTableData, setStudiesTableData] = useState([
+      { serialNo: '', name: '', familySituation: '', natureOfLivelihood: '', requestedAmount: ''  },
+    ]);
+  
+    const handleStudiesInputChange = (index, field, value) => {
+      const newData = [...studiesTableData];
+      newData[index][field] = value;
+      setStudiesTableData(newData);
+    };
+  
+    const handleAddStudiesRow = () => {
+      setStudiesTableData([
+        ...studiesTableData,
+        { serialNo: '', name: '', familySituation: '', natureOfLivelihood: '', requestedAmount: '' },
+      ]);
+    };
+  
+    return (
+      <Box p={4}>
+        <Heading as="h1" size="xl" mb={6}>
+          Target Group
+        </Heading>
+  
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>S.No</Th>
+              <Th>Name of the Beneficiary</Th>
+              <Th>Family situation of the beneficiary</Th>
+              <Th>Nature of livelihood to be initiated / strengthened</Th>
+              <Th>Amount requested</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {studiesTableData.map((row, index) => (
+              <Tr key={index}>
+                <Td>
+                  <Input
+                    type="number"
+                    value={row.serialNo}
+                    onChange={(e) => handleStudiesInputChange(index, 'serialNo', e.target.value)}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="text"
+                    value={row.name}
+                    onChange={(e) => handleStudiesInputChange(index, 'name', e.target.value)}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="text"
+                    value={row.familySituation}
+                    onChange={(e) => handleStudiesInputChange(index, 'familySituation', e.target.value)}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="text"
+                    value={row.natureOfLivelihood}
+                    onChange={(e) => handleStudiesInputChange(index, 'natureOfLivelihood', e.target.value)}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="number"
+                    value={row.requestedAmount}
+                    onChange={(e) => handleStudiesInputChange(index, 'requestedAmount', e.target.value)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+  
+        <Button onClick={handleAddStudiesRow}>Add Row</Button>
+      </Box>
+    );
+  };
+
   return (
     <ChakraProvider>
       <Box p={4}>
@@ -178,7 +253,7 @@ export const Common = () => {
           align="center"
           justifyContent="center"
         >
-          Common Project Application Form
+          Development Project- Livlihood Application Form
         </Heading>
 
         {isSubmitted && (
@@ -333,40 +408,17 @@ export const Common = () => {
                 required
               />
             </FormControl>
-            {/* Project Area */}
+            {/*Mention the progress of the initial project and its success*/}
             <FormControl isRequired>
-              <FormLabel>Project Area</FormLabel>
-              <Textarea name="projectArea" onChange={handleChange} required />
+              <FormLabel>Mention the progress of the initial project and its success</FormLabel>
+              <Textarea name="projOfIntialProject" onChange={handleChange} required />
             </FormControl>
 
-            {/* Number of Beneficiaries */}
-            <FormControl>
-              <FormLabel>Number of Beneficiaries</FormLabel>
-              {/* Direct Beneficiaries */}
-              <FormControl>
-                <FormLabel>Direct Beneficiaries</FormLabel>
-                <Input
-                  type="number"
-                  name="directBeneficiaries"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              {/* Indirect Beneficiaries */}
-              <FormControl>
-                <FormLabel>Indirect Beneficiaries</FormLabel>
-                <Input
-                  type="number"
-                  name="indirectBeneficiaries"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-            </FormControl>
+            <TargetGroup/>
 
-            {/* Analysis of the Problem */}
+            {/* Analysis of how the Problems will  be resolved by the Project : */}
             <FormControl isRequired>
-              <FormLabel>Analysis of the Problem</FormLabel>
+              <FormLabel>Analysis of how the Problems will  be resolved by the Project : </FormLabel>
               <Textarea
                 name="problemAnalysis"
                 onChange={handleChange}
@@ -516,18 +568,14 @@ export const Common = () => {
                   </Button>
                 </FormControl>
 
-            
+                <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
+                  Add Objective
+                </Button>
+                <hr />
                 
               </VStack>
-             
               </Box>
-              
             ))}
-             <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
-              Add Objective
-            </Button>
-
-
                 {/* Sustainability of the Project */}
         <FormControl isRequired>
           <FormLabel>Sustainability of the Project</FormLabel>
@@ -545,17 +593,6 @@ export const Common = () => {
           <Textarea
             name="monitoringProcess"
             value={formData.monitoringProcess}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
-
-        {/* Methodology of Evaluation */}
-        <FormControl isRequired>
-          <FormLabel>Methodology of Evaluation</FormLabel>
-          <Textarea
-            name="evaluationMethodology"
-            value={formData.evaluationMethodology}
             onChange={(e) => handleChange(e)}
             required
           />
@@ -627,4 +664,4 @@ export const Common = () => {
     </ChakraProvider>
   );
 };
-export default Common;
+export default DevProjectLivlihoodGroup;

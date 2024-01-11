@@ -20,7 +20,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 
-export const Common = () => {
+export const InstitutionalSkillTrainingForm = () => {
   const [formData, setFormData] = useState({
     logicalFramework: {
       goal: "",
@@ -58,13 +58,6 @@ export const Common = () => {
 
     setFormData(updatedData);
   };
-
-//   const handleMonthChange = (month) => {
-//     const updatedMonths = selectedMonths.includes(month)
-//       ? selectedMonths.filter((selectedMonth) => selectedMonth !== month)
-//       : [...selectedMonths, month];
-//     setSelectedMonths(updatedMonths);
-//   };
 
   const handleAddObjective = () => {
     const updatedData = { ...formData };
@@ -178,7 +171,7 @@ export const Common = () => {
           align="center"
           justifyContent="center"
         >
-          Common Project Application Form
+          Institutional Skill Training Application Form
         </Heading>
 
         {isSubmitted && (
@@ -333,40 +326,56 @@ export const Common = () => {
                 required
               />
             </FormControl>
-            {/* Project Area */}
-            <FormControl isRequired>
-              <FormLabel>Project Area</FormLabel>
-              <Textarea name="projectArea" onChange={handleChange} required />
-            </FormControl>
+            <Heading as="h1" size="xl" mb={6}>
+            TARGET GROUP:
+        </Heading>
 
             {/* Number of Beneficiaries */}
-            <FormControl>
-              <FormLabel>Number of Beneficiaries</FormLabel>
-              {/* Direct Beneficiaries */}
-              <FormControl>
-                <FormLabel>Direct Beneficiaries</FormLabel>
-                <Input
-                  type="number"
-                  name="directBeneficiaries"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              {/* Indirect Beneficiaries */}
-              <FormControl>
-                <FormLabel>Indirect Beneficiaries</FormLabel>
-                <Input
-                  type="number"
-                  name="indirectBeneficiaries"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-            </FormControl>
+<FormControl isRequired>
+  <FormLabel>1. Number of Beneficiaries</FormLabel>
+  <Input
+    type="number"
+    name="numberOfBeneficiaries"
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
+{/* Residential Villages of the Beneficiaries */}
+<FormControl isRequired>
+  <FormLabel>2. Residential Villages of the Beneficiaries</FormLabel>
+  <Textarea
+    name="residentialVillages"
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
+{/* Selection Criteria and Profile of the Target Group */}
+<FormControl isRequired>
+  <FormLabel>3. Selection Criteria and Profile of the Target Group</FormLabel>
+  <Textarea
+    name="selectionCriteriaAndProfile"
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+<Heading as="h1" size="xl" mb={6}>
+            INTERVENTION LOGIC
+        </Heading>
 
             {/* Analysis of the Problem */}
             <FormControl isRequired>
-              <FormLabel>Analysis of the Problem</FormLabel>
+              <FormLabel>Brief description of the beneficiaries and the problems they are facing:</FormLabel>
+              <Textarea
+                name="descriptionOfBeneficiary"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+            {/* Analysis of the Problem */}
+            <FormControl isRequired>
+              <FormLabel>Analysis of the Problem to be resolved by the Project  : </FormLabel>
               <Textarea
                 name="problemAnalysis"
                 onChange={handleChange}
@@ -516,18 +525,14 @@ export const Common = () => {
                   </Button>
                 </FormControl>
 
-            
+                <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
+                  Add Objective
+                </Button>
+                <hr />
                 
               </VStack>
-             
               </Box>
-              
             ))}
-             <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
-              Add Objective
-            </Button>
-
-
                 {/* Sustainability of the Project */}
         <FormControl isRequired>
           <FormLabel>Sustainability of the Project</FormLabel>
@@ -627,4 +632,4 @@ export const Common = () => {
     </ChakraProvider>
   );
 };
-export default Common;
+export default InstitutionalSkillTrainingForm;
