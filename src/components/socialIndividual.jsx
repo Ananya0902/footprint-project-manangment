@@ -372,7 +372,7 @@ const RevenueGoalsTable = () => {
               />
             </FormControl>
 
-            {/* Name of Project Coordinator */}
+            {/* Name of Project Coordinator
             <FormControl isRequired>
               <FormLabel>Name of Project Coordinator</FormLabel>
               <Input
@@ -381,25 +381,25 @@ const RevenueGoalsTable = () => {
                 onChange={handleChange}
                 required
               />
-            </FormControl>
+            </FormControl> */}
 
-            {/* Contact of Project Coordinator */}
+            {/* Contact of Project Incharge */}
             <FormControl isRequired>
-              <FormLabel>Contact of Project Coordinator</FormLabel>
+              <FormLabel>Contact of Project Incharge</FormLabel>
               <Input
                 type="text"
-                name="projectCoordinatorContact"
+                name="projectInchargeContact"
                 onChange={handleChange}
                 required
               />
             </FormControl>
 
-            {/* Email of Project Coordinator */}
+            {/* Email of Project Incharge */}
             <FormControl isRequired>
-              <FormLabel>Email of Project Coordinator</FormLabel>
+              <FormLabel>Email of Project Incharge</FormLabel>
               <Input
                 type="email"
-                name="projectCoordinatorEmail"
+                name="projectInchargeEmail"
                 onChange={handleChange}
                 required
               />
