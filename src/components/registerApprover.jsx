@@ -1,5 +1,6 @@
 // RegisterApproverPage.jsx
 import React from "react";
+import axios from "axios";
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ import {
   VStack,
   Text,
   Link as ChakraLink,
+  useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -21,6 +23,7 @@ import { FaKey, FaMobileAlt, FaUser, FaEnvelope } from "react-icons/fa";
 
 // RegisterApproverPage component
 const RegisterApproverPage = () => {
+  const showToast = useToast() ; 
   // Formik for form management
   const formik = useFormik({
     initialValues: {
@@ -43,8 +46,40 @@ const RegisterApproverPage = () => {
         .required("Required")
         .matches(/^\d{10}$/, "Phone number must be 10 digits"),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log("Registering Approver with:", values);
+      try {
+        const req = {
+          name : values.name,
+          email : values.email , 
+          password : values.password,
+          mobile : values.mobileNumber
+
+        }
+        const response = await axios.post(
+          '/approversignup' , 
+          req 
+        ) ; 
+        showToast(
+          {
+            title: "Approver registration" , 
+            description : "Approver has been successfully register, please login" , 
+            status : "success" , 
+            duration : 500 , 
+            isClosable : true
+          }
+        ) ; 
+      } catch (error) {
+        showToast(
+          {
+            title: "Error registering approver" , 
+            description : "Error registering approver" , 
+            status : "error" , 
+            duration : 500 , 
+            isClosable : true
+          }
+        )
+      }
     },
   });
 

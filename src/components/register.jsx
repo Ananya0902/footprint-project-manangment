@@ -1,4 +1,4 @@
-// RegisterPage.jsx
+// RegisterPage.jsx -- done with integration
 import React from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
@@ -63,13 +63,13 @@ const RegisterPage = () => {
         .matches(/^\d{10}$/, "Phone number must be 10 digits"),
       province: Yup.string().required("Required"),
       apostolate: Yup.string().when("userType", {
-        is: (value) => value === "reviewer",
-        then: () => Yup.string().required("Required"),
+        is: (value) => value === "applicant",
+        then: () => Yup.string().required("Reviewer"),
         otherwise: () => Yup.string().notRequired(),
       }),
 
       reviewer: Yup.string().when("userType", {
-        is: (value) => value === "reviewer",
+        is: (value) => value === "applicant",
         then: () => Yup.string().required("Required"),
         otherwise: () => Yup.string().notRequired(),
       }),
@@ -86,34 +86,38 @@ const RegisterPage = () => {
     onSubmit: async (values) => {
       let response;
       console.log("Registering with:", values);
-      var req = {
+      const req = {
         name: values.name,
         email: values.email,
         password: values.password,
-        apostolate: values.apostolate,
         mobile: values.mobileNumber,
         nameOfProvince: values.province,
-        reviewer: values.reviewer,
       };
 
       try {
         if (values.userType === "applicant") {
-          response = await axios.post("/applicantsignup", req);
-        } else if (values.user === "reviewer") {
+          const applicantRequest = {
+            ...req,
+            reviewer: values.reviewer,
+            apostolate: values.apostolate,
+          };
+          response = await axios.post("/applicantsignup", applicantRequest);
+        } else if (values.userType === "reviewer") {
           response = await axios.post("/reviewersignup", req);
         }
         // showToast.
         showToast({
           title: "You have successfully registered",
           status: "success",
-          duration: 50,
+          duration: 500,
           isClosable: true,
         });
         navigate("/login"); // navigate to login page
       } catch (error) {
         if (error.response.status === 400) {
+          console.log(error.response);
           showToast({
-            title: "Invalid Credential",
+            title: "Error",
             status: "error",
             duration: 5000,
             isClosable: true,
@@ -295,7 +299,11 @@ const RegisterPage = () => {
             isInvalid={formik.touched.province && formik.errors.province}
             isRequired
             mt={2}
-            onChange={(event) => getReviewerByZone(event.target.value)}
+            onChange={(event) =>
+              formik.values.userType === "applicant"
+                ? getReviewerByZone(event.target.value)
+                : {}
+            }
           >
             <FormLabel>
               <Box as={FaGlobe} mr={2} />
@@ -312,7 +320,7 @@ const RegisterPage = () => {
           <FormControl
             id="apostolate"
             isInvalid={formik.touched.apostolate && formik.errors.apostolate}
-            isRequired
+            isRequired={formik.values.userType === "applicant"}
             mt={2}
             isDisabled={formik.values.userType === "reviewer"}
           >
@@ -335,7 +343,7 @@ const RegisterPage = () => {
           <FormControl
             id="reviewer"
             isInvalid={formik.touched.reviewer && formik.errors.reviewer}
-            isRequired
+            isRequired={formik.values.userType === "applicant"}
             mt={2}
             isDisabled={formik.values.userType === "reviewer"}
             onChange={(event) => console.log(event.target.value)}

@@ -36,6 +36,7 @@ const App = () => {
           <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/registerApprover" element={<RegisterApproverPage />} />
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/socialIndividualOngoing" element={<SocialIndividualOngoing />} />

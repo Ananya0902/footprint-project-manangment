@@ -1,5 +1,7 @@
 // Import necessary libraries and components
+// done with integration 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 
@@ -26,6 +28,7 @@ import * as Yup from "yup";
 
 const LoginPage = () => {
   const showToast = useToast();
+  const navigate = useNavigate(); 
   // Use Formik for form management
   const formik = useFormik({
     // Initial values and form validation schema using Yup
@@ -59,24 +62,32 @@ const LoginPage = () => {
           if (response.data.isVerified !== true) {
             await showToast({
               title: "Await verification by the reviewer",
+              description : "Your account is waiting to be verified by the reviewer",
               status: "loading",
               duration: 5000,
               isClosable: true,
             });
           } else {
-            // Navigate if verified 
+            navigate(`/dashboardApplicant`); 
           }
         } else if (values.userType === "reviewer") {
           response = await axios.post("/reviewerlogin", req);
           if (response.data.isVerified !== true) {
             showToast({
               title: "Await verification by the approver",
+              description: "Wait for the verification by approver",
               status: "loading",
               duration: 5000,
               isClosable: true,
             });
           } else {
-            // naviagte if verified
+            showToast({
+              title: "Logged In Successfully",
+              status: "loading",
+              duration: 5000,
+              isClosable: true,
+            });
+            navigate(`/dashboardReviewer`); 
           }
         } else if (values.userType === "approver") {
           response = await axios.post("/approverlogin", req);
@@ -87,7 +98,7 @@ const LoginPage = () => {
               duration: 5000,
               isClosable: true,
             });
-            // navigate to the page 
+            navigate("/dashboardApprover"); 
           }
         } else {
           showToast({
