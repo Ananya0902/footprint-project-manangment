@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   ChakraProvider,
   Box,
@@ -8,26 +8,64 @@ import {
   Input,
   Button,
   VStack,
-  IconButton,
-  InputGroup,
-  InputRightElement,
+  useToast,
   Alert,
   AlertIcon,
-} from '@chakra-ui/react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Formik, Form } from 'formik';
+} from "@chakra-ui/react";
+import { Formik, Form } from "formik";
+import axios from "axios";
+import useLogOut from "../hooks/logout";
 
 const ProfilePageApplicant = () => {
+  const showToast = useToast();
+  const logout = useLogOut();
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [changedPassword, setChangedPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
-
-  const handlePasswordVisibility = (values, setFieldValue, showPassword) => {
-    setFieldValue('showPassword', !showPassword);
-    setShowPassword(!showPassword);
-  };
+  const [changedPassword, setChangedPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+ 
+  const [userDetails, setUserDetails] = useState({
+    name: "",
+    email: "",
+    password: "",
+    mobileNumber: "",
+    apostolate: "",
+    province: "",
+    reviewerName: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  useEffect(() => {
+    const getApplicantData = async () => {
+      try {
+        const applicantData = await axios.get("/getApplicant");
+        console.log("applicant data", applicantData);
+        if(applicantData.data.success === false) return; 
+        setUserDetails((prevDetails) => {
+          console.log("Setting user details", prevDetails);
+          return {
+            ...prevDetails,
+            name: applicantData.data.data.name,
+            email: applicantData.data.data.email,
+            mobileNumber: applicantData.data.data.mobile,
+            apostolate: applicantData.data.data.apostolate,
+            reviewerName: applicantData.data.data.reviewer,
+            province: applicantData.data.data.nameOfProvince,
+          };
+        });
+        console.log("userDetails", userDetails);
+      } catch (error) {
+        showToast({
+          title: "Error getting applicant data",
+          duration: 500,
+          isClosable: true,
+          status: "error",
+        });
+      }
+    };
+    getApplicantData();
+    return () => {};
+  } , []);
 
   const handleToggleChangePassword = () => {
     setShowChangePassword(!showChangePassword);
@@ -38,31 +76,31 @@ const ProfilePageApplicant = () => {
     const confirmPassword = values.confirmPassword;
 
     // Validate the new password
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,}$/;
     if (!passwordRegex.test(newPassword)) {
       setPasswordError(
-        'Password must be at least 6 characters long and include at least 1 special symbol.'
+        "Password must be at least 6 characters long and include at least 1 special symbol."
       );
-      setConfirmPasswordError('');
+      setConfirmPasswordError("");
       return;
     }
 
     // Check if new password matches confirm password
     if (newPassword !== confirmPassword) {
-      setPasswordError('');
-      setConfirmPasswordError('Passwords do not match.');
+      setPasswordError("");
+      setConfirmPasswordError("Passwords do not match.");
       return;
     }
 
     // Mock password change logic (replace with actual logic)
     setChangedPassword(newPassword);
-    setFieldValue('password', newPassword);
+    setFieldValue("password", newPassword);
     setShowChangePassword(false);
     setSubmitting(false);
-    setPasswordError('');
-    setConfirmPasswordError('');
+    setPasswordError("");
+    setConfirmPasswordError("");
   };
-
   return (
     <ChakraProvider>
       <Box p={4}>
@@ -71,62 +109,48 @@ const ProfilePageApplicant = () => {
         </Heading>
 
         <Formik
-          initialValues={{
-            name: '',
-            email: '',
-            password: '',
-            userType: 'applicant',
-            mobileNumber: '',
-            apostolate: '',
-            province: '',
-            reviewerName: '',
-            newPassword: '',
-            confirmPassword: '',
-            showPassword: false,
-          }}
-          onSubmit={(values, actions) => console.log(values)}
+          enableReinitialize={true}
+          initialValues={userDetails}
+          onSubmit={(values, actions) => logout()
+        }
         >
-          {({ values, handleChange, handleSubmit, setFieldValue, setSubmitting }) => (
-            <Form onSubmit={handleSubmit}>
-              <VStack align="start" spacing={4} mb={8} mx="auto" maxWidth="400px">
-                {/* User Type */}
-                <FormControl isRequired>
-                  <FormLabel>User Type</FormLabel>
-                  <Input type="text" name="userType" value={values.userType} onChange={handleChange} />
-                </FormControl>
-
+          {({
+            values,
+            handleChange,
+            handleSubmit,
+            setFieldValue,
+            setSubmitting,
+          }) => (
+            <Form onSubmit={()=>logout()}>
+              <VStack
+                align="start"
+                spacing={4}
+                mb={8}
+                mx="auto"
+                maxWidth="400px"
+              >
                 {/* Name */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Name</FormLabel>
-                  <Input type="text" name="name" value={values.name} onChange={handleChange} />
+                  <Input
+                    readOnly
+                    type="text"
+                    name="name"
+                    value={values.name}
+                    onChange={handleChange}
+                  />
                 </FormControl>
 
                 {/* Email */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Email</FormLabel>
-                  <Input type="email" name="email" value={values.email} onChange={handleChange} />
-                </FormControl>
-
-                {/* Password */}
-                <FormControl isRequired>
-                  <FormLabel>Password</FormLabel>
-                  <InputGroup>
-                    <Input
-                      type={values.showPassword ? 'text' : 'password'}
-                      name="password"
-                      value={showChangePassword ? changedPassword : values.password}
-                      onChange={handleChange}
-                    />
-                    <InputRightElement>
-                      <IconButton
-                        aria-label={values.showPassword ? 'Hide Password' : 'Show Password'}
-                        icon={values.showPassword ? <FaEyeSlash /> : <FaEye />}
-                        onClick={() =>
-                          handlePasswordVisibility(values, setFieldValue, values.showPassword)
-                        }
-                      />
-                    </InputRightElement>
-                  </InputGroup>
+                  <Input
+                    type="email"
+                    readOnly
+                    name="email"
+                    value={values.email}
+                    onChange={handleChange}
+                  />
                 </FormControl>
 
                 {/* Toggle Change Password Button */}
@@ -136,7 +160,9 @@ const ProfilePageApplicant = () => {
                   onClick={handleToggleChangePassword}
                   mt={2}
                 >
-                  {showChangePassword ? 'Cancel Change Password' : 'Change Password'}
+                  {showChangePassword
+                    ? "Cancel Change Password"
+                    : "Change Password"}
                 </Button>
 
                 {/* New Password (visible when Change Password is clicked) */}
@@ -186,7 +212,12 @@ const ProfilePageApplicant = () => {
                   <Button
                     colorScheme="green"
                     type="button"
-                    onClick={() => handleSavePassword(values, { setFieldValue, setSubmitting })}
+                    onClick={() =>
+                      handleSavePassword(values, {
+                        setFieldValue,
+                        setSubmitting,
+                      })
+                    }
                     mt={2}
                   >
                     Save Password
@@ -194,9 +225,10 @@ const ProfilePageApplicant = () => {
                 )}
 
                 {/* Mobile Number */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Mobile Number</FormLabel>
                   <Input
+                    readOnly
                     type="tel"
                     name="mobileNumber"
                     value={values.mobileNumber}
@@ -205,31 +237,32 @@ const ProfilePageApplicant = () => {
                 </FormControl>
 
                 {/* Apostolate */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Apostolate</FormLabel>
-                  <Input type="text" name="apostolate" value={values.apostolate} onChange={handleChange} />
+                  <Input
+                    readOnly
+                    type="text"
+                    name="apostolate"
+                    value={values.apostolate}
+                    onChange={handleChange}
+                  />
                 </FormControl>
 
                 {/* Name of Province */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Name of Province</FormLabel>
-                  <Input type="text" name="province" value={values.province} onChange={handleChange} />
-                </FormControl>
-
-                {/* Reviewer's Name */}
-                <FormControl isRequired>
-                  <FormLabel>Reviewer's Name</FormLabel>
                   <Input
+                    readOnly
                     type="text"
-                    name="reviewerName"
-                    value={values.reviewerName}
+                    name="province"
+                    value={values.province}
                     onChange={handleChange}
                   />
                 </FormControl>
 
                 {/* Submit Button */}
                 <Button colorScheme="blue" type="submit" mt={10} ml="auto">
-                  Save Changes
+                  Logout
                 </Button>
               </VStack>
             </Form>
@@ -241,5 +274,3 @@ const ProfilePageApplicant = () => {
 };
 
 export default ProfilePageApplicant;
-
-

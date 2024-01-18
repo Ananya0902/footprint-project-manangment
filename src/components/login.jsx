@@ -2,8 +2,8 @@
 // done with integration 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useToast } from "@chakra-ui/react";
+import axios , {setAuthToken} from '../axiosConfig.js' ; 
 
 import {
   Box,
@@ -59,7 +59,7 @@ const LoginPage = () => {
         let response;
         if (values.userType === "applicant") {
           response = await axios.post("/applicantlogin",req);
-          if (response.data.isVerified !== true) {
+          if (response.data.isVarified !== true) {
             await showToast({
               title: "Await verification by the reviewer",
               description : "Your account is waiting to be verified by the reviewer",
@@ -72,7 +72,8 @@ const LoginPage = () => {
           }
         } else if (values.userType === "reviewer") {
           response = await axios.post("/reviewerlogin", req);
-          if (response.data.isVerified !== true) {
+          console.log(response.data.isVarified);
+          if (response.data.isVarified !== true) {
             showToast({
               title: "Await verification by the approver",
               description: "Wait for the verification by approver",
@@ -91,7 +92,7 @@ const LoginPage = () => {
           }
         } else if (values.userType === "approver") {
           response = await axios.post("/approverlogin", req);
-          if (response.data.isVerified !== true) {
+          if (response.data.isVarified !== true) {
             showToast({
               title: "Welcome sir, logging you in soon",
               status: "loading",
@@ -109,7 +110,11 @@ const LoginPage = () => {
           });
           return;
         }
+        console.log(response.data);
+        setAuthToken(response.data.token);
         localStorage.setItem("userToken", response.data.token);
+        // axios.default.header
+        // console.log(axios.defaults.headers.common['Authorization']);
       } catch (error) {
         try {
           if (error.response.status === 400) {

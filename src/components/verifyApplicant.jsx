@@ -1,5 +1,5 @@
 // verifyApplicant.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   ChakraProvider,
   Box,
@@ -9,38 +9,89 @@ import {
   Text,
   Divider,
   List,
-  ListItem,
   ListIcon,
   Flex,
-} from '@chakra-ui/react';
-import { FaCheck, FaTimes } from 'react-icons/fa';
-
-const applicantsData = [
-  { id: 1, name: 'Applicant 1', status: 'Pending', reviewerId: 1 },
-  { id: 2, name: 'Applicant 2', status: 'Pending', reviewerId: 2 },
-  { id: 3, name: 'Applicant 3', status: 'Pending', reviewerId: 1 },
-];
+  useToast,
+} from "@chakra-ui/react";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import axios from "../axiosConfig.js";
 
 const VerifyApplicant = ({ loggedInReviewerId }) => {
-  const [applicants, setApplicants] = useState(applicantsData);
-  const filteredApplicants = applicants.filter((applicant) => applicant.reviewerId === loggedInReviewerId);
+  const [applicants, setApplicants] = useState([]);
+  const showToast = useToast();
+
+  // to get all applicants
+  console.log(localStorage.getItem("userToken"));
+
+  useEffect(() => {
+    axios
+      .get("/allapplicant")
+      .then((response) => {
+        console.log(response.data);
+        setApplicants(
+          response.data.data
+            .filter((applicant) => applicant.isVarified === false)
+            .map((applicant) => {
+              return {
+                id: applicant._id,
+                name: applicant.name,
+                status: "pending",
+              };
+            })
+        );
+      })
+      .catch((error) =>
+        // console.log(error);
+        showToast({
+          title: "Error",
+          description: error.message,
+          status: "error",
+          duration: 500,
+        })
+      );
+  }, [showToast]);
 
   const handleVerify = (applicantId) => {
     // Update the status of the applicant to "Verified"
-    setApplicants((prevApplicants) =>
-      prevApplicants.map((applicant) =>
-        applicant.id === applicantId ? { ...applicant, status: 'Verified' } : applicant
-      )
-    );
+    axios
+      .put("/applicantvarify", {
+        applicant: applicantId,
+      })
+      .then((res) => {
+        console.log(res);
+        setApplicants((prevApplicants) =>
+          prevApplicants.filter((applicant) => applicant.id !== applicantId)
+        );
+      })
+      .catch((error) => {
+        showToast({
+          title: "Error verifying user",
+          status: "error",
+          duration: 500,
+        });
+      });
   };
-  // Create a function for addition 
+  // Create a function for addition
   const handleDecline = (applicantId) => {
     // Update the status of the applicant to "Declined"
-    setApplicants((prevApplicants) =>
-      prevApplicants.map((applicant) =>
-        applicant.id === applicantId ? { ...applicant, status: 'Declined' } : applicant
+    axios
+      .delete("/applicantunvarify" , {
+        applicant : applicantId
+      })
+      .then(() =>
+        setApplicants((prevApplicants) =>
+          prevApplicants.filter((applicant) =>
+            applicant.id !== applicantId
+          )
+        )
       )
-    );
+      .catch((_) =>
+        showToast({
+          title: "Error unvarifying applicant",
+          duration: 5000,
+          status: "error",
+        })
+      );
   };
 
   return (
@@ -51,8 +102,8 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
         </Heading>
 
         <List spacing={3} width="100%">
-          {filteredApplicants.length > 0 ? (
-            filteredApplicants.map((applicant) => (
+          {applicants.length > 0 ? (
+            applicants.map((applicant) => (
               <Box
                 key={applicant.id}
                 bg="white"
@@ -100,4 +151,3 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
 };
 
 export default VerifyApplicant;
-
