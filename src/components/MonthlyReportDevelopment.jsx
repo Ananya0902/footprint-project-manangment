@@ -16,6 +16,7 @@ import {
   Tr,
   Th,
   Td,
+  Text,
 } from "@chakra-ui/react";
 
 const MonthlyReportDevelopmentProject = () => {
@@ -68,10 +69,10 @@ const MonthlyReportDevelopmentProject = () => {
       
     } else if (type === "payments") {
       const { name, value } = e.target;
-      updatedData.payments[index][name] = value;
+      updatedData.payments[index][name] = parseFloat(value);
       updatedData.payments[index].totalExpenditure =
-        parseFloat(updatedData.payments[index].expenditureLastMonth) || 0 +
-        parseFloat(updatedData.payments[index].expenditureThisMonth) || 0;
+        (updatedData.payments[index].expenditureLastMonth) +
+        (updatedData.payments[index].expenditureThisMonth) 
     } else {
       updatedData[e.target.name] = e.target.value;
     }
@@ -558,7 +559,11 @@ const MonthlyReportDevelopmentProject = () => {
                         required
                       />
                     </Td>
-                    <Td>{formData.totalExpenditure}</Td>
+                    <Td>
+                        {
+                        payment.totalExpenditure
+                        }
+                    </Td>
                   </Tr>
                 ))}
                 <Tr>
