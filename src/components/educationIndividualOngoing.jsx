@@ -897,6 +897,14 @@ Personal Information of the Beneficiary
       onChange={handleChange}
     />
   </FormControl>
+  {/* Add comment for approver and reviwer*/}
+  <FormControl>
+    <FormLabel>Remarks (Optional)</FormLabel>
+    <Textarea
+      name="remarks"
+      onChange={handleChange}
+    />
+  </FormControl>
 </VStack>
 
 

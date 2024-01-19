@@ -1,7 +1,7 @@
 {
   "name": "footprint-project-manangment",
-  "proxy": "http://localhost:5000/api/v1/users",
   "version": "0.1.0",
+  "proxy": "http://localhost:5000/api/v1/users",
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",

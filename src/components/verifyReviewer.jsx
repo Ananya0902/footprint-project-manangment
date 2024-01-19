@@ -14,117 +14,129 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import axios from "axios";
-  
+import axios from "../axiosConfig.js";
+
 const VerifyReviewer = () => {
   console.log("Verifying reviewers");
-  axios.get("/allreviewer").then((res) => console.log(res.data));
+  console.log(axios.defaults.headers.common["Authorization"]);
+  console.log(localStorage.getItem("userToken"));
+  const showToast = useToast();
   // const showToast = useToast();
-  // const [reviewers, setReviewers] = useState([]);
-  // console.log(`${reviewers}`);
-  // useEffect(() => {
-  //   console.log("reviewers", reviewers);
-  // }, [reviewers]);
-  // // const getReviewersToVerify =
-  // useEffect(() => {
-  //   axios
-  //     .get("/allreviewer")
-  //     .then((response) =>
-  //       setReviewers(
-  //         response.data.data.map((reviewer) => {
-  //           return { id: reviewer._id, name: reviewer.name, status: "pending" };
-  //         })
-  //       )
-  //     )
-  //     .catch(() =>
-  //       showToast({
-  //         title: "Cannot get reviewers",
-  //         status: "error",
-  //         duration: 500,
-  //         isClosable: false,
-  //       })
+  const [reviewers, setReviewers] = useState([]);
+  console.log(`${reviewers}`);
+  useEffect(() => {
+    console.log("reviewers", reviewers);
+  }, [reviewers]);
+  // const getReviewersToVerify =
+  useEffect(() => {
+    axios
+      .get("/allreviewer")
+      .then((response) => {
+        console.log(response.data);
+        setReviewers(
+          response.data.data
+            .filter((reviewer) => reviewer.isVarified === false)
+            .map((reviewer) => {
+              return {
+                id: reviewer._id,
+                name: reviewer.name,
+                status: "pending",
+              };
+            })
+        );
+      })
+      .catch((error) =>
+        showToast({
+          title: "Cannot get all reviewers",
+          description: "Error fetching reviewers",
+          duration: 500,
+          isClosable: true,
+          status: "error",
+        })
+      );
+  }, [showToast]);
+
+  // const handleVerify = async (reviewerId) => {
+  //   // Update the status of the reviewer to "Verified" and remove from the list
+
+  //   // removal from list
+  //   try {
+  //     const response = await axios.post("/reviewervarify" , reviewerId);
+  //     setReviewers((prevReviewers) =>
+  //       prevReviewers
+  //         .map((reviewer) =>
+  //           reviewer.id === reviewerId
+  //             ? { ...reviewer, status: "Verified" }
+  //             : reviewer
+  //         )
+  //         .filter((reviewer) => reviewer.id !== reviewerId)
   //     );
-  // }, []);
-
-  // // const handleVerify = async (reviewerId) => {
-  // //   // Update the status of the reviewer to "Verified" and remove from the list
-
-  // //   // removal from list
-  // //   try {
-  // //     const response = await axios.post("/reviewervarify" , reviewerId);
-  // //     setReviewers((prevReviewers) =>
-  // //       prevReviewers
-  // //         .map((reviewer) =>
-  // //           reviewer.id === reviewerId
-  // //             ? { ...reviewer, status: "Verified" }
-  // //             : reviewer
-  // //         )
-  // //         .filter((reviewer) => reviewer.id !== reviewerId)
-  // //     );
-  // //   } catch (error) {
-  // //     showToast({
-  // //       title: "Error verifying reviewer",
-  // //       status: "error",
-  // //       duration: 500,
-  // //       isClosable: false,
-  // //     });
-  // //   }
-  // // };
-
-  // const handleVerify = (reviewerId) => {
-  //   // Update the status of the reviewer to "Verified" on the server
-  //   axios
-  //     .put("reviewervarify", { reviewer: reviewerId })
-  //     .then((response) => {
-  //       setReviewers((prevReviewers) =>
-  //         prevReviewers.filter((reviewer) => reviewer.id !== reviewerId)
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error verifying reviewer:", error);
+  //   } catch (error) {
+  //     showToast({
+  //       title: "Error verifying reviewer",
+  //       status: "error",
+  //       duration: 500,
+  //       isClosable: false,
   //     });
+  //   }
   // };
-  // // const handleDecline = async (reviewerId) => {
-  // //   // Update the status of the reviewer to "Declined" and remove from the list
-  // //   try {
-  // //     const response = await axios.post("/reviewerunvarify" , reviewerId);
-  // //     setReviewers((prevReviewers) =>
-  // //       prevReviewers
-  // //         .map((reviewer) =>
-  // //           reviewer.id === reviewerId
-  // //             ? { ...reviewer, status: "Declined" }
-  // //             : reviewer
-  // //         )
-  // //         .filter((reviewer) => reviewer.id !== reviewerId)
-  // //     );
-  // //   } catch (error) {
-  // //     showToast({
-  // //       title: error.response.data,
-  // //       status: "error",
-  // //       duration: 500,
-  // //       isClosable: false,
-  // //     });
-  // //   }
-  // // };
-  // const handleDecline = (reviewerId) => {
-  //   console.log("decline");
-  //   // Delete the reviewer on the server
-  //   axios
-  //     .delete("reviewerunvarify", { reviewer: reviewerId })
-  //     .then(() => {
-  //       setReviewers((prevReviewers) =>
-  //         prevReviewers.filter((reviewer) => reviewer.id !== reviewerId)
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error declining reviewer:", error);
+
+  const handleVerify = (reviewerId) => {
+    // Update the status of the reviewer to "Verified" on the server
+    axios
+      .put("reviewervarify", { reviewer: reviewerId })
+      .then((response) => {
+        console.log(response.data);
+        setReviewers((prevReviewers) =>
+          prevReviewers.filter((reviewer) => reviewer.id !== reviewerId)
+        );
+      })
+      .catch((error) => {
+        console.error("Error verifying reviewer:", error);
+      });
+  };
+  // const handleDecline = async (reviewerId) => {
+  //   // Update the status of the reviewer to "Declined" and remove from the list
+  //   try {
+  //     const response = await axios.post("/reviewerunvarify" , reviewerId);
+  //     setReviewers((prevReviewers) =>
+  //       prevReviewers
+  //         .map((reviewer) =>
+  //           reviewer.id === reviewerId
+  //             ? { ...reviewer, status: "Declined" }
+  //             : reviewer
+  //         )
+  //         .filter((reviewer) => reviewer.id !== reviewerId)
+  //     );
+  //   } catch (error) {
+  //     showToast({
+  //       title: error.response.data,
+  //       status: "error",
+  //       duration: 500,
+  //       isClosable: false,
   //     });
+  //   }
   // };
-  // // console.log("Get reviewers to verify");
+  const handleDecline = (reviewerId) => {
+    console.log("decline");
+    // Delete the reviewer on the server
+    axios
+      .delete("reviewerunvarify", { reviewer: reviewerId })
+      .then((response) => {
+        console.log(response);
+        setReviewers((prevReviewers) =>
+          prevReviewers.filter((reviewer) => reviewer.id !== reviewerId)
+        );
+      })
+      .catch((error) => {
+        console.error("Error declining reviewer:", error);
+      });
+  };
+  // console.log("Get reviewers to verify");
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
-        {/* <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
+        <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
           Verify Reviewers
         </Heading>
 
@@ -171,7 +183,7 @@ const VerifyReviewer = () => {
           <Text textAlign="center" color="gray.600">
             No reviewers to verify.
           </Text>
-        )} */}
+        )}
       </Box>
     </ChakraProvider>
   );
