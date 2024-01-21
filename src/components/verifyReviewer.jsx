@@ -14,12 +14,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import axios from "../axiosConfig.js";
+import axios from "../AuthAxios.js";
 
 const VerifyReviewer = () => {
-  console.log("Verifying reviewers");
-  console.log(axios.defaults.headers.common["Authorization"]);
-  console.log(localStorage.getItem("userToken"));
   const showToast = useToast();
   // const showToast = useToast();
   const [reviewers, setReviewers] = useState([]);
@@ -30,7 +27,7 @@ const VerifyReviewer = () => {
   // const getReviewersToVerify =
   useEffect(() => {
     axios
-      .get("/allreviewer")
+      .get("/users/allreviewer")
       .then((response) => {
         console.log(response.data);
         setReviewers(
@@ -84,7 +81,7 @@ const VerifyReviewer = () => {
   const handleVerify = (reviewerId) => {
     // Update the status of the reviewer to "Verified" on the server
     axios
-      .put("reviewervarify", { reviewer: reviewerId })
+      .put("/users/reviewervarify", { reviewer: reviewerId })
       .then((response) => {
         console.log(response.data);
         setReviewers((prevReviewers) =>
@@ -121,7 +118,7 @@ const VerifyReviewer = () => {
     console.log("decline");
     // Delete the reviewer on the server
     axios
-      .delete("reviewerunvarify", { reviewer: reviewerId })
+      .delete("/users/reviewerunvarify", { reviewer: reviewerId })
       .then((response) => {
         console.log(response);
         setReviewers((prevReviewers) =>

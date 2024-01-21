@@ -7,10 +7,50 @@ import {
   VStack,
   Heading,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import authAxios from '../AuthAxios.js';
 
 const DashboardApplicant = () => {
+  const showToast = useToast();
+
+  const [userDetails , setUserDetails] = useState({});
+
+  useEffect(() => {
+    const getApplicantData = async () => {
+      try {
+        const applicantData = await authAxios.get("/users/getApplicant");
+        console.log("applicant data", applicantData);
+        if(applicantData.data.success === false) showToast({
+          title: "Error fetching profile", 
+          description: "Please login again or refresh the page", 
+          status: "error" , 
+          duration : 5000,
+        }); 
+        setUserDetails({
+            name: applicantData.data.data.name,
+            email: applicantData.data.data.email,
+            mobileNumber: applicantData.data.data.mobile,
+            apostolate: applicantData.data.data.apostolate,
+            reviewerName: applicantData.data.data.reviewer,
+            province: applicantData.data.data.nameOfProvince,
+        });
+      } catch (error) {
+        showToast({
+          title: "Error getting applicant data",
+          duration: 500,
+          isClosable: true,
+          status: "error",
+        });
+      }
+    };
+    getApplicantData();
+    return () => {};
+  } , []);
+  
+  console.log("userDetails", userDetails);
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
@@ -62,7 +102,7 @@ const DashboardApplicant = () => {
             </Text>
             <Button
               as={Link}
-              to="/individualProjects"
+              to={`/individualProjects/${userDetails.apostolate}`}
               colorScheme="teal"
               mt={4}
               borderRadius="full"
@@ -114,10 +154,13 @@ const DashboardApplicant = () => {
             </Text>
             <Button
               as={Link}
-              to="/profileApplicant"
+              to={`/profileApplicant/${JSON.stringify(userDetails)}`}
               colorScheme="teal"
               mt={4}
               borderRadius="full"
+              onTouchMoveCapture={()=>{
+                console.log(userDetails);
+              }}
             >
               Go to Profile
             </Button>

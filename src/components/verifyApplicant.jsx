@@ -14,7 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import axios from "../axiosConfig.js";
+import axios from "../AuthAxios.js";
 
 const VerifyApplicant = ({ loggedInReviewerId }) => {
   const [applicants, setApplicants] = useState([]);
@@ -25,7 +25,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
 
   useEffect(() => {
     axios
-      .get("/allapplicant")
+      .get("/users/allapplicant")
       .then((response) => {
         console.log(response.data);
         setApplicants(
@@ -54,7 +54,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
   const handleVerify = (applicantId) => {
     // Update the status of the applicant to "Verified"
     axios
-      .put("/applicantvarify", {
+      .put("/users/applicantvarify", {
         applicant: applicantId,
       })
       .then((res) => {
@@ -75,7 +75,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
   const handleDecline = (applicantId) => {
     // Update the status of the applicant to "Declined"
     axios
-      .delete("/applicantunvarify" , {
+      .delete("/users/applicantunvarify" , {
         applicant : applicantId
       })
       .then(() =>

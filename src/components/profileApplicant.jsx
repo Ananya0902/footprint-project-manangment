@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ChakraProvider,
   Box,
@@ -13,71 +13,66 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
-import axios from "axios";
+import authAxios from "../AuthAxios.js";
 import useLogOut from "../hooks/logout";
+import { useParams } from "react-router-dom";
 
 const ProfilePageApplicant = () => {
+  const mappedUser = useParams();
+  console.log(mappedUser);
+  const user = JSON.parse(mappedUser.userDetails);
   const showToast = useToast();
   const logout = useLogOut();
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [changedPassword, setChangedPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
- 
   const [userDetails, setUserDetails] = useState({
-    name: "",
-    email: "",
-    password: "",
-    mobileNumber: "",
-    apostolate: "",
-    province: "",
-    reviewerName: "",
+    ...user,
     newPassword: "",
     confirmPassword: "",
   });
-  useEffect(() => {
-    const getApplicantData = async () => {
-      try {
-        const applicantData = await axios.get("/getApplicant");
-        console.log("applicant data", applicantData);
-        if(applicantData.data.success === false) return; 
-        setUserDetails((prevDetails) => {
-          console.log("Setting user details", prevDetails);
-          return {
-            ...prevDetails,
-            name: applicantData.data.data.name,
-            email: applicantData.data.data.email,
-            mobileNumber: applicantData.data.data.mobile,
-            apostolate: applicantData.data.data.apostolate,
-            reviewerName: applicantData.data.data.reviewer,
-            province: applicantData.data.data.nameOfProvince,
-          };
-        });
-        console.log("userDetails", userDetails);
-      } catch (error) {
-        showToast({
-          title: "Error getting applicant data",
-          duration: 500,
-          isClosable: true,
-          status: "error",
-        });
-      }
-    };
-    getApplicantData();
-    return () => {};
-  } , []);
+
+  // useEffect(() => {
+  //   const getApplicantData = async () => {
+  //     try {
+  //       const applicantData = await authAxios.get("/users/getApplicant");
+  //       console.log("applicant data", applicantData);
+  //       if(applicantData.data.success === false) return;
+  //       setUserDetails((prevDetails) => {
+  //         console.log("Setting user details", prevDetails);
+  //         return {
+  //           ...prevDetails,
+  //           ...match.params.userDetails
+  //         };
+  //       });
+  //       console.log("userDetails", userDetails);
+  //     } catch (error) {
+  //       showToast({
+  //         title: "Error getting applicant data",
+  //         duration: 500,
+  //         isClosable: true,
+  //         status: "error",
+  //       });
+  //     }
+  //   };
+  //   getApplicantData();
+  //   return () => {};
+  // } , []);
 
   const handleToggleChangePassword = () => {
     setShowChangePassword(!showChangePassword);
   };
 
-  const handleSavePassword = (values, { setFieldValue, setSubmitting }) => {
+  const handleChangePassword = async (
+    values,
+    { setFieldValue, setSubmitting }
+  ) => {
     const newPassword = values.newPassword;
     const confirmPassword = values.confirmPassword;
 
     // Validate the new password
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,}$/;
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
     if (!passwordRegex.test(newPassword)) {
       setPasswordError(
         "Password must be at least 6 characters long and include at least 1 special symbol."
@@ -92,15 +87,34 @@ const ProfilePageApplicant = () => {
       setConfirmPasswordError("Passwords do not match.");
       return;
     }
-
     // Mock password change logic (replace with actual logic)
-    setChangedPassword(newPassword);
-    setFieldValue("password", newPassword);
+    try {
+      const response = await authAxios.put(
+        "/users/changepasswordapplicant",
+        {newpassword:newPassword}
+      );
+      console.log(response);
+      if (response.data.success === true) {
+        showToast({
+          title: "Successfully Changed Password",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        throw new Error("Cannot change password successfully");
+      }
+    } catch (error) {
+      showToast({
+        title: "Cannot Change Password Successfully",
+        duration: 5000,
+        status: "error",
+      });
+    }
     setShowChangePassword(false);
-    setSubmitting(false);
     setPasswordError("");
     setConfirmPasswordError("");
   };
+
   return (
     <ChakraProvider>
       <Box p={4}>
@@ -111,8 +125,7 @@ const ProfilePageApplicant = () => {
         <Formik
           enableReinitialize={true}
           initialValues={userDetails}
-          onSubmit={(values, actions) => logout()
-        }
+          onSubmit={(values, actions) => logout()}
         >
           {({
             values,
@@ -121,7 +134,7 @@ const ProfilePageApplicant = () => {
             setFieldValue,
             setSubmitting,
           }) => (
-            <Form onSubmit={()=>logout()}>
+            <Form onSubmit={() => logout()}>
               <VStack
                 align="start"
                 spacing={4}
@@ -130,7 +143,7 @@ const ProfilePageApplicant = () => {
                 maxWidth="400px"
               >
                 {/* Name */}
-                <FormControl >
+                <FormControl>
                   <FormLabel>Name</FormLabel>
                   <Input
                     readOnly
@@ -142,7 +155,7 @@ const ProfilePageApplicant = () => {
                 </FormControl>
 
                 {/* Email */}
-                <FormControl >
+                <FormControl>
                   <FormLabel>Email</FormLabel>
                   <Input
                     type="email"
@@ -213,7 +226,7 @@ const ProfilePageApplicant = () => {
                     colorScheme="green"
                     type="button"
                     onClick={() =>
-                      handleSavePassword(values, {
+                      handleChangePassword(values, {
                         setFieldValue,
                         setSubmitting,
                       })
@@ -225,7 +238,7 @@ const ProfilePageApplicant = () => {
                 )}
 
                 {/* Mobile Number */}
-                <FormControl >
+                <FormControl>
                   <FormLabel>Mobile Number</FormLabel>
                   <Input
                     readOnly
@@ -237,7 +250,7 @@ const ProfilePageApplicant = () => {
                 </FormControl>
 
                 {/* Apostolate */}
-                <FormControl >
+                <FormControl>
                   <FormLabel>Apostolate</FormLabel>
                   <Input
                     readOnly
@@ -249,7 +262,7 @@ const ProfilePageApplicant = () => {
                 </FormControl>
 
                 {/* Name of Province */}
-                <FormControl >
+                <FormControl>
                   <FormLabel>Name of Province</FormLabel>
                   <Input
                     readOnly

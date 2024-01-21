@@ -25,6 +25,7 @@ import VerifyApplicant from "./components/verifyApplicant";
 import IndividualProjects from "./components/individualProjects";
 import GroupProjects from "./components/groupProjects";
 import MyProjects from "./components/myProjects";
+import HealthIndividual from "./components/healthIndividual";
 
 // App component
 const App = () => {
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/registerApprover" element={<RegisterApproverPage />} />
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
+          <Route path="/healthIndividual" element={<HealthIndividual/>} />
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/socialIndividualOngoing" element={<SocialIndividualOngoing />} />
           <Route path="/educationGroup" element={<EducationGroup />} />
@@ -45,7 +47,7 @@ const App = () => {
           <Route path="/devProjLivliGroup" element={<DevProjectLivlihoodGroup />} />
           <Route path="/institutionalSkillGroup" element={<InstitutionalSkillTrainingForm />} />
           <Route path="/MonthlyReportDevelopment" element={<MonthlyReportDevelopmentProject />} />
-          <Route path="/profileApplicant" element={<ProfilePageApplicant />} />
+          <Route path="/profileApplicant/:userDetails" element={<ProfilePageApplicant />} />
           <Route path="/profileReviewer" element={<ProfilePageReviewer />} />
           <Route path="/profileApprover" element={<ProfilePageApprover />} />
           <Route path="/registerApprover" element={<RegisterApproverPage />} />
@@ -54,7 +56,7 @@ const App = () => {
           <Route path="/dashboardApprover" element={<DashboardApprover />} />
           <Route path="/verifyReviewer" element={<VerifyReviewer />} />
           <Route path="/verifyApplicant" element={<VerifyApplicant />} />
-          <Route path="/individualProjects" element={<IndividualProjects selectedApostolate="health" />} />
+          <Route path="/individualProjects/:selectedAppostolate" element={<IndividualProjects/>} />
           <Route path="/groupProjects" element={<GroupProjects selectedApostolate="social" />} />
           <Route path="/myProjects" element={<MyProjects/>} />
          

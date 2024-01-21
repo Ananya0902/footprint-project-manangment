@@ -1,11 +1,12 @@
 import axios from "axios";
 
-// Function to set JWT token in the headers
+const authAxios = axios.create()
+
 export const setAuthToken = (token) => {
   if (token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    authAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
-    delete axios.defaults.headers.common["Authorization"];
+    delete authAxios.defaults.headers.common["Authorization"];
   }
 };
 
@@ -14,4 +15,4 @@ window.addEventListener("beforeunload", () => {
   setAuthToken(localStorage.getItem("userToken"));
 });
 
-export default axios;
+export default authAxios;

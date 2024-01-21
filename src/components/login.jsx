@@ -3,7 +3,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
-import axios , {setAuthToken} from '../axiosConfig.js' ; 
+import authAxios , {setAuthToken} from '../AuthAxios.js' ; 
 
 import {
   Box,
@@ -58,7 +58,7 @@ const LoginPage = () => {
         };
         let response;
         if (values.userType === "applicant") {
-          response = await axios.post("/applicantlogin",req);
+          response = await authAxios.post("users/applicantlogin",req);
           if (response.data.isVarified !== true) {
             await showToast({
               title: "Await verification by the reviewer",
@@ -71,7 +71,7 @@ const LoginPage = () => {
             navigate(`/dashboardApplicant`); 
           }
         } else if (values.userType === "reviewer") {
-          response = await axios.post("/reviewerlogin", req);
+          response = await authAxios.post("/users/reviewerlogin", req);
           console.log(response.data.isVarified);
           if (response.data.isVarified !== true) {
             showToast({
@@ -91,7 +91,7 @@ const LoginPage = () => {
             navigate(`/dashboardReviewer`); 
           }
         } else if (values.userType === "approver") {
-          response = await axios.post("/approverlogin", req);
+          response = await authAxios.post("/users/approverlogin", req);
           if (response.data.isVarified !== true) {
             showToast({
               title: "Welcome sir, logging you in soon",

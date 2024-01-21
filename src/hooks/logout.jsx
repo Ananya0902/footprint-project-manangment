@@ -1,4 +1,4 @@
-import { setAuthToken } from "../axiosConfig";
+import { setAuthToken } from "../AuthAxios";
 import { useNavigate } from "react-router-dom";
 
 const useLogOut = () => {

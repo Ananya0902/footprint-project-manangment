@@ -1,9 +1,10 @@
 // IndividualProjects.jsx
 import React from 'react';
 import { ChakraProvider, Box, Heading, Button, VStack } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link , useParams} from 'react-router-dom';
 
-const IndividualProjects = ({ selectedApostolate }) => {
+const IndividualProjects = () => {
+  const selectedApostolate = useParams().selectedAppostolate;
   return (
     <ChakraProvider>
       <Box

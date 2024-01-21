@@ -1,6 +1,6 @@
 // Home.jsx
 import React from "react";
-import { VStack, Heading, Button, Link } from "@chakra-ui/react";
+import { VStack, Heading, Button, Link, Text } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const Home = () => {
@@ -34,7 +34,7 @@ const Home = () => {
             bgGradient="linear(to-r, teal.500, teal.300)"
             _hover={{ bgGradient: "linear(to-r, teal.600, teal.200)" }}
           >
-            Login
+            <Text fontSize={{ base: "xl", md: "2xl", lg: "3xl" }}>Login</Text>
           </Button>
         </Link>
         <Link as={ReactRouterLink} to="/register" width="100%">
@@ -44,8 +44,9 @@ const Home = () => {
             w="20%"
             bgGradient="linear(to-r, purple.500, purple.300)"
             _hover={{ bgGradient: "linear(to-r, purple.600, purple.200)" }}
+            p={5}
           >
-            Register Now
+            <Text fontSize={{ base: "l", md: "xl", lg: "2xl" }}>Register</Text>
           </Button>
         </Link>
       </VStack>

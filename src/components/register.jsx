@@ -1,6 +1,6 @@
 // RegisterPage.jsx -- done with integration
 import React from "react";
-import axios from "axios";
+import authAxios from "../AuthAxios.js";
 import { useToast } from "@chakra-ui/react";
 import {
   Box,
@@ -101,9 +101,9 @@ const RegisterPage = () => {
             reviewer: values.reviewer,
             apostolate: values.apostolate,
           };
-          response = await axios.post("/applicantsignup", applicantRequest);
+          response = await authAxios.post("/users/applicantsignup", applicantRequest);
         } else if (values.userType === "reviewer") {
-          response = await axios.post("/reviewersignup", req);
+          response = await authAxios.post("/users/reviewersignup", req);
         }
         // showToast.
         showToast({
@@ -165,7 +165,7 @@ const RegisterPage = () => {
     // zone = north east central
     try {
       console.log("Value : ", zone);
-      const response = await axios.get(`/allreviewer/${zone}`);
+      const response = await authAxios.get(`/users/allreviewer/${zone}`);
       const simplifiedReviewers = response.data.reviewers.map((reviewer) => ({
         id: reviewer._id,
         name: reviewer.name,

@@ -56,8 +56,9 @@ const RegisterApproverPage = () => {
           mobile : values.mobileNumber
 
         }
+        // eslint-disable-next-line no-unused-vars
         const response = await axios.post(
-          '/approversignup' , 
+          '/users/approversignup' , 
           req 
         ) ; 
         showToast(

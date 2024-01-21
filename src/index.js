@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { setAuthToken } from './axiosConfig';
+import { setAuthToken } from './AuthAxios';
 
 // Reload on refresh and persist user Token from local storage 
 window.onload = ()=>{

@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import useLogOut from '../hooks/logout';
-import axios from "axios";
+import authAxios from "../AuthAxios.js";
 
 const ProfilePageApprover = () => {
   const showToast = useToast();
@@ -34,7 +34,7 @@ const ProfilePageApprover = () => {
   useEffect(() => {
     const getApproversData = async () => {
       try {
-        const approversData = await axios.get("/getApprover");
+        const approversData = await authAxios.get("/getApprover");
         console.log("reviwers data", approversData);
         if(approversData.data.success === false) return; 
         setUserDetails((prevDetails) => {
@@ -64,13 +64,16 @@ const ProfilePageApprover = () => {
     setShowChangePassword(!showChangePassword);
   };
 
-  const handleSavePassword = (values, { setFieldValue, setSubmitting }) => {
+  const handleChangePassword = async (
+    values,
+    { setFieldValue, setSubmitting }
+  ) => {
     const newPassword = values.newPassword;
     const confirmPassword = values.confirmPassword;
 
     // Validate the new password
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{10,}$/;
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
     if (!passwordRegex.test(newPassword)) {
       setPasswordError(
         "Password must be at least 6 characters long and include at least 1 special symbol."
@@ -85,15 +88,31 @@ const ProfilePageApprover = () => {
       setConfirmPasswordError("Passwords do not match.");
       return;
     }
-
     // Mock password change logic (replace with actual logic)
-    setChangedPassword(newPassword);
-    setFieldValue("password", newPassword);
-    setShowChangePassword(false);
-    setSubmitting(false);
-    setPasswordError("");
-    setConfirmPasswordError("");
+    try {
+      const response = await authAxios.put(
+        "/users/changepasswordapprover",
+        {newpassword:newPassword}
+      );
+      console.log(response);
+      if (response.data.success === true) {
+        showToast({
+          title: "Successfully Changed Password",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        throw new Error("Cannot change password successfully");
+      }
+    } catch (error) {
+      showToast({
+        title: "Cannot Change Password Successfully",
+        duration: 5000,
+        status: "error",
+      });
+    }
   };
+
   return (
     <ChakraProvider>
       <Box p={4}>
@@ -206,7 +225,7 @@ const ProfilePageApprover = () => {
                     colorScheme="green"
                     type="button"
                     onClick={() =>
-                      handleSavePassword(values, {
+                      handleChangePassword(values, {
                         setFieldValue,
                         setSubmitting,
                       })

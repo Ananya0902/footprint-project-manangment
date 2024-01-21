@@ -11,8 +11,6 @@ import {
   Checkbox,
   Button,
   VStack,
-  Alert,
-  AlertIcon,
   InputGroup,
   Table,
   Thead,
@@ -20,11 +18,29 @@ import {
   Tr,
   Th,
   Td,
+  useToast,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalOverlay,
+  ModalContent,
+  CircularProgress
 } from "@chakra-ui/react";
+
+import cloudAxios from "../CloudAxios";
+import authAxios from "../AuthAxios";
 
 const SocialIndividualOngoing = () => {
   const [formData, setFormData] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+  const [documents, setDocuments] = useState([
+    { name: "Aadhar Card", file: null },
+    { name: "Request Letter", file: null },
+    { name: "Quotations regarding the purchase", file: null },
+    { name: "Other supporting documents", file: null },
+  ]);
+  const showToast = useToast();
 
   const handleChange = (e) => {
     setFormData({
@@ -33,19 +49,107 @@ const SocialIndividualOngoing = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleImageUpload = async (file) => {
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+      const response = await cloudAxios.post("/", form);
+      const imgData = response.data;
+      return imgData.secure_url;
+    } catch (error) {
+      showToast({
+        title: "Error uploading image to cloudinary",
+        description: error,
+        duration: 5000,
+      });
+    }
+  };
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-    setIsSubmitted(true);
+    try {
+      setIsLoading((prevLoading) => !prevLoading);
+      const photographUrl = await handleImageUpload(
+        e.target.photographFile.files[0]
+      );
+      const aadharCardUrl = await handleImageUpload(documents[0].file);
+      const requestLetterUrl = await handleImageUpload(documents[1].file);
+      const quotationRegardingPurchase = await handleImageUpload(
+        documents[2].file
+      );
+      const otherSupportingDocuments = await handleImageUpload(
+        documents[3].file
+      );
+
+      const response = await authAxios.post("/projects/createLOI", {
+        self_employment_nature: e.target.natureOfSelfEmployment.value,
+        photograph_benificary: e.target.photographFile.value,
+        name: e.target.beneficiaryName.value,
+        mobile: e.target.beneficiaryContact.value,
+        email: e.target.beneficiaryEmail.value,
+        address: e.target.beneficiaryAddress.value,
+        aadhar_no: e.target.aadharCardNo.value,
+        gender: e.target.gender.value,
+        DOB: e.target.dob.value,
+        married: e.target.maritalStatus.value,
+        spouse_name: e.target.spouseName.value,
+        no_of_children: e.target.child.value,
+        children_education: e.target.eduStatus.value,
+        religion: e.target.religion.value,
+        caste: e.target.casteTribe.value,
+        present_family_situation: e.target.presentFamilySituation.value,
+        Project_amount_already_received: e.target.projectAmountReceived.value,
+        impact_created_in_the_ife_of_the_beneficiary:
+          e.target.impactInLife.value,
+        Average_revenue_generated_previous_year:
+          e.target.averageRevenuePreviousYear.value,
+        how_the_income_invested: e.target.incomeInvestmentDetails.value,
+        strengths_of_business_activity_in_the_previous_year:
+          e.target.businessStrengthsPreviousYear.value,
+        weaknesses_of_business_activity_in_the_previous_year:
+          e.target.businessWeaknessesPreviousYear.value,
+        about_risks: e.target.risksAndTacklingDetails.value,
+        plans_of_the_business_expansion: e.target.businessExpansionPlans.value,
+        budget_cost_table: budgetData,
+        total_amount_cost: e.target.totalAmountCost.value,
+        beneficiaries_contribution: e.target.beneficiaryContribution.value,
+        amount_requested: e.target.amountRequested.value,
+        aadhar_img: aadharCardUrl, 
+        request_letter_img: requestLetterUrl, 
+        quotations_regarding_the_purchase_img:
+          quotationRegardingPurchase,
+        other_supporting_documents: otherSupportingDocuments, // Provide a way to upload/get the document UR
+        benificary_agree: e.target.beneficiaryAgreement.checked,
+      });
+      setIsLoading((prevLoading) => !prevLoading);
+      console.log(response.data);
+      if (response.data.success) {
+        showToast({
+          title: "Successfull form submission",
+          status: "success",
+          duration: 5000,
+        });
+      } else {
+        showToast({
+          title: "Unsuccessful form submission",
+          status: "error",
+          description: "Adhar exists or invalid login session",
+          duration: 5000,
+        });
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
   };
-/*
+  /*
   {
     Budget here 
   }
 */
-  const BudgetTable = () => {
-    const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
-
+  const budgetTable = () => {
     const handleBudgetChange = (index, field, value) => {
       const newData = [...budgetData];
       newData[index][field] = value;
@@ -109,7 +213,7 @@ const SocialIndividualOngoing = () => {
         <VStack mt={4} align="start" spacing={4}>
           <FormControl>
             <FormLabel>Total Amount</FormLabel>
-            <Input type="text" value={calculateTotalAmount()} isReadOnly />
+            <Input type="text" name="totalAmountCost" value={calculateTotalAmount()} isReadOnly />
           </FormControl>
 
           <FormControl>
@@ -140,14 +244,7 @@ const SocialIndividualOngoing = () => {
     /*documents needed */
   }
 
-  const DocumentUpload = () => {
-    const [documents, setDocuments] = useState([
-      { name: "Aadhar Card", file: null },
-      { name: "Request Letter", file: null },
-      { name: "Quotations regarding the purchase", file: null },
-      { name: "Other supporting documents", file: null },
-    ]);
-
+  const documentUpload = () => {
     const handleFileChange = (index, file) => {
       const newDocuments = [...documents];
       newDocuments[index].file = file;
@@ -156,6 +253,23 @@ const SocialIndividualOngoing = () => {
 
     return (
       <Box p={4}>
+        {isLoading && <>
+      <Modal isOpen={true} onClose={onClose}>
+        <ModalOverlay />
+    
+        <ModalContent>
+        <ModalBody display="flex" alignItems="center" justifyContent="center">
+          {/* Use CircularProgress directly as the content */}
+          <CircularProgress
+            isIndeterminate
+            color="green.400"
+            thickness="4px"
+            size="60px"
+          />
+        </ModalBody>
+      </ModalContent>
+      </Modal>
+      </>}
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -203,13 +317,6 @@ const SocialIndividualOngoing = () => {
           Social individual Ongoing Project Application Form
         </Heading>
 
-        {isSubmitted && (
-          <Alert status="success" mb={4}>
-            <AlertIcon />
-            Form submitted successfully!
-          </Alert>
-        )}
-
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* Name of Provincial Superior */}
@@ -247,7 +354,7 @@ const SocialIndividualOngoing = () => {
               />
             </FormControl>
 
-           {/* Name of Project Coordinator
+            {/* Name of Project Coordinator
             <FormControl isRequired>
               <FormLabel>Name of Project Coordinator</FormLabel>
               <Input
@@ -292,7 +399,7 @@ const SocialIndividualOngoing = () => {
               <InputGroup>
                 <Input
                   type="file"
-                  name="photographUrl"
+                  name="photographFile"
                   onChange={handleChange}
                   accept="image/*"
                   required
@@ -311,6 +418,16 @@ const SocialIndividualOngoing = () => {
               </InputGroup>
             </FormControl>
 
+            {/* Nature of Self Employment */}
+            <FormControl isRequired>
+              <FormLabel>Nature of Self Employment</FormLabel>
+              <Input
+                type="text"
+                name="natureOfSelfEmployment"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
             {/* Name */}
             <FormControl isRequired>
               <FormLabel>Name</FormLabel>
@@ -547,8 +664,8 @@ const SocialIndividualOngoing = () => {
               />
             </FormControl>
           </VStack>
-          <BudgetTable />
-          <DocumentUpload />
+          {budgetTable()}
+          {documentUpload()}
           <VStack align="start" spacing={4} mb={8}>
             <Heading as="h1" size="xl" mb={6}>
               Signatures
