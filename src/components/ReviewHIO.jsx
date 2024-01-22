@@ -322,7 +322,7 @@ Personal Information of the Beneficiary
   </FormControl>
 
   {/* Aadhar Card No. */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Aadhar Card No.</FormLabel>
     <Input
       type="text"
@@ -654,22 +654,7 @@ Personal Information of the Beneficiary
     />
   </FormControl>
 
-  {/* Project Coordinator agreement */}
-  {/* <FormControl isRequired>
-    <Checkbox
-      name="projectCoordinatorAgreement"
-      onChange={handleChange}
-      size="lg"
-    >
-      The Project Coordinator agree
-    </Checkbox>
-    <Input
-      type="date"
-      name="projectCoordinatorAgreementDate"
-      onChange={handleChange}
-      required
-    />
-  </FormControl> */}
+  
 
 {/* Project-In-Charge agreement */}
   <FormControl>

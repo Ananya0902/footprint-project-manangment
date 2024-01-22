@@ -36,6 +36,10 @@ import ApprovedProjectsForReviewer from "./components/ApprovedProjectsForReviewe
 import QuaterlyReportDevelopment from "./components/QuaterlyReportDevelopment";
 import ReviewHIO from "./components/ReviewHIO";
 import ApproveHIO from "./components/ApproveHIO";
+import ReviewEIO from "./components/ReviewEIO";
+import ApproveEIO from "./components/ApproveEIO";
+import ReviewSIO from "./components/ReviewSIO";
+import ApproveSIO from "./components/ApproveSIO";
 
 
 
@@ -80,7 +84,11 @@ const App = () => {
           <Route path="/ApprovedProjectsForReviewer" element={<ApprovedProjectsForReviewer reviewerProvince="north" />} />
           <Route path="/QuaterlyReportDevelopment" element={<QuaterlyReportDevelopment />} />
           <Route path="/ReviewHIO" element={<ReviewHIO />} />
+          <Route path="/ReviewEIO" element={<ReviewEIO/>} />
+          <Route path="/ReviewSIO" element={<ReviewSIO/>} />
           <Route path="/ApproveHIO" element={<ApproveHIO />} />
+          <Route path="/ApproveEIO" element={<ApproveEIO />} />
+          <Route path="/ApproveSIO" element={<ApproveSIO />} />
          
         </Routes>
       </Router>

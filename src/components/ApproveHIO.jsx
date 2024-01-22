@@ -326,7 +326,7 @@ Personal Information of the Beneficiary
   </FormControl>
 
   {/* Aadhar Card No. */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Aadhar Card No.</FormLabel>
     <Input
       type="text"
