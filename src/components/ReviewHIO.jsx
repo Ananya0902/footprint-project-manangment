@@ -22,7 +22,49 @@ import {
 } from '@chakra-ui/react';
 
 const ReviewHIO = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    natureOfIllness: 'Some illness',
+    provincialSuperiorName: 'John Doe',
+    provincialSuperiorContact: '123-456-7890',
+    projectInchargeName: 'Jane Smith',
+    projectInchargeContact: '987-654-3210',
+    projectInchargeEmail: 'jane@example.com',
+    beneficiaryName: 'Alice Doe',
+    beneficiaryContact: '555-555-5555',
+    beneficiaryEmail: 'alice@example.com',
+    beneficiaryAddress: '123 Main St, City',
+    aadharCardNo: '1234-5678-9012',
+    gender: 'female',
+    dob: '1990-01-01',
+    guardianName: 'Bob Doe',
+    numberOfChildren: 2,
+    language: 'English',
+    religion: 'Christian',
+    casteTribe: 'General',
+    natureOfIllness: 'Some illness',
+    projectSupportDuration: '3 years',
+    healthSituationDetails: 'Some health details',
+    familySituationDetails: 'Some family details',
+    accessToSupport: 'yes',
+    amountAndNatureOfSupport: 'Financial support',
+    amountReceivedFromProject: 5000,
+    totalAmountSpent: 3000,
+    totalExpense: 8000,
+    familyContribution: 2000,
+    totalAmountRequested: 6000,
+    photographFile: null, // Assuming this field represents the uploaded photograph file
+  aadharCardFile: null,
+  requestLetterFile: null,
+  treatmentRecordFile: null,
+  otherDocumentsFile: null,
+  beneficiaryAgreement: false,
+  beneficiaryAgreementDate: null,
+  projectInChargeAgreement: false,
+  projectInChargeAgreementDate: null,
+  provincialSuperiorAgreement: false,
+  provincialSuperiorAgreementDate: null,
+  comment: '',
+  });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -49,15 +91,15 @@ const ReviewHIO = () => {
       setTableData(newData);
     };
 
-    const handleAddRow = () => {
-      setTableData([...tableData, { familyMember: '', natureOfWork: '', monthlyIncome: '' }]);
-    };
+     const handleAddRow = () => {
+       setTableData([...tableData, { familyMember: '', natureOfWork: '', monthlyIncome: '' }]);
+     };
 
-    const handleDeleteRow = (index) => {
-      const newData = [...tableData];
-      newData.splice(index, 1);
-      setTableData(newData);
-    };
+    // const handleDeleteRow = (index) => {
+    //   const newData = [...tableData];
+    //   newData.splice(index, 1);
+    //   setTableData(newData);
+    // };
 
     return (
       <Box p={4}>
@@ -98,11 +140,11 @@ const ReviewHIO = () => {
                     isReadOnly
                   />
                 </Td>
-                <Td>
+                {/* <Td>
                   <Button colorScheme="red" onClick={() => handleDeleteRow(index)}>
                     Delete
                   </Button>
-                </Td>
+                </Td> */}
               </Tr>
             ))}
           </Tbody>
