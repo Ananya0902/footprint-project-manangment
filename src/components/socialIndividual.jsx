@@ -66,6 +66,11 @@ const RevenueGoalsTable = () => {
         return total + (parseInt(row[column], 10) || 0);
       }, 0);
     };
+    const handleDeleteRevenueRow = (index) => {
+      const newData = [...revenueData];
+      newData.splice(index, 1);
+      setRevenueData(newData);
+    };
   
     return (
       <Box p={4}>
@@ -121,6 +126,11 @@ const RevenueGoalsTable = () => {
                     onChange={(e) => handleRevenueChange(index, 'year3', e.target.value)}
                   />
                 </Td>
+                <Td>
+                <Button colorScheme="red" size="sm" onClick={() => handleDeleteRevenueRow(index)}>
+                  Delete
+                </Button>
+              </Td>
               </Tr>
             ))}
   
@@ -131,6 +141,7 @@ const RevenueGoalsTable = () => {
                   Add Row
                 </Button>
               </Td>
+              
             </Tr>
   
             {/* Total Expenses Row */}
@@ -161,83 +172,111 @@ const RevenueGoalsTable = () => {
 
 
 {/*budget */}
-      const BudgetTable = () => {
-        const [budgetData, setBudgetData] = useState([
-          { budget: '', cost: '' },
-        ]);
-      
-        const handleBudgetChange = (index, field, value) => {
-          const newData = [...budgetData];
-          newData[index][field] = value;
-          setBudgetData(newData);
-        };
-      
-        const handleAddBudgetRow = () => {
-          setBudgetData([...budgetData, { budget: '', cost: '' }]);
-        };
-      
-        const calculateTotalAmount = () => {
-          return budgetData.reduce((total, row) => total + parseFloat(row.cost) || 0, 0);
-        };
-      
-        return (
-          <Box p={4}>
-            <Heading as="h1" size="xl" mb={6}>
-              Budget Details
-            </Heading>
-      
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>Budget</Th>
-                  <Th>Cost</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {budgetData.map((row, index) => (
-                  <Tr key={index}>
-                    <Td>
-                      <Input
-                        type="text"
-                        value={row.budget}
-                        onChange={(e) => handleBudgetChange(index, 'budget', e.target.value)}
-                      />
-                    </Td>
-                    <Td>
-                      <Input
-                        type="number"
-                        value={row.cost}
-                        onChange={(e) => handleBudgetChange(index, 'cost', e.target.value)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-      
-            <Button onClick={handleAddBudgetRow} mt={4}>
-              Add Row
-            </Button>
-      
-            <VStack mt={4} align="start" spacing={4}>
-              <FormControl>
-                <FormLabel >Total Amount</FormLabel>
-                <Input type="text" value={calculateTotalAmount()} isReadOnly />
-              </FormControl>
-      
-              <FormControl>
-                <FormLabel isRequired>Beneficiary's Contribution</FormLabel>
-                <Input type="number" name="beneficiaryContribution" onChange={handleChange} required />
-              </FormControl>
-      
-              <FormControl>
-                <FormLabel>Amount Requested</FormLabel>
-                <Input type="number" name="amountRequested" onChange={handleChange} required />
-              </FormControl>
-            </VStack>
-          </Box>
-        );
-      };
+const BudgetTable = () => {
+  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+
+  const handleBudgetChange = (index, field, value) => {
+    const newData = [...budgetData];
+    newData[index][field] = value;
+    setBudgetData(newData);
+  };
+
+  const handleAddBudgetRow = () => {
+    setBudgetData([...budgetData, { budget: "", cost: "" }]);
+  };
+
+  const handleDeleteBudgetRow = (index) => {
+    const newData = [...budgetData];
+    newData.splice(index, 1);
+    setBudgetData(newData);
+  };
+
+  const calculateTotalAmount = () => {
+    return budgetData.reduce(
+      (total, row) => total + parseFloat(row.cost) || 0,
+      0
+    );
+  };
+
+  return (
+    <Box p={4}>
+      <Heading as="h1" size="xl" mb={6}>
+        Budget Details
+      </Heading>
+
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Budget</Th>
+            <Th>Cost</Th>
+            <Th>Action</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {budgetData.map((row, index) => (
+            <Tr key={index}>
+              <Td>
+                <Input
+                  type="text"
+                  value={row.budget}
+                  onChange={(e) =>
+                    handleBudgetChange(index, "budget", e.target.value)
+                  }
+                />
+              </Td>
+              <Td>
+                <Input
+                  type="number"
+                  value={row.cost}
+                  onChange={(e) =>
+                    handleBudgetChange(index, "cost", e.target.value)
+                  }
+                />
+              </Td>
+              <Td>
+                <Button onClick={() => handleDeleteBudgetRow(index)} colorScheme="red">
+                  Delete
+                </Button>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+
+      <Button onClick={handleAddBudgetRow} mt={4}>
+        Add Row
+      </Button>
+
+      <VStack mt={4} align="start" spacing={4}>
+        <FormControl>
+          <FormLabel>Total Amount</FormLabel>
+          <Input type="text" value={calculateTotalAmount()} isReadOnly />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel>Beneficiary's Contribution</FormLabel>
+          <Input
+            type="number"
+            name="beneficiaryContribution"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel>Amount Requested</FormLabel>
+          <Input
+            type="number"
+            name="amountRequested"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+      </VStack>
+    </Box>
+  );
+};
+
 
 {/*documents needed */}
 

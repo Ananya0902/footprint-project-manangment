@@ -53,10 +53,16 @@ const HealthIndividual = () => {
       setTableData([...tableData, { familyMember: '', natureOfWork: '', monthlyIncome: '' }]);
     };
 
+    const handleDeleteRow = (index) => {
+      const newData = [...tableData];
+      newData.splice(index, 1);
+      setTableData(newData);
+    };
+
     return (
       <Box p={4}>
         <Heading as="h1" size="l" mb={6}>
-        Who are the present earning members of the family
+          Who are the present earning members of the family
         </Heading>
 
         <Table variant="simple">
@@ -65,6 +71,7 @@ const HealthIndividual = () => {
               <Th>Family Member</Th>
               <Th>Type/Nature of Work</Th>
               <Th>Monthly Income</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -90,6 +97,11 @@ const HealthIndividual = () => {
                     value={row.monthlyIncome}
                     onChange={(e) => handleInputChange(index, 'monthlyIncome', e.target.value)}
                   />
+                </Td>
+                <Td>
+                  <Button colorScheme="red" onClick={() => handleDeleteRow(index)}>
+                    Delete
+                  </Button>
                 </Td>
               </Tr>
             ))}

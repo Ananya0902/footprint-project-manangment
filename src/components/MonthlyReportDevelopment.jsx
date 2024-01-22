@@ -189,7 +189,7 @@ const MonthlyReportDevelopmentProject = () => {
 
   return (
     <ChakraProvider>
-      <Box p={4}>
+      <Box  p={8}>
         <Heading as="h1" size="xl" mb={6}>
           Monthly Report Development Project
         </Heading>
@@ -281,7 +281,9 @@ const MonthlyReportDevelopmentProject = () => {
                 required
               />
             </FormControl>
-            <FormLabel>Objectives:-</FormLabel>
+            <Heading as="h1" size="xl" mb={6}>
+          Objectives:-
+        </Heading>
 
             {formData.objectives.map((objective, index) => (
               <Box key={index} mb={8}>
@@ -642,8 +644,9 @@ const MonthlyReportDevelopmentProject = () => {
                 required
               />
             </FormControl>
+             {/* Submit Button */}
+          
           </VStack>
-          {/* Submit Button */}
           <Button colorScheme="blue" type="submit" mt={4}>
             Submit
           </Button>

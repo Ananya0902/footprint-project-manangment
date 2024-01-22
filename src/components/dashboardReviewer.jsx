@@ -7,7 +7,7 @@ import {
   VStack,
   Heading,
   Text,
-  Flex,
+  
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
@@ -15,11 +15,7 @@ const DashboardReviewer = () => {
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
-      <Flex align="center" justify="flex-end">
-          <Button colorScheme="blue" mr={2} as={Link} to="/logout">
-            Logout
-          </Button>
-        </Flex>
+      
         
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
           Welcome, Reviewer!
@@ -43,7 +39,7 @@ const DashboardReviewer = () => {
             </Text>
             <Button
               as={Link}
-              to="/projects-to-be-reviewed"
+              to="/projectsToBeReviewed"
               colorScheme="blue"
               mt={4}
               borderRadius="full"
@@ -146,7 +142,7 @@ const DashboardReviewer = () => {
             </Text>
             <Button
               as={Link}
-              to="/approved-projects"
+              to="/ApprovedProjectsForReviewer"
               colorScheme="blue"
               mt={4}
               borderRadius="full"

@@ -13,7 +13,7 @@ import {
   VStack,
   Alert,
   AlertIcon,
-  InputGroup, Table,
+   Table,
   Thead,
   Tbody,
   Tr,
@@ -21,7 +21,7 @@ import {
   Td
 } from '@chakra-ui/react';
 
-const HealthIndividualOngoing = () => {
+const ReviewHIO = () => {
   const [formData, setFormData] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -64,7 +64,7 @@ const HealthIndividualOngoing = () => {
         <Heading as="h1" size="l" mb={6}>
           Who are the present earning members of the family
         </Heading>
-
+    
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -81,21 +81,21 @@ const HealthIndividualOngoing = () => {
                   <Input
                     type="text"
                     value={row.familyMember}
-                    onChange={(e) => handleInputChange(index, 'familyMember', e.target.value)}
+                    isReadOnly
                   />
                 </Td>
                 <Td>
                   <Input
                     type="text"
                     value={row.natureOfWork}
-                    onChange={(e) => handleInputChange(index, 'natureOfWork', e.target.value)}
+                    isReadOnly
                   />
                 </Td>
                 <Td>
                   <Input
                     type="number"
                     value={row.monthlyIncome}
-                    onChange={(e) => handleInputChange(index, 'monthlyIncome', e.target.value)}
+                    isReadOnly
                   />
                 </Td>
                 <Td>
@@ -107,11 +107,11 @@ const HealthIndividualOngoing = () => {
             ))}
           </Tbody>
         </Table>
-
+    
         <Button onClick={handleAddRow}>Add Row</Button>
       </Box>
-
-    )};
+    );
+   }    
 
   return (
     <ChakraProvider>
@@ -131,70 +131,76 @@ const HealthIndividualOngoing = () => {
           {/* Part 1: Provincial Superior Details */}
           <VStack align="start" spacing={4} mb={8}>
             {/* Nature of Illness */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Nature of Illness</FormLabel>
               <Input
                 type="text"
                 name="natureOfIllness"
                 onChange={handleChange}
-                required
+                value={formData.natureOfIllness||''}
+                readOnly
               />
             </FormControl>
 
             {/* Name of Provincial Superior */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Name of Provincial Superior</FormLabel>
               <Input
                 type="text"
                 name="provincialSuperiorName"
                 onChange={handleChange}
-                required
+                value={formData.provincialSuperiorName||''}
+                readOnly
               />
             </FormControl>
 
             {/* Contact of Provincial Superior */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Contact of Provincial Superior</FormLabel>
               <Input
                 type="text"
                 name="provincialSuperiorContact"
                 onChange={handleChange}
-                required
+                value={formData.provincialSuperiorContact||''}
+                readOnly
               />
             </FormControl>
           </VStack>
 
           <VStack align="start" spacing={4} mb={8}>
             {/* Name of Project Incharge */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Name of Project Incharge</FormLabel>
               <Input
                 type="text"
                 name="projectInchargeName"
                 onChange={handleChange}
-                required
+                value={formData.provincialSuperiorName||''}
+                readOnly
               />
             </FormControl>
 
             {/* Contact of Project Incharge */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Contact of Project Incharge</FormLabel>
               <Input
                 type="text"
                 name="projectInchargeContact"
                 onChange={handleChange}
-                required
+                value={formData.projectInchargeContact||''}
+                readOnly
               />
             </FormControl>
 
             {/* Email of Project Incharge */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Email of Project Incharge</FormLabel>
               <Input
                 type="email"
                 name="projectInchargeEmail"
                 onChange={handleChange}
-                required
+                value={formData.projectInchargeEmail||''}
+                readOnly
               />
             </FormControl>
           </VStack>
@@ -205,70 +211,68 @@ const HealthIndividualOngoing = () => {
 Personal Information of the Beneficiary
         </Heading>
   {/* Photograph (URL) */}
-  <FormControl isRequired>
+<FormControl >
   <FormLabel>Photograph</FormLabel>
-  <InputGroup>
+  <Box>
+    {formData.photographFile && (
+      <Box>
+        <strong>Uploaded File:</strong> {formData.photographFile.name}
+      </Box>
+    )}
     <Input
       type="file"
-      name="photographUrl"
+      name="photographFile"
       onChange={handleChange}
       accept="image/*"
-      required
     />
-    {/* <InputRightElement width="4.5rem">
-      <Button
-        size="sm"
-        colorScheme="blue"
-        onClick={(e) => {
-          e.preventDefault(); // Add your logic for handling the uploaded file
-        }}
-      >
-        Upload
-      </Button>
-    </InputRightElement> */}
-  </InputGroup>
+  </Box>
 </FormControl>
 
+
   {/* Name */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Name</FormLabel>
     <Input
       type="text"
       name="beneficiaryName"
       onChange={handleChange}
-      required
+      value={formData.beneficiaryName||''}
+      readOnly
     />
   </FormControl>
 
   {/* Contact */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Contact</FormLabel>
     <Input
       type="tel"
       name="beneficiaryContact"
       onChange={handleChange}
-      required
+      value={formData.beneficiaryContact||''}
+      readOnly
     />
   </FormControl>
 
   {/* Email */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Email</FormLabel>
     <Input
       type="email"
       name="beneficiaryEmail"
       onChange={handleChange}
-      required
+      value={formData.beneficiaryEmail||''}
+      readOnly
     />
   </FormControl>
 
   {/* Address */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Address</FormLabel>
     <Textarea
       name="beneficiaryAddress"
       onChange={handleChange}
-      required
+      value={formData.beneficiaryAddress||''}
+      readOnly
     />
   </FormControl>
 
@@ -279,17 +283,19 @@ Personal Information of the Beneficiary
       type="text"
       name="aadharCardNo"
       onChange={handleChange}
-      required
+      value={formData.aadharCardNo||''}
+      readOnly
     />
   </FormControl>
 
   {/* Gender */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Gender</FormLabel>
     <Select
       name="gender"
       onChange={handleChange}
-      required
+      value={formData.gender||''}
+      readOnly
     >
       <option value="male">Male</option>
       <option value="female">Female</option>
@@ -298,68 +304,74 @@ Personal Information of the Beneficiary
   </FormControl>
 
   {/* Date of Birth */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Date of Birth</FormLabel>
     <Input
       type="date"
       name="dob"
       onChange={handleChange}
-      required
+      value={formData.dob||''}
+      readOnly
     />
   </FormControl>
 
   {/* Name of Father/Husband/Legal Guardian */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Name of Father/Husband/Legal Guardian</FormLabel>
     <Input
       type="text"
       name="guardianName"
       onChange={handleChange}
-      required
+      value={formData.guardianName||''}
+      readOnly
     />
   </FormControl>
 
   {/* Number of Children */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Number of Children</FormLabel>
     <Input
       type="number"
       name="numberOfChildren"
       onChange={handleChange}
-      required
+      value={formData.numberOfChildren||''}
+      readOnly
     />
   </FormControl>
 
   {/* Language */}
-  <FormControl isRequired>
+  <FormControl>
     <FormLabel>Language</FormLabel>
     <Input
       type="text"
       name="language"
       onChange={handleChange}
-      required
+      value={formData.language||''}
+      readOnly
     />
   </FormControl>
 
   {/* Religion */}
-  <FormControl isRequired>
+  <FormControl>
     <FormLabel>Religion</FormLabel>
     <Input
       type="text"
       name="religion"
       onChange={handleChange}
-      required
+      value={formData.religion||''}
+      readOnly
     />
   </FormControl>
 
   {/* Caste / Tribe */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Caste / Tribe</FormLabel>
     <Input
       type="text"
       name="casteTribe"
       onChange={handleChange}
-      required
+      value={formData.casteTribe||''}
+      readOnly
     />
   </FormControl>
 </VStack>
@@ -370,65 +382,74 @@ Personal Information of the Beneficiary
   <Heading as="h1" size="xl" mb={6}>
   Questions on health situation 
         </Heading>
+
+
   {/* Nature of Illness of the Beneficiary */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Nature of Illness of the Beneficiary</FormLabel>
     <Textarea
       name="natureOfIllness"
       onChange={handleChange}
-      required
+      value={formData.natureOfIllness||''}
+      readOnly
     />
   </FormControl>
 
   {/* Duration of Project Support */}
-  <FormControl isRequired>
+  <FormControl>
     <FormLabel>Since how many years the project support is given</FormLabel>
     <Input
       type="text"
       name="projectSupportDuration"
       onChange={handleChange}
-      required
+      value={formData.projectSupportDuration||''}
+      readOnly
     />
   </FormControl>
 
   {/* Present Health Situation Details */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>
       Please write down more details about the present health situation of the beneficiary. e.g., improvement
     </FormLabel>
     <Textarea
       name="healthSituationDetails"
       onChange={handleChange}
-      required
+      value={formData.healthSituationDetails||''}
+      readOnly
     />
   </FormControl>
 
   {/* Present Family Situation */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Give information about the present situation of the family</FormLabel>
     <Textarea
       name="familySituationDetails"
       onChange={handleChange}
-      required
+      value={formData.familySituationDetails||''}
+      readOnly
     />
   </FormControl>
 
   <DynamicTable />
 
   {/* Access to Government or Other Support */}
-  <FormControl isRequired>
+  <FormControl>
   <FormLabel>
     Does the beneficiary able to access Government or other support in the previous year?
   </FormLabel>
   <Select
     name="accessToSupport"
     onChange={handleChange}
-    required
+    value={formData.accessToSupport||''}
+      readOnly
   >
     <option value="yes">Yes</option>
     <option value="no">No</option>
   </Select>
 </FormControl>
+
+
 
             {/* Amount and Nature of Support */}
             <FormControl>
@@ -436,31 +457,37 @@ Personal Information of the Beneficiary
               <Textarea
                 name="amountAndNatureOfSupport"
                 onChange={handleChange}
+                value={formData.amountAndNatureOfSupport||''}
+                readOnly
               />
             </FormControl>
 
             {/* Amount received previously from the project */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Amount received previously from the project</FormLabel>
               <Input
                 type="number"
                 name="amountReceivedFromProject"
                 onChange={handleChange}
-                required
+                value={formData.amountReceivedFromProject||''}
+                readOnly
               />
             </FormControl>
 
             {/* Total amount spent */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Total amount spent</FormLabel>
               <Input
                 type="number"
                 name="totalAmountSpent"
                 onChange={handleChange}
-                required
+                value={formData.totalAmountSpent||''}
+                readOnly
               />
             </FormControl>
 </VStack>
+
+
 {/* Information on present Health Cost – Budget details*/}
 <VStack align="start" spacing={4} mb={8}>
   <Heading as="h1" size="xl" mb={6}>
@@ -468,35 +495,38 @@ Personal Information of the Beneficiary
   </Heading>
 
   {/* Total Expense */}
-  <FormControl isRequired>
+  <FormControl>
     <FormLabel>Total Expense</FormLabel>
     <Input
       type="number"
       name="totalExpense"
       onChange={handleChange}
-      required
+      value={formData.totalExpense||''}
+       readOnly
     />
   </FormControl>
 
   {/* How much can the family contribute? */}
-  <FormControl isRequired>
+  <FormControl>
     <FormLabel>How much can the family contribute?</FormLabel>
     <Input
       type="number"
       name="familyContribution"
       onChange={handleChange}
-      required
+      value={formData.familyContribution||''}
+       readOnly
     />
   </FormControl>
 
   {/* Total amount requested */}
-  <FormControl isRequired>
+  <FormControl >
     <FormLabel>Total amount requested</FormLabel>
     <Input
       type="number"
       name="totalAmountRequested"
       onChange={handleChange}
-      required
+      value={formData.totalAmountRequested||''}
+      readOnly
     />
   </FormControl>
 </VStack>
@@ -560,10 +590,12 @@ Personal Information of the Beneficiary
   </Heading>
 
   {/* Beneficiary / Family member agreement */}
-  <FormControl isRequired>
+  <FormControl >
     <Checkbox
       name="beneficiaryAgreement"
       onChange={handleChange}
+      value={formData.beneficiaryAgreement||''}
+      readOnly
       size="lg"
     >
       The Beneficiary / Family member agree
@@ -572,12 +604,13 @@ Personal Information of the Beneficiary
       type="date"
       name="beneficiaryAgreementDate"
       onChange={handleChange}
-      required
+      value={formData.beneficiaryAgreementDate||''}
+      readOnly
     />
   </FormControl>
 
   {/* Project Coordinator agreement */}
-  <FormControl isRequired>
+  {/* <FormControl isRequired>
     <Checkbox
       name="projectCoordinatorAgreement"
       onChange={handleChange}
@@ -591,14 +624,16 @@ Personal Information of the Beneficiary
       onChange={handleChange}
       required
     />
-  </FormControl>
+  </FormControl> */}
 
-  {/* Project-In-Charge agreement */}
-  <FormControl isRequired>
+{/* Project-In-Charge agreement */}
+  <FormControl>
     <Checkbox
       name="projectInChargeAgreement"
       onChange={handleChange}
       size="lg"
+      value={formData.projectInChargeAgreement||''}
+      readOnly
     >
       The Project-In-Charge agree
     </Checkbox>
@@ -606,10 +641,14 @@ Personal Information of the Beneficiary
       type="date"
       name="projectInChargeAgreementDate"
       onChange={handleChange}
-      required
+      value={formData.projectInChargeAgreementDate||''}
+      readOnly
     />
   </FormControl>
 
+ 
+ 
+ 
   {/* Provincial Superior agreement */}
   <FormControl isRequired>
     <Checkbox
@@ -627,24 +666,17 @@ Personal Information of the Beneficiary
     />
   </FormControl>
 </VStack>
+
+
 <VStack align="start" spacing={4} mb={8}>
-  {/* Amount Approved by Project Coordinator */}
+{/* Comment */}
   <FormControl isRequired>
-    <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+    <FormLabel>Comment(For Reviewer)</FormLabel>
     <Input
-      type="number"
-      name="amountApprovedByProjectCoordinator"
+      type="text"
+      name="comment"
       onChange={handleChange}
       required
-    />
-  </FormControl>
-
-  {/* Remarks */}
-  <FormControl>
-    <FormLabel>Remarks (Optional)</FormLabel>
-    <Textarea
-      name="remarks"
-      onChange={handleChange}
     />
   </FormControl>
 </VStack>
@@ -659,5 +691,5 @@ Personal Information of the Beneficiary
   );
 };
 
-export default HealthIndividualOngoing;
+export default ReviewHIO;
             
