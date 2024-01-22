@@ -21,7 +21,7 @@ import {
   Td
 } from '@chakra-ui/react';
 
-const ReviewHIO = () => {
+const ApproveHIO = () => {
   const [formData, setFormData] = useState({
     natureOfIllness: 'Some illness',
     provincialSuperiorName: 'John Doe',
@@ -63,7 +63,11 @@ const ReviewHIO = () => {
   projectInChargeAgreementDate: null,
   provincialSuperiorAgreement: false,
   provincialSuperiorAgreementDate: null,
-  comment: '',
+  provincialCoordinatorAgreement: false,
+  provincialCoordinatorAgreementDate: null,
+  commentReviewer: '',
+  commentApprover: '',
+  amountApprovedByProjectCoordinator:''
   });
   const [tableData, setTableData] = useState([
     { familyMember: '', natureOfWork: '', monthlyIncome: '' },
@@ -654,24 +658,7 @@ Personal Information of the Beneficiary
     />
   </FormControl>
 
-  {/* Project Coordinator agreement */}
-  {/* <FormControl isRequired>
-    <Checkbox
-      name="projectCoordinatorAgreement"
-      onChange={handleChange}
-      size="lg"
-    >
-      The Project Coordinator agree
-    </Checkbox>
-    <Input
-      type="date"
-      name="projectCoordinatorAgreementDate"
-      onChange={handleChange}
-      required
-    />
-  </FormControl> */}
-
-{/* Project-In-Charge agreement */}
+  {/* Project-In-Charge agreement */}
   <FormControl>
     <Checkbox
       name="projectInChargeAgreement"
@@ -695,11 +682,13 @@ Personal Information of the Beneficiary
  
  
   {/* Provincial Superior agreement */}
-  <FormControl isRequired>
+  <FormControl >
     <Checkbox
       name="provincialSuperiorAgreement"
       onChange={handleChange}
       size="lg"
+      value={formData.provincialSuperiorAgreement||''}
+      readOnly
     >
       The Provincial Superior agree
     </Checkbox>
@@ -707,23 +696,70 @@ Personal Information of the Beneficiary
       type="date"
       name="provincialSuperiorAgreementDate"
       onChange={handleChange}
-      required
+      value={formData.provincialSuperiorAgreementDate||''}
+      readOnly
     />
   </FormControl>
-</VStack>
 
 
-<VStack align="start" spacing={4} mb={8}>
-{/* Comment */}
+
+  {/* Project Coordinator agreement */}
   <FormControl isRequired>
-    <FormLabel>Comment(For Reviewer)</FormLabel>
+    <Checkbox
+      name="projectCoordinatorAgreement"
+      onChange={handleChange}
+      size="lg"
+    >
+      The Project Coordinator agree
+    </Checkbox>
     <Input
-      type="text"
-      name="comment"
+      type="date"
+      name="projectCoordinatorAgreementDate"
       onChange={handleChange}
       required
     />
   </FormControl>
+
+</VStack>
+
+
+<VStack align="start" spacing={4} mb={8}>
+{/* Comment for reviewer */}
+  <FormControl>
+    <FormLabel>Comment(For Reviewer)</FormLabel>
+    <Input
+      type="text"
+      name="commentReviewer"
+      onChange={handleChange}
+      value={formData.commentReviewer||''}
+      readOnly
+    />
+  </FormControl>
+
+
+
+{/* Comment for approver */}
+  <FormControl isRequired>
+    <FormLabel>Comment(For Approver)</FormLabel>
+    <Input
+      type="text"
+      name="commentApprover"
+      onChange={handleChange}
+      required
+    />
+  </FormControl>
+
+  {/* Amount Approved by Project Coordinator */}
+  <FormControl isRequired>
+    <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+    <Input
+      type="number"
+      name="amountApprovedByProjectCoordinator"
+      onChange={handleChange}
+      required
+    />
+  </FormControl>
+
 </VStack>
 
           {/* Submit Button */}
@@ -736,5 +772,5 @@ Personal Information of the Beneficiary
   );
 };
 
-export default ReviewHIO;
+export default ApproveHIO;
             
