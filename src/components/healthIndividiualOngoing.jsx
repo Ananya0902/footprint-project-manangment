@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   CircularProgress,
   ChakraProvider,
@@ -33,13 +33,6 @@ const HealthIndividualOngoing = () => {
   console.log("health individual ongoing");
   const showToast = useToast();
   const presetName = process.env.REACT_APP_UPLOAD_PRESET;
-
-  const [documents, setDocuments] = useState([
-    { name: "Aadhar Card", file: null },
-    { name: "Request Letter", file: null },
-    { name: "Quotations regarding the purchase", file: null },
-    { name: "Other supporting documents", file: null },
-  ]);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({}); // form data state is used throughtout 
   const [tableData, setTableData] = useState([
@@ -72,6 +65,7 @@ const HealthIndividualOngoing = () => {
     }
   };
   const { isOpen,onOpen,onClose } = useDisclosure();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
@@ -179,11 +173,6 @@ const HealthIndividualOngoing = () => {
       setTableData(newData);
     };
 
-    const handleDeleteRow = (index) => {
-      const newData = [...tableData];
-      newData.splice(index, 1);
-      setTableData(newData);
-    };
 
     return (
       <Box p={4}>

@@ -28,7 +28,6 @@ import VerifyApplicant from "./components/verifyApplicant";
 import IndividualProjects from "./components/individualProjects";
 import GroupProjects from "./components/groupProjects";
 import MyProjects from "./components/myProjects";
-import HealthIndividual from "./components/healthIndividual";
 import ProjectsToBeReviewed from "./components/projectsToBeReviewed";
 import MyReviewedProject from "./components/MyReviewedProject";
 import ProjectsToBeApproved from "./components/ProjectsToBeApproved";
