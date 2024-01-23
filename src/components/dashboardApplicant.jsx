@@ -54,6 +54,9 @@ const DashboardApplicant = () => {
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
+        
+      
+        
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="teal.500">
           Welcome, Applicant!
         </Heading>

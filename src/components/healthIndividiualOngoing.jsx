@@ -173,6 +173,18 @@ const HealthIndividualOngoing = () => {
       ]);
     };
 
+    const handleDeleteRow = (index) => {
+      const newData = [...tableData];
+      newData.splice(index, 1);
+      setTableData(newData);
+    };
+
+    const handleDeleteRow = (index) => {
+      const newData = [...tableData];
+      newData.splice(index, 1);
+      setTableData(newData);
+    };
+
     return (
       <Box p={4}>
         <Heading as="h1" size="l" mb={6}>
@@ -185,6 +197,7 @@ const HealthIndividualOngoing = () => {
               <Th>Family Member</Th>
               <Th>Type/Nature of Work</Th>
               <Th>Monthly Income</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -216,6 +229,11 @@ const HealthIndividualOngoing = () => {
                       handleInputChange(index, "monthlyIncome", e.target.value)
                     }
                   />
+                </Td>
+                <Td>
+                  <Button colorScheme="red" onClick={() => handleDeleteRow(index)}>
+                    Delete
+                  </Button>
                 </Td>
               </Tr>
             ))}
@@ -318,17 +336,6 @@ const HealthIndividualOngoing = () => {
                 required
               />
             </FormControl>
-
-            {/* Name of Project Coordinator
-            <FormControl isRequired>
-              <FormLabel>Name of Project Coordinator</FormLabel>
-              <Input
-                type="text"
-                name="projectCoordinatorName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl> */}
 
             {/* Contact of Project Incharge */}
             <FormControl isRequired>

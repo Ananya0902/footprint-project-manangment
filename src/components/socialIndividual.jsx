@@ -160,7 +160,12 @@ const SocialIndividual = () => {
         return total + (parseInt(row[column], 10) || 0);
       }, 0);
     };
-
+    const handleDeleteRevenueRow = (index) => {
+      const newData = [...revenueData];
+      newData.splice(index, 1);
+      setRevenueData(newData);
+    };
+  
     return (
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6}>
@@ -225,6 +230,11 @@ const SocialIndividual = () => {
                     }
                   />
                 </Td>
+                <Td>
+                <Button colorScheme="red" size="sm" onClick={() => handleDeleteRevenueRow(index)}>
+                  Delete
+                </Button>
+              </Td>
               </Tr>
             ))}
 
@@ -235,6 +245,7 @@ const SocialIndividual = () => {
                   Add Row
                 </Button>
               </Td>
+              
             </Tr>
 
             {/* Total Expenses Row */}
@@ -268,143 +279,166 @@ const SocialIndividual = () => {
     );
   };
 
-  // {/*budget */}
-  const BudgetTable = () => {
-    const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
 
-    const handleBudgetChange = (index, field, value) => {
-      const newData = [...budgetData];
-      newData[index][field] = value;
-      setBudgetData(newData);
-    };
 
-    const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: "", cost: "" }]);
-    };
 
-    const calculateTotalAmount = () => {
-      return budgetData.reduce(
-        (total, row) => total + parseFloat(row.cost) || 0,
-        0
-      );
-    };
 
-    return (
-      <Box p={4}>
-        <Heading as="h1" size="xl" mb={6}>
-          Budget Details
-        </Heading>
+{/*budget */}
+const BudgetTable = () => {
+  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
 
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Budget</Th>
-              <Th>Cost</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {budgetData.map((row, index) => (
-              <Tr key={index}>
-                <Td>
-                  <Input
-                    type="text"
-                    value={row.budget}
-                    onChange={(e) =>
-                      handleBudgetChange(index, "budget", e.target.value)
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="number"
-                    value={row.cost}
-                    onChange={(e) =>
-                      handleBudgetChange(index, "cost", e.target.value)
-                    }
-                  />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+  const handleBudgetChange = (index, field, value) => {
+    const newData = [...budgetData];
+    newData[index][field] = value;
+    setBudgetData(newData);
+  };
 
-        <Button onClick={handleAddBudgetRow} mt={4}>
-          Add Row
-        </Button>
+  const handleAddBudgetRow = () => {
+    setBudgetData([...budgetData, { budget: "", cost: "" }]);
+  };
 
-        <VStack mt={4} align="start" spacing={4}>
-          <FormControl>
-            <FormLabel>Total Amount</FormLabel>
-            <Input type="text" value={calculateTotalAmount()} isReadOnly />
-          </FormControl>
+  const handleDeleteBudgetRow = (index) => {
+    const newData = [...budgetData];
+    newData.splice(index, 1);
+    setBudgetData(newData);
+  };
 
-          <FormControl>
-            <FormLabel isRequired>Beneficiary's Contribution</FormLabel>
-            <Input
-              type="number"
-              name="beneficiaryContribution"
-              onChange={handleChange}
-              required
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Amount Requested</FormLabel>
-            <Input
-              type="number"
-              name="amountRequested"
-              onChange={handleChange}
-              required
-            />
-          </FormControl>
-        </VStack>
-      </Box>
+  const calculateTotalAmount = () => {
+    return budgetData.reduce(
+      (total, row) => total + parseFloat(row.cost) || 0,
+      0
     );
   };
 
-  // upload Documents
-  const DocumentUpload = () => {
-    const handleFileChange = (index, file) => {
-      const newDocuments = [...documents];
-      newDocuments[index].file = file;
-      setDocuments(newDocuments);
-    };
+  return (
+    <Box p={4}>
+      <Heading as="h1" size="xl" mb={6}>
+        Budget Details
+      </Heading>
 
-    return (
-      <Box p={4}>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Document</Th>
-              <Th>Upload</Th>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Budget</Th>
+            <Th>Cost</Th>
+            <Th>Action</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {budgetData.map((row, index) => (
+            <Tr key={index}>
+              <Td>
+                <Input
+                  type="text"
+                  value={row.budget}
+                  onChange={(e) =>
+                    handleBudgetChange(index, "budget", e.target.value)
+                  }
+                />
+              </Td>
+              <Td>
+                <Input
+                  type="number"
+                  value={row.cost}
+                  onChange={(e) =>
+                    handleBudgetChange(index, "cost", e.target.value)
+                  }
+                />
+              </Td>
+              <Td>
+                <Button onClick={() => handleDeleteBudgetRow(index)} colorScheme="red">
+                  Delete
+                </Button>
+              </Td>
             </Tr>
-          </Thead>
-          <Tbody>
-            {documents.map((doc, index) => (
-              <Tr key={index}>
-                <Td>{doc.name}</Td>
-                <Td>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept=".pdf, .doc, .docx, .jpeg, .jpg, .png"
-                      onChange={(e) =>
-                        handleFileChange(index, e.target.files[0])
-                      }
-                    />
-                  </FormControl>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+          ))}
+        </Tbody>
+      </Table>
 
-        <Button mt={4} colorScheme="blue" type="submit">
-          Submit Documents
-        </Button>
-      </Box>
-    );
-  };
+      <Button onClick={handleAddBudgetRow} mt={4}>
+        Add Row
+      </Button>
+
+      <VStack mt={4} align="start" spacing={4}>
+        <FormControl>
+          <FormLabel>Total Amount</FormLabel>
+          <Input type="text" value={calculateTotalAmount()} isReadOnly />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel>Beneficiary's Contribution</FormLabel>
+          <Input
+            type="number"
+            name="beneficiaryContribution"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel>Amount Requested</FormLabel>
+          <Input
+            type="number"
+            name="amountRequested"
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+      </VStack>
+    </Box>
+  );
+};
+
+
+{/*documents needed */}
+
+      const DocumentUpload = () => {
+        const [documents, setDocuments] = useState([
+          { name: 'Aadhar Card', file: null },
+          { name: 'Request Letter', file: null },
+          { name: 'Quotations regarding the purchase', file: null },
+          { name: 'Other supporting documents', file: null },
+        ]);
+      
+        const handleFileChange = (index, file) => {
+          const newDocuments = [...documents];
+          newDocuments[index].file = file;
+          setDocuments(newDocuments);
+        };
+      
+        return (
+          <Box p={4}>
+            <Table variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Document</Th>
+                  <Th>Upload</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {documents.map((doc, index) => (
+                  <Tr key={index}>
+                    <Td>{doc.name}</Td>
+                    <Td>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept=".pdf, .doc, .docx, .jpeg, .jpg, .png"
+                          onChange={(e) => handleFileChange(index, e.target.files[0])}
+                        />
+                      </FormControl>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+      
+            <Button mt={4} colorScheme="blue" type="submit">
+              Submit Documents
+            </Button>
+          </Box>
+        );
+      };
 
   return (
     <ChakraProvider>

@@ -8,6 +8,9 @@ import RegisterPage from "./components/register";
 import HealthIndividualOngoing from "./components/healthIndividiualOngoing";
 import EducationIndividualOngoing from "./components/educationIndividualOngoing";
 import SocialIndividualOngoing from "./components/socialIndividualOngoing";
+import HealthIndividual from "./components/healthIndividual";
+import EducationIndividual from "./components/educationIndividual";
+import SocialIndividual from "./components/socialIndividual";
 import EducationGroup from "./components/educationGroup";
 import Common from "./components/common";
 import DevProjectLivlihoodGroup from "./components/devProjLivliGroup";
@@ -26,6 +29,20 @@ import IndividualProjects from "./components/individualProjects";
 import GroupProjects from "./components/groupProjects";
 import MyProjects from "./components/myProjects";
 import HealthIndividual from "./components/healthIndividual";
+import ProjectsToBeReviewed from "./components/projectsToBeReviewed";
+import MyReviewedProject from "./components/MyReviewedProject";
+import ProjectsToBeApproved from "./components/ProjectsToBeApproved";
+import ApprovedProjects from "./components/ApprovedProjects";
+import ApprovedProjectsForReviewer from "./components/ApprovedProjectsForReviewer";
+import QuaterlyReportDevelopment from "./components/QuaterlyReportDevelopment";
+import ReviewHIO from "./components/ReviewHIO";
+import ApproveHIO from "./components/ApproveHIO";
+import ReviewEIO from "./components/ReviewEIO";
+import ApproveEIO from "./components/ApproveEIO";
+import ReviewSIO from "./components/ReviewSIO";
+import ApproveSIO from "./components/ApproveSIO";
+
+
 
 // App component
 const App = () => {
@@ -41,7 +58,9 @@ const App = () => {
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
           <Route path="/healthIndividual" element={<HealthIndividual/>} />
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
+          <Route path="/educationIndividual" element={<EducationIndividual />} />
           <Route path="/socialIndividualOngoing" element={<SocialIndividualOngoing />} />
+          <Route path="/socialIndividual" element={<SocialIndividual />} />
           <Route path="/educationGroup" element={<EducationGroup />} />
           <Route path="/common" element={<Common />} />
           <Route path="/devProjLivliGroup" element={<DevProjectLivlihoodGroup />} />
@@ -59,6 +78,18 @@ const App = () => {
           <Route path="/individualProjects/:selectedAppostolate" element={<IndividualProjects/>} />
           <Route path="/groupProjects" element={<GroupProjects selectedApostolate="social" />} />
           <Route path="/myProjects" element={<MyProjects/>} />
+          <Route path="/projectsToBeReviewed" element={<ProjectsToBeReviewed/>} />
+          <Route path="/ProjectsToBeApproved" element={<ProjectsToBeApproved/>} />
+          <Route path="/MyReviewedProject" element={<MyReviewedProject/>} />
+          <Route path="/ApprovedProjects" element={<ApprovedProjects/>} />
+          <Route path="/ApprovedProjectsForReviewer" element={<ApprovedProjectsForReviewer reviewerProvince="north" />} />
+          <Route path="/QuaterlyReportDevelopment" element={<QuaterlyReportDevelopment />} />
+          <Route path="/ReviewHIO" element={<ReviewHIO />} />
+          <Route path="/ReviewEIO" element={<ReviewEIO/>} />
+          <Route path="/ReviewSIO" element={<ReviewSIO/>} />
+          <Route path="/ApproveHIO" element={<ApproveHIO />} />
+          <Route path="/ApproveEIO" element={<ApproveEIO />} />
+          <Route path="/ApproveSIO" element={<ApproveSIO />} />
          
         </Routes>
       </Router>
