@@ -1,5 +1,5 @@
 // ApprovedProjects.jsx
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import {
   ChakraProvider,
   Box,
@@ -14,6 +14,7 @@ import {
   AlertDialogOverlay,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import authAxios from '../AuthAxios';
 
 // Dummy data, replace this with your actual data
 const initialApprovedProjects = [
@@ -26,6 +27,41 @@ const ApprovedProjects = () => {
   const [approvedProjects, setApprovedProjects] = useState(initialApprovedProjects);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+
+  
+  useEffect(() => {
+    const getAllProject = async () => {
+      // get all the three types of projects
+      try {
+        const getAllHOI = (await authAxios.get("projects/getallHOIapprover"))
+          .data.data;
+        const getAllEOI =
+          (await authAxios.get("projects/getallEOIapprover")).data.data ?? [];
+
+
+        const newProjectList = [...getAllHOI , ...getAllEOI].filter(
+          (val)=>val.project_coordinator_agree.agree === true,
+        ).map(
+          (project) => {
+            return {
+              id: project.project_code,
+              project: project,
+            };
+          }
+        );
+
+        setApprovedProjects(newProjectList);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllProject();
+
+    return () => {};
+  }, []);
+  
 
   const onDelete = (projectId) => {
     setSelectedProject(projectId);
@@ -65,16 +101,26 @@ const ApprovedProjects = () => {
               width="100%"
             >
               <Heading size="md" mb={2} color="blue.500">
-                {project.title}
+                {project.id}
               </Heading>
               <Button
                 colorScheme="blue"
                 as={Link}
-                to={`/download-pdf/${project.id}`} // Update this route as needed for downloading PDF
+                to={`/viewProject/${encodeURIComponent(JSON.stringify(project.project))}`} // Update this route as needed for downloading PDF
                 mb={2}
                 borderRadius="full"
               >
                 Download PDF
+              </Button>
+
+              <Button
+                colorScheme="teal"
+                as={Link}
+                // to={`/viewProject/${encodeURIComponent(JSON.stringify(project.project))}`} // Update this route as needed for downloading PDF
+                mb={2}
+                borderRadius="full"
+              >
+                View Report 
               </Button>
               <Button
                 colorScheme="red"

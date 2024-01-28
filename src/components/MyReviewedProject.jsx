@@ -1,7 +1,8 @@
 // MyReviewedProject.jsx
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import { ChakraProvider, Box, Heading, Text, Button, VStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import authAxios from '../AuthAxios';
 
 // Dummy data, replace this with your actual data
 const reviewedProjects = [
@@ -11,6 +12,51 @@ const reviewedProjects = [
 ];
 
 const MyReviewedProject = () => {
+
+  const [reviewedProjects , setReviwedProject] = useState(
+    [
+      {id: "" , project: "" , status: "x"}
+    ]
+  )
+
+  useEffect(() => {
+    const getAllProject = async () => {
+      // get all the three types of projects
+      try {
+        const getAllHOI = (await authAxios.get("projects/getallHOIreviewer"))
+          .data.data;
+
+        const getAllEOI =
+          (await authAxios.get("projects/getallEOIreviewer")).data.data ?? [];
+        const getAllSOI =
+          (await authAxios.get("projects/getallLOIreviewer")).data.data ?? [];
+
+        console.log("output", [...getAllHOI, ...getAllEOI, ...getAllSOI]);
+
+        const newProjectList = [...getAllHOI, ...getAllEOI, ...getAllSOI].filter(
+          (val)=>val.provincial_superior_agree.agree === true,
+        ).map(
+          (project) => {
+            return {
+              id: project.project_code,
+              project: project,
+              status: "reviewed"
+            };
+          }
+        );
+
+        setReviwedProject(newProjectList);
+        console.log("projectList", reviewedProjects);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllProject();
+
+    return () => {};
+  }, []);
+
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
@@ -29,7 +75,7 @@ const MyReviewedProject = () => {
               width="100%"
             >
               <Heading size="md" mb={2} color="blue.500">
-                {project.title}
+                {project.id}
               </Heading>
               <Text fontSize="md" color="gray.600" mb={4}>
                 Status: {project.status}
@@ -37,7 +83,7 @@ const MyReviewedProject = () => {
               <Button
                 colorScheme="blue"
                 as={Link}
-                to={`/reviewed-project/${project.id}`} // Update this route as needed
+                to={`/viewProject/${encodeURIComponent(JSON.stringify(project.project))}`} // Update this route as needed
                 mb={2}
                 borderRadius="full"
               >
@@ -47,7 +93,7 @@ const MyReviewedProject = () => {
                 <Button
                   colorScheme="yellow"
                   as={Link}
-                  to={`/edit-reviewed-project/${project.id}`} // Update this route as needed
+                  to={`/viewProject/${encodeURIComponent(JSON.stringify(project.project))}`} // Update this route as needed
                   mb={2}
                   borderRadius="full"
                 >

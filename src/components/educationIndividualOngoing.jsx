@@ -113,8 +113,17 @@ const EducationIndividualOngoing = () => {
         grandmother_support: e.target.grandmotherSupport.value,
         grandfather_support: e.target.grandfatherSupport.value,
         health_status_of_father: e.target.fatherHealthStatus.value,
+        health_status_of_father_others:
+          e.target.fatherHealthStatus.value === "Others" ?
+          e.target.fatherHealthStatusOthers.value : " ",
         health_status_of_mother: e.target.motherHealthStatus.value,
+        health_status_of_mother_others:
+          e.target.motherHealthStatus.value === "Others" ?
+          e.target.motherHealthStatusOthers.value : " ",
         residential_status: e.target.residentialStatus.value,
+        residential_status_others:
+          e.target.residentialStatus.value === "others" ?
+          e.target.residentialStatusOthers.value : " ",
         family_situation_of_the_beneficiary:
           e.target.familySituationPresent.value,
         extra_curricular_activities_participated:
@@ -139,7 +148,16 @@ const EducationIndividualOngoing = () => {
         request_letter_img: requestLetterUrl,
         death_certificate_img: deathCertificateUrl,
         mark_list_of_previous_year: markListPreviousYearUrl,
-        benificary_agree: e.target.benificiaryAgree,
+        caste_certificate_img: casteCertificateUrl,
+        benificary_agree: { agree: e.target.beneficiaryAgreement.checked },
+        project_in_charge_agree: {agree: e.target.projectInChargeAgreement.checked},
+        present_study: e.target.presentStudy.value,
+        details_of_budget:e.target.budgetDetails.value,
+        total_cost_of_study:e.target.totalCostOfStudy.value,
+        scholarship_expected:e.target.scholarshipExpected.value,
+        beneficiaries_contribution:e.target.beneficiaryContribution.value,
+        total_scholarship_contribution:e.target.totalScholarshipAndContribution.value,
+        balance_amount_requested:e.target.balanceAmountRequested.value,
       };
 
       const response = await authAxios.post("/projects/createEOI", request);
@@ -167,23 +185,29 @@ const EducationIndividualOngoing = () => {
 
   return (
     <ChakraProvider>
-      {isLoading && <>
-      <Modal isOpen={true} onClose={onClose}>
-        <ModalOverlay />
-    
-        <ModalContent>
-        <ModalBody display="flex" alignItems="center" justifyContent="center">
-          {/* Use CircularProgress directly as the content */}
-          <CircularProgress
-            isIndeterminate
-            color="green.400"
-            thickness="4px"
-            size="60px"
-          />
-        </ModalBody>
-      </ModalContent>
-      </Modal>
-      </>}
+      {isLoading && (
+        <>
+          <Modal isOpen={true} onClose={onClose}>
+            <ModalOverlay />
+
+            <ModalContent>
+              <ModalBody
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {/* Use CircularProgress directly as the content */}
+                <CircularProgress
+                  isIndeterminate
+                  color="green.400"
+                  thickness="4px"
+                  size="60px"
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </>
+      )}
       <Box p={4}>
         <Heading
           as="h1"
@@ -196,76 +220,6 @@ const EducationIndividualOngoing = () => {
         </Heading>
 
         <form onSubmit={handleSubmit}>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Provincial Superior */}
-            <FormControl isRequired>
-              <FormLabel>Name of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Contact of Provincial Superior */}
-            <FormControl isRequired>
-              <FormLabel>Contact of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl isRequired>
-              <FormLabel>Name of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Name of Project Coordinator
-            <FormControl isRequired>
-              <FormLabel>Name of Project Coordinator</FormLabel>
-              <Input
-                type="text"
-                name="projectCoordinatorName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl> */}
-
-            {/* Contact of Project Incharge */}
-            <FormControl isRequired>
-              <FormLabel>Contact of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeContact"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl isRequired>
-              <FormLabel>Email of Project Incharge</FormLabel>
-              <Input
-                type="email"
-                name="projectInchargeEmail"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
-
           <VStack align="start" spacing={4} mb={8}>
             {/*Personal Information of the Beneficiary */}
             <Heading as="h1" size="xl" mb={6}>
@@ -507,9 +461,9 @@ const EducationIndividualOngoing = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                <option value="died">Died</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Died">Died</option>
               </Select>
             </FormControl>
 
@@ -521,9 +475,9 @@ const EducationIndividualOngoing = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                <option value="died">Died</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Died">Died</option>
               </Select>
             </FormControl>
 
@@ -535,14 +489,14 @@ const EducationIndividualOngoing = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="chronicallySick">Chronically Sick</option>
-                <option value="hivPositive">HIV/AIDS positive</option>
-                <option value="disabled">Disabled</option>
-                <option value="alcoholic">Alcoholic</option>
-                <option value="others">Others</option>
+                <option value="Chronically Sick">Chronically Sick</option>
+                <option value="HIV/AIDS positive">HIV/AIDS positive</option>
+                <option value="Disabled">Disabled</option>
+                <option value="Alcoholic">Alcoholic</option>
+                <option value="Others">Others</option>
               </Select>
               {/* Conditional input for 'Others' */}
-              {formData.fatherHealthStatus === "others" && (
+              {formData.fatherHealthStatus === "Others" && (
                 <Input
                   type="text"
                   name="fatherHealthStatusOthers"
@@ -561,14 +515,14 @@ const EducationIndividualOngoing = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="chronicallySick">Chronically Sick</option>
-                <option value="hivPositive">HIV/AIDS positive</option>
-                <option value="disabled">Disabled</option>
-                <option value="alcoholic">Alcoholic</option>
-                <option value="others">Others</option>
+                <option value="Chronically Sick">Chronically Sick</option>
+                <option value="HIV/AIDS positive">HIV/AIDS positive</option>
+                <option value="Disabled">Disabled</option>
+                <option value="Alcoholic">Alcoholic</option>
+                <option value="Others">Others</option>
               </Select>
               {/* Conditional input for 'Others' */}
-              {formData.motherHealthStatus === "others" && (
+              {formData.motherHealthStatus === "Others" && (
                 <Input
                   type="text"
                   name="motherHealthStatusOthers"
@@ -686,8 +640,8 @@ const EducationIndividualOngoing = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
               </Select>
             </FormControl>
 
@@ -949,31 +903,7 @@ const EducationIndividualOngoing = () => {
               >
                 The Beneficiary / Family member agree
               </Checkbox>
-              <Input
-                type="date"
-                name="beneficiaryAgreementDate"
-                onChange={handleChange}
-                required
-              />
             </FormControl>
-
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
               <Checkbox
@@ -983,52 +913,6 @@ const EducationIndividualOngoing = () => {
               >
                 The Project-In-Charge agree
               </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Remarks */}
-            <FormControl>
-              <FormLabel>Remarks (Optional)</FormLabel>
-              <Textarea name="remarks" onChange={handleChange} />
-            </FormControl>
-            {/* Add comment for approver and reviwer*/}
-            <FormControl>
-              <FormLabel>Remarks (Optional)</FormLabel>
-              <Textarea name="remarks" onChange={handleChange} />
             </FormControl>
           </VStack>
 

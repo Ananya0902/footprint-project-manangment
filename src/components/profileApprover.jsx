@@ -34,8 +34,7 @@ const ProfilePageApprover = () => {
   useEffect(() => {
     const getApproversData = async () => {
       try {
-        const approversData = await authAxios.get("/getApprover");
-        console.log("reviwers data", approversData);
+        const approversData = await authAxios.get("users/getApprover");
         if(approversData.data.success === false) return; 
         setUserDetails((prevDetails) => {
           console.log("Setting user details", prevDetails);

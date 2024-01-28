@@ -19,24 +19,15 @@ import {
   Tbody,
   Tr,
   Th,
-  Image,
   Td,
-  useToast,
+  Image,
 } from "@chakra-ui/react";
-import authAxios from "../AuthAxios";
 
-const ApproveHIO = () => {
-  const showToast = useToast();
-  const [isSubmitted, setIsSubmitted] = useState(false);
+const ViewProject = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const projectInchargeData = projectData.applicant;
-  const provincialSuperiorData = projectData.reviewer;
-  console.log("Fetched Data");
-  console.log(projectInchargeData);
-  console.log(provincialSuperiorData);
-  console.log(projectData);
 
-  const [formData, setFormData] = useState({
+  const formData = {
     natureOfIllness: projectData.illness_nature,
     photographFile: projectData.photograph_benificary,
     beneficiaryName: projectData.name,
@@ -66,88 +57,34 @@ const ApproveHIO = () => {
     aadharCardFile: projectData.aadhar_img,
     requestLetterFile: projectData.request_letter_img,
     treatmentRecordFile: projectData.treatment_record_img,
-    beneficiaryAgreement: projectData.benificary_agree.agree,
-    projectInChargeAgreement: projectData.project_in_charge_agree.agree,
+    beneficiaryAgreement: projectData.benificary_agree,
+    projectInChargeAgreement: projectData.project_in_charge_agree,
     otherDocumentsFile: projectData.other_supporting_docs_img,
     projectInChargeName: projectInchargeData.name,
     projectInChargeContact: projectInchargeData.mobile,
     projectInChargeEmail: projectInchargeData.email,
-    beneficiaryAgreementDate: projectData.benificary_agree.date,
-    projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
+    // benificiaryAgreement: pro
+    // beneficiaryAgreementDate: null,
+    // projectInChargeAgreementDate: null,
     provincialSuperiorAgreement: projectData.provincial_superior_agree,
-    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date,
-    commentReviewer: projectData.comment_box_provincial_superior,
-    provincialSuperiorName: provincialSuperiorData.name,
-    provincialSuperiorEmail: provincialSuperiorData.email,
-    provincialSuperiorContact: provincialSuperiorData.mobile
+    projectCoordinatorAgreement: projectData.project_coordinator_agree,
+    // provincialSuperiorAgreementDate: null,
+    commentBoxReviewer: projectData.comment_box_provincial_superior,
+    commentBoxApprover: projectData.comment_box_project_coordinator,
+  };
+
+  const tableData = projectData.present_earning_member.map((member) => {
+    return {
+      familyMember: member.family_member,
+      natureOfWork: member.nature_of_work,
+      monthlyIncome: member.monthly_income,
+    };
   });
-
-  const [tableData, setTableData] = useState(
-    projectData.present_earning_member.map((member) => {
-      return {
-        familyMember: member.family_member,
-        natureOfWork: member.nature_of_work,
-        monthlyIncome: member.monthly_income,
-      };
-    })
-  );
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Add your form submission logic here
-    try {
-      const req = {
-        projectID: projectData._id,
-        comment_box_project_coordinator: formData.commentApprover,
-        project_coordinator_agree: {agree: e.target.projectCoordinatorAgreement.checked},
-        amount_approved_project_coordinator:formData.amountApprovedByProjectCoordinator
-      };
-      const res = await authAxios.put("/projects/editapproverHOI/", req);
-      console.log(res.data);
-      if (res.data.success) setIsSubmitted(true);
-      else {
-        showToast({
-          title: "Error submitting the reviewed doc",
-          status: "error",
-          duration: 5000,
-        });
-      }
-    } catch (e) {
-      // console.log(e);
-      showToast({
-        title: "Error submitting the reviewed doc",
-        description: e,
-        status: "error",
-        duration: 5000,
-      });
-    }
-  };
 
   const DynamicTable = () => {
     // const [tableData, setTableData] = useState([
     //   { familyMember: '', natureOfWork: '', monthlyIncome: '' },
     // ]);
-
-    const handleInputChange = (index, field, value) => {
-      const newData = [...tableData];
-      newData[index][field] = value;
-      setTableData(newData);
-    };
-
-    const handleAddRow = () => {
-      setTableData([
-        ...tableData,
-        { familyMember: "", natureOfWork: "", monthlyIncome: "" },
-      ]);
-    };
-
     // const handleDeleteRow = (index) => {
     //   const newData = [...tableData];
     //   newData.splice(index, 1);
@@ -180,6 +117,11 @@ const ApproveHIO = () => {
                 <Td>
                   <Input type="number" value={row.monthlyIncome} isReadOnly />
                 </Td>
+                {/* <Td>
+                  <Button colorScheme="red" onClick={() => handleDeleteRow(index)}>
+                    Delete
+                  </Button>
+                </Td> */}
               </Tr>
             ))}
           </Tbody>
@@ -201,14 +143,7 @@ const ApproveHIO = () => {
           Health individual Ongoing Project Application Form
         </Heading>
 
-        {isSubmitted && (
-          <Alert status="success" mb={4}>
-            <AlertIcon />
-            Form submitted successfully!
-          </Alert>
-        )}
-
-        <form onSubmit={handleSubmit}>
+        <form>
           {/* Part 1: Provincial Superior Details */}
           <VStack align="start" spacing={4} mb={8}>
             {/* Nature of Illness */}
@@ -217,32 +152,7 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="natureOfIllness"
-                onChange={handleChange}
                 value={formData.natureOfIllness || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Name of Provincial Superior */}
-            <FormControl>
-              <FormLabel>Name of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                onChange={handleChange}
-                value={formData.provincialSuperiorName || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Provincial Superior */}
-            <FormControl>
-              <FormLabel>Contact of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                onChange={handleChange}
-                value={formData.provincialSuperiorContact || ""}
                 readOnly
               />
             </FormControl>
@@ -255,7 +165,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="projectInchargeName"
-                onChange={handleChange}
                 value={formData.projectInChargeName || ""}
                 readOnly
               />
@@ -267,8 +176,7 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="projectInchargeContact"
-                // onChange={handleChange}
-                value={formData.projectInChargeContact}
+                value={formData.projectInChargeContact || ""}
                 readOnly
               />
             </FormControl>
@@ -279,8 +187,7 @@ const ApproveHIO = () => {
               <Input
                 type="email"
                 name="projectInchargeEmail"
-                onChange={handleChange}
-                value={formData.projectInChargeEmail}
+                value={formData.projectInChargeEmail || ""}
                 readOnly
               />
             </FormControl>
@@ -301,12 +208,18 @@ const ApproveHIO = () => {
                     {formData.photographFile.name}
                   </Box>
                 )}
+                {/* <Input
+                  type="file"
+                  name="photographFile"
+                  onChange={handleChange}
+                  accept="image/*"
+                /> */}
                 <Image
-                  max="auto"
-                  boxSize="40%"
+                  mx="auto"
+                  boxSize="50%"
                   objectFit="contain"
                   src={formData.photographFile}
-                  alt="photgraph"
+                  alt="Person photograph"
                 />
               </Box>
             </FormControl>
@@ -317,7 +230,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="beneficiaryName"
-                onChange={handleChange}
                 value={formData.beneficiaryName || ""}
                 readOnly
               />
@@ -329,7 +241,6 @@ const ApproveHIO = () => {
               <Input
                 type="tel"
                 name="beneficiaryContact"
-                onChange={handleChange}
                 value={formData.beneficiaryContact || ""}
                 readOnly
               />
@@ -341,7 +252,6 @@ const ApproveHIO = () => {
               <Input
                 type="email"
                 name="beneficiaryEmail"
-                onChange={handleChange}
                 value={formData.beneficiaryEmail || ""}
                 readOnly
               />
@@ -352,7 +262,6 @@ const ApproveHIO = () => {
               <FormLabel>Address</FormLabel>
               <Textarea
                 name="beneficiaryAddress"
-                onChange={handleChange}
                 value={formData.beneficiaryAddress || ""}
                 readOnly
               />
@@ -364,7 +273,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="aadharCardNo"
-                onChange={handleChange}
                 value={formData.aadharCardNo || ""}
                 readOnly
               />
@@ -373,12 +281,7 @@ const ApproveHIO = () => {
             {/* Gender */}
             <FormControl>
               <FormLabel>Gender</FormLabel>
-              <Select
-                name="gender"
-                onChange={handleChange}
-                value={formData.gender || ""}
-                readOnly
-              >
+              <Select name="gender" value={formData.gender || ""} readOnly>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -391,7 +294,6 @@ const ApproveHIO = () => {
               <Input
                 type="date"
                 name="dob"
-                onChange={handleChange}
                 value={formData.dob || ""}
                 readOnly
               />
@@ -403,7 +305,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="guardianName"
-                onChange={handleChange}
                 value={formData.guardianName || ""}
                 readOnly
               />
@@ -415,7 +316,6 @@ const ApproveHIO = () => {
               <Input
                 type="number"
                 name="numberOfChildren"
-                onChange={handleChange}
                 value={formData.numberOfChildren || ""}
                 readOnly
               />
@@ -427,7 +327,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="language"
-                onChange={handleChange}
                 value={formData.language || ""}
                 readOnly
               />
@@ -439,7 +338,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="religion"
-                onChange={handleChange}
                 value={formData.religion || ""}
                 readOnly
               />
@@ -451,7 +349,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="casteTribe"
-                onChange={handleChange}
                 value={formData.casteTribe || ""}
                 readOnly
               />
@@ -469,8 +366,7 @@ const ApproveHIO = () => {
             <FormControl>
               <FormLabel>Nature of Illness of the Beneficiary</FormLabel>
               <Textarea
-                name="natureOfIllnessBenificiary"
-                onChange={handleChange}
+                name="natureOfIllness"
                 value={formData.natureOfIllnessBeneficiary || ""}
                 readOnly
               />
@@ -484,7 +380,6 @@ const ApproveHIO = () => {
               <Input
                 type="text"
                 name="projectSupportDuration"
-                onChange={handleChange}
                 value={formData.projectSupportDuration || ""}
                 readOnly
               />
@@ -498,7 +393,6 @@ const ApproveHIO = () => {
               </FormLabel>
               <Textarea
                 name="healthSituationDetails"
-                onChange={handleChange}
                 value={formData.healthSituationDetails || ""}
                 readOnly
               />
@@ -511,7 +405,6 @@ const ApproveHIO = () => {
               </FormLabel>
               <Textarea
                 name="familySituationDetails"
-                onChange={handleChange}
                 value={formData.familySituationDetails || ""}
                 readOnly
               />
@@ -525,12 +418,7 @@ const ApproveHIO = () => {
                 Does the beneficiary able to access Government or other support
                 in the previous year?
               </FormLabel>
-              <Select
-                name="accessToSupport"
-                onChange={handleChange}
-                value={formData.accessToSupport || ""}
-                readOnly
-              >
+              <Select name="accessToSupport" readOnly>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </Select>
@@ -541,7 +429,6 @@ const ApproveHIO = () => {
               <FormLabel>If yes, the amount and nature of support </FormLabel>
               <Textarea
                 name="amountAndNatureOfSupport"
-                onChange={handleChange}
                 value={formData.amountAndNatureOfSupport || ""}
                 readOnly
               />
@@ -553,7 +440,6 @@ const ApproveHIO = () => {
               <Input
                 type="number"
                 name="amountReceivedFromProject"
-                onChange={handleChange}
                 value={formData.amountReceivedFromProject || ""}
                 readOnly
               />
@@ -565,7 +451,6 @@ const ApproveHIO = () => {
               <Input
                 type="number"
                 name="totalAmountSpent"
-                onChange={handleChange}
                 value={formData.totalAmountSpent || ""}
                 readOnly
               />
@@ -584,7 +469,6 @@ const ApproveHIO = () => {
               <Input
                 type="number"
                 name="totalExpense"
-                onChange={handleChange}
                 value={formData.totalExpense || ""}
                 readOnly
               />
@@ -596,7 +480,6 @@ const ApproveHIO = () => {
               <Input
                 type="number"
                 name="familyContribution"
-                onChange={handleChange}
                 value={formData.familyContribution || ""}
                 readOnly
               />
@@ -608,7 +491,6 @@ const ApproveHIO = () => {
               <Input
                 type="number"
                 name="totalAmountRequested"
-                onChange={handleChange}
                 value={formData.totalAmountRequested || ""}
                 readOnly
               />
@@ -679,124 +561,111 @@ const ApproveHIO = () => {
             <FormControl>
               <Checkbox
                 name="beneficiaryAgreement"
-                onChange={handleChange}
-                isChecked={formData.beneficiaryAgreement}
+                isChecked={formData.beneficiaryAgreement || ""}
                 readOnly
                 size="lg"
               >
                 The Beneficiary / Family member agree
               </Checkbox>
-              <Input
+              {/* <Input
                 type="date"
                 name="beneficiaryAgreementDate"
                 onChange={handleChange}
                 value={formData.beneficiaryAgreementDate || ""}
                 readOnly
-              />
+              /> */}
             </FormControl>
 
             {/* Project-In-Charge agreement */}
             <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
-                onChange={handleChange}
                 size="lg"
                 isChecked={formData.projectInChargeAgreement}
                 readOnly
               >
                 The Project-In-Charge agree
               </Checkbox>
-              <Input
+              {/* <Input
                 type="date"
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
                 value={formData.projectInChargeAgreementDate || ""}
                 readOnly
-              />
+              /> */}
             </FormControl>
 
             {/* Provincial Superior agreement */}
             <FormControl>
               <Checkbox
                 name="provincialSuperiorAgreement"
-                onChange={handleChange}
                 size="lg"
                 isChecked={formData.provincialSuperiorAgreement}
                 readOnly
               >
                 The Provincial Superior agree
               </Checkbox>
-              <Input
+              {/* <Input
                 type="date"
                 name="provincialSuperiorAgreementDate"
                 onChange={handleChange}
-                value={formData.provincialSuperiorAgreementDate || ""}
-                readOnly
-              />
+                required
+              /> */}
             </FormControl>
-
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
+            <FormControl>
               <Checkbox
                 name="projectCoordinatorAgreement"
-                onChange={handleChange}
                 size="lg"
+                isChecked={formData.projectCoordinatorAgreement}
+                readOnly
               >
-                The Project Coordinator agree
+                The Project coordinator agree
               </Checkbox>
-              <Input
+              {/* <Input
                 type="date"
-                name="projectCoordinatorAgreementDate"
+                name="provincialSuperiorAgreementDate"
                 onChange={handleChange}
                 required
-              />
+              /> */}
             </FormControl>
           </VStack>
 
           <VStack align="start" spacing={4} mb={8}>
-            {/* Comment for reviewer */}
-            <FormControl>
+            {/* Comment */}
+            <FormControl isRequired>
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
                 name="commentReviewer"
-                onChange={handleChange}
-                value={formData.commentReviewer || ""}
+                value={formData.commentBoxReviewer ?? ""}
                 readOnly
-              />
-            </FormControl>
-
-            {/* Comment for approver */}
-            <FormControl isRequired>
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
-                onChange={handleChange}
                 required
               />
             </FormControl>
-
-            {/* Amount Approved by Project Coordinator */}
             <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <FormLabel>Approvers Comment</FormLabel>
               <Input
-                type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
+                type="text"
+                name="commentApprover"
+                value={formData.commentBoxApprover ?? ""}
+                readOnly
                 required
               />
             </FormControl>
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
-          </Button>
+            <Button
+              onClick={() => window.print()}
+              colorScheme="blue"
+              type="submit"
+            >
+              Print
+            </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
 
-export default ApproveHIO;
+export default ViewProject;

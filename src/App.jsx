@@ -40,7 +40,7 @@ import ReviewEIO from "./components/ReviewEIO";
 import ApproveEIO from "./components/ApproveEIO";
 import ReviewSIO from "./components/ReviewSIO";
 import ApproveSIO from "./components/ApproveSIO";
-
+import ViewProject from './components/viewHIOProject'
 
 
 // App component
@@ -83,13 +83,13 @@ const App = () => {
           <Route path="/ApprovedProjects" element={<ApprovedProjects/>} />
           <Route path="/ApprovedProjectsForReviewer" element={<ApprovedProjectsForReviewer reviewerProvince="north" />} />
           <Route path="/QuaterlyReportDevelopment" element={<QuaterlyReportDevelopment />} />
-          <Route path="/ReviewHIO" element={<ReviewHIO />} />
-          <Route path="/ReviewEIO" element={<ReviewEIO/>} />
-          <Route path="/ReviewSIO" element={<ReviewSIO/>} />
-          <Route path="/ApproveHIO" element={<ApproveHIO />} />
-          <Route path="/ApproveEIO" element={<ApproveEIO />} />
-          <Route path="/ApproveSIO" element={<ApproveSIO />} />
-         
+          <Route path="/ReviewHIO/:project" element={<ReviewHIO />} />
+          <Route path="/ReviewEIO/:project" element={<ReviewEIO/>} />
+          {/* <Route path="/ReviewSIO" element={<ReviewSIO/>} /> */}
+          <Route path="/ApproveHIO/:project" element={<ApproveHIO />} />
+          <Route path="/ApproveEIO/:project" element={<ApproveEIO />} />
+          {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
+          <Route path="/viewProject/:project" element={<ViewProject/>} /> 
         </Routes>
       </Router>
     </ChakraProvider>

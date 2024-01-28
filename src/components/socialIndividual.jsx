@@ -112,7 +112,7 @@ const SocialIndividual = () => {
           e.target.quotationsRegardingThePurchaseImg.value, // Confirm field name
         other_supporting_documents: e.target.otherSupportingDocuments.value,
         benificary_agree: e.target.beneficiaryAgreement.value,
-        provincial_in_charge_agree: e.target.provincialSuperiorAgreement.value,
+        project_in_charge_agree: e.target.provincialSuperiorAgreement.value,
       });
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);

@@ -1,6 +1,5 @@
 // RegisterApproverPage.jsx
 import React from "react";
-import axios from "axios";
 import {
   Box,
   Button,
@@ -20,6 +19,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FaKey, FaMobileAlt, FaUser, FaEnvelope } from "react-icons/fa";
+import authAxios from "../AuthAxios";
 
 // RegisterApproverPage component
 const RegisterApproverPage = () => {
@@ -56,8 +56,7 @@ const RegisterApproverPage = () => {
           mobile : values.mobileNumber
 
         }
-        // eslint-disable-next-line no-unused-vars
-        const response = await axios.post(
+        const response = await authAxios(
           '/users/approversignup' , 
           req 
         ) ; 

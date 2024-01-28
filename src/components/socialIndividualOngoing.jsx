@@ -65,6 +65,7 @@ const SocialIndividualOngoing = () => {
       });
     }
   };
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -252,10 +253,8 @@ const SocialIndividualOngoing = () => {
   );
 };
 
-  {
-    /*documents needed */
-  }
 
+// for document upload
   const documentUpload = () => {
     const handleFileChange = (index, file) => {
       const newDocuments = [...documents];

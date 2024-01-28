@@ -123,7 +123,8 @@ const HealthIndividualOngoing = () => {
         aadhar_img: aadharCardUrl,
         request_letter_img: requestLetterUrl,
         treatment_record_img: treatmentRecordUrl,
-        benificary_agree: e.target.beneficiaryAgreement.checked,
+        benificary_agree: {agree: e.target.beneficiaryAgreement.checked},
+        project_in_charge_agree: {agree: e.target.projectInChargeAgreement.checked},
         other_supporting_docs_img: otherDocumentsUrl,
       });
       setIsLoading((prevLoading) => !prevLoading);
@@ -136,6 +137,7 @@ const HealthIndividualOngoing = () => {
         });
       }
       else{
+        setIsLoading(false);
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
@@ -144,6 +146,7 @@ const HealthIndividualOngoing = () => {
         });
       }
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
     }
   };
@@ -439,7 +442,7 @@ const HealthIndividualOngoing = () => {
               <Select name="gender" onChange={handleChange} required>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">Other</option>
+              <option value="other">Other</option>
               </Select>
             </FormControl>
 
