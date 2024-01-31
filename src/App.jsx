@@ -41,6 +41,8 @@ import ApproveEIO from "./components/ApproveEIO";
 import ReviewSIO from "./components/ReviewSIO";
 import ApproveSIO from "./components/ApproveSIO";
 import ViewProject from './components/viewHIOProject'
+import WelfareHomeGroup from "./components/WelfareHomeGroup";
+import EducationRuralUrbanTribalGroup from "./components/EducationRuralUrbanTribalGroup";
 
 
 // App component
@@ -90,6 +92,9 @@ const App = () => {
           <Route path="/ApproveEIO/:project" element={<ApproveEIO />} />
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
           <Route path="/viewProject/:project" element={<ViewProject/>} /> 
+          <Route path="/WelfareHomeGroup" element={<WelfareHomeGroup/>} /> 
+          <Route path="/EducationRuralUrbanTribalGroup" element={<EducationRuralUrbanTribalGroup/>} /> 
+
         </Routes>
       </Router>
     </ChakraProvider>
