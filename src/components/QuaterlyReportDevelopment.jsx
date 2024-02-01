@@ -57,24 +57,21 @@ const QuaterlyReportDevelopment = () => {
     remark: "",
   });
 
-  const handleChange = (field , value) => {
+  const handleChange = (field, value) => {
+    const fields = field.split(".");
 
-    const fields = field.split('.') ; 
-    
     setFormData((prevData) => {
       const updatedData = { ...prevData };
       console.log(value);
-      // previous data 
+      // previous data
       updatedData[field] = value;
 
-      for(let i = fields.length-2 ; i >= 0 ; i --){
-        
-      }
-      // what I have to simply do is to segregate the fields 
-      // and then push the values inside 
-      // the problem is when indexes come to the picture or no that is no problem 
-      // I guess that is because indexes can be anything at the end 
-      // for the indexes to work a definite change in array shall be displayed 
+      for (let i = fields.length - 2; i >= 0; i--) {}
+      // what I have to simply do is to segregate the fields
+      // and then push the values inside
+      // the problem is when indexes come to the picture or no that is no problem
+      // I guess that is because indexes can be anything at the end
+      // for the indexes to work a definite change in array shall be displayed
       return updatedData;
     });
     console.log(formData);
@@ -251,7 +248,7 @@ const QuaterlyReportDevelopment = () => {
           <FormControl id="province">
             <FormLabel>Province</FormLabel>
             <Select
-            name = 'province'
+              name="province"
               value={formData.province}
               onChange={(e) => handleChange("province", e.target.value)}
             >

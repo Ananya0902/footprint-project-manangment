@@ -42,6 +42,7 @@ import ViewProject from './components/viewHIOProject'
 import NextPhaseForm from './components/NextPhaseDevelopmentProject'
 import WelfareHomeGroup from "./components/WelfareHomeGroup";
 import EducationRuralUrbanTribalGroup from "./components/EducationRuralUrbanTribalGroup";
+import HIVAffectedOutreach from "./components/HIVAffectedOutreach";
 
 
 // App component
@@ -94,6 +95,8 @@ const App = () => {
           <Route path="/nextPhaseDevelopmentProject" element={<NextPhaseForm/>} /> 
 
           <Route path="/WelfareHomeGroup" element={<WelfareHomeGroup/>} /> 
+          <Route path="/HIVAffectedOutreach" element={<HIVAffectedOutreach/>} /> 
+
           <Route path="/EducationRuralUrbanTribalGroup" element={<EducationRuralUrbanTribalGroup/>} /> 
 
         </Routes>

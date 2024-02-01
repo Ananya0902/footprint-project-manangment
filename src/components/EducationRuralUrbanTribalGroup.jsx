@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-    ChakraProvider,
+  ChakraProvider,
   Box,
   VStack,
   Heading,
@@ -18,7 +18,7 @@ import {
   Th,
   Td,
   Textarea,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 const EducationRuralUrbanTribalGroup = () => {
   const [formData, setFormData] = useState({
@@ -28,66 +28,143 @@ const EducationRuralUrbanTribalGroup = () => {
     projectNumber: 0,
     overallProjectPeriod: "",
     overallProjectBudget: "",
-    address:"",
+    address: "",
     provincialSuperiorName: "",
     provincialSuperiorEmail: "",
     projectInchargeName: "",
     projectInchargeEmail: "",
     projectSummary: {
-        projectLocation: '',
-        workOfSisters: '',
-        socioEconomicConditions: '',
-        identifiedProblems: '',
-        needOfProject: '',
-        beneficiarySelection: '',
+      projectLocation: "",
+      workOfSisters: "",
+      socioEconomicConditions: "",
+      identifiedProblems: "",
+      needOfProject: "",
+      beneficiarySelection: "",
+    },
+    targetGroup: [
+      {
+        sn: 1,
+        name: "",
+        caste: "",
+        occupationOfParents: "",
+        familyBackgroundAndNeedOfSupport: "",
+        classOfStudyOrInstitution: "",
+        eligibilityOfScholarshipAndExpectedAmount: "",
+        contributionFromFamily: "",
       },
-      targetGroup: [
+    ],
+    logicalFramework: {
+      goal: "",
+      objectives: [
         {
-          sn: 1,
-          name: '',
-          caste: '',
-          occupationOfParents: '',
-          familyBackgroundAndNeedOfSupport: '',
-          classOfStudyOrInstitution: '',
-          eligibilityOfScholarshipAndExpectedAmount: '',
-          contributionFromFamily: '',
-        }],
-        logicalFramework: {
-            goal: "",
-            objectives: [
-              {
-                objective: "",
-                results: [""],
-                activities: [],
-              },
-            ],
-          },
-          evaluation:"",
-          monitoringprocess:"",
-          sustainability:"",
-          budget: [
-            {
-              description: '',
-              costs: 0,
-            },
-          ],
-          projectInChargeAgreement:"",
-          projectInChargeAgreementDate:"",
+          objective: "",
+          results: [""],
+          activities: [],
+        },
+      ],
+    },
+    evaluation: "",
+    monitoringprocess: "",
+    sustainability: "",
+    budget: [
+      {
+        description: "",
+        costs: 0,
+      },
+    ],
+    projectInChargeAgreement: "",
+    projectInChargeAgreementDate: "",
   });
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
+    const req = {
+      project_title: formData.projectTitle,
+      general_information: {
+        full_address: formData.address,
+        overall_project_period: formData.overallProjectPeriod,
+        overall_project_budget: parseInt(formData.overallProjectBudget), // Assuming it's a number
+      },
+      beneficiaries: formData.targetGroup.map((target) => ({
+        name: target.name,
+        caste: target.caste,
+        occupation_of_parents: target.occupationOfParents,
+        family_background_and_need_of_support:
+          target.familyBackgroundAndNeedOfSupport,
+        class_of_study_or_name_of_institution: target.classOfStudyOrInstitution,
+        eligibility_of_scholarship_and_expected_amount:
+          target.eligibilityOfScholarshipAndExpectedAmount,
+        contribution_from_family: target.contributionFromFamily,
+      })),
+      objectives: formData.logicalFramework.objectives.map((objective) => ({
+        objective: objective.objective,
+        results_and_outcomes: objective.results,
+        activities: objective.activities.map((activity) => ({
+          activity: activity.activity,
+          months: activity.months,
+          means_of_verification: activity.means_of_verification,
+        })),
+      })),
+      project_summary: {
+        project_location_geographical_area:
+          formData.projectSummary.projectLocation,
+        work_of_sisters_of_st_anns_in_the_project_area:
+          formData.projectSummary.workOfSisters,
+        general_socio_economic_conditions_of_the_beneficiaries:
+          formData.projectSummary.socioEconomicConditions,
+        problems_identified_and_consequences:
+          formData.projectSummary.identifiedProblems,
+        need_of_the_project: formData.projectSummary.needOfProject,
+        identification_of_the_beneficiaries: formData.targetGroup.map(
+          (target) => ({
+            name: target.name,
+            caste: target.caste,
+            occupation_of_parents: target.occupationOfParents,
+            family_background_and_need_of_support:
+              target.familyBackgroundAndNeedOfSupport,
+            class_of_study_or_name_of_institution:
+              target.classOfStudyOrInstitution,
+            eligibility_of_scholarship_and_expected_amount:
+              target.eligibilityOfScholarshipAndExpectedAmount,
+            contribution_from_family: target.contributionFromFamily,
+          })
+        ),
+        solution_analysis_logical_framework: {
+          goal: formData.logicalFramework.goal,
+          objectives: formData.logicalFramework.objectives.map((objective) => ({
+            objective: objective.objective,
+            results_and_outcomes: objective.results.join(","), // Assuming it's a string
+            activities: objective.activities.map((activity) => ({
+              activity: activity.activity,
+              months: activity.months,
+              means_of_verification: activity.means_of_verification,
+            })),
+          })),
+        },
+        sustainability: formData.sustainability,
+        monitoring_process_of_the_project: formData.monitoringprocess,
+        mode_of_evaluation: formData.evaluation,
+        budget: {
+          expenses: formData.budget.map((item) => ({
+            description: item.description,
+            costs: parseInt(item.costs), // Assuming it's a number
+          })),
+          total: parseInt(calculateTotalCosts('cost')) ?? 0, // Should be calculated
+        },
+      },
+    };
+
+    // Send requestBody to the backend
     e.preventDefault();
     // Handle form submission logic here
-    console.log('Form submitted with data:', formData);
+    console.log("Form submitted with data:", formData);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
 
   const handleProjectSummaryChange = (e) => {
     const { name, value } = e.target;
@@ -97,28 +174,32 @@ const EducationRuralUrbanTribalGroup = () => {
     }));
   };
 
-
   const handleTargetGroupChange = (index, field, value) => {
     const updatedTargetGroup = [...formData.targetGroup];
     updatedTargetGroup[index][field] = value;
-    setFormData((prevData) => ({ ...prevData, targetGroup: updatedTargetGroup }));
+    setFormData((prevData) => ({
+      ...prevData,
+      targetGroup: updatedTargetGroup,
+    }));
   };
 
   const handleAddTargetGroupRow = () => {
     const updatedTargetGroup = [...formData.targetGroup];
     updatedTargetGroup.push({
       sn: updatedTargetGroup.length + 1,
-      name: '',
-      caste: '',
-      occupationOfParents: '',
-      familyBackgroundAndNeedOfSupport: '',
-      classOfStudyOrInstitution: '',
-      eligibilityOfScholarshipAndExpectedAmount: '',
-      contributionFromFamily: '',
+      name: "",
+      caste: "",
+      occupationOfParents: "",
+      familyBackgroundAndNeedOfSupport: "",
+      classOfStudyOrInstitution: "",
+      eligibilityOfScholarshipAndExpectedAmount: "",
+      contributionFromFamily: "",
     });
-    setFormData((prevData) => ({ ...prevData, targetGroup: updatedTargetGroup }));
+    setFormData((prevData) => ({
+      ...prevData,
+      targetGroup: updatedTargetGroup,
+    }));
   };
-
 
   const handleChangeObjective = (e, index, subIndex) => {
     const updatedData = { ...formData };
@@ -165,7 +246,6 @@ const EducationRuralUrbanTribalGroup = () => {
       activity: "",
       verification: "",
       timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
-     
     });
     setFormData(updatedData);
   };
@@ -178,348 +258,372 @@ const EducationRuralUrbanTribalGroup = () => {
   const handleAddBudgetRow = () => {
     const updatedBudget = [...formData.budget];
     updatedBudget.push({
-      description: '',
+      description: "",
       costs: 0,
     });
     setFormData((prevData) => ({ ...prevData, budget: updatedBudget }));
   };
 
   const calculateTotalCosts = (field) => {
-    return formData.budget.reduce((total, row) => total + parseFloat(row[field] || 0), 0).toFixed(2);
+    return formData.budget
+      .reduce((total, row) => total + parseFloat(row[field] || 0), 0)
+      .toFixed(2);
   };
-
 
   return (
     <ChakraProvider>
       <Box p={4}>
-   
-      <Heading as="h2" size="lg">
-        Education Rural Urban Tribal Group
-      </Heading>
+        <Heading as="h2" size="lg">
+          Education Rural Urban Tribal Group
+        </Heading>
 
-      {isSubmitted && (
+        {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
             Form submitted successfully!
           </Alert>
         )}
 
-<VStack spacing={4} align="start" p={4}>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-        {/* Project Information */}
-        <FormControl mb={4}>
-            <FormLabel>Present Project Year</FormLabel>
-            <Input
-              type="text"
-              name="presentProjectYear"
-              onChange={handleChange}
-              value={formData.presentProjectYear || ""}
-            />
-          </FormControl>
+        <VStack spacing={4} align="start" p={4}>
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            {/* Project Information */}
+            <FormControl mb={4}>
+              <FormLabel>Present Project Year</FormLabel>
+              <Input
+                type="text"
+                name="presentProjectYear"
+                onChange={handleChange}
+                value={formData.presentProjectYear || ""}
+              />
+            </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel>Project Title</FormLabel>
-            <Input
-              type="text"
-              name="projectTitle"
-              onChange={handleChange}
-              value={formData.projectTitle || ""}
-            />
-          </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Title</FormLabel>
+              <Input
+                type="text"
+                name="projectTitle"
+                onChange={handleChange}
+                value={formData.projectTitle || ""}
+              />
+            </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel>Project Number</FormLabel>
-            <Input
-              type="text"
-              name="projectNumber"
-              onChange={handleChange}
-              value={formData.projectNumber || ""}
-            />
-          </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Number</FormLabel>
+              <Input
+                type="text"
+                name="projectNumber"
+                onChange={handleChange}
+                value={formData.projectNumber || ""}
+              />
+            </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel>Project Region</FormLabel>
-            <Input
-              type="text"
-              name="projectRegion"
-              onChange={handleChange}
-              value={formData.projectRegion || ""}
-            />
-          </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Region</FormLabel>
+              <Input
+                type="text"
+                name="projectRegion"
+                onChange={handleChange}
+                value={formData.projectRegion || ""}
+              />
+            </FormControl>
 
-        
-          {/* General Information */}
-          <Heading as="h2" size="lg" mt={6} mb={4}>
-            General Information
-          </Heading>
+            {/* General Information */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              General Information
+            </Heading>
 
-          <FormControl mb={4}>
-            <FormLabel>Overall Project Period</FormLabel>
-            <Input
-              type="text"
-              name="overallProjectPeriod"
-              onChange={handleChange}
-              value={formData.overallProjectPeriod || ""}
-            />
-          </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Overall Project Period</FormLabel>
+              <Input
+                type="text"
+                name="overallProjectPeriod"
+                onChange={handleChange}
+                value={formData.overallProjectPeriod || ""}
+              />
+            </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel>Overall Project Budget</FormLabel>
-            <Input
-              type="text"
-              name="overallProjectBudget"
-              onChange={handleChange}
-              value={formData.overallProjectBudget || ""}
-            />
-          </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Overall Project Budget</FormLabel>
+              <Input
+                type="text"
+                name="overallProjectBudget"
+                onChange={handleChange}
+                value={formData.overallProjectBudget || ""}
+              />
+            </FormControl>
 
+            <FormControl mb={4}>
+              <FormLabel>Full Address</FormLabel>
+              <Input
+                type="text"
+                name="address"
+                onChange={handleChange}
+                value={formData.address || ""}
+              />
+            </FormControl>
 
-          <FormControl mb={4}>
-            <FormLabel>Full Address</FormLabel>
-            <Input
-              type="text"
-              name="address"
-              onChange={handleChange}
-              value={formData.address || ""}
-            />
-          </FormControl>
+            <Table variant="simple" mb={4}>
+              <Thead>
+                <Tr>
+                  <Th>Role</Th>
+                  <Th>Name</Th>
+                  <Th>Email</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {/* Row 1*/}
+                <Tr>
+                  <Td>Provincial Superior</Td>
+                  <Td>
+                    <Input
+                      type="text"
+                      name="provincialSuperiorName"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorName || ""}
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="email"
+                      name="provincialSuperiorEmail"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorEmail || ""}
+                    />
+                  </Td>
+                </Tr>
 
+                {/* Row 2 */}
+                <Tr>
+                  <Td>Project Incharge</Td>
+                  <Td>
+                    <Input
+                      type="text"
+                      name="projectInchargeName"
+                      onChange={handleChange}
+                      value={formData.projectInchargeName || ""}
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="email"
+                      name="projectInchargeEmail"
+                      onChange={handleChange}
+                      value={formData.projectInchargeEmail || ""}
+                    />
+                  </Td>
+                </Tr>
 
-          <Table variant="simple" mb={4}>
-            <Thead>
-              <Tr>
-                <Th>Role</Th>
-                <Th>Name</Th>
-                <Th>Email</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              
+                {/* Project Coordinators */}
+                <Tr>
+                  <Td>Project Coordinator 1</Td>
+                  <Td>Sr. Nirmala Mathew</Td>
 
-              {/* Row 1*/}
-              <Tr>
-                <Td>Provincial Superior</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="provincialSuperiorName"
-                    onChange={handleChange}
-                    value={formData.provincialSuperiorName || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="email"
-                    name="provincialSuperiorEmail"
-                    onChange={handleChange}
-                    value={formData.provincialSuperiorEmail || ""}
-                  />
-                </Td>
-              </Tr>
+                  <Td>micostannsindia@gmail.com</Td>
+                </Tr>
+                <Tr>
+                  <Td>Project Coordinator 2</Td>
+                  <Td>Mr. Samuel Imbach</Td>
 
-              {/* Row 2 */}
-              <Tr>
-                <Td>Project Incharge</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="projectInchargeName"
-                    onChange={handleChange}
-                    value={formData.projectInchargeName || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="email"
-                    name="projectInchargeEmail"
-                    onChange={handleChange}
-                    value={formData.projectInchargeEmail || ""}
-                  />
-                </Td>
-              </Tr>
+                  <Td>s.imbach@mission-stanna</Td>
+                </Tr>
+              </Tbody>
+            </Table>
 
-              {/* Project Coordinators */}
-              <Tr>
-                <Td>Project Coordinator 1</Td>
-                <Td>Sr. Nirmala Mathew</Td>
+            {/* Project Summary */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              Project Summary
+            </Heading>
 
-                <Td>micostannsindia@gmail.com</Td>
-              </Tr>
-              <Tr>
-                <Td>Project Coordinator 2</Td>
-                <Td>Mr. Samuel Imbach</Td>
+            <FormControl mb={4}>
+              <FormLabel>Project Location - Geographical Area</FormLabel>
+              <Textarea
+                name="projectLocation"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.projectLocation || ""}
+              />
+            </FormControl>
 
-                <Td>s.imbach@mission-stanna</Td>
-              </Tr>
-            </Tbody>
-          </Table>
+            <FormControl mb={4}>
+              <FormLabel>
+                Work of Sisters of St.Ann’s in the project area
+              </FormLabel>
+              <Textarea
+                name="workOfSisters"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.workOfSisters || ""}
+              />
+            </FormControl>
 
+            <FormControl mb={4}>
+              <FormLabel>
+                General Socio Economic conditions of the Beneficiaries
+              </FormLabel>
+              <Textarea
+                name="socioEconomicConditions"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.socioEconomicConditions || ""}
+              />
+            </FormControl>
 
-                  {/* Project Summary */}
-        <Heading as="h2" size="lg" mt={6} mb={4}>
-          Project Summary
-        </Heading>
+            <FormControl mb={4}>
+              <FormLabel>Problems identified and Consequences</FormLabel>
+              <Textarea
+                name="identifiedProblems"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.identifiedProblems || ""}
+              />
+            </FormControl>
 
-        <FormControl mb={4}>
-          <FormLabel>Project Location - Geographical Area</FormLabel>
-          <Textarea
-            name="projectLocation"
-            onChange={handleProjectSummaryChange}
-            value={formData.projectSummary.projectLocation || ''}
-          />
-        </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Need of the project</FormLabel>
+              <Textarea
+                name="needOfProject"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.needOfProject || ""}
+              />
+            </FormControl>
 
-        <FormControl mb={4}>
-          <FormLabel>Work of Sisters of St.Ann’s in the project area</FormLabel>
-          <Textarea
-            name="workOfSisters"
-            onChange={handleProjectSummaryChange}
-            value={formData.projectSummary.workOfSisters || ''}
-          />
-        </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                Identification of the Beneficiaries (how are the beneficiaries
+                selected)
+              </FormLabel>
+              <Textarea
+                name="beneficiarySelection"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.beneficiarySelection || ""}
+              />
+            </FormControl>
 
-        <FormControl mb={4}>
-          <FormLabel>General Socio Economic conditions of the Beneficiaries</FormLabel>
-          <Textarea
-            name="socioEconomicConditions"
-            onChange={handleProjectSummaryChange}
-            value={formData.projectSummary.socioEconomicConditions || ''}
-          />
-        </FormControl>
+            {/* Target Group Table */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              Target Group
+            </Heading>
 
-        <FormControl mb={4}>
-          <FormLabel>Problems identified and Consequences</FormLabel>
-          <Textarea
-            name="identifiedProblems"
-            onChange={handleProjectSummaryChange}
-            value={formData.projectSummary.identifiedProblems || ''}
-          />
-        </FormControl>
+            <Table variant="simple" mb={4}>
+              <Thead>
+                <Tr>
+                  <Th>Sn.</Th>
+                  <Th>Name of the beneficiary</Th>
+                  <Th>Caste</Th>
+                  <Th>Occupation of parents</Th>
+                  <Th>Family Background and need of support</Th>
+                  <Th>Class of study/Name of the institution</Th>
+                  <Th>Eligibility of scholarship & expected amount</Th>
+                  <Th>Contribution from family</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {formData.targetGroup.map((row, index) => (
+                  <Tr key={index}>
+                    <Td>{row.sn}</Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].name`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(index, "name", e.target.value)
+                        }
+                        value={row.name}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].caste`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(
+                            index,
+                            "caste",
+                            e.target.value
+                          )
+                        }
+                        value={row.caste}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].occupationOfParents`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(
+                            index,
+                            "occupationOfParents",
+                            e.target.value
+                          )
+                        }
+                        value={row.occupationOfParents}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].familyBackgroundAndNeedOfSupport`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(
+                            index,
+                            "familyBackgroundAndNeedOfSupport",
+                            e.target.value
+                          )
+                        }
+                        value={row.familyBackgroundAndNeedOfSupport}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].classOfStudyOrInstitution`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(
+                            index,
+                            "classOfStudyOrInstitution",
+                            e.target.value
+                          )
+                        }
+                        value={row.classOfStudyOrInstitution}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].eligibilityOfScholarshipAndExpectedAmount`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(
+                            index,
+                            "eligibilityOfScholarshipAndExpectedAmount",
+                            e.target.value
+                          )
+                        }
+                        value={row.eligibilityOfScholarshipAndExpectedAmount}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`targetGroup[${index}].contributionFromFamily`}
+                        onChange={(e) =>
+                          handleTargetGroupChange(
+                            index,
+                            "contributionFromFamily",
+                            e.target.value
+                          )
+                        }
+                        value={row.contributionFromFamily}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
 
-        <FormControl mb={4}>
-          <FormLabel>Need of the project</FormLabel>
-          <Textarea
-            name="needOfProject"
-            onChange={handleProjectSummaryChange}
-            value={formData.projectSummary.needOfProject || ''}
-          />
-        </FormControl>
+            {/* Add Row Button */}
+            <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
+              Add Row
+            </Button>
 
-        <FormControl mb={4}>
-          <FormLabel>Identification of the Beneficiaries (how are the beneficiaries selected)</FormLabel>
-          <Textarea
-            name="beneficiarySelection"
-            onChange={handleProjectSummaryChange}
-            value={formData.projectSummary.beneficiarySelection || ''}
-          />
-        </FormControl>
+            {/* Logical Framework */}
 
-
-
-
-{/* Target Group Table */}
-<Heading as="h2" size="lg" mt={6} mb={4}>
-          Target Group
-        </Heading>
-
-        <Table variant="simple" mb={4}>
-          <Thead>
-            <Tr>
-              <Th>Sn.</Th>
-              <Th>Name of the beneficiary</Th>
-              <Th>Caste</Th>
-              <Th>Occupation of parents</Th>
-              <Th>Family Background and need of support</Th>
-              <Th>Class of study/Name of the institution</Th>
-              <Th>Eligibility of scholarship & expected amount</Th>
-              <Th>Contribution from family</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {formData.targetGroup.map((row, index) => (
-              <Tr key={index}>
-                <Td>{row.sn}</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].name`}
-                    onChange={(e) => handleTargetGroupChange(index, 'name', e.target.value)}
-                    value={row.name}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].caste`}
-                    onChange={(e) => handleTargetGroupChange(index, 'caste', e.target.value)}
-                    value={row.caste}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].occupationOfParents`}
-                    onChange={(e) =>
-                      handleTargetGroupChange(index, 'occupationOfParents', e.target.value)
-                    }
-                    value={row.occupationOfParents}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].familyBackgroundAndNeedOfSupport`}
-                    onChange={(e) =>
-                      handleTargetGroupChange(index, 'familyBackgroundAndNeedOfSupport', e.target.value)
-                    }
-                    value={row.familyBackgroundAndNeedOfSupport}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].classOfStudyOrInstitution`}
-                    onChange={(e) =>
-                      handleTargetGroupChange(index, 'classOfStudyOrInstitution', e.target.value)
-                    }
-                    value={row.classOfStudyOrInstitution}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].eligibilityOfScholarshipAndExpectedAmount`}
-                    onChange={(e) =>
-                      handleTargetGroupChange(index, 'eligibilityOfScholarshipAndExpectedAmount', e.target.value)
-                    }
-                    value={row.eligibilityOfScholarshipAndExpectedAmount}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name={`targetGroup[${index}].contributionFromFamily`}
-                    onChange={(e) =>
-                      handleTargetGroupChange(index, 'contributionFromFamily', e.target.value)
-                    }
-                    value={row.contributionFromFamily}
-                  />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-
-        {/* Add Row Button */}
-        <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
-          Add Row
-        </Button>
-
-
-
-         {/* Logical Framework */}
-
-         <Heading
+            <Heading
               as="h1"
               size="xl"
               mb={6}
@@ -549,200 +653,220 @@ const EducationRuralUrbanTribalGroup = () => {
               Objectives:-
             </Heading>
             {formData.logicalFramework.objectives.map((objective, index) => (
-                 <Box key={index} border="1px solid #ccc" borderRadius="lg" p={4} mb={8}>
-              <VStack key={index} align="start" spacing={4} mb={8}>
-                {/* Objective */}
-                <FormControl isRequired>
+              <Box
+                key={index}
+                border="1px solid #ccc"
+                borderRadius="lg"
+                p={4}
+                mb={8}
+              >
+                <VStack key={index} align="start" spacing={4} mb={8}>
+                  {/* Objective */}
+                  <FormControl isRequired>
                     <hr />
-                  <FormLabel>Objective {index + 1}</FormLabel>
-                  <Textarea
-                    name="objective"
-                    value={objective.objective}
-                    onChange={(e) => handleChangeObjective(e, index)}
-                    required
-                  />
-                </FormControl>
+                    <FormLabel>Objective {index + 1}</FormLabel>
+                    <Textarea
+                      name="objective"
+                      value={objective.objective}
+                      onChange={(e) => handleChangeObjective(e, index)}
+                      required
+                    />
+                  </FormControl>
 
-                {/* Results */}
-                <FormControl isRequired>
-                  <FormLabel>Results</FormLabel>
-                  {objective.results.map((result, subIndex) => (
-                    <VStack key={subIndex} align="start" spacing={4} mb={8}>
-                      <Textarea
-                        name="result"
-                        value={result}
-                        onChange={(e) => handleChangeObjective(e, index, subIndex)}
-                        required
-                      />
-                      <Button
-                        onClick={() => handleAddResult(index)}
-                        colorScheme="teal"
-                      >
-                        Add Result
-                      </Button>
-                    </VStack>
-                  ))}
-                </FormControl>
+                  {/* Results */}
+                  <FormControl isRequired>
+                    <FormLabel>Results</FormLabel>
+                    {objective.results.map((result, subIndex) => (
+                      <VStack key={subIndex} align="start" spacing={4} mb={8}>
+                        <Textarea
+                          name="result"
+                          value={result}
+                          onChange={(e) =>
+                            handleChangeObjective(e, index, subIndex)
+                          }
+                          required
+                        />
+                        <Button
+                          onClick={() => handleAddResult(index)}
+                          colorScheme="teal"
+                        >
+                          Add Result
+                        </Button>
+                      </VStack>
+                    ))}
+                  </FormControl>
 
-                {/* Activities and Means of Verification */}
-                <FormControl isRequired>
-                  <FormLabel>Activities and Means of Verification</FormLabel>
-                  <Table variant="simple">
-                    <Thead>
-                      <Tr>
-                        <Th>Activity</Th>
-                        <Th>Means of Verification</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {objective.activities.map((activity, subIndex) => (
-                        <Tr key={subIndex}>
-                          <Td>
-                            <Textarea
-                              name="activity"
-                              value={activity.activity}
-                              onChange={(e) => handleChangeObjective(e, index, subIndex)}
-                              required
-                            />
-                          </Td>
-                          <Td>
-                            <Textarea
-                              name="verification"
-                              value={activity.verification}
-                              onChange={(e) => handleChangeObjective(e, index, subIndex)}
-                              required
-                            />
-                          </Td>
-                          <Td>
-                            {/* Timeframe */}
-                            <FormControl isRequired>
-                              <FormLabel>Timeframe</FormLabel>
-                              {activity.timeframe.map((value, monthIndex) => (
-                                <Checkbox
-                                  key={monthIndex}
-                                  isChecked={value}
-                                  onChange={() => {
-                                    setSelectedMonths([]);
-                                    activity.timeframe[monthIndex] =
-                                      !activity.timeframe[monthIndex];
-                                    console.log(activity.timeframe);
-                                  }}
-                                >
-                                  {new Date(2024, monthIndex).toLocaleString(
-                                    "default",
-                                    { month: "long" }
-                                  )}
-                                </Checkbox>
-                              ))}
-                            </FormControl>
-                          </Td>
+                  {/* Activities and Means of Verification */}
+                  <FormControl isRequired>
+                    <FormLabel>Activities and Means of Verification</FormLabel>
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Activity</Th>
+                          <Th>Means of Verification</Th>
                         </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
+                      </Thead>
+                      <Tbody>
+                        {objective.activities.map((activity, subIndex) => (
+                          <Tr key={subIndex}>
+                            <Td>
+                              <Textarea
+                                name="activity"
+                                value={activity.activity}
+                                onChange={(e) =>
+                                  handleChangeObjective(e, index, subIndex)
+                                }
+                                required
+                              />
+                            </Td>
+                            <Td>
+                              <Textarea
+                                name="verification"
+                                value={activity.verification}
+                                onChange={(e) =>
+                                  handleChangeObjective(e, index, subIndex)
+                                }
+                                required
+                              />
+                            </Td>
+                            <Td>
+                              {/* Timeframe */}
+                              <FormControl isRequired>
+                                <FormLabel>Timeframe</FormLabel>
+                                {activity.timeframe.map((value, monthIndex) => (
+                                  <Checkbox
+                                    key={monthIndex}
+                                    isChecked={value}
+                                    onChange={() => {
+                                      setSelectedMonths([]);
+                                      activity.timeframe[monthIndex] =
+                                        !activity.timeframe[monthIndex];
+                                      console.log(activity.timeframe);
+                                    }}
+                                  >
+                                    {new Date(2024, monthIndex).toLocaleString(
+                                      "default",
+                                      { month: "long" }
+                                    )}
+                                  </Checkbox>
+                                ))}
+                              </FormControl>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+
+                    <Button
+                      onClick={() => handleAddActivity(index)}
+                      colorScheme="teal"
+                    >
+                      Add Activity
+                    </Button>
+                  </FormControl>
 
                   <Button
-                    onClick={() => handleAddActivity(index)}
-                    colorScheme="teal"
+                    onClick={handleAddObjective}
+                    colorScheme="purple"
+                    ml="auto"
                   >
-                    Add Activity
+                    Add Objective
                   </Button>
-                </FormControl>
-
-                <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
-                  Add Objective
-                </Button>
-             </VStack>
+                </VStack>
               </Box>
             ))}
 
+            {/* Sustainability of the Project */}
+            <FormControl isRequired>
+              <FormLabel>Sustainability of the Project</FormLabel>
+              <Textarea
+                name="sustainability"
+                value={formData.sustainability}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
 
+            {/* Explain the Monitoring Process of the Project */}
+            <FormControl isRequired>
+              <FormLabel>
+                Explain the Monitoring Process of the Project
+              </FormLabel>
+              <Textarea
+                name="monitoringProcess"
+                value={formData.monitoringProcess}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
 
-        {/* Sustainability of the Project */}
-        <FormControl isRequired>
-          <FormLabel>Sustainability of the Project</FormLabel>
-          <Textarea
-            name="sustainability"
-            value={formData.sustainability}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
+            {/* Mode of Evaluation */}
+            <FormControl isRequired>
+              <FormLabel>Mode of Evaluation</FormLabel>
+              <Textarea
+                name="evaluation"
+                value={formData.evaluation}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
 
-        {/* Explain the Monitoring Process of the Project */}
-        <FormControl isRequired>
-          <FormLabel>Explain the Monitoring Process of the Project</FormLabel>
-          <Textarea
-            name="monitoringProcess"
-            value={formData.monitoringProcess}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
+            {/* Budget Section */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              Budget
+            </Heading>
 
-         {/* Mode of Evaluation */}
-         <FormControl isRequired>
-          <FormLabel>Mode of Evaluation</FormLabel>
-          <Textarea
-            name="evaluation"
-            value={formData.evaluation}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
-
-{/* Budget Section */}
-<Heading as="h2" size="lg" mt={6} mb={4}>
-            Budget
-          </Heading>
-
-          <Table variant="simple" mb={4}>
-            <Thead>
-              <Tr>
-                <Th>Description of Expense</Th>
-                <Th>Costs</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {formData.budget.map((row, index) => (
-                <Tr key={index}>
-                  <Td>
-                    <Input
-                      type="text"
-                      name={`budget[${index}].description`}
-                      onChange={(e) => handleBudgetChange(index, 'description', e.target.value)}
-                      value={row.description}
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="number"
-                      name={`budget[${index}].costs`}
-                      onChange={(e) => handleBudgetChange(index, 'costs', e.target.value)}
-                      value={row.costs}
-                    />
-                  </Td>
+            <Table variant="simple" mb={4}>
+              <Thead>
+                <Tr>
+                  <Th>Description of Expense</Th>
+                  <Th>Costs</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-
+              </Thead>
+              <Tbody>
+                {formData.budget.map((row, index) => (
+                  <Tr key={index}>
+                    <Td>
+                      <Input
+                        type="text"
+                        name={`budget[${index}].description`}
+                        onChange={(e) =>
+                          handleBudgetChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                        value={row.description}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="number"
+                        name={`budget[${index}].costs`}
+                        onChange={(e) =>
+                          handleBudgetChange(index, "costs", e.target.value)
+                        }
+                        value={row.costs}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
 
             {/* Add Row Button */}
-             <Button onClick={handleAddBudgetRow} colorScheme="teal">
-            Add Expense
-          </Button>
+            <Button onClick={handleAddBudgetRow} colorScheme="teal">
+              Add Expense
+            </Button>
 
+            {/* Calculate Total Cost */}
+            <Heading as="h3" size="md" mb={5}>
+              Total Cost: {calculateTotalCosts("costs")}
+            </Heading>
 
-          {/* Calculate Total Cost */}
-          <Heading as="h3" size="md" mb={5}>
-            Total Cost: {calculateTotalCosts('costs')}
-          </Heading>
-
-
-
-          {/* Project-In-Charge agreement */}
-          <FormControl isRequired>
+            {/* Project-In-Charge agreement */}
+            <FormControl isRequired>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
@@ -757,18 +881,14 @@ const EducationRuralUrbanTribalGroup = () => {
                 required
               />
             </FormControl>
-
-          
-
-       
-</form>
-</VStack>
-{/* Submit Button */}
-<Button colorScheme="blue" type="submit">
-  Submit
-</Button>
-</Box>
-</ChakraProvider>
+          </form>
+        </VStack>
+        {/* Submit Button */}
+        <Button colorScheme="blue" type="submit">
+          Submit
+        </Button>
+      </Box>
+    </ChakraProvider>
   );
 };
 

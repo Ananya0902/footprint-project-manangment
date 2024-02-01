@@ -52,6 +52,9 @@ const GroupProjects = ({ selectedApostolate }) => {
                 <Button as={Link} to="/common" colorScheme="pink" fontSize="xl">
                   Development Project - Application
                 </Button>
+                <Button as={Link} to="/WelfareHomeGroup" colorScheme="pink" fontSize="xl">
+                  Welfare Home and Child
+                </Button>
               </>
             )}
 

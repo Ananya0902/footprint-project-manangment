@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-const WelfareHomeGroup = () => {
+const HIVAffectedOutreach = () => {
   const [formData, setFormData] = useState({
     projectTitle: "",
     projectRegion: "",
@@ -31,15 +31,7 @@ const WelfareHomeGroup = () => {
     overallProjectBudget: "",
     presidentOfSocietyName: "",
     presidentOfSocietyEmail: "",
-    goalOfInstitution: "",
-    rational: "",
-    totalChildren: { previousYear: "", presentYear: "" },
-    rehabilitatedWithGuardians: { previousYear: "", presentYear: "" },
-    shiftedToOtherNGOs: { previousYear: "", presentYear: "" },
-    pursuingHigherStudies: { previousYear: "", presentYear: "" },
-    settledInLife: { previousYear: "", presentYear: "" },
-    settledAndWorking: { previousYear: "", presentYear: "" },
-    otherCategory: { previousYear: "", presentYear: "" },
+    supportProgrammesTillDate: "",
     bridgeEducationPreviousYear: "",
     bridgeEducationPresentYear: "",
     kindergartenPreviousYear: "",
@@ -89,30 +81,11 @@ const WelfareHomeGroup = () => {
       parentsInformalSector: "",
       anyOther: "",
     },
-    multipleSupport: {
-      fundScholarships: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
-      },
-      tuitionClothing: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
-      },
-      nutrition: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
-      },
-      freeResidence: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
-      },
-    },
-    presentSituationinternalChallenges: "",
-    presentSituationexternalChallenges: "",
+
+    challengesFaced: "",
     focusAreasDescription: "",
     monitoringProcess: "",
     sustainability: "",
-    staff: "",
     projectInChargeAgreement: "",
     projectInChargeAgreementDate: "",
     logicalFramework: {
@@ -190,7 +163,7 @@ const WelfareHomeGroup = () => {
   const handleAddAchievement = (category) => {
     setAchievements((prevAchievements) => ({
       ...prevAchievements,
-      [category]: [...prevAchievements[category],""],
+      [category]: [...prevAchievements[category], ""],
     }));
   };
 
@@ -283,10 +256,6 @@ const WelfareHomeGroup = () => {
     e.preventDefault();
 
     // find budget total
-    const budgetTotal = {
-      costs_last_year: 0,
-      budget_current_year: 0,
-    };
 
     const req = {
       project_title: formData.projectTitle,
@@ -303,49 +272,7 @@ const WelfareHomeGroup = () => {
         },
       },
       key_information: {
-        goal_purpose_of_institution: {
-          goal_and_purpose: formData.goalOfInstitution,
-          rational: formData.rational,
-        },
-        statistics_of_passed_out_rehabilitated_children: [
-          {
-            description: "Total number of children in the institution",
-            previous_year: formData.totalChildren.previousYear,
-            present_year: formData.totalChildren.presentYear,
-          },
-          {
-            description:
-              "Children who are rehabilitated with their guardians/parents",
-            previous_year: formData.rehabilitatedWithGuardians.previousYear,
-            present_year: formData.rehabilitatedWithGuardians.presentYear,
-          },
-          {
-            description: "Children who are shifted to other NGOs / Govt",
-            previous_year: formData.shiftedToOtherNGOs.previousYear,
-            present_year: formData.shiftedToOtherNGOs.presentYear,
-          },
-          {
-            description: "Children who are pursuing higher studies outside",
-            previous_year: formData.pursuingHigherStudies.previousYear,
-            present_year: formData.pursuingHigherStudies.presentYear,
-          },
-          {
-            description:
-              "Children who completed the studies and settled down in life (i.e. married etc.)",
-            previous_year: formData.settledInLife.previousYear,
-            present_year: formData.settledInLife.presentYear,
-          },
-          {
-            description: "Children who are now settled and working",
-            previous_year: formData.settledAndWorking.previousYear,
-            present_year: formData.settledAndWorking.presentYear,
-          },
-          {
-            description: "Any other category kindly mention",
-            previous_year: formData.otherCategory.previousYear,
-            present_year: formData.otherCategory.presentYear,
-          },
-        ],
+        support_programmes_till_date: formData.supportProgrammesTillDate,
         age_profile_of_children_and_youth: [
           {
             age_category: "Children below 5 years",
@@ -499,112 +426,33 @@ const WelfareHomeGroup = () => {
             number: formData.economicBackground.anyOther,
           },
         ],
-        multiple_support_provided_for_integrated_development: [
-          {
-            form_of_support: "Fund/scholarships",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.fundScholarships.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.fundScholarships.girls.presentYear,
-          },
-          {
-            form_of_support: "Fund/scholarships",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.fundScholarships.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.fundScholarships.boys.presentYear,
-          },
-          {
-            form_of_support: "Tuition and clothing",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.tuitionClothing.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.tuitionClothing.girls.presentYear,
-          },
-          {
-            form_of_support: "Tuition and clothing",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.tuitionClothing.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.tuitionClothing.boys.presentYear,
-          },
-          {
-            form_of_support: "Nutrition",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.nutrition.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.nutrition.girls.presentYear,
-          },
-          {
-            form_of_support: "Nutrition",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.nutrition.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.nutrition.boys.presentYear,
-          },
-          {
-            form_of_support: "Free Residence",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.freeResidence.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.freeResidence.girls.presentYear,
-          },
-          {
-            form_of_support: "Free Residence",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.freeResidence.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.freeResidence.boys.presentYear,
-          },
-        ],
-        achievements_of_school_and_college_children: {
-          academic_achievements: achievements.academic,
-          sport_achievements: achievements.sport,
-          other_achievements: achievements.other,
-        },
       },
-      present_situation_of_inmates: {
-        internal_challenges_and_present_difficulties:
-          formData.presentSituationexternalChallenges,
-        external_challenges_and_present_difficulties:
-          formData.presentSituationexternalChallenges,
-      },
+      challenges_faced_by_the_benificiary: formData.challengesFaced,
       focus_areas_in_present_year: formData.focusAreasDescription,
       solution_analysis_logical_framework: formData.logicalFramework,
-      staff: formData.staff,
       sustainability: formData.sustainability,
       monitoring_and_evaluation: formData.monitoringProcess,
       budget: {
         budget_particular: budgetRows.map((budget) => {
-          budgetTotal.costs_last_year += budget.costsLastYear;
-          budgetTotal.budget_current_year += budget.budgetCurrentYear;
           return {
             expense_description: budget.description,
             costs_last_year: budget.costsLastYear,
             budget_current_year: budget.budgetCurrentYear,
           };
         }),
-        total: budgetTotal,
+        total: {
+          costs_last_year: calculateTotalCosts("costsLastYear"),
+          budget_current_year: calculateTotalCosts("budgetCurrentYear"),
+        },
       },
     };
 
     console.log(req);
     try {
-      const res = await authAxios.post(
-        '/projects/createWHFC/' , req
-      );
+      const res = await authAxios.post("/projects/createHIV/", req);
       console.log(res);
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
     setIsSubmitted(true);
   };
@@ -651,7 +499,6 @@ const WelfareHomeGroup = () => {
               value={formData.projectRegion || ""}
             />
           </FormControl>
-
 
           <FormControl mb={4}>
             <FormLabel>Institution Name</FormLabel>
@@ -739,245 +586,14 @@ const WelfareHomeGroup = () => {
           </Heading>
 
           <FormControl mb={4}>
-            <FormLabel>Goal / Purpose of the Institution</FormLabel>
+            <FormLabel>Support Programmes Till Date</FormLabel>
             <Textarea
-              name="goalOfInstitution"
+              name="Support Programmes Till Date"
               onChange={handleChange}
-              value={formData.goalOfInstitution || ""}
+              value={formData.supportProgrammesTillDate || ""}
+
             />
           </FormControl>
-
-          <FormControl mb={4}>
-            <FormLabel>
-              Explain in short, what the institution's service is, and how this
-              will contribute to achieving your set goal.
-            </FormLabel>
-            <Textarea
-              name="rational"
-              onChange={handleChange}
-              value={formData.rational || ""}
-            />
-          </FormControl>
-
-          {/* Statistics Of Passed Out / Rehabilitated Children Till Date Section */}
-          <Heading as="h2" size="lg" mt={6} mb={4}>
-            Statistics Of Passed Out / Rehabilitated Children Till Date
-          </Heading>
-
-          <Table variant="simple" mb={4}>
-            <Thead>
-              <Tr>
-                <Th>Description</Th>
-                <Th>Previous Year</Th>
-                <Th>Present Academic Year</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {/* Row 1 */}
-              <Tr>
-                <Td>Total number of children in the institution</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="totalChildren"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "totalChildren")
-                    }
-                    value={formData.totalChildren.previousYear || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="totalChildren"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "totalChildren")
-                    }
-                    value={formData.totalChildren.presentYear || ""}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Row 2 */}
-              <Tr>
-                <Td>
-                  Children who are rehabilitated with their guardians/parents
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="rehabilitatedWithGuardians"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(
-                        e,
-                        "rehabilitatedWithGuardians"
-                      )
-                    }
-                    value={
-                      formData.rehabilitatedWithGuardians.previousYear || ""
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="rehabilitatedWithGuardians"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(
-                        e,
-                        "rehabilitatedWithGuardians"
-                      )
-                    }
-                    value={
-                      formData.rehabilitatedWithGuardians.presentYear || ""
-                    }
-                  />
-                </Td>
-              </Tr>
-
-              {/* Row 3 */}
-              <Tr>
-                <Td>Children who are shifted to other NGOs / Govt</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="shiftedToOtherNGOs"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "shiftedToOtherNGOs")
-                    }
-                    value={formData.shiftedToOtherNGOs.previousYear || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="shiftedToOtherNGOs"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "shiftedToOtherNGOs")
-                    }
-                    value={formData.shiftedToOtherNGOs.presentYear || ""}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Row 4 */}
-              <Tr>
-                <Td>Children who are pursuing higher studies outside</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="pursuingHigherStudies"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "pursuingHigherStudies")
-                    }
-                    value={formData.pursuingHigherStudies.previousYear || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="pursuingHigherStudies"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "pursuingHigherStudies")
-                    }
-                    value={formData.pursuingHigherStudies.presentYear || ""}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Row 5 */}
-              <Tr>
-                <Td>
-                  Children who completed the studies and settled down in life
-                  (i.e. married etc.)
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="settledInLife"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledInLife")
-                    }
-                    value={formData.settledInLife.previousYear || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="settledInLife"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledInLife")
-                    }
-                    value={formData.settledInLife.presentYear || ""}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Row 6 */}
-              <Tr>
-                <Td>Children who are now settled and working</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="settledAndWorking"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledAndWorking")
-                    }
-                    value={formData.settledAndWorking.previousYear || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="settledAndWorking"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledAndWorking")
-                    }
-                    value={formData.settledAndWorking.presentYear || ""}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Row 7 */}
-              <Tr>
-                <Td>Any other category kindly mention</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="previousYear"
-                    name="otherCategory"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "otherCategory")
-                    }
-                    value={formData.otherCategory.previousYear || ""}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    data-year="presentYear"
-                    name="otherCategory"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "otherCategory")
-                    }
-                    value={formData.otherCategory.presentYear || ""}
-                  />
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
 
           {/* Age Profile Of Children And Youth Presently In The Institution */}
           <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -1691,438 +1307,16 @@ const WelfareHomeGroup = () => {
             </Tbody>
           </Table>
 
-          <Heading as="h2" size="lg" mt={6} mb={4}>
-            Multiple Support Provided For Integrated Development Of Students
-          </Heading>
 
-          <Table variant="simple" mb={4}>
-            <Thead>
-              <Tr>
-                <Th>Form of Support</Th>
-                <Th>Gender</Th>
-                <Th>Number Previous Year</Th>
-                <Th>Number Present Academic Year</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {/* Fund/scholarships */}
-              <Tr>
-                <Td rowSpan="2">Fund/scholarships</Td>
-                <Td>Girls</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="fundScholarshipsGirlsPreviousYear"
-                    value={
-                      formData.multipleSupport.fundScholarships.girls
-                        .previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="fundScholarshipsGirlsPresentYear"
-                    value={
-                      formData.multipleSupport.fundScholarships.girls
-                        .presentYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Boys</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="fundScholarshipsBoysPreviousYear"
-                    value={
-                      formData.multipleSupport.fundScholarships.boys
-                        .previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="fundScholarshipsBoysPresentYear"
-                    value={
-                      formData.multipleSupport.fundScholarships.boys.presentYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
 
-              {/* Tuition and clothing */}
-              <Tr>
-                <Td rowSpan="2">Tuition and clothing</Td>
-                <Td>Girls</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="tuitionClothingGirlsPreviousYear"
-                    value={
-                      formData.multipleSupport.tuitionClothing.girls
-                        .previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="tuitionClothingGirlsPresentYear"
-                    value={
-                      formData.multipleSupport.tuitionClothing.girls.presentYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc, padding: 5px" }}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Boys</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="tuitionClothingBoysPreviousYear"
-                    value={
-                      formData.multipleSupport.tuitionClothing.boys.previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="tuitionClothingBoysPresentYear"
-                    value={
-                      formData.multipleSupport.tuitionClothing.boys.presentYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Nutrition */}
-              <Tr>
-                <Td rowSpan="2">Nutrition</Td>
-                <Td>Girls</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="nutritionGirlsPreviousYear"
-                    value={
-                      formData.multipleSupport.nutrition.girls.previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="nutritionGirlsPresentYear"
-                    value={formData.multipleSupport.nutrition.girls.presentYear}
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Boys</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="nutritionBoysPreviousYear"
-                    value={formData.multipleSupport.nutrition.boys.previousYear}
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="nutritionBoysPresentYear"
-                    value={formData.multipleSupport.nutrition.boys.presentYear}
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
-
-              {/* Free Residence */}
-              <Tr>
-                <Td rowSpan="2">Free Residence</Td>
-                <Td>Girls</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="freeResidenceGirlsPreviousYear"
-                    value={
-                      formData.multipleSupport.freeResidence.girls.previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="freeResidenceGirlsPresentYear"
-                    value={
-                      formData.multipleSupport.freeResidence.girls.presentYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>Boys</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="freeResidenceBoysPreviousYear"
-                    value={
-                      formData.multipleSupport.freeResidence.boys.previousYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="freeResidenceBoysPresentYear"
-                    value={
-                      formData.multipleSupport.freeResidence.boys.presentYear
-                    }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
-                    style={{ border: "1px solid #ccc", padding: "5px" }}
-                  />
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
-
-          <Heading as="h2" size="lg" mt={6} mb={4}>
-            Achievements Of School And College Children In The Previous Year
-          </Heading>
-
-          {/* Academic Achievements */}
-          <VStack mb={4}>
-            <Heading as="h3" size="md">
-              Academic Achievements
-            </Heading>
-            {achievements.academic.map((achievement, index) => (
-              <Input
-                key={index}
-                type="text"
-                value={achievement.description}
-                onChange={(e) =>
-                  handleAchievementChange("academic", index, e.target.value)
-                }
-                mb={2}
-              />
-            ))}
-            <Button onClick={() => handleAddAchievement("academic")}>
-              Add Academic Achievement
-            </Button>
-          </VStack>
-
-          {/* Sport Achievements */}
-          <VStack mb={4}>
-            <Heading as="h3" size="md">
-              Sport Achievements
-            </Heading>
-            {achievements.sport.map((achievement, index) => (
-              <Input
-                key={index}
-                type="text"
-                value={achievement.description}
-                onChange={(e) =>
-                  handleAchievementChange("sport", index, e.target.value)
-                }
-                mb={2}
-              />
-            ))}
-            <Button onClick={() => handleAddAchievement("sport")}>
-              Add Sport Achievement
-            </Button>
-          </VStack>
-
-          {/* Other Achievements */}
-          <VStack mb={4}>
-            <Heading as="h3" size="md">
-              Any Other Achievements
-            </Heading>
-            {achievements.other.map((achievement, index) => (
-              <Input
-                key={index}
-                type="text"
-                value={achievement.description}
-                onChange={(e) =>
-                  handleAchievementChange("other", index, e.target.value)
-                }
-                mb={2}
-              />
-            ))}
-            <Button onClick={() => handleAddAchievement("other")}>
-              Add Other Achievement
-            </Button>
-          </VStack>
-
-          {/* Present Situation of the Inmates */}
-          <Heading as="h2" size="lg" mt={6} mb={4}>
-            Present Situation of the Inmates
-          </Heading>
-
-          {/* Internal Challenges And Present Difficulties */}
+          {/* Challenges Faced By the benificiary */}
           <Box mb={4}>
             <Heading as="h3" size="md">
-              Internal Challenges And Present Difficulties
+              Challenges Faced By The Benificiary
             </Heading>
             <Textarea
-              name="presentSituationinternalChallenges"
-              value={formData.presentSituationinternalChallenges}
-              onChange={handleChange}
-              placeholder="Enter text..."
-              size="md"
-            />
-          </Box>
-
-          {/* External Challenges And Present Difficulties */}
-          <Box mb={4}>
-            <Heading as="h3" size="md">
-              External Challenges And Present Difficulties
-            </Heading>
-            <Textarea
-              name="presentSituationexternalChallenges"
-              value={formData.presentSituationexternalChallenges}
+              name="challengesFacedByTheBenificiary"
+              value={formData.challengesFaced}
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
@@ -2349,25 +1543,6 @@ const WelfareHomeGroup = () => {
             />
           </FormControl>
 
-          {/* Staff Information */}
-          <Heading as="h2" size="lg" mt={6} mb={4}>
-            Staff
-          </Heading>
-          <FormControl isRequired>
-            <FormLabel>
-              Provide an overview of the involved staff. How many sisters are
-              working in the institution? How many lay staff members are there?
-              What are the roles/jobs of the people? What is their educational
-              background? Etc.
-            </FormLabel>
-            <Textarea
-              name="staff"
-              value={formData.staff}
-              onChange={(e) => handleChange(e)}
-              required
-            />
-          </FormControl>
-
           <Heading as="h2" size="lg" mt={6} mb={4}>
             Budget
           </Heading>
@@ -2475,4 +1650,4 @@ const WelfareHomeGroup = () => {
   );
 };
 
-export default WelfareHomeGroup;
+export default HIVAffectedOutreach;
