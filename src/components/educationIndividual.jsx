@@ -41,7 +41,7 @@ const EducationIndividual= () => {
       <Box p={4}>
 
       <Heading as="h1" size="xl" mb={6} align="center" justifyContent="center">
-          Education individual Ongoing Project Application Form 
+          Education individual  Project Application Form 
         </Heading>
 
         {isSubmitted && (

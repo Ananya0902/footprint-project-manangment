@@ -40,6 +40,8 @@ import ReviewEIO from "./components/ReviewEIO";
 import ApproveEIO from "./components/ApproveEIO";
 import ViewProject from './components/viewHIOProject'
 import NextPhaseForm from './components/NextPhaseDevelopmentProject'
+import WelfareHomeGroup from "./components/WelfareHomeGroup";
+import EducationRuralUrbanTribalGroup from "./components/EducationRuralUrbanTribalGroup";
 
 
 // App component
@@ -90,6 +92,9 @@ const App = () => {
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
           <Route path="/viewProject/:project" element={<ViewProject/>} /> 
           <Route path="/nextPhaseDevelopmentProject" element={<NextPhaseForm/>} /> 
+
+          <Route path="/WelfareHomeGroup" element={<WelfareHomeGroup/>} /> 
+          <Route path="/EducationRuralUrbanTribalGroup" element={<EducationRuralUrbanTribalGroup/>} /> 
 
         </Routes>
       </Router>
