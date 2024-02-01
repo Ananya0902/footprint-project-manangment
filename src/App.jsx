@@ -38,9 +38,8 @@ import ReviewHIO from "./components/ReviewHIO";
 import ApproveHIO from "./components/ApproveHIO";
 import ReviewEIO from "./components/ReviewEIO";
 import ApproveEIO from "./components/ApproveEIO";
-import ReviewSIO from "./components/ReviewSIO";
-import ApproveSIO from "./components/ApproveSIO";
 import ViewProject from './components/viewHIOProject'
+import NextPhaseForm from './components/NextPhaseDevelopmentProject'
 
 
 // App component
@@ -90,6 +89,8 @@ const App = () => {
           <Route path="/ApproveEIO/:project" element={<ApproveEIO />} />
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
           <Route path="/viewProject/:project" element={<ViewProject/>} /> 
+          <Route path="/nextPhaseDevelopmentProject" element={<NextPhaseForm/>} /> 
+
         </Routes>
       </Router>
     </ChakraProvider>
