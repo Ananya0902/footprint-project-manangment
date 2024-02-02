@@ -50,6 +50,7 @@ import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividu
 import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
 import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
 import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
+import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
 
 
 // App component
@@ -112,7 +113,7 @@ const App = () => {
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
-
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
         </Routes>
       </Router>
     </ChakraProvider>
