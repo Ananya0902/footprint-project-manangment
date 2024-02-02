@@ -43,6 +43,7 @@ import NextPhaseForm from './components/NextPhaseDevelopmentProject'
 import WelfareHomeGroup from "./components/WelfareHomeGroup";
 import EducationRuralUrbanTribalGroup from "./components/EducationRuralUrbanTribalGroup";
 import HIVAffectedOutreach from "./components/HIVAffectedOutreach";
+import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
 
 
 // App component
@@ -98,7 +99,7 @@ const App = () => {
           <Route path="/HIVAffectedOutreach" element={<HIVAffectedOutreach/>} /> 
 
           <Route path="/EducationRuralUrbanTribalGroup" element={<EducationRuralUrbanTribalGroup/>} /> 
-
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
         </Routes>
       </Router>
     </ChakraProvider>
