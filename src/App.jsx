@@ -43,6 +43,13 @@ import NextPhaseForm from './components/NextPhaseDevelopmentProject'
 import WelfareHomeGroup from "./components/WelfareHomeGroup";
 import EducationRuralUrbanTribalGroup from "./components/EducationRuralUrbanTribalGroup";
 import HIVAffectedOutreach from "./components/HIVAffectedOutreach";
+import AnnualRepEducationIndividual from "./components/AnnualRepEducationIndividual";
+import AnnualRepHealthIndividual from "./components/AnnualRepHealthIndividual";
+import AnnualSelfEmployment from "./components/AnnualSelfEmploymentReport";
+import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividualReport";
+import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
+import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
+import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
 import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
 
 
@@ -99,6 +106,13 @@ const App = () => {
           <Route path="/HIVAffectedOutreach" element={<HIVAffectedOutreach/>} /> 
 
           <Route path="/EducationRuralUrbanTribalGroup" element={<EducationRuralUrbanTribalGroup/>} /> 
+          <Route path="/AnnualRepEducationIndividual" element={<AnnualRepEducationIndividual/>} /> 
+          <Route path="/AnnualRepHealthIndividual" element={<AnnualRepHealthIndividual/>} /> 
+          <Route path="/AnnualSelfEmploymentReport" element={<AnnualSelfEmployment/>} /> 
+          <Route path="/BiAnnualLivelihoodIndividualReport" element={<BiAnnualLivelihoodIndividual/>} /> 
+          <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
+          <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
+          <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
           <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
         </Routes>
       </Router>
