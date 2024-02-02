@@ -63,44 +63,6 @@ const QuaterlyReportDevelopment = () => {
     remark: "",
   });
 
-  {/*const handleChange = (e,field, value, index, type) => {
-    setFormData((prevData) => {
-      if (type === "receipts") {
-        const { name, value } = e.target;
-        const updatedData = { ...prevData };
-        updatedData.receipts[index][name.split("-")[0]] = value;
-        return updatedData;
-      } 
-      if (type === "payments") {
-        const { name, value } = e.target;
-        const updatedData = { ...prevData };
-        updatedData.payments[index][name] = parseFloat(value);
-        updatedData.payments[index].totalExpenditure =
-          (updatedData.payments[index].expenditureLastMonth) +
-          (updatedData.payments[index].expenditureThisMonth);
-        return updatedData;
-      }
-  
-      if (field.includes('activityTable') || field.includes('notHappenTable') || field.includes('projectChangesTable') || field.includes('lessonsLearnedTable')) {
-        const [tableType, tableIndex, tableField] = field.split('.');
-        const updatedTable = [...prevData.activitiesSection[tableType]];
-        updatedTable[tableIndex][tableField] = value;
-  
-        return {
-          ...prevData,
-          activitiesSection: {
-            ...prevData.activitiesSection,
-            [tableType]: updatedTable,
-          },
-        };
-      }
-  
-      return {
-        ...prevData,
-        [field]: value,
-      };
-    });
-  */}  
     const handleChange = (field, value) => {
      setFormData((prevData) => ({
        ...prevData,
