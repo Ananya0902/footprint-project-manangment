@@ -38,11 +38,11 @@ import ReviewHIO from "./components/ReviewHIO";
 import ApproveHIO from "./components/ApproveHIO";
 import ReviewEIO from "./components/ReviewEIO";
 import ApproveEIO from "./components/ApproveEIO";
-import ReviewSIO from "./components/ReviewSIO";
-import ApproveSIO from "./components/ApproveSIO";
 import ViewProject from './components/viewHIOProject'
+import NextPhaseForm from './components/NextPhaseDevelopmentProject'
 import WelfareHomeGroup from "./components/WelfareHomeGroup";
 import EducationRuralUrbanTribalGroup from "./components/EducationRuralUrbanTribalGroup";
+import HIVAffectedOutreach from "./components/HIVAffectedOutreach";
 import AnnualRepEducationIndividual from "./components/AnnualRepEducationIndividual";
 import AnnualRepHealthIndividual from "./components/AnnualRepHealthIndividual";
 import AnnualSelfEmployment from "./components/AnnualSelfEmploymentReport";
@@ -99,7 +99,11 @@ const App = () => {
           <Route path="/ApproveEIO/:project" element={<ApproveEIO />} />
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
           <Route path="/viewProject/:project" element={<ViewProject/>} /> 
+          <Route path="/nextPhaseDevelopmentProject" element={<NextPhaseForm/>} /> 
+
           <Route path="/WelfareHomeGroup" element={<WelfareHomeGroup/>} /> 
+          <Route path="/HIVAffectedOutreach" element={<HIVAffectedOutreach/>} /> 
+
           <Route path="/EducationRuralUrbanTribalGroup" element={<EducationRuralUrbanTribalGroup/>} /> 
           <Route path="/AnnualRepEducationIndividual" element={<AnnualRepEducationIndividual/>} /> 
           <Route path="/AnnualRepHealthIndividual" element={<AnnualRepHealthIndividual/>} /> 

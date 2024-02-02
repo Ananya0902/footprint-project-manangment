@@ -27,6 +27,7 @@ const ReviewEIO = () => {
   console.log(projectData);
   const [formData, setFormData] = useState({
     // Name and contact of Provincial Superior
+      // Name and contact of Provincial Superior
     projectInchargeName: projectInchargeData.name,
     projectInchargeEmail: projectInchargeData.email,
     projectInchargeContact: projectInchargeData.mobile,
@@ -820,7 +821,7 @@ const ReviewEIO = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.photographUrl}
+                src={formData.aadharCardUrl}
                 alt="Dan Abramov"
               />
             </FormControl>
