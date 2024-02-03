@@ -7,8 +7,7 @@ import LoginPage from "./components/login";
 import RegisterPage from "./components/register";
 import HealthIndividualOngoing from "./components/healthIndividiualOngoing";
 import EducationIndividualOngoing from "./components/educationIndividualOngoing";
-import SocialIndividualOngoing from "./components/socialIndividualOngoing";
-import HealthIndividual from "./components/healthIndividual";
+
 import EducationIndividual from "./components/educationIndividual";
 import SocialIndividual from "./components/socialIndividual";
 import EducationGroup from "./components/educationGroup";
@@ -50,6 +49,8 @@ import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividu
 import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
 import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
 import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
+import ReviewEI from "./components/ReviewEI";
+import ApproveEI from "./components/ApproveEI";
 
 
 // App component
@@ -64,10 +65,10 @@ const App = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/registerApprover" element={<RegisterApproverPage />} />
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
-          <Route path="/healthIndividual" element={<HealthIndividual/>} />
+        
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/educationIndividual" element={<EducationIndividual />} />
-          <Route path="/socialIndividualOngoing" element={<SocialIndividualOngoing />} />
+          
           <Route path="/socialIndividual" element={<SocialIndividual />} />
           <Route path="/educationGroup" element={<EducationGroup />} />
           <Route path="/common" element={<Common />} />
@@ -112,6 +113,8 @@ const App = () => {
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
+          <Route path="/ReviewEI" element={<ReviewEI/>} /> 
+          <Route path="/ApproveEI" element={<ApproveEI/>} /> 
 
         </Routes>
       </Router>
