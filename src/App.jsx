@@ -49,6 +49,7 @@ import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividu
 import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
 import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
 import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
+import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
 import ReviewEI from "./components/ReviewEI";
 import ApproveEI from "./components/ApproveEI";
 
@@ -113,8 +114,10 @@ const App = () => {
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
-          <Route path="/ReviewEI" element={<ReviewEI/>} /> 
-          <Route path="/ApproveEI" element={<ApproveEI/>} /> 
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+          <Route path='/ReviewEI' element={<ReviewEI/>} />          
+          <Route path='/ApproveEI' element={<ApproveEI/>} />          
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
 
         </Routes>
       </Router>
