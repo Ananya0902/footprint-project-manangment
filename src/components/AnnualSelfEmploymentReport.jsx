@@ -37,7 +37,7 @@ const AnnualSelfEmployment = () => {
     ],
     totalAmountApproved: 0,
     totalExpenditure: 0,
-    totalLeft: 0,
+    
     remarks: '',
     photos: [],
   };
@@ -309,10 +309,7 @@ const AnnualSelfEmployment = () => {
                 <Input type="number" value={calculateTotalExpenditure(formik.values)} readOnly />
               </FormControl>
 
-              <FormControl>
-                <FormLabel>Total Left (auto-calculated)</FormLabel>
-                <Input type="number" value={calculateTotalLeft(formik.values)} readOnly />
-              </FormControl>
+              
 
               <Field name="remarks">
                 {({ field, form }) => (

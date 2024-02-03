@@ -7,8 +7,7 @@ import LoginPage from "./components/login";
 import RegisterPage from "./components/register";
 import HealthIndividualOngoing from "./components/healthIndividiualOngoing";
 import EducationIndividualOngoing from "./components/educationIndividualOngoing";
-import SocialIndividualOngoing from "./components/socialIndividualOngoing";
-import HealthIndividual from "./components/healthIndividual";
+
 import EducationIndividual from "./components/educationIndividual";
 import SocialIndividual from "./components/socialIndividual";
 import EducationGroup from "./components/educationGroup";
@@ -50,7 +49,17 @@ import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividu
 import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
 import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
 import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
-import ReviewWelfareHomeForChildren from "./components/RevieweWelfareHomeForChildren";
+import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
+import ReviewEI from "./components/ReviewEI";
+import ApproveEI from "./components/ApproveEI";
+import ReviewNPDP from "./components/ReviewNPDP";
+import ApproveNPDP from "./components/ApproveNPDP";
+import ViewNPDP from "./components/viewNPDP";
+import ReviewEduRUTG from "./components/ReviewEduRUTG";
+import ApproveEduRUTG from "./components/ApproveEduRUTG";
+import ViewEduRUTG from "./components/ViewEduRUTG";
+import ViewEI from "./components/ViewEI";
+
 
 
 // App component
@@ -65,10 +74,10 @@ const App = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/registerApprover" element={<RegisterApproverPage />} />
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
-          <Route path="/healthIndividual" element={<HealthIndividual/>} />
+        
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/educationIndividual" element={<EducationIndividual />} />
-          <Route path="/socialIndividualOngoing" element={<SocialIndividualOngoing />} />
+          
           <Route path="/socialIndividual" element={<SocialIndividual />} />
           <Route path="/educationGroup" element={<EducationGroup />} />
           <Route path="/common" element={<Common />} />
@@ -113,7 +122,19 @@ const App = () => {
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
-          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+          <Route path='/ReviewEI' element={<ReviewEI/>} />          
+          <Route path='/ApproveEI' element={<ApproveEI/>} />          
+          <Route path='/ViewEI' element={<ViewEI/>} />          
+          <Route path='/ReviewNPDP' element={<ReviewNPDP/>} />          
+          <Route path='/ApproveNPDP' element={<ApproveNPDP/>} />          
+          <Route path='/viewNPDP' element={<ViewNPDP/>} />
+          <Route path='/ReviewEduRUTG' element={<ReviewEduRUTG/>} />
+          <Route path='/ApproveEduRUTG' element={<ApproveEduRUTG/>} />
+          <Route path='/ViewEduRUTG' element={<ViewEduRUTG/>} />
+                  
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+
         </Routes>
       </Router>
     </ChakraProvider>
