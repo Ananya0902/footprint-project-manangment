@@ -50,7 +50,7 @@ import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividu
 import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
 import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
 import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
-import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
+import ReviewWelfareHomeForChildren from "./components/RevieweWelfareHomeForChildren";
 
 
 // App component
