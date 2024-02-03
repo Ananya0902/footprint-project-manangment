@@ -22,9 +22,67 @@ import {
 
 
 const EducationGroup= () => {
-    const [formData, setFormData] = useState({
-        objectives: [''], // Initial empty objective
-      });
+  const [formData, setFormData] = useState({
+    NAMEOFTHESOCIETY: '',  // Name of the Society
+    dATEOFSUBMISSION: '', // Date of Submission
+    TITLEOFTHEPROJECT: '', // Title of the Project
+    address: '', // Address
+  
+    // Contacts Table
+    provincialSuperiorName: '',
+    provincialSuperiorCellNumber: '',
+    provincialSuperiorEmail: '',
+    projectInChargeName: '',
+    projectInChargeCellNumber: '',
+    projectInChargeEmail: '',
+  
+    // Overall Project Information
+    overallProjectPeriod: '',
+    overallProjectBudget: '',
+    beneficiariesSupported: '',
+    outcomeImpact: '',
+    projectGoal: '',
+    objectives: [''], // Initial empty objective
+  
+    // People Details Table
+    peopleDetails: [
+      // Initial row, you can add more if needed
+      { role: '', name: '', cellNumber: '', email: '' },
+    ],
+  
+    // Target Group Information Table
+    targetGroupInformation: [
+      // Initial row, you can add more if needed
+      { serialNo: '', name: '', casteAddress: '', recommendedBy: '', familyBackground: '' },
+    ],
+  
+    // Target Group Studies Table
+    targetGroupStudies: [
+      // Initial row, you can add more if needed
+      { serialNo: '', name: '', studyProposed: '', totalExpense: '', contribution: '', scholarshipEligibility: '', expectedAmount: '' },
+    ],
+  
+    // Other Proposed Activities
+    otherActivities: '',
+  
+    // Monitoring Methods
+    monitoringMethods: '',
+  
+    // Evaluation Process and Responsible Person
+    evaluationProcess: '',
+  
+    // Conclusion
+    conclusion: '',
+  
+    // Signatures
+    projectCoordinatorAgreement: false,
+    projectCoordinatorAgreementDate: '',
+    projectInChargeAgreement: false,
+    projectInChargeAgreementDate: '',
+    provincialSuperiorAgreement: false,
+    provincialSuperiorAgreementDate: '',
+  });
+  
       const [isSubmitted, setIsSubmitted] = useState(false);
     
       const handleChange = (e, index) => {
@@ -331,46 +389,54 @@ const EducationGroup= () => {
 
         <form onSubmit={handleSubmit}>
         <VStack align="start" spacing={4} mb={8}>
-            {/* NAME OF THE SOCIETY */}
-            <FormControl isRequired>
-              <FormLabel>NAME OF THE SOCIETY</FormLabel>
-              <Input
-                type="text"
-                name="NAMEOFTHESOCIETY"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
-              <FormLabel>DATE OF SUBMISSION</FormLabel>
-              <Input
-                type="date"
-                name="dATEOFSUBMISSION"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* TITLE OF THE PROJECT */}
-            <FormControl isRequired>
-              <FormLabel>TITLE OF THE PROJECT </FormLabel>
-              <Input
-                type="text"
-                name="TITLEOFTHEPROJECT "
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* ADDRESS*/}
-            <FormControl isRequired>
-              <FormLabel>ADDRESS</FormLabel>
-              <Input
-                type="text"
-                name="address"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+          {/* NAME OF THE SOCIETY */}
+<FormControl isRequired>
+  <FormLabel>NAME OF THE SOCIETY</FormLabel>
+  <Input
+    type="text"
+    name="NAMEOFTHESOCIETY"
+    value={formData.NAMEOFTHESOCIETY}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
+{/* DATE OF SUBMISSION */}
+<FormControl isRequired>
+  <FormLabel>DATE OF SUBMISSION</FormLabel>
+  <Input
+    type="date"
+    name="dATEOFSUBMISSION"
+    value={formData.dATEOFSUBMISSION}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
+{/* TITLE OF THE PROJECT */}
+<FormControl isRequired>
+  <FormLabel>TITLE OF THE PROJECT </FormLabel>
+  <Input
+    type="text"
+    name="TITLEOFTHEPROJECT "
+    value={formData.TITLEOFTHEPROJECT}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
+{/* ADDRESS*/}
+<FormControl isRequired>
+  <FormLabel>ADDRESS</FormLabel>
+  <Input
+    type="text"
+    name="address"
+    value={formData.address}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
               {/* Contacts Table */}
             <Table variant="simple" mb={4}>
               <Thead>
@@ -382,62 +448,68 @@ const EducationGroup= () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                </Tr>
-                {/* Project In-Charge */}
-                <Tr>
-                  <Td>Project In-Charge</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="projectInChargeName"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="projectInChargeCellNumber"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="projectInChargeEmail"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                </Tr>
+                 {/* Provincial Superior */}
+    <Tr>
+      <Td>Provincial Superior</Td>
+      <Td>
+        <Input
+          type="text"
+          name="provincialSuperiorName"
+          value={formData.provincialSuperiorName}
+          onChange={handleChange}
+          required
+        />
+      </Td>
+      <Td>
+        <Input
+          type="tel"
+          name="provincialSuperiorCellNumber"
+          value={formData.provincialSuperiorCellNumber}
+          onChange={handleChange}
+          required
+        />
+      </Td>
+      <Td>
+        <Input
+          type="email"
+          name="provincialSuperiorEmail"
+          value={formData.provincialSuperiorEmail}
+          onChange={handleChange}
+          required
+        />
+      </Td>
+    </Tr>
+    {/* Project In-Charge */}
+    <Tr>
+      <Td>Project In-Charge</Td>
+      <Td>
+        <Input
+          type="text"
+          name="projectInChargeName"
+          value={formData.projectInChargeName}
+          onChange={handleChange}
+          required
+        />
+      </Td>
+      <Td>
+        <Input
+          type="tel"
+          name="projectInChargeCellNumber"
+          value={formData.projectInChargeCellNumber}
+          onChange={handleChange}
+          required
+        />
+      </Td>
+      <Td>
+        <Input
+          type="email"
+          name="projectInChargeEmail"
+          value={formData.projectInChargeEmail}
+          onChange={handleChange}
+          required
+        />
+      </Td>
+    </Tr>
                 {/* Project Coordinators */}
                 <Tr>
                   <Td>Project Coordinator 1</Td>
@@ -454,36 +526,40 @@ const EducationGroup= () => {
               </Tbody>
             </Table>
              {/* Overall Project Period */}
-             <FormControl isRequired>
-              <FormLabel>Overall Project Period (in months)</FormLabel>
-              <Input
-                type="number"
-                name="overallProjectPeriod"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+<FormControl isRequired>
+  <FormLabel>Overall Project Period (in months)</FormLabel>
+  <Input
+    type="number"
+    name="overallProjectPeriod"
+    value={formData.overallProjectPeriod}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
 
-            {/* Overall Project Budget */}
-            <FormControl isRequired>
-              <FormLabel>Overall Project Budget</FormLabel>
-              <Input
-                type="number"
-                name="overallProjectBudget"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* Number of Beneficiaries supported in the previous years */}
-            <FormControl isRequired>
-              <FormLabel>Number of Beneficiaries supported in the previous years</FormLabel>
-              <Input
-                type="number"
-                name="beneficiariesSupported"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+{/* Overall Project Budget */}
+<FormControl isRequired>
+  <FormLabel>Overall Project Budget</FormLabel>
+  <Input
+    type="number"
+    name="overallProjectBudget"
+    value={formData.overallProjectBudget}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
+
+{/* Number of Beneficiaries supported in the previous years */}
+<FormControl isRequired>
+  <FormLabel>Number of Beneficiaries supported in the previous years</FormLabel>
+  <Input
+    type="number"
+    name="beneficiariesSupported"
+    value={formData.beneficiariesSupported}
+    onChange={handleChange}
+    required
+  />
+</FormControl>
 
             {/* Outcome / Impact in the lives of the passed-out students */}
             <FormControl isRequired>
@@ -491,6 +567,8 @@ const EducationGroup= () => {
               <Textarea
                 name="outcomeImpact"
                 onChange={handleChange}
+                value={formData.outcomeImpact}
+
                 required
               />
             </FormControl>
@@ -501,6 +579,8 @@ const EducationGroup= () => {
               <Textarea
                 name="projectGoal"
                 onChange={handleChange}
+                value={formData.projectGoal}
+
                 required
               />
             </FormControl>
@@ -539,53 +619,57 @@ const EducationGroup= () => {
             <TargetGroupInformationTable/>
             <TargetGroupStudiesTable />
              {/* Other Proposed Activities */}
-             <FormControl isRequired>
-              <FormLabel>
-                Apart from academic studies, what are the other proposed activities for the overall development of the beneficiary individually and as a group?
-              </FormLabel>
-              <Textarea
-                name="otherActivities"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+<FormControl isRequired>
+  <FormLabel>
+    Apart from academic studies, what are the other proposed activities for the overall development of the beneficiary individually and as a group?
+  </FormLabel>
+  <Textarea
+    name="otherActivities"
+    onChange={handleChange}
+    value={formData.otherActivities} 
+    required
+  />
+</FormControl>
 
-            {/* Monitoring Methods */}
-            <FormControl isRequired>
-              <FormLabel>
-                Propose the methods of monitoring the beneficiary's overall growth and development:
-              </FormLabel>
-              <Textarea
-                name="monitoringMethods"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+{/* Monitoring Methods */}
+<FormControl isRequired>
+  <FormLabel>
+    Propose the methods of monitoring the beneficiary's overall growth and development:
+  </FormLabel>
+  <Textarea
+    name="monitoringMethods"
+    onChange={handleChange}
+    value={formData.monitoringMethods} 
+    required
+  />
+</FormControl>
 
-            {/* Evaluation Process and Responsible Person */}
-            <FormControl isRequired>
-              <FormLabel>
-                Mention the process of evaluation of the growth of the beneficiaries and who would be responsible.
-              </FormLabel>
-              <Textarea
-                name="evaluationProcess"
-                onChange={handleChange}
-                required
-              />
-              
-            </FormControl>
+{/* Evaluation Process and Responsible Person */}
+<FormControl isRequired>
+  <FormLabel>
+    Mention the process of evaluation of the growth of the beneficiaries and who would be responsible.
+  </FormLabel>
+  <Textarea
+    name="evaluationProcess"
+    onChange={handleChange}
+    value={formData.evaluationProcess}  
+    required
+  />
+</FormControl>
 
-            {/* Conclusion */}
-            <FormControl isRequired>
-              <FormLabel>
-                Conclusion
-              </FormLabel>
-              <Textarea
-                name="conclusion"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+{/* Conclusion */}
+<FormControl isRequired>
+  <FormLabel>
+    Conclusion
+  </FormLabel>
+  <Textarea
+    name="conclusion"
+    onChange={handleChange}
+    value={formData.conclusion}  
+    required
+  />
+</FormControl>
+
 
 
             <Heading as="h1" size="xl" mb={6}>
@@ -593,7 +677,7 @@ const EducationGroup= () => {
   </Heading>
 
             {/* Project Coordinator agreement */}
-  <FormControl isRequired>
+  {/* <FormControl isRequired>
     <Checkbox
       name="projectCoordinatorAgreement"
       onChange={handleChange}
@@ -607,7 +691,7 @@ const EducationGroup= () => {
       onChange={handleChange}
       required
     />
-  </FormControl>
+  </FormControl> */}
 
   {/* Project-In-Charge agreement */}
   <FormControl isRequired>
@@ -615,6 +699,7 @@ const EducationGroup= () => {
       name="projectInChargeAgreement"
       onChange={handleChange}
       size="lg"
+      defaultChecked={formData.projectInChargeAgreement}
     >
       The Project-In-Charge agree
     </Checkbox>
@@ -622,12 +707,13 @@ const EducationGroup= () => {
       type="date"
       name="projectInChargeAgreementDate"
       onChange={handleChange}
+      value={formData.projectInChargeAgreementDate} 
       required
     />
   </FormControl>
 
   {/* Provincial Superior agreement */}
-  <FormControl isRequired>
+  {/* <FormControl isRequired>
     <Checkbox
       name="provincialSuperiorAgreement"
       onChange={handleChange}
@@ -642,7 +728,7 @@ const EducationGroup= () => {
       required
     />
   </FormControl>
-          
+           */}
           </VStack>
 
 
