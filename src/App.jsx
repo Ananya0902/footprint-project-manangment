@@ -58,6 +58,15 @@ import ReviewEduRUTG from "./components/ReviewEduRUTG";
 import ApproveEduRUTG from "./components/ApproveEduRUTG";
 import ViewEduRUTG from "./components/ViewEduRUTG";
 import ViewEI from "./components/ViewEI";
+import ReviewDPLG from "./components/ReviewDPLG";
+import ApproveDPLG from "./components/ApproveDPLG";
+import ReviewWelfareHomeForChildren from "./components/RevieweWelfareHomeForChildren"
+import ReviewCG from "./components/ReviewCG";
+import ApproveCG from "./components/ApproveCG";
+import ReviewEG from "./components/ReviewEG";
+import ApproveEG from "./components/ApproveEG";
+import ReviewISG from "./components/ReviewISG";
+import ApproveISG from "./components/ApproveISG";
 
 
 
@@ -120,8 +129,9 @@ const App = () => {
           <Route path="/BiAnnualLivelihoodIndividualReport" element={<BiAnnualLivelihoodIndividual/>} /> 
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
-          <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
-          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
+          <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
+
+          <Route path='/RevieweWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
                     
           <Route path='/ReviewEI' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
@@ -136,8 +146,12 @@ const App = () => {
           <Route path='/ApproveDPLG' element={<ApproveDPLG/>} />
           <Route path='/ReviewCG' element={<ReviewCG/>} />
           <Route path='/ApproveCG' element={<ApproveCG/>} />
+          <Route path='/ApproveEG' element={<ApproveEG/>} />
+          <Route path='/ReviewEG' element={<ReviewEG/>} />
+          <Route path='/ReviewISG' element={<ReviewISG/>} />
+          <Route path='/ApproveISG' element={<ApproveISG/>} />
                   
-          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+                 
 
         </Routes>
       </Router>

@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-export const InstitutionalSkillTrainingForm = () => {
+export const ReviewISG = () => {
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
@@ -73,6 +73,9 @@ export const InstitutionalSkillTrainingForm = () => {
       provincialSuperiorAgreement: false,
       provincialSuperiorAgreementDate: "",
     },
+
+    // Additional Fields
+    comment: "",
   });
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -277,6 +280,7 @@ export const InstitutionalSkillTrainingForm = () => {
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -286,6 +290,7 @@ export const InstitutionalSkillTrainingForm = () => {
                     onChange={(e) =>
                       handleBudgetChange(index, "cost", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
               </Tr>
@@ -293,9 +298,9 @@ export const InstitutionalSkillTrainingForm = () => {
           </Tbody>
         </Table>
 
-        <Button onClick={handleAddBudgetRow} mt={4}>
+        {/* <Button onClick={handleAddBudgetRow} mt={4}>
           Add Row
-        </Button>
+        </Button> */}
 
         <FormControl>
           <FormLabel>Total Amount</FormLabel>
@@ -323,155 +328,153 @@ export const InstitutionalSkillTrainingForm = () => {
           <VStack align="start" spacing={4} mb={8}>
             {/* Basic Information */}
             {/* NAME OF THE SOCIETY */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
                 name="basicInformation.NAMEOFTHESOCIETY"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
                 name="basicInformation.dATEOFSUBMISSION"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* TITLE OF THE PROJECT */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>TITLE OF THE PROJECT</FormLabel>
               <Input
                 type="text"
                 name="basicInformation.TITLEOFTHEPROJECT"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* ADDRESS */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
                 name="basicInformation.address"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Provincial Superior */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Provincial Superior Name</FormLabel>
               <Input
                 type="text"
                 name="basicInformation.provincialSuperior.name"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Provincial Superior Cell Number</FormLabel>
               <Input
                 type="tel"
                 name="basicInformation.provincialSuperior.cellNumber"
                 onChange={handleChange}
-                required
               />
             </FormControl>
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Provincial Superior Email</FormLabel>
               <Input
                 type="email"
                 name="basicInformation.provincialSuperior.email"
                 onChange={handleChange}
-                required
               />
             </FormControl>
             {/* Project In-Charge */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Project In-Charge Name</FormLabel>
               <Input
                 type="text"
                 name="basicInformation.projectInCharge.name"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Project In-Charge Cell Number</FormLabel>
               <Input
                 type="tel"
                 name="basicInformation.projectInCharge.cellNumber"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Project In-Charge Email</FormLabel>
               <Input
                 type="email"
                 name="basicInformation.projectInCharge.email"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Overall Project Period */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
                 name="basicInformation.overallProjectPeriod"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Overall Project Budget */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
                 name="basicInformation.overallProjectBudget"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Target Group */}
             {/* Number of Beneficiaries */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Number of Beneficiaries</FormLabel>
               <Input
                 type="number"
                 name="basicInformation.numberOfBeneficiaries"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Residential Villages of the Beneficiaries */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Residential Villages of the Beneficiaries</FormLabel>
               <Textarea
                 name="basicInformation.residentialVillages"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Selection Criteria and Profile of the Target Group */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Selection Criteria and Profile of the Target Group
               </FormLabel>
               <Textarea
                 name="basicInformation.selectionCriteriaAndProfile"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Intervention Logic */}
             {/* Brief description of the beneficiaries and the problems they are facing */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Brief description of the beneficiaries and the problems they are
                 facing
@@ -479,27 +482,27 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="basicInformation.descriptionOfBeneficiary"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Analysis of the Problem to be resolved by the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Analysis of the Problem to be resolved by the Project
               </FormLabel>
               <Textarea
                 name="basicInformation.problemAnalysis"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Solution Analysis */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="basicInformation.solutionAnalysis"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Logical Framework */}
@@ -507,12 +510,12 @@ export const InstitutionalSkillTrainingForm = () => {
               Logical Framework
             </Heading>
             {/* Goal of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="logicalFramework.goal"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Objectives */}
@@ -528,17 +531,17 @@ export const InstitutionalSkillTrainingForm = () => {
                 mb={8}
               >
                 {/* Objective */}
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Objective {index + 1}</FormLabel>
                   <Textarea
                     name={`objective.${index}`}
                     value={objective.objective}
                     onChange={(e) => handleChange(e, index)}
-                    required
+                    readOnly
                   />
                 </FormControl>
                 {/* Results */}
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Results</FormLabel>
                   {objective.results.map((result, subIndex) => (
                     <Box key={subIndex}>
@@ -546,19 +549,19 @@ export const InstitutionalSkillTrainingForm = () => {
                         name={`result.${index}.${subIndex}`}
                         value={result}
                         onChange={(e) => handleChange(e, index, subIndex)}
-                        required
+                        readOnly
                       />
-                      <Button
+                      {/* <Button
                         onClick={() => handleAddResult(index)}
                         colorScheme="teal"
                       >
                         Add Result
-                      </Button>
+                      </Button> */}
                     </Box>
                   ))}
                 </FormControl>
                 {/* Activities and Means of Verification */}
-                <FormControl isRequired>
+                <FormControl>
                   <FormLabel>Activities and Means of Verification</FormLabel>
                   <Table variant="simple">
                     <Thead>
@@ -575,7 +578,7 @@ export const InstitutionalSkillTrainingForm = () => {
                               name={`activity.${index}.${subIndex}`}
                               value={activity.activity}
                               onChange={(e) => handleChange(e, index, subIndex)}
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
@@ -583,12 +586,12 @@ export const InstitutionalSkillTrainingForm = () => {
                               name={`verification.${index}.${subIndex}`}
                               value={activity.verification}
                               onChange={(e) => handleChange(e, index, subIndex)}
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
                             {/* Timeframe */}
-                            <FormControl isRequired>
+                            <FormControl>
                               <FormLabel>Timeframe</FormLabel>
                               {activity.timeframe.map((value, monthIndex) => (
                                 <Checkbox
@@ -600,6 +603,7 @@ export const InstitutionalSkillTrainingForm = () => {
                                       !activity.timeframe[monthIndex];
                                     console.log(activity.timeframe);
                                   }}
+                                  readOnly
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -613,51 +617,51 @@ export const InstitutionalSkillTrainingForm = () => {
                       ))}
                     </Tbody>
                   </Table>
-                  <Button
+                  {/* <Button
                     onClick={() => handleAddActivity(index)}
                     colorScheme="teal"
                   >
                     Add Activity
-                  </Button>
+                  </Button> */}
                 </FormControl>
-                <Button
-                  onClick={handleAddObjective}
-                  colorScheme="purple"
-                  ml="auto"
-                  mt={3}
-                >
-                  Add Objective
-                </Button>
+                {/* <Button
+                    onClick={handleAddObjective}
+                    colorScheme="purple"
+                    ml="auto"
+                    mt={3}
+                  >
+                    Add Objective
+                  </Button> */}
                 <hr />
               </Box>
             ))}
             {/* Sustainability of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Explain the Monitoring Process of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Explain the Monitoring Process of the Project
               </FormLabel>
               <Textarea
                 name="monitoringProcess"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Methodology of Evaluation */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Methodology of Evaluation</FormLabel>
               <Textarea
                 name="evaluationMethodology"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
             {/* Budget Table */}
@@ -666,40 +670,27 @@ export const InstitutionalSkillTrainingForm = () => {
             <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="signatures.projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agrees
-              </Checkbox>
-              <Input
-                type="date"
-                name="signatures.projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+
             {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
+            <FormControl>
               <Checkbox
                 name="signatures.projectInChargeAgreement"
                 onChange={handleChange}
                 value={formData.signatures.projectInChargeAgreement}
+                readOnly
                 size="lg"
               >
-                The Project-In-Charge agrees
+                The Project-In-Charge agree
               </Checkbox>
               <Input
                 type="date"
-                name="signatures.projectInChargeAgreementDate"
+                value={formData.projectInChargeAgreementDate}
+                name="projectInChargeAgreementDate"
                 onChange={handleChange}
-                value={formData.signatures.projectInChargeAgreementDate}
-                required
+                readOnly
               />
             </FormControl>
+
             {/* Provincial Superior agreement */}
             <FormControl isRequired>
               <Checkbox
@@ -707,19 +698,29 @@ export const InstitutionalSkillTrainingForm = () => {
                 onChange={handleChange}
                 size="lg"
               >
-                The Provincial Superior agrees
+                The Provincial Superior agree
               </Checkbox>
+            </FormControl>
+          </VStack>
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Comment */}
+            <FormControl isRequired>
+              <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
-                type="date"
-                name="signatures.provincialSuperiorAgreementDate"
+                type="text"
+                name="comment"
                 onChange={handleChange}
                 required
               />
             </FormControl>
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" mx={3} type="submit">
             Submit
+          </Button>
+          {/* decline Button */}
+          <Button colorScheme="red" mx={3} type="submit">
+            Decline
           </Button>
         </form>
       </Box>
@@ -727,4 +728,4 @@ export const InstitutionalSkillTrainingForm = () => {
   );
 };
 
-export default InstitutionalSkillTrainingForm;
+export default ReviewISG;
