@@ -72,7 +72,6 @@ const DisplayForm = () => {
       return total + (parseInt(row[column], 10) || 0);
     }, 0);
   };
-  
 
   return (
     <ChakraProvider>
@@ -409,18 +408,13 @@ const DisplayForm = () => {
 
               {/* Provincial Superior agreement */}
               <FormControl isRequired>
-                <Checkbox
-                  name="provincialSuperiorAgreement"
-                  isChecked
-                  isReadOnly
-                >
+                <Checkbox name="provincialSuperiorAgreement" isChecked>
                   The Provincial Superior agree
                 </Checkbox>
                 <Input
                   type="date"
                   name="provincialSuperiorAgreementDate"
                   value={formData.provincialSuperiorAgreementDate}
-                  isReadOnly
                 />
               </FormControl>
             </VStack>

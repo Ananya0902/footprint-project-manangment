@@ -81,7 +81,10 @@ export const InstitutionalSkillTrainingForm = () => {
     const { name, value } = e.target;
     const updatedData = { ...formData };
 
-    if (
+    if(name.includes('signatures')){
+      updatedData.signatures[name.split('.')[1]] = value ; 
+    }
+    else if (
       name.includes("provincialSuperior") ||
       name.includes("projectInCharge")
     ) {
@@ -201,7 +204,7 @@ export const InstitutionalSkillTrainingForm = () => {
     };
     try {
       setIsLoading(true);
-      const res = await authAxios.post("/projects/createISG");
+      const res = await authAxios.post("/projects/createISG" , req);
       setIsLoading(false);
       if (res.data.success) {
         setIsSubmitted(true);
@@ -652,7 +655,7 @@ export const InstitutionalSkillTrainingForm = () => {
               />
             </FormControl>
             {/* Budget Table */}
-            <BudgetTable />
+            {BudgetTable()}
             {/* Signatures */}
             <Heading as="h1" size="xl" mb={6}>
               Signatures

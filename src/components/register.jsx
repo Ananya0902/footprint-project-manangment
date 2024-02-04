@@ -101,7 +101,10 @@ const RegisterPage = () => {
             reviewer: values.reviewer,
             apostolate: values.apostolate,
           };
-          response = await authAxios.post("/users/applicantsignup", applicantRequest);
+          response = await authAxios.post(
+            "/users/applicantsignup",
+            applicantRequest
+          );
         } else if (values.userType === "reviewer") {
           response = await authAxios.post("/users/reviewersignup", req);
         }
