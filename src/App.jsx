@@ -58,7 +58,17 @@ import ReviewEduRUTG from "./components/ReviewEduRUTG";
 import ApproveEduRUTG from "./components/ApproveEduRUTG";
 import ViewEduRUTG from "./components/ViewEduRUTG";
 import ViewEI from "./components/ViewEI";
-import ReviewWelfareHomeForChildren from './components/RevieweWelfareHomeForChildren'
+import ReviewDPLG from "./components/ReviewDPLG";
+import ApproveDPLG from "./components/ApproveDPLG";
+import ReviewWelfareHomeForChildren from "./components/RevieweWelfareHomeForChildren"
+import ReviewCG from "./components/ReviewCG";
+import ApproveCG from "./components/ApproveCG";
+import ReviewEG from "./components/ReviewEG";
+import ApproveEG from "./components/ApproveEG";
+import ReviewISG from "./components/ReviewISG";
+import ApproveISG from "./components/ApproveISG";
+import ReviewHIV from "./components/ReviewHIV";
+import ApproveHIV from "./components/ApproveHIV";
 
 
 
@@ -94,7 +104,7 @@ const App = () => {
           <Route path="/verifyReviewer" element={<VerifyReviewer />} />
           <Route path="/verifyApplicant" element={<VerifyApplicant />} />
           <Route path="/individualProjects/:selectedAppostolate" element={<IndividualProjects/>} />
-          <Route path="/groupProjects" element={<GroupProjects selectedApostolate="social" />} />
+          <Route path="/groupProjects/:selectedAppostolate" element={<GroupProjects  />} />
           <Route path="/myProjects" element={<MyProjects/>} />
           <Route path="/projectsToBeReviewed" element={<ProjectsToBeReviewed/>} />
           <Route path="/ProjectsToBeApproved" element={<ProjectsToBeApproved/>} />
@@ -121,8 +131,10 @@ const App = () => {
           <Route path="/BiAnnualLivelihoodIndividualReport" element={<BiAnnualLivelihoodIndividual/>} /> 
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
-          <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
-          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+          <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
+
+          <Route path='/RevieweWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
+                    
           <Route path='/ReviewEI' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
           <Route path='/ViewEI' element={<ViewEI/>} />          
@@ -132,8 +144,18 @@ const App = () => {
           <Route path='/ReviewEduRUTG' element={<ReviewEduRUTG/>} />
           <Route path='/ApproveEduRUTG' element={<ApproveEduRUTG/>} />
           <Route path='/ViewEduRUTG' element={<ViewEduRUTG/>} />
+          <Route path='/ReviewDPLG' element={<ReviewDPLG/>} />
+          <Route path='/ApproveDPLG' element={<ApproveDPLG/>} />
+          <Route path='/ReviewCG' element={<ReviewCG/>} />
+          <Route path='/ApproveCG' element={<ApproveCG/>} />
+          <Route path='/ApproveEG' element={<ApproveEG/>} />
+          <Route path='/ReviewEG' element={<ReviewEG/>} />
+          <Route path='/ReviewISG' element={<ReviewISG/>} />
+          <Route path='/ApproveISG' element={<ApproveISG/>} />
+          <Route path='/ReviewHIV' element={<ReviewHIV/>} />
+          <Route path='/ApproveHIV' element={<ApproveHIV/>} />
                   
-          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+                 
 
         </Routes>
       </Router>

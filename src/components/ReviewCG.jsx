@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-export const Common = () => {
+export const ReviewCG = () => {
   const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -43,6 +43,14 @@ export const Common = () => {
     monitoringProcess: "", // Add monitoringProcess
     projectInChargeAgreement: false,
   projectInChargeAgreementDate: "",
+  provincialSuperiorAgreement:false,
+  provincialSuperiorAgreementDate:"",
+  
+
+  // Additional Fields
+  comment: "",
+ 
+  
   projectArea: "", // Add projectArea
   directBeneficiaries: "", // Add directBeneficiaries
   indirectBeneficiaries: "", // Add indirectBeneficiaries
@@ -91,39 +99,7 @@ export const Common = () => {
     setFormData(updatedData);
   };
 
-//   const handleMonthChange = (month) => {
-//     const updatedMonths = selectedMonths.includes(month)
-//       ? selectedMonths.filter((selectedMonth) => selectedMonth !== month)
-//       : [...selectedMonths, month];
-//     setSelectedMonths(updatedMonths);
-//   };
 
-  const handleAddObjective = () => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives.push({
-      objective: "",
-      results: [""],
-      activities: [],
-    });
-    setFormData(updatedData);
-  };
-
-  const handleAddResult = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].results.push("");
-    setFormData(updatedData);
-  };
-
-  const handleAddActivity = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].activities.push({
-      activity: "",
-      verification: "",
-      timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
-     
-    });
-    setFormData(updatedData);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -152,10 +128,13 @@ export const Common = () => {
       sustainability: formData.sustainability,
       monitoringProcess: formData.monitoringProcess,
       evaluationMethodology: formData.evaluationMethodology,
-      project_in_charge_agree: {
-        agree: formData.projectInChargeAgreement,
-        date: formData.projectInChargeAgreementDate || new Date(),
-      },
+      projectInChargeAgreement: false,
+    projectInChargeAgreementDate: "",
+    provincialSuperiorAgreement: false,
+    provincialSuperiorAgreementDate: "",
+
+    // Additional Fields
+    comment: "",
       budgetData: budgetData.map((item) => ({
         budget: item.budget,
         cost: item.cost,
@@ -280,18 +259,18 @@ export const Common = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
                 name="NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 value={formData.NAMEOFTHESOCIETY}
-                required
+                readOnly
               />
             </FormControl>
             {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
@@ -299,11 +278,11 @@ export const Common = () => {
                 onChange={handleChange}
                 value={formData.dATEOFSUBMISSION}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* TITLE OF THE PROJECT */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
@@ -311,11 +290,11 @@ export const Common = () => {
                 onChange={handleChange}
                 value={formData.TITLEOFTHEPROJECT}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* ADDRESS*/}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
@@ -323,7 +302,7 @@ export const Common = () => {
                 onChange={handleChange}
                 value={formData.address}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* Contacts Table */}
@@ -347,7 +326,7 @@ export const Common = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorName}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -357,7 +336,7 @@ export const Common = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorCellNumber}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -367,7 +346,7 @@ export const Common = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorEmail}
 
-                      required
+                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -381,7 +360,7 @@ export const Common = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeName}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -391,7 +370,7 @@ export const Common = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeCellNumber}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -401,7 +380,7 @@ export const Common = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeEmail}
 
-                      required
+                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -421,7 +400,7 @@ export const Common = () => {
               </Tbody>
             </Table>
            {/* Overall Project Period */}
-           <FormControl isRequired>
+           <FormControl >
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
@@ -429,12 +408,12 @@ export const Common = () => {
                 onChange={handleChange}
                 value={formData.overallProjectPeriod}
 
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
@@ -442,17 +421,17 @@ export const Common = () => {
                 onChange={handleChange}
                 value={formData.overallProjectBudget}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* Project Area */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Project Area</FormLabel>
               <Textarea name="projectArea"
                onChange={handleChange}
                value={formData.projectArea}
 
-                required />
+               readOnly />
             </FormControl>
 
             {/* Number of Beneficiaries */}
@@ -467,7 +446,7 @@ export const Common = () => {
                   onChange={handleChange}
                   value={formData.directBeneficiaries}
 
-                  required
+                  readOnly
                 />
               </FormControl>
               {/* Indirect Beneficiaries */}
@@ -479,32 +458,32 @@ export const Common = () => {
                   onChange={handleChange}
                   value={formData.indirectBeneficiaries}
 
-                  required
+                  readOnly
                 />
               </FormControl>
             </FormControl>
 
             {/* Analysis of the Problem */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Analysis of the Problem</FormLabel>
               <Textarea
                 name="problemAnalysis"
                 onChange={handleChange}
                 value={formData.problemAnalysis}
 
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Solution Analysis */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="solutionAnalysis"
                 onChange={handleChange}
                 value={formData.solutionAnalysis}
 
-                required
+                readOnly
               />
             </FormControl>
 
@@ -519,12 +498,12 @@ export const Common = () => {
             >
               logical Framework
             </Heading>
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
@@ -543,19 +522,19 @@ export const Common = () => {
                  <Box key={index} border="1px solid #ccc" borderRadius="lg" p={4} mb={8}>
               <VStack key={index} align="start" spacing={4} mb={8}>
                 {/* Objective */}
-                <FormControl isRequired>
+                <FormControl >
                     <hr />
                   <FormLabel>Objective {index + 1}</FormLabel>
                   <Textarea
                     name="objective"
                     value={objective.objective}
                     onChange={(e) => handleChange(e, index)}
-                    required
+                    readOnly
                   />
                 </FormControl>
 
                 {/* Results */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Results</FormLabel>
                   {objective.results.map((result, subIndex) => (
                     <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -563,20 +542,15 @@ export const Common = () => {
                         name="result"
                         value={result}
                         onChange={(e) => handleChange(e, index, subIndex)}
-                        required
+                        readOnly
                       />
-                      <Button
-                        onClick={() => handleAddResult(index)}
-                        colorScheme="teal"
-                      >
-                        Add Result
-                      </Button>
+                     
                     </VStack>
                   ))}
                 </FormControl>
 
                 {/* Activities and Means of Verification */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Activities and Means of Verification</FormLabel>
                   <Table variant="simple">
                     <Thead>
@@ -593,7 +567,7 @@ export const Common = () => {
                               name="activity"
                               value={activity.activity}
                               onChange={(e) => handleChange(e, index, subIndex)}
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
@@ -601,7 +575,7 @@ export const Common = () => {
                               name="verification"
                               value={activity.verification}
                               onChange={(e) => handleChange(e, index, subIndex)}
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
@@ -617,7 +591,7 @@ export const Common = () => {
                                     activity.timeframe[monthIndex] =
                                       !activity.timeframe[monthIndex];
                                     console.log(activity.timeframe);
-                                  }}
+                                  }}readOnly
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -632,12 +606,7 @@ export const Common = () => {
                     </Tbody>
                   </Table>
 
-                  <Button
-                    onClick={() => handleAddActivity(index)}
-                    colorScheme="teal"
-                  >
-                    Add Activity
-                  </Button>
+                  
                 </FormControl>
 
             
@@ -647,81 +616,104 @@ export const Common = () => {
               </Box>
               
             ))}
-             <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
-              Add Objective
-            </Button>
+             
 
 
                 {/* Sustainability of the Project */}
-        <FormControl isRequired>
+        <FormControl >
           <FormLabel>Sustainability of the Project</FormLabel>
           <Textarea
             name="sustainability"
             value={formData.sustainability}
             onChange={(e) => handleChange(e)}
-            required
+            readOnly
           />
         </FormControl>
 
         {/* Explain the Monitoring Process of the Project */}
-        <FormControl isRequired>
+        <FormControl >
           <FormLabel>Explain the Monitoring Process of the Project</FormLabel>
           <Textarea
             name="monitoringProcess"
             value={formData.monitoringProcess}
             onChange={(e) => handleChange(e)}
-            required
+            readOnly
           />
         </FormControl>
 
         {/* Methodology of Evaluation */}
-        <FormControl isRequired>
+        <FormControl >
           <FormLabel>Methodology of Evaluation</FormLabel>
           <Textarea
             name="evaluationMethodology"
             value={formData.evaluationMethodology}
             onChange={(e) => handleChange(e)}
-            required
+            readOnly
           />
         </FormControl>
 
 {BudgetTable()}
 
 <Heading as="h1" size="xl" mb={6}>
-    Signatures
-  </Heading>
+              Signatures
+            </Heading>
 
+            {/* Project-In-Charge agreement */}
+            <FormControl >
+              <Checkbox
+                name="projectInChargeAgreement"
+                onChange={handleChange}
+                value={formData.projectInChargeAgreement}
+                readOnly
+                size="lg"
+              >
+                The Project-In-Charge agree
+              </Checkbox>
+              <Input
+                type="date"               
+                 value={formData.projectInChargeAgreementDate}
+                    
+                name="projectInChargeAgreementDate"
+                onChange={handleChange}
+                readOnly
+              />
+            </FormControl>
 
-  {/* Project-In-Charge agreement */}
-  <FormControl isRequired>
-    <Checkbox
-      name="projectInChargeAgreement"
-      onChange={handleChange}
-      value={formData.projectInChargeAgreementDate}
+              {/* Provincial Superior agreement */}
+              <FormControl isRequired>
+              <Checkbox
+                name="provincialSuperiorAgreement"
+                onChange={handleChange}
+                size="lg"
+              >
+                The Provincial Superior agree
+              </Checkbox>
+            </FormControl>
+          </VStack>
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Comment */}
+            <FormControl isRequired>
+              <FormLabel>Comment(For Reviewer)</FormLabel>
+              <Input
+                type="text"
+                name="comment"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
 
-      size="lg"
-    >
-      The Project-In-Charge agree
-    </Checkbox>
-    <Input
-      type="date"
-      name="projectInChargeAgreementDate"
-      onChange={handleChange}
-      value={formData.projectInChargeAgreementDate}
-
-      required
-    />
-  </FormControl>
-
-  
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" mx={3} type="submit">
             Submit
+          </Button>
+          {/* decline Button */}
+          <Button colorScheme="red" mx={3} type="submit">
+            Decline
           </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default Common;
+export default ReviewCG;

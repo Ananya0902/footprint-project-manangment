@@ -30,17 +30,13 @@ const IndividualProjects = () => {
                 <Button as={Link} to="/healthIndividualOngoing" colorScheme="teal" fontSize="xl">
                   Health Individual Ongoing
                 </Button>
-                <Button as={Link} to="/healthIndividual" colorScheme="blue" fontSize="xl">
-                  Health Individual
-                </Button>
+                
               </>
             )}
 
             {selectedApostolate === 'social' && (
               <>
-                <Button as={Link} to="/socialIndividualOngoing" colorScheme="teal" fontSize="xl">
-                  Social Individual Ongoing
-                </Button>
+                
                 <Button as={Link} to="/socialIndividual" colorScheme="blue" fontSize="xl">
                   Social Individual
                 </Button>
@@ -52,7 +48,7 @@ const IndividualProjects = () => {
                 <Button as={Link} to="/educationIndividualOngoing" colorScheme="teal" fontSize="xl">
                   Education Individual Ongoing
                 </Button>
-                <Button as={Link} to="/educationIndividual" colorScheme="blue" fontSize="xl">
+                <Button as={Link} to="/educationIndividual" colorScheme="green" fontSize="xl">
                   Education Individual
                 </Button>
               </>
