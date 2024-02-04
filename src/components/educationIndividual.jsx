@@ -34,7 +34,6 @@ const EducationIndividual= () => {
         setIsSubmitted(true);
       };
 
-
       
   return (
     <ChakraProvider>

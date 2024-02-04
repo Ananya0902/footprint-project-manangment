@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-export const DevProjectLivlihoodGroup = () => {
+export const ApproveDPLG = () => {
   const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -44,7 +44,18 @@ export const DevProjectLivlihoodGroup = () => {
     
     projectInChargeAgreement: false,
     projectInChargeAgreementDate: "",
-   
+    provincialSuperiorAgreement: false,
+    provincialSuperiorAgreementDate: "",
+    projectCoordinatorAgreement:false,
+    projectCoordinatorAgreementDate:"",
+
+    // Additional Fields
+    commentReviewer: "",
+    commentApprover:"",
+    amountApprovedByProjectCoordinator:"",
+
+    // Additional Fields
+    comment: "",
     logicalFramework: {
       goal: "",
       objectives: [
@@ -104,31 +115,7 @@ export const DevProjectLivlihoodGroup = () => {
     setFormData(updatedData);
   };
 
-  const handleAddObjective = () => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives.push({
-      objective: "",
-      results: [""],
-      activities: [],
-    });
-    setFormData(updatedData);
-  };
-
-  const handleAddResult = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].results.push("");
-    setFormData(updatedData);
-  };
-
-  const handleAddActivity = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].activities.push({
-      activity: "",
-      verification: "",
-      timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
-    });
-    setFormData(updatedData);
-  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -209,9 +196,7 @@ export const DevProjectLivlihoodGroup = () => {
       setBudgetData(newData);
     };
 
-    const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: "", cost: "" }]);
-    };
+   
 
     const calculateTotalAmount = () => {
       return budgetData.reduce(
@@ -243,6 +228,7 @@ export const DevProjectLivlihoodGroup = () => {
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -252,6 +238,7 @@ export const DevProjectLivlihoodGroup = () => {
                     onChange={(e) =>
                       handleBudgetChange(index, "cost", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
               </Tr>
@@ -259,9 +246,9 @@ export const DevProjectLivlihoodGroup = () => {
           </Tbody>
         </Table>
 
-        <Button onClick={handleAddBudgetRow} mt={4}>
+        {/* <Button onClick={handleAddBudgetRow} mt={4}>
           Add Row
-        </Button>
+        </Button> */}
 
         <FormControl>
           <FormLabel>Total Amount</FormLabel>
@@ -320,7 +307,8 @@ export const DevProjectLivlihoodGroup = () => {
                         "serialNo",
                         e.target.value
                       )
-                    }
+                      
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -329,7 +317,7 @@ export const DevProjectLivlihoodGroup = () => {
                     value={row.name}
                     onChange={(e) =>
                       handleStudiesInputChange(index, "name", e.target.value)
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -342,7 +330,7 @@ export const DevProjectLivlihoodGroup = () => {
                         "familySituation",
                         e.target.value
                       )
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -376,7 +364,7 @@ export const DevProjectLivlihoodGroup = () => {
           </Tbody>
         </Table>
 
-        <Button onClick={handleAddStudiesRow}>Add Row</Button>
+        {/* <Button onClick={handleAddStudiesRow}>Add Row</Button> */}
       </Box>
     );
   };
@@ -404,18 +392,18 @@ export const DevProjectLivlihoodGroup = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
                 name="NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 value={formData.NAMEOFTHESOCIETY}
-                required
+                readOnly
               />
             </FormControl>
             {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
@@ -423,11 +411,11 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.dATEOFSUBMISSION}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* TITLE OF THE PROJECT */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
@@ -435,11 +423,11 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.TITLEOFTHEPROJECT}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* ADDRESS*/}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
@@ -447,7 +435,7 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.address}
 
-                required
+                readOnly
               />
             </FormControl>
             {/* Contacts Table */}
@@ -471,7 +459,7 @@ export const DevProjectLivlihoodGroup = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorName}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -481,7 +469,7 @@ export const DevProjectLivlihoodGroup = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorCellNumber}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -491,7 +479,7 @@ export const DevProjectLivlihoodGroup = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorEmail}
 
-                      required
+                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -505,7 +493,7 @@ export const DevProjectLivlihoodGroup = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeName}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -515,7 +503,7 @@ export const DevProjectLivlihoodGroup = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeCellNumber}
 
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -525,7 +513,7 @@ export const DevProjectLivlihoodGroup = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeEmail}
 
-                      required
+                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -545,7 +533,7 @@ export const DevProjectLivlihoodGroup = () => {
               </Tbody>
             </Table>
             {/* Overall Project Period */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
@@ -553,12 +541,12 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.overallProjectPeriod}
 
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
@@ -566,11 +554,11 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.overallProjectBudget}
 
-                required
+                readOnly
               />
             </FormControl>
             {/*Mention the progress of the initial project and its success*/}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>
                 Mention the progress of the initial project and its success
               </FormLabel>
@@ -579,14 +567,14 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.projOfIntialProject}
 
-                required
+                readOnly
               />
             </FormControl>
 
             {TargetGroup()}
 
             {/* Analysis of how the Problems will  be resolved by the Project : */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>
                 Analysis of how the Problems will be resolved by the Project :{" "}
               </FormLabel>
@@ -595,19 +583,19 @@ export const DevProjectLivlihoodGroup = () => {
                 onChange={handleChange}
                 value={formData.problemAnalysis}
 
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Solution Analysis */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="solutionAnalysis"
                 onChange={handleChange}
                 value={formData.solutionAnalysis}
 
-                required
+                readOnly
               />
             </FormControl>
 
@@ -622,12 +610,12 @@ export const DevProjectLivlihoodGroup = () => {
             >
               logical Framework
             </Heading>
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
@@ -652,19 +640,19 @@ export const DevProjectLivlihoodGroup = () => {
               >
                 <VStack key={index} align="start" spacing={4} mb={8}>
                   {/* Objective */}
-                  <FormControl isRequired>
+                  <FormControl >
                     <hr />
                     <FormLabel>Objective {index + 1}</FormLabel>
                     <Textarea
                       name="objective"
                       value={objective.objective}
                       onChange={(e) => handleChange(e, index)}
-                      required
+                      readOnly
                     />
                   </FormControl>
 
                   {/* Results */}
-                  <FormControl isRequired>
+                  <FormControl >
                     <FormLabel>Results</FormLabel>
                     {objective.results.map((result, subIndex) => (
                       <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -672,20 +660,20 @@ export const DevProjectLivlihoodGroup = () => {
                           name="result"
                           value={result}
                           onChange={(e) => handleChange(e, index, subIndex)}
-                          required
+                          readOnly
                         />
-                        <Button
+                        {/* <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
-                        </Button>
+                        </Button> */}
                       </VStack>
                     ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
-                  <FormControl isRequired>
+                  <FormControl >
                     <FormLabel>Activities and Means of Verification</FormLabel>
                     <Table variant="simple">
                       <Thead>
@@ -704,7 +692,7 @@ export const DevProjectLivlihoodGroup = () => {
                                 onChange={(e) =>
                                   handleChange(e, index, subIndex)
                                 }
-                                required
+                                readOnly
                               />
                             </Td>
                             <Td>
@@ -714,7 +702,7 @@ export const DevProjectLivlihoodGroup = () => {
                                 onChange={(e) =>
                                   handleChange(e, index, subIndex)
                                 }
-                                required
+                                readOnly
                               />
                             </Td>
                             <Td>
@@ -730,7 +718,7 @@ export const DevProjectLivlihoodGroup = () => {
                                       activity.timeframe[monthIndex] =
                                         !activity.timeframe[monthIndex];
                                       console.log(activity.timeframe);
-                                    }}
+                                    }}readOnly
                                   >
                                     {new Date(2024, monthIndex).toLocaleString(
                                       "default",
@@ -745,38 +733,38 @@ export const DevProjectLivlihoodGroup = () => {
                       </Tbody>
                     </Table>
 
-                    <Button
+                    {/* <Button
                       onClick={() => handleAddActivity(index)}
                       colorScheme="teal"
                     >
                       Add Activity
-                    </Button>
+                    </Button> */}
                   </FormControl>
 
-                  <Button
+                  {/* <Button
                     onClick={handleAddObjective}
                     colorScheme="purple"
                     ml="auto"
                   >
                     Add Objective
-                  </Button>
+                  </Button> */}
                   <hr />
                 </VStack>
               </Box>
             ))}
             {/* Sustainability of the Project */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
                 value={formData.sustainability}
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Explain the Monitoring Process of the Project */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>
                 Explain the Monitoring Process of the Project
               </FormLabel>
@@ -784,7 +772,7 @@ export const DevProjectLivlihoodGroup = () => {
                 name="monitoringProcess"
                 value={formData.monitoringProcess}
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
@@ -794,22 +782,108 @@ export const DevProjectLivlihoodGroup = () => {
               Signatures
             </Heading>
 
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
+           {/* Project-In-Charge agreement */}
+           <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
-                value={formData.projectInChargeAgreement}
-
                 size="lg"
+                value={formData.projectInChargeAgreement || ""}
+                readOnly
               >
                 The Project-In-Charge agree
               </Checkbox>
-              <Input
-                type="date"               
-                 value={formData.projectInChargeAgreementDate}
+            </FormControl>
 
+            {/* Provincial Superior agreement */}
+            <FormControl>
+              <Checkbox
+                name="projectInChargeAgreement"
+                onChange={handleChange}
+                size="lg"
+                isChecked={formData.projectInChargeAgreement}
+                readOnly
+              >
+                The Project Incharge agree
+              </Checkbox>
+              <Input
+                type="date"
                 name="projectInChargeAgreementDate"
+                onChange={handleChange}
+                value={formData.projectInChargeAgreementDate.substring(0, 10)}
+                readOnly
+              />
+            </FormControl>
+            <FormControl>
+              <Checkbox
+                name="provincialSuperiorAgreement"
+                onChange={handleChange}
+                size="lg"
+                isChecked={formData.provincialSuperiorAgreement}
+                readOnly
+              >
+                The Provincial Superior agree
+              </Checkbox>
+              <Input
+                type="date"
+                name="provincialSuperiorAgreementDate"
+                onChange={handleChange}
+                value={formData.provincialSuperiorAgreementDate.substring(
+                  0,
+                  10
+                )}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Project Coordinator agreement */}
+            <FormControl isRequired>
+              <Checkbox
+                name="projectCoordinatorAgreement"
+                onChange={handleChange}
+                size="lg"
+              >
+                The Project Coordinator agree
+              </Checkbox>
+              <Input
+                type="date"
+                name="projectCoordinatorAgreementDate"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+          </VStack>
+
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Comment for reviewer */}
+            <FormControl>
+              <FormLabel>Comment(For Reviewer)</FormLabel>
+              <Input
+                type="text"
+                name="commentReviewer"
+                onChange={handleChange}
+                value={formData.commentReviewer || ""}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Comment for approver */}
+            <FormControl isRequired>
+              <FormLabel>Comment(For Approver)</FormLabel>
+              <Input
+                type="text"
+                name="commentApprover"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+
+            {/* Amount Approved by Project Coordinator */}
+            <FormControl isRequired>
+              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <Input
+                type="number"
+                name="amountApprovedByProjectCoordinator"
                 onChange={handleChange}
                 required
               />
@@ -817,12 +891,16 @@ export const DevProjectLivlihoodGroup = () => {
 
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" mx={3} type="submit">
             Submit
+          </Button>
+          {/* decline Button */}
+          <Button colorScheme="red" mx={3} type="submit">
+            Decline
           </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default DevProjectLivlihoodGroup;
+export default ApproveDPLG;

@@ -59,6 +59,10 @@ import ReviewEduRUTG from "./components/ReviewEduRUTG";
 import ApproveEduRUTG from "./components/ApproveEduRUTG";
 import ViewEduRUTG from "./components/ViewEduRUTG";
 import ViewEI from "./components/ViewEI";
+import ReviewDPLG from "./components/ReviewDPLG";
+import ApproveDPLG from "./components/ApproveDPLG";
+import ReviewCG from "./components/ReviewCG";
+import ApproveCG from "./components/ApproveCG";
 
 
 
@@ -122,7 +126,8 @@ const App = () => {
           <Route path="/BiAnnualEducationIndividualReport" element={<BiAnnualEducationIndividualReport/>} /> 
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} /> 
-          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
+          <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
+                    
           <Route path='/ReviewEI' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
           <Route path='/ViewEI' element={<ViewEI/>} />          
@@ -132,6 +137,10 @@ const App = () => {
           <Route path='/ReviewEduRUTG' element={<ReviewEduRUTG/>} />
           <Route path='/ApproveEduRUTG' element={<ApproveEduRUTG/>} />
           <Route path='/ViewEduRUTG' element={<ViewEduRUTG/>} />
+          <Route path='/ReviewDPLG' element={<ReviewDPLG/>} />
+          <Route path='/ApproveDPLG' element={<ApproveDPLG/>} />
+          <Route path='/ReviewCG' element={<ReviewCG/>} />
+          <Route path='/ApproveCG' element={<ApproveCG/>} />
                   
           <Route path='/ReviewWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />          
 
