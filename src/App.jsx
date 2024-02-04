@@ -102,7 +102,7 @@ const App = () => {
           <Route path="/verifyReviewer" element={<VerifyReviewer />} />
           <Route path="/verifyApplicant" element={<VerifyApplicant />} />
           <Route path="/individualProjects/:selectedAppostolate" element={<IndividualProjects/>} />
-          <Route path="/groupProjects" element={<GroupProjects selectedApostolate="social" />} />
+          <Route path="/groupProjects/:selectedAppostolate" element={<GroupProjects  />} />
           <Route path="/myProjects" element={<MyProjects/>} />
           <Route path="/projectsToBeReviewed" element={<ProjectsToBeReviewed/>} />
           <Route path="/ProjectsToBeApproved" element={<ProjectsToBeApproved/>} />
