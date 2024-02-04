@@ -1,53 +1,76 @@
-// MyProjects.jsx
-import React, { useState } from 'react';
+// projectsToBeReviewed.jsx
+import React, { useEffect, useReducer, useState } from "react";
 import {
   ChakraProvider,
   Box,
   Heading,
   Text,
-  Divider,
-  List,
-  ListItem,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+  VStack,
+} from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import authAxios from "../AuthAxios";
 
-const projectsData = [
-  { id: 1, name: 'Project 1', status: 'Pending' },
-  { id: 2, name: 'Project 2', status: 'Approved' },
-  { id: 3, name: 'Project 3', status: 'Declined' },
-  // Add more projects as needed
-];
+const ProjectsToBeReviewed = () => {
+  const [projectList, setProjectList] = useReducer(
+    (prev, next) => {
+      const newProjectList = { ...prev, ...next };
+      return newProjectList;
+    },
+    {
+      getAllHOI: [],
+      getAllEOI: [],
+    }
+  );
 
-const MyProjects = () => {
-  const [projects, setProjects] = useState(projectsData);
+  useEffect(() => {
+    const getAllProject = async () => {
+      // get all the three types of projects
+      try {
+        const getAllHOIData =
+          (await authAxios.get("projects/getallHOIapplicant")).data ?? [];
+          console.log(getAllHOIData);
+          const getAllHOI = getAllHOIData?.data ?? [];
+        const getAllEOI =
+          (await authAxios.get("projects/getallEOIapplicant")).data.data ?? [];
+        const newProjectList = {
+          getAllHOI: getAllHOI
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          getAllEOI: getAllEOI
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+        };
 
-  const handleEditProject = (projectId) => {
-    // Implement edit project functionality
-    console.log(`Editing project with ID ${projectId}`);
-  };
+        setProjectList(newProjectList);
+        console.log("projectList", projectList);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const handleAddReport = (reportType, projectId) => {
-    // Implement add report functionality
-    console.log(`Adding ${reportType} report for project with ID ${projectId}`);
-  };
+    getAllProject();
 
+    return () => {};
+  }, []);
+  console.log(projectList);
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
-        <Heading as="h1" size="xl" mb={6} textAlign="center" color="teal.500">
-          My Projects
+        <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
+          Projects to Be Reviewed
         </Heading>
 
-        <List spacing={3} width="100%">
-          {projects.map((project) => (
+        <VStack spacing={6} align="stretch">
+          {projectList.getAllHOI.map((project) => (
             <Box
               key={project.id}
               bg="white"
@@ -56,48 +79,53 @@ const MyProjects = () => {
               boxShadow="md"
               width="100%"
             >
-              <Heading size="md" color="teal.500">
-                {project.name}
+              <Heading size="md" mb={2} color="blue.500">
+                {project.id}
               </Heading>
-              <Divider mt={4} mb={4} />
-              <Text fontSize="md" color="gray.600">
-                Status: {project.status}
-              </Text>
+
               <Button
                 colorScheme="blue"
-                mt={4}
-                ml={4}
-                onClick={() => handleEditProject(project.id)}
+                as={Link}
+                to={`/ReviewHIO/${encodeURIComponent(
+                  JSON.stringify(project.project)
+                )}`} // Update this route as needed
+                mb={2}
+                borderRadius="full"
               >
-                Edit Project
-              </Button>
-              <Button
-                mt={4}
-                ml={4}
-                colorScheme="teal"
-                onClick={() => handleAddReport('quaterly', project.id)}
-                isDisabled={project.status !== 'Approved'}
-              >
-                Add Quarterly Report
-              </Button>
-              <Button
-                mt={4}
-                ml={4}
-                colorScheme="teal"
-                onClick={() => handleAddReport('monthly', project.id)}
-                isDisabled={project.status !== 'Approved'}
-              >
-                Add Monthly Report
+                Review
               </Button>
             </Box>
           ))}
-        </List>
+          {projectList.getAllEOI.map((project) => (
+            <Box
+              key={project.id}
+              bg="white"
+              p={6}
+              borderRadius="lg"
+              boxShadow="md"
+              width="100%"
+            >
+              <Heading size="md" mb={2} color="blue.500">
+                {project.id}
+              </Heading>
 
-    
+              <Button
+                colorScheme="blue"
+                as={Link}
+                to={`/ReviewEIO/${encodeURIComponent(
+                  JSON.stringify(project.project)
+                )}`} // Update this route as needed
+                mb={2}
+                borderRadius="full"
+              >
+                Review
+              </Button>
+            </Box>
+          ))}
+        </VStack>
       </Box>
     </ChakraProvider>
   );
 };
 
-export default MyProjects;
-
+export default ProjectsToBeReviewed;

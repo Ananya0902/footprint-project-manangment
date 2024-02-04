@@ -13,6 +13,11 @@ import {
   VStack,
   InputGroup,
   Table,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalBody,
+  CircularProgress,
   Thead,
   Tbody,
   Tr,
@@ -26,6 +31,10 @@ import authAxios from "../AuthAxios";
 
 const SocialIndividual = () => {
   const [formData, setFormData] = useState({});
+  const [budgetData, setBudgetData] = useState([{ budget: "", cost: 0 }]);
+  const [revenueData, setRevenueData] = useState([
+    { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
+  ]);
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState([
     { name: "Aadhar Card", file: null },
@@ -76,9 +85,17 @@ const SocialIndividual = () => {
       );
       const otherDocumentsUrl = await handleImageUpload(documents[3].file);
 
-      const response = await authAxios.post("/projects/createSOI", {
-        self_employment_nature: e.target.nameOfSelfEmployment.value,
-        photograph_beneficiary: e.target.photographFile.value,
+      const req = {
+        revenueGoals: revenueData,
+        nameOfSociety: e.target.nameofSociety.value,
+        nameOfSelfEmployment: e.target.nameOfSelfEmployment.value,
+        dateOfSubmission: e.target.dateOfSubmission.value,
+        nameOfProvincialSuperior: e.target.provincialSuperiorName.value,
+        contactOfProvincialSuperior: e.target.provincialSuperiorContact.value,
+        nameOfProjectIncharge: e.target.projectInchargeName.value,
+        contactOfProjectIncharge: e.target.projectInchargeContact.value,
+        emailOfProjectIncharge: e.target.projectInchargeEmail.value,
+        photograph_benificary: e.target.photographFile.value,
         name: e.target.beneficiaryName.value,
         mobile: e.target.beneficiaryContact.value,
         email: e.target.beneficiaryEmail.value,
@@ -89,31 +106,49 @@ const SocialIndividual = () => {
         married: e.target.maritalStatus.value,
         spouse_name: e.target.spouseName.value,
         no_of_children: e.target.child.value,
-        children_education: e.target.eduStatus.value,
+        education_status: e.target.eduStatus.value,
         religion: e.target.religion.value,
         caste: e.target.casteTribe.value,
         present_family_situation: e.target.presentFamilySituationDetails.value,
-        Project_amount_already_received: "", // Comment: Field not found in the provided form
-        impact_created_in_the_ife_of_the_beneficiary: "", // Comment: Field not found in the provided form
-        Average_revenue_generated_previous_year:
-          e.target.businessStrengthsPreviousYear.value, // Confirm field name
-        how_the_income_invested: e.target.businessWeaknessesPreviousYear.value, // Confirm field name
-        strengths_of_business_activity_in_the_previous_year: "", // Comment: Field not found in the provided form
-        weaknesses_of_business_activity_in_the_previous_year: "", // Comment: Field not found in the provided form
-        about_risks: e.target.riskIdentification.value,
-        plans_of_the_business_expansion: e.target.riskMitigationMeasures.value,
-        // budget_cost_table: getBudgetTableData(), // Implement getBudgetTableData function to get the table data
-        total_amount_cost: "", // Comment: Field not found in the provided form
-        beneficiaries_contribution: "", // Comment: Field not found in the provided form
-        amount_requested: "", // Comment: Field not found in the provided form
-        aadhar_img: e.target.aadharCardFile.value,
-        request_letter_img: e.target.requestLetterFile.value,
-        quotations_regarding_the_purchase_img:
-          e.target.quotationsRegardingThePurchaseImg.value, // Confirm field name
-        other_supporting_documents: e.target.otherSupportingDocuments.value,
-        benificary_agree: e.target.beneficiaryAgreement.value,
-        project_in_charge_agree: e.target.provincialSuperiorAgreement.value,
-      });
+        smallScaleBusinessDetails: e.target.smallScaleBusinessDetails.value,
+        monthlyEarnings: e.target.monthlyEarnings.value,
+        businessIdeaDetails: e.target.businessIdeaDetails.value,
+        businessStrengthsPreviousYear:
+          e.target.businessStrengthsPreviousYear.value,
+        businessWeaknessesPreviousYear:
+          e.target.businessWeaknessesPreviousYear.value,
+        riskIdentification: e.target.riskIdentification.value,
+        riskMitigationMeasures: e.target.riskMitigationMeasures.value,
+        businessSustainability: e.target.businessSustainability.value,
+        expectedBenefits: e.target.expectedBenefits.value,
+        budget_cost_table: budgetData, // You need to handle this separately based on how the data is structured in your form
+        aadhar_img: aadharCardUrl,
+        request_letter_img: requestLetterUrl,
+        quotations_regarding_the_purchase_img: quotationRegardingPurchase,
+        other_supporting_documents: otherDocumentsUrl,
+        benificary_agree: {
+          agree: e.target.beneficiaryAgreement.value,
+          date: e.target.beneficiaryAgreementDate.value,
+        },
+        project_coordinator_agree: {
+          agree: e.target.projectCoordinatorAgreement.value,
+          date: e.target.projectCoordinatorAgreementDate.value,
+        },
+        project_in_charge_agree: {
+          agree: e.target.projectInChargeAgreement.value,
+          date: e.target.projectInChargeAgreementDate.value,
+        },
+        provincial_superior_agree: {
+          agree: e.target.provincialSuperiorAgreement.value,
+          date: e.target.provincialSuperiorAgreementDate.value,
+        },
+        comment_box_provincial_superior: null, // You need to handle this separately based on your requirements
+        comment_box_project_coordinator: null, // You need to handle this separately based on your requirements
+      };
+
+      // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
+
+      const response = await authAxios.post("/projects/createSI", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {
@@ -137,10 +172,6 @@ const SocialIndividual = () => {
 
   // Revenue Table
   const RevenueGoalsTable = () => {
-    const [revenueData, setRevenueData] = useState([
-      { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
-    ]);
-
     const handleRevenueChange = (index, field, value) => {
       const newData = [...revenueData];
       newData[index][field] = value;
@@ -165,7 +196,7 @@ const SocialIndividual = () => {
       newData.splice(index, 1);
       setRevenueData(newData);
     };
-  
+
     return (
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6}>
@@ -231,10 +262,14 @@ const SocialIndividual = () => {
                   />
                 </Td>
                 <Td>
-                <Button colorScheme="red" size="sm" onClick={() => handleDeleteRevenueRow(index)}>
-                  Delete
-                </Button>
-              </Td>
+                  <Button
+                    colorScheme="red"
+                    size="sm"
+                    onClick={() => handleDeleteRevenueRow(index)}
+                  >
+                    Delete
+                  </Button>
+                </Td>
               </Tr>
             ))}
 
@@ -245,7 +280,6 @@ const SocialIndividual = () => {
                   Add Row
                 </Button>
               </Td>
-              
             </Tr>
 
             {/* Total Expenses Row */}
@@ -279,170 +313,188 @@ const SocialIndividual = () => {
     );
   };
 
+  {
+    /*budget */
+  }
+  const BudgetTable = () => {
+    const handleBudgetChange = (index, field, value) => {
+      const newData = [...budgetData];
+      newData[index][field] = value;
+      setBudgetData(newData);
+    };
 
+    const handleAddBudgetRow = () => {
+      setBudgetData([...budgetData, { budget: "", cost: "" }]);
+    };
 
+    const handleDeleteBudgetRow = (index) => {
+      const newData = [...budgetData];
+      newData.splice(index, 1);
+      setBudgetData(newData);
+    };
 
+    const calculateTotalAmount = () => {
+      return budgetData.reduce(
+        (total, row) => total + parseFloat(row.cost) || 0,
+        0
+      );
+    };
 
-{/*budget */}
-const BudgetTable = () => {
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+    return (
+      <Box p={4}>
+        <Heading as="h1" size="xl" mb={6}>
+          Budget Details
+        </Heading>
 
-  const handleBudgetChange = (index, field, value) => {
-    const newData = [...budgetData];
-    newData[index][field] = value;
-    setBudgetData(newData);
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Budget</Th>
+              <Th>Cost</Th>
+              <Th>Action</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {budgetData.map((row, index) => (
+              <Tr key={index}>
+                <Td>
+                  <Input
+                    type="text"
+                    value={row.budget}
+                    onChange={(e) =>
+                      handleBudgetChange(index, "budget", e.target.value)
+                    }
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="number"
+                    value={row.cost}
+                    onChange={(e) =>
+                      handleBudgetChange(index, "cost", e.target.value)
+                    }
+                  />
+                </Td>
+                <Td>
+                  <Button
+                    onClick={() => handleDeleteBudgetRow(index)}
+                    colorScheme="red"
+                  >
+                    Delete
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+
+        <Button onClick={handleAddBudgetRow} mt={4}>
+          Add Row
+        </Button>
+
+        <VStack mt={4} align="start" spacing={4}>
+          <FormControl>
+            <FormLabel>Total Amount</FormLabel>
+            <Input type="text" value={calculateTotalAmount()} isReadOnly />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Beneficiary's Contribution</FormLabel>
+            <Input
+              type="number"
+              name="beneficiaryContribution"
+              onChange={handleChange}
+              required
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Amount Requested</FormLabel>
+            <Input
+              type="number"
+              name="amountRequested"
+              onChange={handleChange}
+              required
+            />
+          </FormControl>
+        </VStack>
+      </Box>
+    );
   };
 
-  const handleAddBudgetRow = () => {
-    setBudgetData([...budgetData, { budget: "", cost: "" }]);
-  };
+  {
+    /*documents needed */
+  }
 
-  const handleDeleteBudgetRow = (index) => {
-    const newData = [...budgetData];
-    newData.splice(index, 1);
-    setBudgetData(newData);
-  };
+  const DocumentUpload = () => {
+    const handleFileChange = (index, file) => {
+      const newDocuments = [...documents];
+      newDocuments[index].file = file;
+      setDocuments(newDocuments);
+    };
 
-  const calculateTotalAmount = () => {
-    return budgetData.reduce(
-      (total, row) => total + parseFloat(row.cost) || 0,
-      0
+    return (
+      <Box p={4}>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Document</Th>
+              <Th>Upload</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {documents.map((doc, index) => (
+              <Tr key={index}>
+                <Td>{doc.name}</Td>
+                <Td>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept=".pdf, .doc, .docx, .jpeg, .jpg, .png"
+                      onChange={(e) =>
+                        handleFileChange(index, e.target.files[0])
+                      }
+                    />
+                  </FormControl>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+
+        <Button mt={4} colorScheme="blue" type="submit">
+          Submit Documents
+        </Button>
+      </Box>
     );
   };
 
   return (
-    <Box p={4}>
-      <Heading as="h1" size="xl" mb={6}>
-        Budget Details
-      </Heading>
-
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>Budget</Th>
-            <Th>Cost</Th>
-            <Th>Action</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {budgetData.map((row, index) => (
-            <Tr key={index}>
-              <Td>
-                <Input
-                  type="text"
-                  value={row.budget}
-                  onChange={(e) =>
-                    handleBudgetChange(index, "budget", e.target.value)
-                  }
-                />
-              </Td>
-              <Td>
-                <Input
-                  type="number"
-                  value={row.cost}
-                  onChange={(e) =>
-                    handleBudgetChange(index, "cost", e.target.value)
-                  }
-                />
-              </Td>
-              <Td>
-                <Button onClick={() => handleDeleteBudgetRow(index)} colorScheme="red">
-                  Delete
-                </Button>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-
-      <Button onClick={handleAddBudgetRow} mt={4}>
-        Add Row
-      </Button>
-
-      <VStack mt={4} align="start" spacing={4}>
-        <FormControl>
-          <FormLabel>Total Amount</FormLabel>
-          <Input type="text" value={calculateTotalAmount()} isReadOnly />
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Beneficiary's Contribution</FormLabel>
-          <Input
-            type="number"
-            name="beneficiaryContribution"
-            onChange={handleChange}
-            required
-          />
-        </FormControl>
-
-        <FormControl>
-          <FormLabel>Amount Requested</FormLabel>
-          <Input
-            type="number"
-            name="amountRequested"
-            onChange={handleChange}
-            required
-          />
-        </FormControl>
-      </VStack>
-    </Box>
-  );
-};
-
-
-{/*documents needed */}
-
-      const DocumentUpload = () => {
-        const [documents, setDocuments] = useState([
-          { name: 'Aadhar Card', file: null },
-          { name: 'Request Letter', file: null },
-          { name: 'Quotations regarding the purchase', file: null },
-          { name: 'Other supporting documents', file: null },
-        ]);
-      
-        const handleFileChange = (index, file) => {
-          const newDocuments = [...documents];
-          newDocuments[index].file = file;
-          setDocuments(newDocuments);
-        };
-      
-        return (
-          <Box p={4}>
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th>Document</Th>
-                  <Th>Upload</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {documents.map((doc, index) => (
-                  <Tr key={index}>
-                    <Td>{doc.name}</Td>
-                    <Td>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept=".pdf, .doc, .docx, .jpeg, .jpg, .png"
-                          onChange={(e) => handleFileChange(index, e.target.files[0])}
-                        />
-                      </FormControl>
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-      
-            <Button mt={4} colorScheme="blue" type="submit">
-              Submit Documents
-            </Button>
-          </Box>
-        );
-      };
-
-  return (
     <ChakraProvider>
       <Box p={4}>
+        {isLoading && (
+          <>
+            <Modal isOpen={true} onClose={onClose}>
+              <ModalOverlay />
+
+              <ModalContent>
+                <ModalBody
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {/* Use CircularProgress directly as the content */}
+                  <CircularProgress
+                    isIndeterminate
+                    color="green.400"
+                    thickness="4px"
+                    size="60px"
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </>
+        )}
         <Heading
           as="h1"
           size="xl"
@@ -774,7 +826,7 @@ const BudgetTable = () => {
               />
             </FormControl>
 
-            <RevenueGoalsTable />
+            {RevenueGoalsTable()}
 
             {/* Strengths of Business Activity in the Previous Year */}
             <FormControl isRequired>
@@ -856,8 +908,8 @@ const BudgetTable = () => {
               />
             </FormControl>
           </VStack>
-          <BudgetTable />
-          <DocumentUpload />
+          {BudgetTable}
+          {DocumentUpload()}
           <VStack align="start" spacing={4} mb={8}>
             <Heading as="h1" size="xl" mb={6}>
               Signatures

@@ -49,7 +49,6 @@ import BiAnnualLivelihoodIndividual from "./components/BiAnnualLivlihoodIndividu
 import BiAnnualEducationIndividualReport from "./components/BiAnnualEducationIndividualReport";
 import BiAnnualHealthIndividualReport from "./components/BiAnnualHealthIndividualReport";
 import AnnualEducationInstitutionReport from "./components/AnnualEducationInstitutionReport";
-import ReviewWelfareHomeForChildren from "./components/ReviewWHFC";
 import ReviewEI from "./components/ReviewEI";
 import ApproveEI from "./components/ApproveEI";
 import ReviewNPDP from "./components/ReviewNPDP";
@@ -59,10 +58,6 @@ import ReviewEduRUTG from "./components/ReviewEduRUTG";
 import ApproveEduRUTG from "./components/ApproveEduRUTG";
 import ViewEduRUTG from "./components/ViewEduRUTG";
 import ViewEI from "./components/ViewEI";
-import ReviewDPLG from "./components/ReviewDPLG";
-import ApproveDPLG from "./components/ApproveDPLG";
-import ReviewCG from "./components/ReviewCG";
-import ApproveCG from "./components/ApproveCG";
 
 
 

@@ -1,7 +1,6 @@
 {
   "name": "footprint-project-manangment",
   "version": "0.1.0",
-  "proxy": "https://my-site-abc.onrender.com:10000/api/v1",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
