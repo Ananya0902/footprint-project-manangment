@@ -18,495 +18,401 @@ import {
   Tbody,
   Tr,
   Th,
+  useToast,
   Td,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
+import { useParams } from "react-router-dom";
 
 const ReviewWelfareHomeForChildren = () => {
-  // form details
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    projectTitle: "",
-    projectRegion: "",
-    institutionName: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    presidentOfSocietyName: "",
-    presidentOfSocietyEmail: "",
-    goalOfInstitution: "",
-    rational: "",
-    totalChildren: { previousYear: "", presentYear: "" },
-    rehabilitatedWithGuardians: { previousYear: "", presentYear: "" },
-    shiftedToOtherNGOs: { previousYear: "", presentYear: "" },
-    pursuingHigherStudies: { previousYear: "", presentYear: "" },
-    settledInLife: { previousYear: "", presentYear: "" },
-    settledAndWorking: { previousYear: "", presentYear: "" },
-    otherCategory: { previousYear: "", presentYear: "" },
-    bridgeEducationPreviousYear: "",
-    bridgeEducationPresentYear: "",
-    kindergartenPreviousYear: "",
-    kindergartenPresentYear: "",
-    otherEducationPreviousYear: "",
-    otherEducationPresentYear: "",
-    bridgeSchoolPreviousYear: "",
-    bridgeSchoolPresentYear: "",
-    primarySchoolPreviousYear: "",
-    primarySchoolPresentYear: "",
-    otherEducation610PreviousYear: "",
-    otherEducation610PresentYear: "",
-    secondarySchoolPreviousYear: "",
-    secondarySchoolPresentYear: "",
-    highSchoolPreviousYear: "",
-    highSchoolPresentYear: "",
-    otherEducation1115PreviousYear: "",
-    otherEducation1115PresentYear: "",
-    undergraduatePreviousYear: "",
-    undergraduatePresentYear: "",
-    technicalVocationalEducationPreviousYear: "",
-    technicalVocationalEducationPresentYear: "",
-    youth16AndAbovebridgeSchoolPreviousYear: "",
-    youth16AndAbovebridgeSchoolPresentYear: "",
-    otherEducation16AbovePreviousYear: "",
-    otherEducation16AbovePresentYear: "",
+  const showToast = useToast();
+  const projectData = JSON.parse(decodeURI(useParams()?.project ?? "{}"));
+  // form details
+  if (Object.keys(projectData).length === 0)
+    return (
+      <>
+        <Box>Nothing to show</Box>
+      </>
+    );
+  console.log(projectData);
+  const formData = {
+    projectTitle: projectData.project_title || "",
+    projectRegion: projectData.general_information.project_region || "",
+    institutionName: projectData.general_information.institution_name || "",
+    overallProjectPeriod:
+      projectData.general_information.overall_project_period || "",
+    overallProjectBudget:
+      projectData.general_information.overall_project_budget || "",
+    projectInChargeName: projectData.mailing_list.project_in_charge.ref.name,
+    projectInChargeEmail: projectData.mailing_list.project_in_charge.ref.email,
+    provincialSuperiorName: projectData.mailing_list.provincial_superior.ref.name,
+    provincialSuperiorEmail: projectData.mailing_list.provincial_superior.ref.email,
+    presidentOfSocietyName:
+      projectData.mailing_list.president_of_the_society.name || "",
+    presidentOfSocietyEmail:
+      projectData.mailing_list.president_of_the_society.email || "",
+    goalOfInstitution:
+      projectData.key_information.goal_purpose_of_institution
+        .goal_and_purpose || "",
+    rational:
+      projectData.key_information.goal_purpose_of_institution.rational || "",
+    totalChildren: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[0].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[0].present_year ||
+        "",
+    },
+    rehabilitatedWithGuardians: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[1].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[1].present_year ||
+        "",
+    },
+    shiftedToOtherNGOs: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[2].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[2].present_year ||
+        "",
+    },
+    pursuingHigherStudies: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[3].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[3].present_year ||
+        "",
+    },
+    settledInLife: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[4].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[4].present_year ||
+        "",
+    },
+    settledAndWorking: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[5].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[5].present_year ||
+        "",
+    },
+    otherCategory: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[6].previous_year ||
+        "",
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[6].present_year ||
+        "",
+    },
+    bridgeEducationPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[0]
+        .previous_year || "",
+    bridgeEducationPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[0]
+        .present_academic_year || "",
+    kindergartenPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[1]
+        .previous_year || "",
+    kindergartenPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[1]
+        .present_academic_year || "",
+    otherEducationPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[2]
+        .previous_year || "",
+    otherEducationPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[2]
+        .present_academic_year || "",
+    bridgeSchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[3]
+        .previous_year || "",
+    bridgeSchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[3]
+        .present_academic_year || "",
+    primarySchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[4]
+        .previous_year || "",
+    primarySchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[4]
+        .present_academic_year || "",
+    otherEducation610PreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[5]
+        .previous_year || "",
+    otherEducation610PresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[5]
+        .present_academic_year || "",
+    secondarySchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[6]
+        .previous_year || "",
+    secondarySchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[6]
+        .present_academic_year || "",
+    highSchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[7]
+        .previous_year || "",
+    highSchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[7]
+        .present_academic_year || "",
+    otherEducation1115PreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[8]
+        .previous_year || "",
+    otherEducation1115PresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[8]
+        .present_academic_year || "",
+    undergraduatePreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[9]
+        .previous_year || "",
+    undergraduatePresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[9]
+        .present_academic_year || "",
+    technicalVocationalEducationPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[10]
+        .previous_year || "",
+    technicalVocationalEducationPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[10]
+        .present_academic_year || "",
+    otherEducation16AbovePreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[11]
+        .previous_year || "",
+    otherEducation16AbovePresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[11]
+        .present_academic_year || "",
+    youth16AndAbovebridgeSchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[12]
+        .previous_year || "",
+    youth16AndAbovebridgeSchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[12]
+        .present_academic_year || "",
     personalSituation: {
-      childrenWithParentsPreviousYear: "",
-      childrenWithParentsPresentYear: "",
-      semiOrphansPreviousYear: "",
-      semiOrphansPresentYear: "",
-      orphansPreviousYear: "",
-      orphansPresentYear: "",
-      hivInfectedAffectedPreviousYear: "",
-      hivInfectedAffectedPresentYear: "",
-      differentlyAbledChildrenPreviousYear: "",
-      differentlyAbledChildrenPresentYear: "",
-      parentsInConflictPreviousYear: "",
-      parentsInConflictPresentYear: "",
-      otherAlimentsPreviousYear: "",
-      otherAlimentsPresentYear: "",
+      childrenWithParentsPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[0]
+          .previous_year || "",
+      childrenWithParentsPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[0]
+          .present_academic_year || "",
+      semiOrphansPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[1]
+          .previous_year || "",
+      semiOrphansPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[1]
+          .present_academic_year || "",
+      orphansPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[2]
+          .previous_year || "",
+      orphansPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[2]
+          .present_academic_year || "",
+      hivInfectedAffectedPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[3]
+          .previous_year || "",
+      hivInfectedAffectedPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[3]
+          .present_academic_year || "",
+      differentlyAbledChildrenPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[4]
+          .previous_year || "",
+      differentlyAbledChildrenPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[4]
+          .present_academic_year || "",
+      parentsInConflictPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[5]
+          .previous_year || "",
+      parentsInConflictPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[5]
+          .present_academic_year || "",
+      otherAlimentsPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[6]
+          .previous_year || "",
+      otherAlimentsPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[6]
+          .present_academic_year || "",
     },
     economicBackground: {
-      agriculturalLabour: "",
-      marginalFarmers: "",
-      parentsSelfEmployed: "",
-      parentsInformalSector: "",
-      anyOther: "",
+      agriculturalLabour:
+        projectData.key_information.economic_background_of_parents[0].number ||
+        "",
+      marginalFarmers:
+        projectData.key_information.economic_background_of_parents[1].number ||
+        "",
+      parentsSelfEmployed:
+        projectData.key_information.economic_background_of_parents[2].number ||
+        "",
+      parentsInformalSector:
+        projectData.key_information.economic_background_of_parents[3].number ||
+        "",
+      anyOther:
+        projectData.key_information.economic_background_of_parents[4].number ||
+        "",
     },
     multipleSupport: {
       fundScholarships: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[0]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[0]
+              .number_present_academic_year || "",
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[1]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[1]
+              .number_present_academic_year || "",
+        },
       },
       tuitionClothing: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[2]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[2]
+              .number_present_academic_year || "",
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[3]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[3]
+              .number_present_academic_year || "",
+        },
       },
       nutrition: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[4]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[4]
+              .number_present_academic_year || "",
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[5]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[5]
+              .number_present_academic_year || "",
+        },
       },
       freeResidence: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[6]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[6]
+              .number_present_academic_year || "",
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[7]
+              .number_previous_year || "",
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[7]
+              .number_present_academic_year || "",
+        },
       },
     },
-    presentSituationinternalChallenges: "",
-    presentSituationexternalChallenges: "",
-    focusAreasDescription: "",
-    monitoringProcess: "",
-    sustainability: "",
-    staff: "",
-    projectInChargeAgreement: "",
-    projectInChargeAgreementDate: "",
+    presentSituationinternalChallenges:
+      projectData.present_situation_of_inmates
+        .internal_challenges_and_present_difficulties || "",
+    presentSituationexternalChallenges:
+      projectData.present_situation_of_inmates
+        .external_challenges_and_present_difficulties || "",
+    focusAreasDescription: projectData.focus_areas_in_present_year || "",
+    monitoringProcess: projectData.monitoring_and_evaluation || "",
+    sustainability: projectData.sustainability || "",
+    staff: projectData.staff || "",
+    projectInChargeAgreement: projectData.mailing_list.provincial_superior.agree || "",
+    projectInChargeAgreementDate:
+      projectData.mailing_list.project_in_charge.agree || false,
+    provincialSuperiorAgreement: projectData.mailing_list.provincial_superior.agree ?? false,
+    provincialSuperiorAgreementDate: projectData.mailing_list.provincial_superior.date,
+    provincialSuperiorComment: projectData.mailing_list.provincial_superior.comment,
+    projectCoordinatorComment: '',
     logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
+      goal: projectData.solution_analysis_logical_framework.goal || "",
+      objectives:
+        projectData.solution_analysis_logical_framework.objectives.map(
+          (objective) => ({
+            objective: objective.objective || "",
+            results: objective.results || [""],
+            activities: objective.activities || [],
+          })
+        ),
     },
-  });
-  // academic achievement
-  const [achievements, setAchievements] = useState({
-    academic: [],
-    sport: [],
-    other: [],
-  });
-  // budget rows
-  const [budgetRows, setBudgetRows] = useState([
-    { description: "", costsLastYear: "", budgetCurrentYear: "" },
-  ]);
+  };
 
-  useEffect(() => {
-    const getDetails = async () => {
-      // Assuming res contains the response from the GET API
-      // Parse the response and set the state variables
+  // Populating budgetRows
+  const budgetRowsData = projectData.budget.budget_particular.map(
+    (budgetItem) => ({
+      description: budgetItem.expense_description || "",
+      costsLastYear: budgetItem.costs_last_year || "",
+      budgetCurrentYear: budgetItem.budget_current_year || "",
+    })
+  );
+  const budgetRows = budgetRowsData;
 
-      const res = await authAxios.get("/getAllWHFC");
+  // Populating achievements
+  const achievements = {
+    academic:
+      projectData.achievements_of_school_and_college_children
+        .academic_achievements || [],
+    sport:
+      projectData.achievements_of_school_and_college_children
+        .sport_achievements || [],
+    other:
+      projectData.achievements_of_school_and_college_children
+        .other_achievements || [],
+  };
 
-      // Parsing the response and setting the state variables
-      setFormData({
-        projectTitle: res.project_title || "",
-        projectRegion: res.general_information.project_region || "",
-        institutionName: res.general_information.institution_name || "",
-        overallProjectPeriod:
-          res.general_information.overall_project_period || "",
-        overallProjectBudget:
-          res.general_information.overall_project_budget || "",
-        presidentOfSocietyName:
-          res.mailing_list.president_of_the_society.name || "",
-        presidentOfSocietyEmail:
-          res.mailing_list.president_of_the_society.email || "",
-        goalOfInstitution:
-          res.key_information.goal_purpose_of_institution.goal_and_purpose ||
-          "",
-        rational:
-          res.key_information.goal_purpose_of_institution.rational || "",
-        totalChildren: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[0]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[0]
-              .present_year || "",
-        },
-        rehabilitatedWithGuardians: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[1]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[1]
-              .present_year || "",
-        },
-        shiftedToOtherNGOs: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[2]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[2]
-              .present_year || "",
-        },
-        pursuingHigherStudies: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[3]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[3]
-              .present_year || "",
-        },
-        settledInLife: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[4]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[4]
-              .present_year || "",
-        },
-        settledAndWorking: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[5]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[5]
-              .present_year || "",
-        },
-        otherCategory: {
-          previousYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[6]
-              .previous_year || "",
-          presentYear:
-            res.key_information
-              .statistics_of_passed_out_rehabilitated_children[6]
-              .present_year || "",
-        },
-        bridgeEducationPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[0]
-            .previous_year || "",
-        bridgeEducationPresentYear:
-          res.key_information.age_profile_of_children_and_youth[0]
-            .present_academic_year || "",
-        kindergartenPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[1]
-            .previous_year || "",
-        kindergartenPresentYear:
-          res.key_information.age_profile_of_children_and_youth[1]
-            .present_academic_year || "",
-        otherEducationPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[2]
-            .previous_year || "",
-        otherEducationPresentYear:
-          res.key_information.age_profile_of_children_and_youth[2]
-            .present_academic_year || "",
-        bridgeSchoolPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[3]
-            .previous_year || "",
-        bridgeSchoolPresentYear:
-          res.key_information.age_profile_of_children_and_youth[3]
-            .present_academic_year || "",
-        primarySchoolPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[4]
-            .previous_year || "",
-        primarySchoolPresentYear:
-          res.key_information.age_profile_of_children_and_youth[4]
-            .present_academic_year || "",
-        otherEducation610PreviousYear:
-          res.key_information.age_profile_of_children_and_youth[5]
-            .previous_year || "",
-        otherEducation610PresentYear:
-          res.key_information.age_profile_of_children_and_youth[5]
-            .present_academic_year || "",
-        secondarySchoolPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[6]
-            .previous_year || "",
-        secondarySchoolPresentYear:
-          res.key_information.age_profile_of_children_and_youth[6]
-            .present_academic_year || "",
-        highSchoolPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[7]
-            .previous_year || "",
-        highSchoolPresentYear:
-          res.key_information.age_profile_of_children_and_youth[7]
-            .present_academic_year || "",
-        otherEducation1115PreviousYear:
-          res.key_information.age_profile_of_children_and_youth[8]
-            .previous_year || "",
-        otherEducation1115PresentYear:
-          res.key_information.age_profile_of_children_and_youth[8]
-            .present_academic_year || "",
-        undergraduatePreviousYear:
-          res.key_information.age_profile_of_children_and_youth[9]
-            .previous_year || "",
-        undergraduatePresentYear:
-          res.key_information.age_profile_of_children_and_youth[9]
-            .present_academic_year || "",
-        technicalVocationalEducationPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[10]
-            .previous_year || "",
-        technicalVocationalEducationPresentYear:
-          res.key_information.age_profile_of_children_and_youth[10]
-            .present_academic_year || "",
-        otherEducation16AbovePreviousYear:
-          res.key_information.age_profile_of_children_and_youth[11]
-            .previous_year || "",
-        otherEducation16AbovePresentYear:
-          res.key_information.age_profile_of_children_and_youth[11]
-            .present_academic_year || "",
-        youth16AndAbovebridgeSchoolPreviousYear:
-          res.key_information.age_profile_of_children_and_youth[12]
-            .previous_year || "",
-        youth16AndAbovebridgeSchoolPresentYear:
-          res.key_information.age_profile_of_children_and_youth[12]
-            .present_academic_year || "",
-        personalSituation: {
-          childrenWithParentsPreviousYear:
-            res.key_information.personal_situation_of_children_youth[0]
-              .previous_year || "",
-          childrenWithParentsPresentYear:
-            res.key_information.personal_situation_of_children_youth[0]
-              .present_academic_year || "",
-          semiOrphansPreviousYear:
-            res.key_information.personal_situation_of_children_youth[1]
-              .previous_year || "",
-          semiOrphansPresentYear:
-            res.key_information.personal_situation_of_children_youth[1]
-              .present_academic_year || "",
-          orphansPreviousYear:
-            res.key_information.personal_situation_of_children_youth[2]
-              .previous_year || "",
-          orphansPresentYear:
-            res.key_information.personal_situation_of_children_youth[2]
-              .present_academic_year || "",
-          hivInfectedAffectedPreviousYear:
-            res.key_information.personal_situation_of_children_youth[3]
-              .previous_year || "",
-          hivInfectedAffectedPresentYear:
-            res.key_information.personal_situation_of_children_youth[3]
-              .present_academic_year || "",
-          differentlyAbledChildrenPreviousYear:
-            res.key_information.personal_situation_of_children_youth[4]
-              .previous_year || "",
-          differentlyAbledChildrenPresentYear:
-            res.key_information.personal_situation_of_children_youth[4]
-              .present_academic_year || "",
-          parentsInConflictPreviousYear:
-            res.key_information.personal_situation_of_children_youth[5]
-              .previous_year || "",
-          parentsInConflictPresentYear:
-            res.key_information.personal_situation_of_children_youth[5]
-              .present_academic_year || "",
-          otherAlimentsPreviousYear:
-            res.key_information.personal_situation_of_children_youth[6]
-              .previous_year || "",
-          otherAlimentsPresentYear:
-            res.key_information.personal_situation_of_children_youth[6]
-              .present_academic_year || "",
-        },
-        economicBackground: {
-          agriculturalLabour:
-            res.key_information.economic_background_of_parents[0].number || "",
-          marginalFarmers:
-            res.key_information.economic_background_of_parents[1].number || "",
-          parentsSelfEmployed:
-            res.key_information.economic_background_of_parents[2].number || "",
-          parentsInformalSector:
-            res.key_information.economic_background_of_parents[3].number || "",
-          anyOther:
-            res.key_information.economic_background_of_parents[4].number || "",
-        },
-        multipleSupport: {
-          fundScholarships: {
-            girls: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[0]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[0]
-                  .number_present_academic_year || "",
-            },
-            boys: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[1]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[1]
-                  .number_present_academic_year || "",
-            },
-          },
-          tuitionClothing: {
-            girls: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[2]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[2]
-                  .number_present_academic_year || "",
-            },
-            boys: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[3]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[3]
-                  .number_present_academic_year || "",
-            },
-          },
-          nutrition: {
-            girls: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[4]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[4]
-                  .number_present_academic_year || "",
-            },
-            boys: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[5]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[5]
-                  .number_present_academic_year || "",
-            },
-          },
-          freeResidence: {
-            girls: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[6]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[6]
-                  .number_present_academic_year || "",
-            },
-            boys: {
-              previousYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[7]
-                  .number_previous_year || "",
-              presentYear:
-                res.key_information
-                  .multiple_support_provided_for_integrated_development[7]
-                  .number_present_academic_year || "",
-            },
-          },
-        },
-        presentSituationinternalChallenges:
-          res.present_situation_of_inmates
-            .internal_challenges_and_present_difficulties || "",
-        presentSituationexternalChallenges:
-          res.present_situation_of_inmates
-            .external_challenges_and_present_difficulties || "",
-        focusAreasDescription: res.focus_areas_in_present_year || "",
-        monitoringProcess: res.monitoring_and_evaluation || "",
-        sustainability: res.sustainability || "",
-        staff: res.staff || "",
-        projectInChargeAgreement: res.projectInChargeAgreement || "",
-        projectInChargeAgreementDate: res.projectInChargeAgreementDate || "",
-        logicalFramework: {
-          goal: res.solution_analysis_logical_framework.goal || "",
-          objectives: res.solution_analysis_logical_framework.objectives.map(
-            (objective) => ({
-              objective: objective.objective || "",
-              results: objective.results || [""],
-              activities: objective.activities || [],
-            })
-          ),
-        },
-      });
+  // Assuming res contains the response from the GET API
+  // Parse the response and set the state variables
 
-      // Populating budgetRows
-      const budgetRowsData = res.budget.budget_particular.map((budgetItem) => ({
-        description: budgetItem.expense_description || "",
-        costsLastYear: budgetItem.costs_last_year || "",
-        budgetCurrentYear: budgetItem.budget_current_year || "",
-      }));
-      setBudgetRows(budgetRowsData);
-
-      // Populating achievements
-      setAchievements({
-        academic:
-          res.achievements_of_school_and_college_children
-            .academic_achievements || [],
-        sport:
-          res.achievements_of_school_and_college_children.sport_achievements ||
-          [],
-        other:
-          res.achievements_of_school_and_college_children.other_achievements ||
-          [],
-      });
-    };
-    getDetails();
-
-    return () => {};
-  }, []);
+  // Parsing the response and setting the state variable
 
   const calculateTotalCosts = (field) => {
     return budgetRows
@@ -604,6 +510,25 @@ const ReviewWelfareHomeForChildren = () => {
             </Thead>
             <Tbody>
               {/* Row 1 */}
+              <Tr>
+                <Td>Project Incharge</Td>
+                <Td>
+                  <Input
+                    type="text"
+                    name="Name of the Project In Charge"
+                    readOnly
+                    value={formData.projectInChargeName || ""}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="email"
+                    name="Email Of project in charge"
+                    readOnly
+                    value={formData.projectInChargeEmail || ""}
+                  />
+                </Td>
+              </Tr>
               <Tr>
                 <Td>President of the Society</Td>
                 <Td>
@@ -1926,13 +1851,7 @@ const ReviewWelfareHomeForChildren = () => {
                       ))}
                     </Tbody>
                   </Table>
-
-                  <Button colorScheme="teal">Add Activity</Button>
                 </FormControl>
-
-                <Button colorScheme="purple" ml="auto">
-                  Add Objective
-                </Button>
                 <hr />
               </VStack>
             </Box>
@@ -1949,6 +1868,7 @@ const ReviewWelfareHomeForChildren = () => {
             <Textarea
               name="sustainability"
               value={formData.sustainability}
+              readOnly
               required
             />
           </FormControl>
@@ -1965,6 +1885,7 @@ const ReviewWelfareHomeForChildren = () => {
             <Textarea
               name="monitoringProcess"
               value={formData.monitoringProcess}
+              readOnly
               required
             />
           </FormControl>
@@ -1980,7 +1901,7 @@ const ReviewWelfareHomeForChildren = () => {
               What are the roles/jobs of the people? What is their educational
               background? Etc.
             </FormLabel>
-            <Textarea name="staff" value={formData.staff} required />
+            <Textarea name="staff" value={formData.staff} required readOnly />
           </FormControl>
 
           <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -1999,13 +1920,17 @@ const ReviewWelfareHomeForChildren = () => {
               {budgetRows.map((row, index) => (
                 <Tr key={index}>
                   <Td>
-                    <Input type="text" value={row.description} />
+                    <Input type="text" value={row.description} readOnly />
                   </Td>
                   <Td>
-                    <Input type="number" value={row.costsLastYear} />
+                    <Input type="number" value={row.costsLastYear} readOnly />
                   </Td>
                   <Td>
-                    <Input type="number" value={row.budgetCurrentYear} />
+                    <Input
+                      type="number"
+                      value={row.budgetCurrentYear}
+                      readOnly
+                    />
                   </Td>
                 </Tr>
               ))}
@@ -2020,7 +1945,7 @@ const ReviewWelfareHomeForChildren = () => {
           </FormControl>
           <FormControl mt={2}>
             <FormLabel>Total Budget Current Year</FormLabel>
-            <Input isReadOnly />
+            <Input readOnly />
           </FormControl>
 
           <VStack align="start" spacing={4} mb={8}>
@@ -2029,11 +1954,22 @@ const ReviewWelfareHomeForChildren = () => {
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox name="projectInChargeAgreement" size="lg">
+            <FormControl isRequired isReadOnly>
+              <Checkbox
+                name="projectInChargeAgreement"
+                size="lg"
+                isChecked={formData.projectInChargeAgreement}
+              >
                 The Project-In-Charge agree
               </Checkbox>
-              <Input type="date" name="projectInChargeAgreementDate" required />
+
+              <Input
+                type="date"
+                name="projectInChargeAgreementDate"
+                required
+                readOnly
+                value={formData.projectInChargeAgreementDateF}
+              />
             </FormControl>
           </VStack>
 
@@ -2047,4 +1983,4 @@ const ReviewWelfareHomeForChildren = () => {
   );
 };
 
-export default ReviewWelfareHomeForChildren; 
+export default ReviewWelfareHomeForChildren;

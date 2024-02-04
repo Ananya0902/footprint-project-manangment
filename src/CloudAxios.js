@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api_url = `https://api.cloudinary.com/v1_1/dakdoegrx/upload`;
+const api_url = process.env.REACT_APP_CLOUD_API_URL;
 
 const cloudAxios = axios.create({
   baseURL: api_url,

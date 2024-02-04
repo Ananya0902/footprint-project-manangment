@@ -56,7 +56,7 @@ const RegisterApproverPage = () => {
           mobile : values.mobileNumber
 
         }
-        const response = await authAxios(
+        const response = await authAxios.post(
           '/users/approversignup' , 
           req 
         ) ; 
