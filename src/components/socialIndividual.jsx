@@ -13,7 +13,11 @@ import {
   VStack,
   InputGroup,
   Table,
-  Modal,ModalContent,ModalOverlay,ModalBody,CircularProgress,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalBody,
+  CircularProgress,
   Thead,
   Tbody,
   Tr,
@@ -82,7 +86,7 @@ const SocialIndividual = () => {
       const otherDocumentsUrl = await handleImageUpload(documents[3].file);
 
       const req = {
-        revenueGoals : revenueData,
+        revenueGoals: revenueData,
         nameOfSociety: e.target.nameofSociety.value,
         nameOfSelfEmployment: e.target.nameOfSelfEmployment.value,
         dateOfSubmission: e.target.dateOfSubmission.value,
@@ -118,10 +122,9 @@ const SocialIndividual = () => {
         businessSustainability: e.target.businessSustainability.value,
         expectedBenefits: e.target.expectedBenefits.value,
         budget_cost_table: budgetData, // You need to handle this separately based on how the data is structured in your form
-        aadhar_img:aadharCardUrl,
+        aadhar_img: aadharCardUrl,
         request_letter_img: requestLetterUrl,
-        quotations_regarding_the_purchase_img:
-          quotationRegardingPurchase,
+        quotations_regarding_the_purchase_img: quotationRegardingPurchase,
         other_supporting_documents: otherDocumentsUrl,
         benificary_agree: {
           agree: e.target.beneficiaryAgreement.value,
@@ -145,9 +148,7 @@ const SocialIndividual = () => {
 
       // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
 
-      const response = await authAxios.post("/projects/createSI", 
-      req,
-    );
+      const response = await authAxios.post("/projects/createSI", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {
@@ -171,8 +172,6 @@ const SocialIndividual = () => {
 
   // Revenue Table
   const RevenueGoalsTable = () => {
-
-
     const handleRevenueChange = (index, field, value) => {
       const newData = [...revenueData];
       newData[index][field] = value;
@@ -318,7 +317,6 @@ const SocialIndividual = () => {
     /*budget */
   }
   const BudgetTable = () => {
-
     const handleBudgetChange = (index, field, value) => {
       const newData = [...budgetData];
       newData[index][field] = value;
@@ -474,23 +472,29 @@ const SocialIndividual = () => {
   return (
     <ChakraProvider>
       <Box p={4}>
-      {isLoading && <>
-      <Modal isOpen={true} onClose={onClose}>
-        <ModalOverlay />
-    
-        <ModalContent>
-        <ModalBody display="flex" alignItems="center" justifyContent="center">
-          {/* Use CircularProgress directly as the content */}
-          <CircularProgress
-            isIndeterminate
-            color="green.400"
-            thickness="4px"
-            size="60px"
-          />
-        </ModalBody>
-      </ModalContent>
-      </Modal>
-      </>}
+        {isLoading && (
+          <>
+            <Modal isOpen={true} onClose={onClose}>
+              <ModalOverlay />
+
+              <ModalContent>
+                <ModalBody
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {/* Use CircularProgress directly as the content */}
+                  <CircularProgress
+                    isIndeterminate
+                    color="green.400"
+                    thickness="4px"
+                    size="60px"
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </>
+        )}
         <Heading
           as="h1"
           size="xl"

@@ -54,6 +54,11 @@ export const DevProjectLivlihoodGroup = () => {
       updatedData.logicalFramework.objectives[index].activities[
         subIndex
       ].verification = e.target.value;
+    }else{
+      const name = e.target.name; 
+      const value = e.target.value ;  
+
+      
     }
 
     setFormData(updatedData);

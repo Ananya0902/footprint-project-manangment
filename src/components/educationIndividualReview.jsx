@@ -12,10 +12,10 @@ import {
   Checkbox,
   Button,
 } from "@chakra-ui/react";
-import {useParams} from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
+const EducationIndividualReview = () => {
 
-const EducationIndividual = () => {
   const [formData, setFormData] = useState({
     motherTongue: "",
     religion: "",
@@ -479,4 +479,4 @@ const EducationIndividual = () => {
   );
 };
 
-export default EducationIndividual;
+export default EducationIndividualReview;
