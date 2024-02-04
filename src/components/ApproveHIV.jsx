@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-const HIVAffectedOutreach = () => {
+const ApproveHIV = () => {
   const [formData, setFormData] = useState({
     projectTitle: "",
     projectRegion: "",
@@ -86,8 +86,16 @@ const HIVAffectedOutreach = () => {
     focusAreasDescription: "",
     monitoringProcess: "",
     sustainability: "",
-    projectInChargeAgreement: "",
-    projectInChargeAgreementDate: "",
+     // Signatures
+     projectCoordinatorAgreement: false,
+     projectCoordinatorAgreementDate: "",
+     projectInChargeAgreement: false,
+     projectInChargeAgreementDate: "",
+     provincialSuperiorAgreement: false,
+     provincialSuperiorAgreementDate: "",
+     commentReviewer: "",
+   commentApprover:"",
+   amountApprovedByProjectCoordinator:"",
     logicalFramework: {
       goal: "",
       objectives: [
@@ -461,7 +469,7 @@ const HIVAffectedOutreach = () => {
     <ChakraProvider>
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6} align="center">
-        HIV Affect Outreach Application Form     
+          HIV Affect Outreach Application Form
         </Heading>
 
         {isSubmitted && (
@@ -481,6 +489,7 @@ const HIVAffectedOutreach = () => {
               name="projectTitle"
               onChange={handleChange}
               value={formData.projectTitle || ""}
+              readOnly
             />
           </FormControl>
 
@@ -496,6 +505,7 @@ const HIVAffectedOutreach = () => {
               name="projectRegion"
               onChange={handleChange}
               value={formData.projectRegion || ""}
+              readOnly
             />
           </FormControl>
 
@@ -506,6 +516,7 @@ const HIVAffectedOutreach = () => {
               name="institutionName"
               onChange={handleChange}
               value={formData.institutionName || ""}
+              readOnly
             />
           </FormControl>
 
@@ -515,7 +526,7 @@ const HIVAffectedOutreach = () => {
               type="text"
               name="overallProjectPeriod"
               onChange={handleChange}
-              value={formData.overallProjectPeriod || ""}
+              value={formData.overallProjectPeriod || ""}readOnly
             />
           </FormControl>
 
@@ -525,7 +536,7 @@ const HIVAffectedOutreach = () => {
               type="text"
               name="overallProjectBudget"
               onChange={handleChange}
-              value={formData.overallProjectBudget || ""}
+              value={formData.overallProjectBudget || ""}readOnly
             />
           </FormControl>
 
@@ -551,7 +562,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="presidentOfSocietyName"
                     onChange={handleChange}
-                    value={formData.presidentOfSocietyName || ""}
+                    value={formData.presidentOfSocietyName || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -559,7 +570,7 @@ const HIVAffectedOutreach = () => {
                     type="email"
                     name="presidentOfSocietyEmail"
                     onChange={handleChange}
-                    value={formData.presidentOfSocietyEmail || ""}
+                    value={formData.presidentOfSocietyEmail || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -589,7 +600,7 @@ const HIVAffectedOutreach = () => {
             <Textarea
               name="Support Programmes Till Date"
               onChange={handleChange}
-              value={formData.supportProgrammesTillDate || ""}
+              value={formData.supportProgrammesTillDate || ""}readOnly
 
             />
           </FormControl>
@@ -621,7 +632,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="bridgeEducationPreviousYear"
                     onChange={handleChange}
-                    value={formData.bridgeEducationPreviousYear || ""}
+                    value={formData.bridgeEducationPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -629,7 +640,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="bridgeEducationPresentYear"
                     onChange={handleChange}
-                    value={formData.bridgeEducationPresentYear || ""}
+                    value={formData.bridgeEducationPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -642,7 +653,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="kindergartenPreviousYear"
                     onChange={handleChange}
-                    value={formData.kindergartenPreviousYear || ""}
+                    value={formData.kindergartenPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -650,7 +661,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="kindergartenPresentYear"
                     onChange={handleChange}
-                    value={formData.kindergartenPresentYear || ""}
+                    value={formData.kindergartenPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -663,7 +674,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducationPreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducationPreviousYear || ""}
+                    value={formData.otherEducationPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -671,7 +682,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducationPresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducationPresentYear || ""}
+                    value={formData.otherEducationPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -699,7 +710,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="bridgeSchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.bridgeSchoolPreviousYear || ""}
+                    value={formData.bridgeSchoolPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -707,7 +718,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="bridgeSchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.bridgeSchoolPresentYear || ""}
+                    value={formData.bridgeSchoolPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -720,7 +731,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="primarySchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.primarySchoolPreviousYear || ""}
+                    value={formData.primarySchoolPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -728,7 +739,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="primarySchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.primarySchoolPresentYear || ""}
+                    value={formData.primarySchoolPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -741,7 +752,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducation610PreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation610PreviousYear || ""}
+                    value={formData.otherEducation610PreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -749,7 +760,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducation610PresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation610PresentYear || ""}
+                    value={formData.otherEducation610PresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -777,7 +788,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="secondarySchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.secondarySchoolPreviousYear || ""}
+                    value={formData.secondarySchoolPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -785,7 +796,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="secondarySchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.secondarySchoolPresentYear || ""}
+                    value={formData.secondarySchoolPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -798,7 +809,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="highSchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.highSchoolPreviousYear || ""}
+                    value={formData.highSchoolPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -806,7 +817,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="highSchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.highSchoolPresentYear || ""}
+                    value={formData.highSchoolPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -819,7 +830,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducation1115PreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation1115PreviousYear || ""}
+                    value={formData.otherEducation1115PreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -827,7 +838,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducation1115PresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation1115PresentYear || ""}
+                    value={formData.otherEducation1115PresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -854,7 +865,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="undergraduatePreviousYear"
                     onChange={handleChange}
-                    value={formData.undergraduatePreviousYear || ""}
+                    value={formData.undergraduatePreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -862,7 +873,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="undergraduatePresentYear"
                     onChange={handleChange}
-                    value={formData.undergraduatePresentYear || ""}
+                    value={formData.undergraduatePresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -875,7 +886,7 @@ const HIVAffectedOutreach = () => {
                     onChange={handleChange}
                     value={
                       formData.technicalVocationalEducationPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -885,7 +896,7 @@ const HIVAffectedOutreach = () => {
                     onChange={handleChange}
                     value={
                       formData.technicalVocationalEducationPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -898,7 +909,7 @@ const HIVAffectedOutreach = () => {
                     onChange={handleChange}
                     value={
                       formData.youth16AndAbovebridgeSchoolPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -908,7 +919,7 @@ const HIVAffectedOutreach = () => {
                     onChange={handleChange}
                     value={
                       formData.youth16AndAbovebridgeSchoolPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -919,7 +930,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducation16AbovePreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation16AbovePreviousYear || ""}
+                    value={formData.otherEducation16AbovePreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -927,7 +938,7 @@ const HIVAffectedOutreach = () => {
                     type="text"
                     name="otherEducation16AbovePresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation16AbovePresentYear || ""}
+                    value={formData.otherEducation16AbovePresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -965,7 +976,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .childrenWithParentsPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -982,7 +993,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .childrenWithParentsPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1003,7 +1014,7 @@ const HIVAffectedOutreach = () => {
                     }
                     value={
                       formData.personalSituation.semiOrphansPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -1019,7 +1030,7 @@ const HIVAffectedOutreach = () => {
                     }
                     value={
                       formData.personalSituation.semiOrphansPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1038,7 +1049,7 @@ const HIVAffectedOutreach = () => {
                         "PreviousYear"
                       )
                     }
-                    value={formData.personalSituation.orphansPreviousYear || ""}
+                    value={formData.personalSituation.orphansPreviousYear || ""}readOnly
                   />
                 </Td>
                 <Td>
@@ -1048,7 +1059,7 @@ const HIVAffectedOutreach = () => {
                     onChange={(e) =>
                       handleChangePersonalSituation(e, "orphans", "PresentYear")
                     }
-                    value={formData.personalSituation.orphansPresentYear || ""}
+                    value={formData.personalSituation.orphansPresentYear || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -1070,7 +1081,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .hivInfectedAffectedPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -1087,7 +1098,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .hivInfectedAffectedPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1109,7 +1120,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .differentlyAbledChildrenPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -1126,7 +1137,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .differentlyAbledChildrenPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1148,7 +1159,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation
                         .parentsInConflictPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -1165,7 +1176,7 @@ const HIVAffectedOutreach = () => {
                     value={
                       formData.personalSituation.parentsInConflictPresentYear ||
                       ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1186,7 +1197,7 @@ const HIVAffectedOutreach = () => {
                     }
                     value={
                       formData.personalSituation.otherAlimentsPreviousYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
                 <Td>
@@ -1202,7 +1213,7 @@ const HIVAffectedOutreach = () => {
                     }
                     value={
                       formData.personalSituation.otherAlimentsPresentYear || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1232,7 +1243,7 @@ const HIVAffectedOutreach = () => {
                     onChange={(e) =>
                       handleChangeEconomicBackground(e, "agriculturalLabour")
                     }
-                    value={formData.economicBackground.agriculturalLabour || ""}
+                    value={formData.economicBackground.agriculturalLabour || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -1250,7 +1261,7 @@ const HIVAffectedOutreach = () => {
                     onChange={(e) =>
                       handleChangeEconomicBackground(e, "marginalFarmers")
                     }
-                    value={formData.economicBackground.marginalFarmers || ""}
+                    value={formData.economicBackground.marginalFarmers || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -1267,7 +1278,7 @@ const HIVAffectedOutreach = () => {
                     }
                     value={
                       formData.economicBackground.parentsSelfEmployed || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1284,7 +1295,7 @@ const HIVAffectedOutreach = () => {
                     }
                     value={
                       formData.economicBackground.parentsInformalSector || ""
-                    }
+                    }readOnly
                   />
                 </Td>
               </Tr>
@@ -1299,7 +1310,7 @@ const HIVAffectedOutreach = () => {
                     onChange={(e) =>
                       handleChangeEconomicBackground(e, "anyOther")
                     }
-                    value={formData.economicBackground.anyOther || ""}
+                    value={formData.economicBackground.anyOther || ""}readOnly
                   />
                 </Td>
               </Tr>
@@ -1319,6 +1330,7 @@ const HIVAffectedOutreach = () => {
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
+              readOnly
             />
           </Box>
           {/* Focus Areas in the Present Year */}
@@ -1339,6 +1351,7 @@ const HIVAffectedOutreach = () => {
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
+              readOnly
             />
           </Box>
 
@@ -1353,12 +1366,12 @@ const HIVAffectedOutreach = () => {
           >
             logical Framework
           </Heading>
-          <FormControl isRequired>
+          <FormControl >
             <FormLabel>Goal of the Project</FormLabel>
             <Textarea
               name="goal"
               onChange={(e) => handleChangeObjective(e)}
-              required
+              readOnly
             />
           </FormControl>
 
@@ -1383,19 +1396,19 @@ const HIVAffectedOutreach = () => {
             >
               <VStack key={index} align="start" spacing={4} mb={8}>
                 {/* Objective */}
-                <FormControl isRequired>
+                <FormControl >
                   <hr />
                   <FormLabel>Objective {index + 1}</FormLabel>
                   <Textarea
                     name="objective"
                     value={objective.objective}
                     onChange={(e) => handleChangeObjective(e, index)}
-                    required
+                    readOnly
                   />
                 </FormControl>
 
                 {/* Results */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Results</FormLabel>
                   {objective.results.map((result, subIndex) => (
                     <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -1405,20 +1418,20 @@ const HIVAffectedOutreach = () => {
                         onChange={(e) =>
                           handleChangeObjective(e, index, subIndex)
                         }
-                        required
+                        readOnly
                       />
-                      <Button
+                      {/* <Button
                         onClick={() => handleAddResult(index)}
                         colorScheme="teal"
                       >
                         Add Result
-                      </Button>
+                      </Button> */}
                     </VStack>
                   ))}
                 </FormControl>
 
                 {/* Activities and Means of Verification */}
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel>Activities and Means of Verification</FormLabel>
                   <Table variant="simple">
                     <Thead>
@@ -1438,7 +1451,7 @@ const HIVAffectedOutreach = () => {
                               onChange={(e) =>
                                 handleChangeObjective(e, index, subIndex)
                               }
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
@@ -1448,7 +1461,7 @@ const HIVAffectedOutreach = () => {
                               onChange={(e) =>
                                 handleChangeObjective(e, index, subIndex)
                               }
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
@@ -1458,7 +1471,7 @@ const HIVAffectedOutreach = () => {
                               onChange={(e) =>
                                 handleChangeObjective(e, index, subIndex)
                               }
-                              required
+                              readOnly
                             />
                           </Td>
                           <Td>
@@ -1474,7 +1487,7 @@ const HIVAffectedOutreach = () => {
                                     activity.timeframe[monthIndex] =
                                       !activity.timeframe[monthIndex];
                                     console.log(activity.timeframe);
-                                  }}
+                                  }}readOnly
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -1489,21 +1502,21 @@ const HIVAffectedOutreach = () => {
                     </Tbody>
                   </Table>
 
-                  <Button
+                  {/* <Button
                     onClick={() => handleAddActivity(index)}
                     colorScheme="teal"
                   >
                     Add Activity
-                  </Button>
+                  </Button> */}
                 </FormControl>
 
-                <Button
+                {/* <Button
                   onClick={handleAddObjective}
                   colorScheme="purple"
                   ml="auto"
                 >
                   Add Objective
-                </Button>
+                </Button> */}
                 <hr />
               </VStack>
             </Box>
@@ -1512,7 +1525,7 @@ const HIVAffectedOutreach = () => {
           <Heading as="h2" size="lg" mt={6} mb={4}>
             Sustainability of the Project
           </Heading>
-          <FormControl isRequired>
+          <FormControl >
             <FormLabel>
               Describe the applied strategies to ensure the results and impact
               are long-lasting.
@@ -1521,7 +1534,7 @@ const HIVAffectedOutreach = () => {
               name="sustainability"
               value={formData.sustainability}
               onChange={(e) => handleChange(e)}
-              required
+              readOnly
             />
           </FormControl>
 
@@ -1529,7 +1542,7 @@ const HIVAffectedOutreach = () => {
           <Heading as="h2" size="lg" mt={6} mb={4}>
             Monitoring & Evaluation
           </Heading>
-          <FormControl isRequired>
+          <FormControl >
             <FormLabel>
               Description of the steering and evaluation of the project
               (procedures, interval and responsibilities)
@@ -1538,7 +1551,7 @@ const HIVAffectedOutreach = () => {
               name="monitoringProcess"
               value={formData.monitoringProcess}
               onChange={(e) => handleChange(e)}
-              required
+              readOnly
             />
           </FormControl>
 
@@ -1563,7 +1576,7 @@ const HIVAffectedOutreach = () => {
                       value={row.description}
                       onChange={(e) =>
                         handleBudgetChange(index, "description", e.target.value)
-                      }
+                      }readOnly
                     />
                   </Td>
                   <Td>
@@ -1576,7 +1589,7 @@ const HIVAffectedOutreach = () => {
                           "costsLastYear",
                           e.target.value
                         )
-                      }
+                      }readOnly
                     />
                   </Td>
                   <Td>
@@ -1589,7 +1602,7 @@ const HIVAffectedOutreach = () => {
                           "budgetCurrentYear",
                           e.target.value
                         )
-                      }
+                      }readOnly
                     />
                   </Td>
                 </Tr>
@@ -1598,9 +1611,9 @@ const HIVAffectedOutreach = () => {
           </Table>
 
           {/* Add row button */}
-          <Button colorScheme="teal" onClick={handleAddBudgetRow}>
+          {/* <Button colorScheme="teal" onClick={handleAddBudgetRow}>
             Add Expense
-          </Button>
+          </Button> */}
 
           {/* Total Costs */}
 
@@ -1616,17 +1629,18 @@ const HIVAffectedOutreach = () => {
             />
           </FormControl>
 
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
+          <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
+            <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
                 size="lg"
+                defaultChecked={formData.projectInChargeAgreement}
+                readOnly
               >
                 The Project-In-Charge agree
               </Checkbox>
@@ -1634,14 +1648,80 @@ const HIVAffectedOutreach = () => {
                 type="date"
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
+                value={formData.projectInChargeAgreementDate}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Provincial Superior agreement */}
+            <FormControl isRequired>
+              <Checkbox
+                name="provincialSuperiorAgreement"
+                onChange={handleChange}
+                size="lg"
+                readOnly
+              >
+                The Provincial Superior agree
+              </Checkbox>
+            </FormControl>
+
+            {/* Project Coordinator agreement */}
+            <FormControl isRequired>
+              <Checkbox
+                name="projectCoordinatorAgreement"
+                onChange={handleChange}
+                size="lg"
+              >
+                The Project Coordinator agree
+              </Checkbox>
+              <Input
+                type="date"
+                name="projectCoordinatorAgreementDate"
+                onChange={handleChange}
                 required
               />
             </FormControl>
-          </VStack>
+            {/* Comment for reviewer */}
+            <FormControl>
+              <FormLabel>Comment(For Reviewer)</FormLabel>
+              <Input
+                type="text"
+                name="commentReviewer"
+                onChange={handleChange}
+                value={formData.commentReviewer || ""}
+                readOnly
+              />
+            </FormControl>
 
-          {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+            {/* Comment for approver */}
+            <FormControl isRequired>
+              <FormLabel>Comment(For Approver)</FormLabel>
+              <Input
+                type="text"
+                name="commentApprover"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+
+            {/* Amount Approved by Project Coordinator */}
+            <FormControl isRequired>
+              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <Input
+                type="number"
+                name="amountApprovedByProjectCoordinator"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+
+            {/* Submit Button */}
+            <Button colorScheme="blue" mx={3} type="submit">
             Submit
+          </Button>
+          {/* decline Button */}
+          <Button colorScheme="red" mx={3} type="submit">
+            Decline
           </Button>
         </form>
       </Box>
@@ -1649,4 +1729,4 @@ const HIVAffectedOutreach = () => {
   );
 };
 
-export default HIVAffectedOutreach;
+export default ApproveHIV;

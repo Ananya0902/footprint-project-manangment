@@ -67,6 +67,8 @@ import ReviewEG from "./components/ReviewEG";
 import ApproveEG from "./components/ApproveEG";
 import ReviewISG from "./components/ReviewISG";
 import ApproveISG from "./components/ApproveISG";
+import ReviewHIV from "./components/ReviewHIV";
+import ApproveHIV from "./components/ApproveHIV";
 
 
 
@@ -150,6 +152,8 @@ const App = () => {
           <Route path='/ReviewEG' element={<ReviewEG/>} />
           <Route path='/ReviewISG' element={<ReviewISG/>} />
           <Route path='/ApproveISG' element={<ApproveISG/>} />
+          <Route path='/ReviewHIV' element={<ReviewHIV/>} />
+          <Route path='/ApproveHIV' element={<ApproveHIV/>} />
                   
                  
 

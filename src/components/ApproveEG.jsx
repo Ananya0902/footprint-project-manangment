@@ -868,6 +868,7 @@ const ApproveEG = () => {
                 name="provincialSuperiorAgreement"
                 onChange={handleChange}
                 size="lg"
+                readOnly
               >
                 The Provincial Superior agree
               </Checkbox>
