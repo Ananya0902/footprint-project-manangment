@@ -313,9 +313,14 @@ const RegisterPage = () => {
               Province
             </FormLabel>
             <Select {...formik.getFieldProps("province")} placeholder="Select">
-              <option value="north">North</option>
-              <option value="south">South</option>
-              <option value="central">Central</option>
+              <option value="visakhapatanam">Visakhapatanam</option>
+              <option value="bangalore">Bangalore</option>
+              <option value="vijaywada">Vijaywada</option>
+              <option value="generalate">Generalate</option>
+              <option value="eastAfrica">East Africa</option>
+              <option value="indonesia">Indonesia</option>
+              <option value="eastTimor">East Timor</option>
+
             </Select>
             <FormErrorMessage>{formik.errors.province}</FormErrorMessage>
           </FormControl>

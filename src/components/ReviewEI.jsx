@@ -15,9 +15,15 @@ import {
   Alert,
   AlertIcon,
   InputGroup,
+  useToast , 
 } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import authAxios from '../AuthAxios' ; 
 
 const ReviewEI = () => {
+  const showToast = useToast() ; 
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+
   const [formData, setFormData] = useState({
     provincialSuperiorName: "Ananya",
     provincialSuperiorContact: "",
@@ -104,6 +110,72 @@ const ReviewEI = () => {
     // Additional Fields
     comment: "",
   });
+
+  // Populate formData from req
+  const updatedFormData = {
+    provincialSuperiorName: "", // Assuming not present in req
+    provincialSuperiorContact: "", // Assuming not present in req
+    projectInchargeName: projectData.applicant.name,
+    projectInchargeContact: projectData.applicant.mobile, // Assuming not present in req
+    projectInchargeEmail: projectData.applicant.email, // Assuming not present in req
+    beneficiaryName: projectData.name || "",
+    beneficiaryContact: projectData.mobile || "",
+    beneficiaryEmail: projectData.email || "",
+    beneficiaryAddress: projectData.address || "",
+    aadharCardNo: projectData.aadhar_no || "",
+    gender: projectData.gender || "male", // Assuming 'male' is the default value
+    dob: projectData.DOB || "",
+    fatherName: projectData.father || "",
+    motherName: projectData.mother || "",
+    motherTongue: projectData.mother_tongue || "",
+    religion: projectData.religion || "",
+    casteTribe: projectData.caste || "",
+    fatherOccupation: projectData.occupation_of_father || "",
+    fatherMonthlyIncome: projectData.monthly_income_of_father || 0, // Assuming 0 as the default value
+    motherOccupation: projectData.occupation_of_mother || "",
+    motherMonthlyIncome: projectData.monthly_income_of_mother || 0, // Assuming 0 as the default value
+    motherIs: projectData.motherIs || "",
+    fatherIs: projectData.fatherIs || "",
+    grandmotherSupport: projectData.grandmother_support || "",
+    grandfatherSupport: projectData.grandfather_support || "",
+    fatherHealthStatus: projectData.health_status_of_father || "",
+    fatherHealthStatusOthers: projectData.health_status_of_father_others || "",
+    motherHealthStatus: projectData.health_status_of_mother || "",
+    motherHealthStatusOthers: projectData.health_status_of_mother_others || "",
+    residentialStatus: projectData.residential_status || "",
+    residentialStatusOthers: projectData.residential_status_others || "",
+    familySituationDetails: projectData.family_situation_of_the_beneficiary || "",
+    financialSupportDetails: projectData.financialSupportDetails || "",
+    familyEmploymentDetails: projectData.familyEmploymentDetails || "",
+    previousEducationDetails: projectData.previousEducationDetails || "",
+    previousInstitutionDetails: projectData.previousInstitutionDetails || "",
+    previousMarksPercentage: projectData.previousMarksPercentage || 0, // Assuming 0 as the default value
+    presentEducationDetails: projectData.presentEducationDetails || "",
+    presentInstitutionDetails: projectData.presentInstitutionDetails || "",
+    educationalAspiration: projectData.educationalAspiration || "",
+    sustainabilityDetails: projectData.sustainabilityDetails || "",
+    eligibleForScholarship: projectData.eligibleForScholarship || "",
+    expectedScholarshipAmount: projectData.expectedScholarshipAmount || 0, // Assuming 0 as the default value
+    familyFinancialContribution: projectData.familyFinancialContribution || 0, // Assuming 0 as the default value
+    noFamilySupportReasons: projectData.noFamilySupportReasons || "",
+    presentStudy: projectData.presentStudy || "",
+    budgetDetails: projectData.budgetDetails || "",
+    totalCostOfStudy: projectData.totalCostOfStudy || 0, // Assuming 0 as the default value
+    scholarshipExpected: projectData.scholarshipExpected || 0, // Assuming 0 as the default value
+    beneficiaryContribution: projectData.beneficiaryContribution || 0, // Assuming 0 as the default value
+    totalScholarshipAndContribution: projectData.totalScholarshipAndContribution || 0, // Assuming 0 as the default value
+    balanceAmountRequested: projectData.balanceAmountRequested || 0, // Assuming 0 as the default value
+    beneficiaryAgreement: projectData.benificary_agree.agree || false,
+    beneficiaryAgreementDate: projectData.benificary_agree.date || "",
+    projectInChargeAgreement: projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate: projectData.project_in_charge_agree.date || "",
+    provincialSuperiorAgreement: "", // Assuming not present in req
+    provincialSuperiorAgreementDate: "", // Assuming not present in req
+    comment: "", // Assuming not present in req
+  };
+
+  setFormData(updatedFormData);
+
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -113,10 +185,36 @@ const ReviewEI = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-    setIsSubmitted(true);
+    try {
+      const req = {
+        projectID: projectData._id,
+        comment_box_provincial_superior: formData.comment,
+        provincial_superior_agree: {
+          agree: formData.provincialSuperiorAgreement,
+        },
+      };
+      const res = await authAxios.put("/projects/editreviewerEI/", req);
+      if (res.data.success) setIsSubmitted(true);
+      else {
+        showToast({
+          title: "Error submitting the reviewed doc",
+          status: "error",
+          duration: 5000,
+        });
+        console.log(res.data);
+      }
+    } catch (e) {
+      console.log(e);
+      showToast({
+        title: "Error submitting the reviewed doc",
+        description: e,
+        status: "error",
+        duration: 5000,
+      });
+    }
   };
 
   return (
@@ -554,11 +652,14 @@ const ReviewEI = () => {
             </FormControl>
 
             {/* Residential Status */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Residential Status</FormLabel>
-              <Select name="residentialStatus" onChange={handleChange}
-               value={formData.residentialStatus}
-                  readOnly>
+              <Select
+                name="residentialStatus"
+                onChange={handleChange}
+                value={formData.residentialStatus}
+                readOnly
+              >
                 <option value="houseOwner">House Owner</option>
                 <option value="landOwner">Land Owner</option>
                 <option value="rentedHouse">Rented House</option>
@@ -583,7 +684,7 @@ const ReviewEI = () => {
             </Heading>
 
             {/* Family situation of the beneficiary - Need of the present project assistance? */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Family situation of the beneficiary - Need of the present
                 project assistance?
@@ -592,12 +693,12 @@ const ReviewEI = () => {
                 name="familySituationDetails"
                 onChange={handleChange}
                 value={formData.familySituationDetails}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Has the family of the beneficiary received financial support previously through St. Ann’s projects? Give the details. */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Has the family of the beneficiary received financial support
                 previously through St. Ann’s projects? Give the details.
@@ -606,12 +707,12 @@ const ReviewEI = () => {
                 name="financialSupportDetails"
                 onChange={handleChange}
                 value={formData.financialSupportDetails}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Are the family members of the beneficiary employed with St.Ann’s. Give full details. */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Are the family members of the beneficiary employed with
                 St.Ann’s. Give full details.
@@ -630,18 +731,18 @@ const ReviewEI = () => {
             </Heading>
 
             {/* Mention the previous academic education? */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Mention the previous academic education?</FormLabel>
               <Textarea
                 name="previousEducationDetails"
                 onChange={handleChange}
                 value={formData.previousEducationDetails}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Name and Address of the previous institution */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Name and Address of the previous institution:
               </FormLabel>
@@ -649,12 +750,12 @@ const ReviewEI = () => {
                 name="previousInstitutionDetails"
                 onChange={handleChange}
                 value={formData.previousInstitutionDetails}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Percentage of marks received previously */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Percentage of marks received previously:</FormLabel>
               <Input
                 type="number"
@@ -666,18 +767,18 @@ const ReviewEI = () => {
             </FormControl>
 
             {/* Mention the present Education/Training */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Mention the present Education/Training</FormLabel>
               <Textarea
                 name="presentEducationDetails"
                 onChange={handleChange}
                 value={formData.presentEducationDetails}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Name and address of the Present Institution of study */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Name and address of the Present Institution of study:
               </FormLabel>
@@ -685,12 +786,12 @@ const ReviewEI = () => {
                 name="presentInstitutionDetails"
                 onChange={handleChange}
                 value={formData.presentInstitutionDetails}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* What is the educational aspiration and area of interest of the beneficiary? */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 What is the educational aspiration and area of interest of the
                 beneficiary?
@@ -703,7 +804,7 @@ const ReviewEI = () => {
             </FormControl>
 
             {/* Sustainability of the support */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Sustainability of the support (Please write down how the support
                 will affect the beneficiary's life in the long run):
@@ -722,7 +823,7 @@ const ReviewEI = () => {
             </Heading>
 
             {/* Is the beneficiary eligible for Scholarship? (government or any other) */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Is the beneficiary eligible for Scholarship? (government or any
                 other)
@@ -731,7 +832,7 @@ const ReviewEI = () => {
                 name="eligibleForScholarship"
                 onChange={handleChange}
                 value={formData.eligibleForScholarship}
-                  readOnly
+                readOnly
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -739,33 +840,33 @@ const ReviewEI = () => {
             </FormControl>
 
             {/* Expected amount of Scholarship */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Expected amount of Scholarship</FormLabel>
               <Input
                 type="number"
                 name="expectedScholarshipAmount"
                 onChange={handleChange}
                 value={formData.expectedScholarshipAmount}
-                  readOnly
+                readOnly
                 // required={formData.eligibleForScholarship === "yes"}
                 // disabled={formData.eligibleForScholarship === "no"}
               />
             </FormControl>
 
             {/* Financial contribution from the family? */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Financial contribution from the family?</FormLabel>
               <Input
                 type="number"
                 name="familyFinancialContribution"
                 onChange={handleChange}
                 value={formData.familyFinancialContribution}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* If no support from family, mention the reasons? */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 If no support from the family, mention the reasons?
               </FormLabel>
@@ -786,37 +887,41 @@ const ReviewEI = () => {
             </Heading>
 
             {/* Present Study */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Present study</FormLabel>
-              <Textarea name="presentStudy" 
-              onChange={handleChange} 
-              value={formData.presentStudy}
-            readOnly />
+              <Textarea
+                name="presentStudy"
+                onChange={handleChange}
+                value={formData.presentStudy}
+                readOnly
+              />
             </FormControl>
 
             {/* Details of Budget */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Details of budget</FormLabel>
-              <Textarea name="budgetDetails" 
-              onChange={handleChange} 
-              value={formData.budgetDetails}
-                  readOnly />
+              <Textarea
+                name="budgetDetails"
+                onChange={handleChange}
+                value={formData.budgetDetails}
+                readOnly
+              />
             </FormControl>
 
             {/* Total Cost of the Study */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Total cost of the study</FormLabel>
               <Input
                 type="number"
                 name="totalCostOfStudy"
                 onChange={handleChange}
                 value={formData.totalCostOfStudy}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Scholarship Expected from Government/Other Sources */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Scholarship expected from government/other sources
               </FormLabel>
@@ -825,31 +930,31 @@ const ReviewEI = () => {
                 name="scholarshipExpected"
                 onChange={handleChange}
                 value={formData.scholarshipExpected}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Beneficiary's Contribution */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Beneficiary's contribution</FormLabel>
               <Input
                 type="number"
                 name="beneficiaryContribution"
                 onChange={handleChange}
                 value={formData.beneficiaryContribution}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
             {/* Total Scholarship + Contribution */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Total scholarship + contribution</FormLabel>
               <Input
                 type="number"
                 name="totalScholarshipAndContribution"
                 onChange={handleChange}
                 value={formData.totalScholarshipAndContribution}
-                  readOnly
+                readOnly
               />
             </FormControl>
 
@@ -861,7 +966,7 @@ const ReviewEI = () => {
                 name="balanceAmountRequested"
                 onChange={handleChange}
                 value={formData.balanceAmountRequested}
-                  readOnly
+                readOnly
               />
             </FormControl>
           </VStack>
@@ -1017,8 +1122,6 @@ const ReviewEI = () => {
               />
             </FormControl>
 
-            
-
             {/* Project-In-Charge agreement */}
             <FormControl>
               <Checkbox
@@ -1066,8 +1169,16 @@ const ReviewEI = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+          <Button
+            mx="3"
+            colorScheme="blue"
+            type="submit"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
+            Accept
+          </Button>
+          <Button colorScheme="red" type="submit" mx={3}>
+            Revert
           </Button>
         </form>
       </Box>

@@ -18,9 +18,14 @@ import {
   Th,
   Td,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import authAxios from "../AuthAxios";
 
 const ReviewEduRUTG = () => {
+  const showToast = useToast();
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const [formData, setFormData] = useState({
     presentProjectYear: "",
     projectTitle: "",
@@ -74,92 +79,118 @@ const ReviewEduRUTG = () => {
     ],
     projectInChargeAgreement: "",
     projectInChargeAgreementDate: "",
-    comment:"",
+    provincialSuperiorAgreement: false,
+    comment: "",
   });
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
-    const req = {
-      project_title: formData.projectTitle,
-      general_information: {
-        full_address: formData.address,
-        overall_project_period: formData.overallProjectPeriod,
-        overall_project_budget: parseInt(formData.overallProjectBudget), // Assuming it's a number
+  // Populate formData from req
+  const updatedFormData = {
+    projectTitle: projectData.project_title || "",
+    projectInchargeName:
+      projectData.general_information.project_incharge.ref.name,
+    projectInchargeEmail:
+      projectData.general_information.project_incharge.ref.name,
+    projectInchargeAgreement:
+      projectData.general_information.project_incharge.agree,
+    projectInchargeAgreementDate:
+      projectData.general_information.project_incharge.date,
+    presentProjectYear: projectData.present_project_year ?? "",
+    projectNumber: projectData.project_number,
+    address: projectData.general_information?.full_address ?? "",
+    overallProjectPeriod:
+      projectData.general_information?.overall_project_period || "",
+    overallProjectBudget:
+      projectData.general_information?.overall_project_budget || "",
+    targetGroup: projectData.beneficiaries.map((beneficiary) => ({
+      name: beneficiary.name || "",
+      caste: beneficiary.caste || "",
+      occupationOfParents: beneficiary.occupation_of_parents || "",
+      familyBackgroundAndNeedOfSupport:
+        beneficiary.family_background_and_need_of_support || "",
+      classOfStudyOrInstitution:
+        beneficiary.class_of_study_or_name_of_institution || "",
+      eligibilityOfScholarshipAndExpectedAmount:
+        beneficiary.eligibility_of_scholarship_and_expected_amount || "",
+      contributionFromFamily: beneficiary.contribution_from_family || "",
+    })),
+    projectSummary: {
+      projectLocation:
+        projectData.project_summary?.project_location_geographical_area || "",
+      workOfSisters:
+        projectData.project_summary
+          ?.work_of_sisters_of_st_anns_in_the_project_area || "",
+      socioEconomicConditions:
+        projectData.project_summary
+          ?.general_socio_economic_conditions_of_the_beneficiaries || "",
+      identifiedProblems:
+        projectData.project_summary?.problems_identified_and_consequences || "",
+      needOfProject: projectData.project_summary?.need_of_the_project || "",
+      solutionAnalysisLogicalFramework: {
+        goal:
+          projectData.project_summary?.solution_analysis_logical_framework
+            ?.goal || "",
+        objectives:
+          projectData.project_summary?.solution_analysis_logical_framework?.objectives.map(
+            (objective) => ({
+              objective: objective.objective || "",
+              results: objective.results_and_outcomes.split(",") || [""], // Assuming it's a string
+              activities: objective.activities.map((activity) => ({
+                activity: activity.activity || "",
+                months: activity.months || "",
+                means_of_verification: activity.means_of_verification || "",
+              })),
+            })
+          ) || [],
       },
-      beneficiaries: formData.targetGroup.map((target) => ({
-        name: target.name,
-        caste: target.caste,
-        occupation_of_parents: target.occupationOfParents,
-        family_background_and_need_of_support:
-          target.familyBackgroundAndNeedOfSupport,
-        class_of_study_or_name_of_institution: target.classOfStudyOrInstitution,
-        eligibility_of_scholarship_and_expected_amount:
-          target.eligibilityOfScholarshipAndExpectedAmount,
-        contribution_from_family: target.contributionFromFamily,
-      })),
-      objectives: formData.logicalFramework.objectives.map((objective) => ({
-        objective: objective.objective,
-        results_and_outcomes: objective.results,
-        activities: objective.activities.map((activity) => ({
-          activity: activity.activity,
-          months: activity.months,
-          means_of_verification: activity.means_of_verification,
-        })),
-      })),
-      project_summary: {
-        project_location_geographical_area:
-          formData.projectSummary.projectLocation,
-        work_of_sisters_of_st_anns_in_the_project_area:
-          formData.projectSummary.workOfSisters,
-        general_socio_economic_conditions_of_the_beneficiaries:
-          formData.projectSummary.socioEconomicConditions,
-        problems_identified_and_consequences:
-          formData.projectSummary.identifiedProblems,
-        need_of_the_project: formData.projectSummary.needOfProject,
-        identification_of_the_beneficiaries: formData.targetGroup.map(
-          (target) => ({
-            name: target.name,
-            caste: target.caste,
-            occupation_of_parents: target.occupationOfParents,
-            family_background_and_need_of_support:
-              target.familyBackgroundAndNeedOfSupport,
-            class_of_study_or_name_of_institution:
-              target.classOfStudyOrInstitution,
-            eligibility_of_scholarship_and_expected_amount:
-              target.eligibilityOfScholarshipAndExpectedAmount,
-            contribution_from_family: target.contributionFromFamily,
-          })
-        ),
-        solution_analysis_logical_framework: {
-          goal: formData.logicalFramework.goal,
-          objectives: formData.logicalFramework.objectives.map((objective) => ({
-            objective: objective.objective,
-            results_and_outcomes: objective.results.join(","), // Assuming it's a string
-            activities: objective.activities.map((activity) => ({
-              activity: activity.activity,
-              months: activity.months,
-              means_of_verification: activity.means_of_verification,
-            })),
-          })),
-        },
-        sustainability: formData.sustainability,
-        monitoring_process_of_the_project: formData.monitoringprocess,
-        mode_of_evaluation: formData.evaluation,
-        budget: {
-          expenses: formData.budget.map((item) => ({
-            description: item.description,
-            costs: parseInt(item.costs), // Assuming it's a number
-          })),
-          total: parseInt(calculateTotalCosts('cost')) ?? 0, // Should be calculated
-        },
+      sustainability: projectData.project_summary?.sustainability || "",
+      monitoringprocess:
+        projectData.project_summary?.monitoring_process_of_the_project || "",
+      evaluation: projectData.project_summary?.mode_of_evaluation || "",
+      budget: {
+        expenses:
+          projectData.project_summary?.budget?.expenses.map((expense) => ({
+            description: expense.description || "",
+            costs: expense.costs || 0, // Assuming it's a number
+          })) || [],
+        total: projectData.project_summary?.budget?.total || 0, // Assuming it's a number
       },
-    };
+    },
+  };
 
-    // Send requestBody to the backend
+  setFormData(updatedFormData);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted with data:", formData);
+    // Add your form submission logic here
+    try {
+      const req = {
+        projectID: projectData._id,
+        comment_box_provincial_superior: formData.comment,
+        provincial_superior_agree: {
+          agree: formData.provincialSuperiorAgreement,
+        },
+      };
+      const res = await authAxios.put("/projects/editEGSReviewer/", req);
+      if (res.data.success) setIsSubmitted(true);
+      else {
+        showToast({
+          title: "Error submitting the reviewed doc",
+          status: "error",
+          duration: 5000,
+        });
+        console.log(res.data);
+      }
+    } catch (e) {
+      console.log(e);
+      showToast({
+        title: "Error submitting the reviewed doc",
+        description: e,
+        status: "error",
+        duration: 5000,
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -287,88 +318,88 @@ const ReviewEduRUTG = () => {
 
         <VStack spacing={4} align="start" p={4}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-           {/* Project Information */}
-<FormControl mb={4}>
-  <FormLabel>Present Project Year</FormLabel>
-  <Input
-    type="text"
-    name="presentProjectYear"
-    onChange={handleChange}
-    value={formData.presentProjectYear || ""}
-    readOnly
-  />
-</FormControl>
+            {/* Project Information */}
+            <FormControl mb={4}>
+              <FormLabel>Present Project Year</FormLabel>
+              <Input
+                type="text"
+                name="presentProjectYear"
+                onChange={handleChange}
+                value={formData.presentProjectYear || ""}
+                readOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Project Title</FormLabel>
-  <Input
-    type="text"
-    name="projectTitle"
-    onChange={handleChange}
-    value={formData.projectTitle || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Title</FormLabel>
+              <Input
+                type="text"
+                name="projectTitle"
+                onChange={handleChange}
+                value={formData.projectTitle || ""}
+                readOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Project Number</FormLabel>
-  <Input
-    type="text"
-    name="projectNumber"
-    onChange={handleChange}
-    value={formData.projectNumber || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Number</FormLabel>
+              <Input
+                type="text"
+                name="projectNumber"
+                onChange={handleChange}
+                value={formData.projectNumber || ""}
+                readOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Project Region</FormLabel>
-  <Input
-    type="text"
-    name="projectRegion"
-    onChange={handleChange}
-    value={formData.projectRegion || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Region</FormLabel>
+              <Input
+                type="text"
+                name="projectRegion"
+                onChange={handleChange}
+                value={formData.projectRegion || ""}
+                readOnly
+              />
+            </FormControl>
 
-{/* General Information */}
-<Heading as="h2" size="lg" mt={6} mb={4}>
-  General Information
-</Heading>
+            {/* General Information */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              General Information
+            </Heading>
 
-<FormControl mb={4}>
-  <FormLabel>Overall Project Period</FormLabel>
-  <Input
-    type="text"
-    name="overallProjectPeriod"
-    onChange={handleChange}
-    value={formData.overallProjectPeriod || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Overall Project Period</FormLabel>
+              <Input
+                type="text"
+                name="overallProjectPeriod"
+                onChange={handleChange}
+                value={formData.overallProjectPeriod || ""}
+                readOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Overall Project Budget</FormLabel>
-  <Input
-    type="text"
-    name="overallProjectBudget"
-    onChange={handleChange}
-    value={formData.overallProjectBudget || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Overall Project Budget</FormLabel>
+              <Input
+                type="text"
+                name="overallProjectBudget"
+                onChange={handleChange}
+                value={formData.overallProjectBudget || ""}
+                readOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Full Address</FormLabel>
-  <Input
-    type="text"
-    name="address"
-    onChange={handleChange}
-    value={formData.address || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Full Address</FormLabel>
+              <Input
+                type="text"
+                name="address"
+                onChange={handleChange}
+                value={formData.address || ""}
+                readOnly
+              />
+            </FormControl>
 
             <Table variant="simple" mb={4}>
               <Thead>
@@ -441,72 +472,77 @@ const ReviewEduRUTG = () => {
               </Tbody>
             </Table>
 
-           {/* Project Summary */}
-<Heading as="h2" size="lg" mt={6} mb={4}>
-  Project Summary
-</Heading>
+            {/* Project Summary */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              Project Summary
+            </Heading>
 
-<FormControl mb={4}>
-  <FormLabel>Project Location - Geographical Area</FormLabel>
-  <Textarea
-    name="projectLocation"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.projectLocation || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Location - Geographical Area</FormLabel>
+              <Textarea
+                name="projectLocation"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.projectLocation || ""}
+                isReadOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Work of Sisters of St.Ann’s in the project area</FormLabel>
-  <Textarea
-    name="workOfSisters"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.workOfSisters || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                Work of Sisters of St.Ann’s in the project area
+              </FormLabel>
+              <Textarea
+                name="workOfSisters"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.workOfSisters || ""}
+                isReadOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>General Socio Economic conditions of the Beneficiaries</FormLabel>
-  <Textarea
-    name="socioEconomicConditions"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.socioEconomicConditions || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                General Socio Economic conditions of the Beneficiaries
+              </FormLabel>
+              <Textarea
+                name="socioEconomicConditions"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.socioEconomicConditions || ""}
+                isReadOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Problems identified and Consequences</FormLabel>
-  <Textarea
-    name="identifiedProblems"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.identifiedProblems || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Problems identified and Consequences</FormLabel>
+              <Textarea
+                name="identifiedProblems"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.identifiedProblems || ""}
+                isReadOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Need of the project</FormLabel>
-  <Textarea
-    name="needOfProject"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.needOfProject || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Need of the project</FormLabel>
+              <Textarea
+                name="needOfProject"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.needOfProject || ""}
+                isReadOnly
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>
-    Identification of the Beneficiaries (how are the beneficiaries selected)
-  </FormLabel>
-  <Textarea
-    name="beneficiarySelection"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.beneficiarySelection || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                Identification of the Beneficiaries (how are the beneficiaries
+                selected)
+              </FormLabel>
+              <Textarea
+                name="beneficiarySelection"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.beneficiarySelection || ""}
+                isReadOnly
+              />
+            </FormControl>
 
             {/* Target Group Table */}
             <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -537,7 +573,8 @@ const ReviewEduRUTG = () => {
                         onChange={(e) =>
                           handleTargetGroupChange(index, "name", e.target.value)
                         }
-                        value={row.name} readOnly
+                        value={row.name}
+                        readOnly
                       />
                     </Td>
                     <Td>
@@ -551,7 +588,8 @@ const ReviewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.caste} readOnly
+                        value={row.caste}
+                        readOnly
                       />
                     </Td>
                     <Td>
@@ -565,7 +603,8 @@ const ReviewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.occupationOfParents} readOnly
+                        value={row.occupationOfParents}
+                        readOnly
                       />
                     </Td>
                     <Td>
@@ -579,7 +618,8 @@ const ReviewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.familyBackgroundAndNeedOfSupport}readOnly
+                        value={row.familyBackgroundAndNeedOfSupport}
+                        readOnly
                       />
                     </Td>
                     <Td>
@@ -593,7 +633,8 @@ const ReviewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.classOfStudyOrInstitution}readOnly
+                        value={row.classOfStudyOrInstitution}
+                        readOnly
                       />
                     </Td>
                     <Td>
@@ -647,7 +688,7 @@ const ReviewEduRUTG = () => {
             >
               logical Framework
             </Heading>
-            <FormControl >
+            <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
@@ -677,7 +718,7 @@ const ReviewEduRUTG = () => {
               >
                 <VStack key={index} align="start" spacing={4} mb={8}>
                   {/* Objective */}
-                  <FormControl >
+                  <FormControl>
                     <hr />
                     <FormLabel>Objective {index + 1}</FormLabel>
                     <Textarea
@@ -689,7 +730,7 @@ const ReviewEduRUTG = () => {
                   </FormControl>
 
                   {/* Results */}
-                  <FormControl >
+                  <FormControl>
                     <FormLabel>Results</FormLabel>
                     {objective.results.map((result, subIndex) => (
                       <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -712,7 +753,7 @@ const ReviewEduRUTG = () => {
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
-                  <FormControl >
+                  <FormControl>
                     <FormLabel>Activities and Means of Verification</FormLabel>
                     <Table variant="simple">
                       <Thead>
@@ -746,7 +787,7 @@ const ReviewEduRUTG = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl >
+                              <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
@@ -792,7 +833,7 @@ const ReviewEduRUTG = () => {
             ))}
 
             {/* Sustainability of the Project */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
@@ -803,7 +844,7 @@ const ReviewEduRUTG = () => {
             </FormControl>
 
             {/* Explain the Monitoring Process of the Project */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Explain the Monitoring Process of the Project
               </FormLabel>
@@ -816,7 +857,7 @@ const ReviewEduRUTG = () => {
             </FormControl>
 
             {/* Mode of Evaluation */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Mode of Evaluation</FormLabel>
               <Textarea
                 name="evaluation"
@@ -863,7 +904,8 @@ const ReviewEduRUTG = () => {
                         onChange={(e) =>
                           handleBudgetChange(index, "costs", e.target.value)
                         }
-                        value={row.costs}readOnly
+                        value={row.costs}
+                        readOnly
                       />
                     </Td>
                   </Tr>
@@ -882,7 +924,7 @@ const ReviewEduRUTG = () => {
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl >
+            <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
@@ -898,8 +940,8 @@ const ReviewEduRUTG = () => {
               />
             </FormControl>
 
- {/*Comment(Reviewer) */}
- <FormControl isRequired>
+            {/*Comment(Reviewer) */}
+            <FormControl isRequired>
               <FormLabel>Comment(Reviewer)</FormLabel>
               <Textarea
                 name="comment"
@@ -908,12 +950,16 @@ const ReviewEduRUTG = () => {
                 required
               />
             </FormControl>
-
           </form>
         </VStack>
         {/* Submit Button */}
-        <Button colorScheme="blue" mx={3}type="submit">
-          Submit
+        <Button
+          colorScheme="blue"
+          mx={3}
+          type="submit"
+          onClick={() => (formData.provincialSuperiorAgreement = true)}
+        >
+          Accept
         </Button>
         {/* decline  Button */}
         <Button colorScheme="red" mx={3} type="submit">

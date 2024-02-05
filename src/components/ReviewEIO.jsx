@@ -27,7 +27,7 @@ const ReviewEIO = () => {
   console.log(projectData);
   const [formData, setFormData] = useState({
     // Name and contact of Provincial Superior
-      // Name and contact of Provincial Superior
+    // Name and contact of Provincial Superior
     projectInchargeName: projectInchargeData.name,
     projectInchargeEmail: projectInchargeData.email,
     projectInchargeContact: projectInchargeData.mobile,
@@ -90,6 +90,7 @@ const ReviewEIO = () => {
     beneficiaryContribution: projectData.beneficiaries_contribution,
     totalScholarshipAndContribution: projectData.total_scholarship_contribution,
     balanceAmountRequested: projectData.balance_amount_requested,
+    provincialSuperiorAgreement: false,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -108,7 +109,7 @@ const ReviewEIO = () => {
         projectID: projectData._id,
         comment_box_provincial_superior: formData.comment,
         provincial_superior_agree: {
-          agree: e.target.provincialSuperiorAgreement.checked,
+          agree: formData.provincialSuperiorAgreement,
         },
       };
       const res = await authAxios.put("/projects/editreviewerEOI/", req);
@@ -153,7 +154,6 @@ const ReviewEIO = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-
           <VStack align="start" spacing={4} mb={8}>
             {/* Name of Project Incharge */}
             <FormControl>
@@ -208,13 +208,12 @@ const ReviewEIO = () => {
                   </Box>
                 )}
                 <Image
-                  boxSize='40%'
+                  boxSize="40%"
                   src={formData.photographUrl}
                   alt="Beneficiary Image"
-                  mx = 'auto'
-                  fit='contain'
+                  mx="auto"
+                  fit="contain"
                 />
-
               </Box>
             </FormControl>
 
@@ -999,15 +998,6 @@ const ReviewEIO = () => {
             </FormControl>
 
             {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agree
-              </Checkbox>
-            </FormControl>
           </VStack>
           <VStack align="start" spacing={4} mb={8}>
             {/* Comment */}
@@ -1023,8 +1013,17 @@ const ReviewEIO = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+          {/* Submit Button */}
+          <Button
+            colorScheme="blue"
+            mx="3"
+            type="submit"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
+            Accept
+          </Button>
+          <Button colorScheme="red" mx="3" type="submit" flex={1}>
+            Revert
           </Button>
         </form>
       </Box>

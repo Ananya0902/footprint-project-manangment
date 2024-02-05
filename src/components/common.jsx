@@ -23,7 +23,7 @@ import {
 import authAxios from "../AuthAxios";
 
 export const Common = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setformData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
     TITLEOFTHEPROJECT: "",
@@ -42,11 +42,11 @@ export const Common = () => {
     sustainability: "", // Add sustainability
     monitoringProcess: "", // Add monitoringProcess
     projectInChargeAgreement: false,
-  projectInChargeAgreementDate: "",
-  projectArea: "", // Add projectArea
-  directBeneficiaries: "", // Add directBeneficiaries
-  indirectBeneficiaries: "", // Add indirectBeneficiaries
-  evaluationMethodology: "", // Add evaluationMethodology
+    projectInChargeAgreementDate: "",
+    projectArea: "", // Add projectArea
+    directBeneficiaries: "", // Add directBeneficiaries
+    indirectBeneficiaries: "", // Add indirectBeneficiaries
+    evaluationMethodology: "", // Add evaluationMethodology
     logicalFramework: {
       goal: "",
       objectives: [
@@ -58,9 +58,7 @@ export const Common = () => {
       ],
     },
   });
-  const [budgetData, setBudgetData] = useState([
-    { budget: '', cost: '' },
-  ]);
+  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
   const [selectedMonths, setSelectedMonths] = useState([]);
@@ -84,19 +82,19 @@ export const Common = () => {
       updatedData.logicalFramework.objectives[index].activities[
         subIndex
       ].verification = e.target.value;
-    }else {
+    } else {
       updatedData[e.target.name] = e.target.value;
     }
 
-    setFormData(updatedData);
+    setformData(updatedData);
   };
 
-//   const handleMonthChange = (month) => {
-//     const updatedMonths = selectedMonths.includes(month)
-//       ? selectedMonths.filter((selectedMonth) => selectedMonth !== month)
-//       : [...selectedMonths, month];
-//     setSelectedMonths(updatedMonths);
-//   };
+  //   const handleMonthChange = (month) => {
+  //     const updatedMonths = selectedMonths.includes(month)
+  //       ? selectedMonths.filter((selectedMonth) => selectedMonth !== month)
+  //       : [...selectedMonths, month];
+  //     setSelectedMonths(updatedMonths);
+  //   };
 
   const handleAddObjective = () => {
     const updatedData = { ...formData };
@@ -105,13 +103,13 @@ export const Common = () => {
       results: [""],
       activities: [],
     });
-    setFormData(updatedData);
+    setformData(updatedData);
   };
 
   const handleAddResult = (index) => {
     const updatedData = { ...formData };
     updatedData.logicalFramework.objectives[index].results.push("");
-    setFormData(updatedData);
+    setformData(updatedData);
   };
 
   const handleAddActivity = (index) => {
@@ -120,51 +118,51 @@ export const Common = () => {
       activity: "",
       verification: "",
       timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
-     
     });
-    setFormData(updatedData);
+    setformData(updatedData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
 
-
     const req = {
-      NameOfSociety: formData.NAMEOFTHESOCIETY,
+      nameOfSociety: formData.NAMEOFTHESOCIETY,
       DateOfSubmission: formData.dATEOFSUBMISSION,
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
+      // provincialSuperiorName: formData.provincialSuperiorName,
+      // provincialSuperiorCellNumber: formData.provincialSuperiorCellNumber,
+      // provincialSuperiorEmail: formData.provincialSuperiorEmail,
+      // projectInChargeName: formData.projectInChargeName,
+      // projectInChargeCellNumber: formData.projectInChargeCellNumber,
+      // projectInChargeEmail: formData.projectInChargeEmail,
       OverallProjectPeriod: formData.overallProjectPeriod,
       OverallProjectBudget: formData.overallProjectBudget,
-      NumberOfBeneficiaries: formData.directBeneficiaries,
-      ResidentialVillages: formData.indirectBeneficiaries,
-      SelectionCriteriaAndProfile: formData.projOfIntialProject,
-      DescriptionOfBeneficiary: formData.projOfIntialProject,
       problemAnalysis: formData.problemAnalysis,
       solutionAnalysis: formData.solutionAnalysis,
+      sustainability: formData.sustainability, // Add sustainability
+      monitoringProcess: formData.monitoringProcess, // Add monitoringProcess
+      project_in_charge_agree: {
+        agree: true,
+      },
+      benficiary_agreement: true,
+      ProjectArea: formData.projectArea, // Add projectArea
+      directBeneficiaries: formData.directBeneficiaries, // Add directBeneficiaries
+      indirectBeneficiaries: formData.indirectBeneficiaries, // Add indirectBeneficiaries
+      evaluationMethodology: formData.evaluationMethodology, // Add evaluationMethodology
       goal: formData.logicalFramework.goal,
       objectives: formData.logicalFramework.objectives.map((objective) => ({
         objective: objective.objective,
         results: objective.results,
         activities: objective.activities,
       })),
-      sustainability: formData.sustainability,
-      monitoringProcess: formData.monitoringProcess,
-      evaluationMethodology: formData.evaluationMethodology,
-      project_in_charge_agree: {
-        agree: formData.projectInChargeAgreement,
-        date: formData.projectInChargeAgreementDate || new Date(),
-      },
-      budgetData: budgetData.map((item) => ({
-        budget: item.budget,
-        cost: item.cost,
-      })),
-      
+      budget_cost_table: budgetData,
     };
-    try{
+
+    try {
       setIsLoading((prevLoading) => !prevLoading);
-      const response =await authAxios.post("/projects/createCG",req)
+      const response = await authAxios.post("/projects/createCG", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {
@@ -186,36 +184,33 @@ export const Common = () => {
       console.log(err);
     }
 
-
-
-
     setIsSubmitted(true);
   };
 
-
-
-
   const BudgetTable = () => {
-      const handleBudgetChange = (index, field, value) => {
+    const handleBudgetChange = (index, field, value) => {
       const newData = [...budgetData];
       newData[index][field] = value;
       setBudgetData(newData);
     };
-  
+
     const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: '', cost: '' }]);
+      setBudgetData([...budgetData, { budget: "", cost: "" }]);
     };
-  
+
     const calculateTotalAmount = () => {
-      return budgetData.reduce((total, row) => total + parseFloat(row.cost) || 0, 0);
+      return budgetData.reduce(
+        (total, row) => total + parseFloat(row.cost) || 0,
+        0
+      );
     };
-  
+
     return (
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6}>
           Budget Details
         </Heading>
-  
+
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -230,30 +225,34 @@ export const Common = () => {
                   <Input
                     type="text"
                     value={row.budget}
-                    onChange={(e) => handleBudgetChange(index, 'budget', e.target.value)}
+                    onChange={(e) =>
+                      handleBudgetChange(index, "budget", e.target.value)
+                    }
                   />
                 </Td>
                 <Td>
                   <Input
                     type="number"
                     value={row.cost}
-                    onChange={(e) => handleBudgetChange(index, 'cost', e.target.value)}
+                    onChange={(e) =>
+                      handleBudgetChange(index, "cost", e.target.value)
+                    }
                   />
                 </Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
-  
+
         <Button onClick={handleAddBudgetRow} mt={4}>
           Add Row
         </Button>
 
         <FormControl>
-            <FormLabel >Total Amount</FormLabel>
-            <Input type="text" value={calculateTotalAmount()} isReadOnly />
-          </FormControl>
-        </Box>
+          <FormLabel>Total Amount</FormLabel>
+          <Input type="text" value={calculateTotalAmount()} isReadOnly />
+        </FormControl>
+      </Box>
     );
   };
 
@@ -298,7 +297,6 @@ export const Common = () => {
                 name="dATEOFSUBMISSION"
                 onChange={handleChange}
                 value={formData.dATEOFSUBMISSION}
-
                 required
               />
             </FormControl>
@@ -310,7 +308,6 @@ export const Common = () => {
                 name="TITLEOFTHEPROJECT"
                 onChange={handleChange}
                 value={formData.TITLEOFTHEPROJECT}
-
                 required
               />
             </FormControl>
@@ -322,7 +319,6 @@ export const Common = () => {
                 name="address"
                 onChange={handleChange}
                 value={formData.address}
-
                 required
               />
             </FormControl>
@@ -346,7 +342,6 @@ export const Common = () => {
                       name="provincialSuperiorName"
                       onChange={handleChange}
                       value={formData.provincialSuperiorName}
-
                       required
                     />
                   </Td>
@@ -356,7 +351,6 @@ export const Common = () => {
                       name="provincialSuperiorCellNumber"
                       onChange={handleChange}
                       value={formData.provincialSuperiorCellNumber}
-
                       required
                     />
                   </Td>
@@ -366,7 +360,6 @@ export const Common = () => {
                       name="provincialSuperiorEmail"
                       onChange={handleChange}
                       value={formData.provincialSuperiorEmail}
-
                       required
                     />
                   </Td>
@@ -380,7 +373,6 @@ export const Common = () => {
                       name="projectInChargeName"
                       onChange={handleChange}
                       value={formData.projectInChargeName}
-
                       required
                     />
                   </Td>
@@ -390,7 +382,6 @@ export const Common = () => {
                       name="projectInChargeCellNumber"
                       onChange={handleChange}
                       value={formData.projectInChargeCellNumber}
-
                       required
                     />
                   </Td>
@@ -400,7 +391,6 @@ export const Common = () => {
                       name="projectInChargeEmail"
                       onChange={handleChange}
                       value={formData.projectInChargeEmail}
-
                       required
                     />
                   </Td>
@@ -420,15 +410,14 @@ export const Common = () => {
                 </Tr>
               </Tbody>
             </Table>
-           {/* Overall Project Period */}
-           <FormControl isRequired>
+            {/* Overall Project Period */}
+            <FormControl isRequired>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
                 name="overallProjectPeriod"
                 onChange={handleChange}
                 value={formData.overallProjectPeriod}
-
                 required
               />
             </FormControl>
@@ -441,18 +430,18 @@ export const Common = () => {
                 name="overallProjectBudget"
                 onChange={handleChange}
                 value={formData.overallProjectBudget}
-
                 required
               />
             </FormControl>
             {/* Project Area */}
             <FormControl isRequired>
               <FormLabel>Project Area</FormLabel>
-              <Textarea name="projectArea"
-               onChange={handleChange}
-               value={formData.projectArea}
-
-                required />
+              <Textarea
+                name="projectArea"
+                onChange={handleChange}
+                value={formData.projectArea}
+                required
+              />
             </FormControl>
 
             {/* Number of Beneficiaries */}
@@ -466,7 +455,6 @@ export const Common = () => {
                   name="directBeneficiaries"
                   onChange={handleChange}
                   value={formData.directBeneficiaries}
-
                   required
                 />
               </FormControl>
@@ -478,7 +466,6 @@ export const Common = () => {
                   name="indirectBeneficiaries"
                   onChange={handleChange}
                   value={formData.indirectBeneficiaries}
-
                   required
                 />
               </FormControl>
@@ -491,7 +478,6 @@ export const Common = () => {
                 name="problemAnalysis"
                 onChange={handleChange}
                 value={formData.problemAnalysis}
-
                 required
               />
             </FormControl>
@@ -503,7 +489,6 @@ export const Common = () => {
                 name="solutionAnalysis"
                 onChange={handleChange}
                 value={formData.solutionAnalysis}
-
                 required
               />
             </FormControl>
@@ -540,180 +525,181 @@ export const Common = () => {
               Objectives:-
             </Heading>
             {formData.logicalFramework.objectives.map((objective, index) => (
-                 <Box key={index} border="1px solid #ccc" borderRadius="lg" p={4} mb={8}>
-              <VStack key={index} align="start" spacing={4} mb={8}>
-                {/* Objective */}
-                <FormControl isRequired>
+              <Box
+                key={index}
+                border="1px solid #ccc"
+                borderRadius="lg"
+                p={4}
+                mb={8}
+              >
+                <VStack key={index} align="start" spacing={4} mb={8}>
+                  {/* Objective */}
+                  <FormControl isRequired>
                     <hr />
-                  <FormLabel>Objective {index + 1}</FormLabel>
-                  <Textarea
-                    name="objective"
-                    value={objective.objective}
-                    onChange={(e) => handleChange(e, index)}
-                    required
-                  />
-                </FormControl>
+                    <FormLabel>Objective {index + 1}</FormLabel>
+                    <Textarea
+                      name="objective"
+                      value={objective.objective}
+                      onChange={(e) => handleChange(e, index)}
+                      required
+                    />
+                  </FormControl>
 
-                {/* Results */}
-                <FormControl isRequired>
-                  <FormLabel>Results</FormLabel>
-                  {objective.results.map((result, subIndex) => (
-                    <VStack key={subIndex} align="start" spacing={4} mb={8}>
-                      <Textarea
-                        name="result"
-                        value={result}
-                        onChange={(e) => handleChange(e, index, subIndex)}
-                        required
-                      />
-                      <Button
-                        onClick={() => handleAddResult(index)}
-                        colorScheme="teal"
-                      >
-                        Add Result
-                      </Button>
-                    </VStack>
-                  ))}
-                </FormControl>
+                  {/* Results */}
+                  <FormControl isRequired>
+                    <FormLabel>Results</FormLabel>
+                    {objective.results.map((result, subIndex) => (
+                      <VStack key={subIndex} align="start" spacing={4} mb={8}>
+                        <Textarea
+                          name="result"
+                          value={result}
+                          onChange={(e) => handleChange(e, index, subIndex)}
+                          required
+                        />
+                        <Button
+                          onClick={() => handleAddResult(index)}
+                          colorScheme="teal"
+                        >
+                          Add Result
+                        </Button>
+                      </VStack>
+                    ))}
+                  </FormControl>
 
-                {/* Activities and Means of Verification */}
-                <FormControl isRequired>
-                  <FormLabel>Activities and Means of Verification</FormLabel>
-                  <Table variant="simple">
-                    <Thead>
-                      <Tr>
-                        <Th>Activity</Th>
-                        <Th>Means of Verification</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {objective.activities.map((activity, subIndex) => (
-                        <Tr key={subIndex}>
-                          <Td>
-                            <Textarea
-                              name="activity"
-                              value={activity.activity}
-                              onChange={(e) => handleChange(e, index, subIndex)}
-                              required
-                            />
-                          </Td>
-                          <Td>
-                            <Textarea
-                              name="verification"
-                              value={activity.verification}
-                              onChange={(e) => handleChange(e, index, subIndex)}
-                              required
-                            />
-                          </Td>
-                          <Td>
-                            {/* Timeframe */}
-                            <FormControl isRequired>
-                              <FormLabel>Timeframe</FormLabel>
-                              {activity.timeframe.map((value, monthIndex) => (
-                                <Checkbox
-                                  key={monthIndex}
-                                  isChecked={value}
-                                  onChange={() => {
-                                    setSelectedMonths([]);
-                                    activity.timeframe[monthIndex] =
-                                      !activity.timeframe[monthIndex];
-                                    console.log(activity.timeframe);
-                                  }}
-                                >
-                                  {new Date(2024, monthIndex).toLocaleString(
-                                    "default",
-                                    { month: "long" }
-                                  )}
-                                </Checkbox>
-                              ))}
-                            </FormControl>
-                          </Td>
+                  {/* Activities and Means of Verification */}
+                  <FormControl isRequired>
+                    <FormLabel>Activities and Means of Verification</FormLabel>
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Activity</Th>
+                          <Th>Means of Verification</Th>
                         </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
+                      </Thead>
+                      <Tbody>
+                        {objective.activities.map((activity, subIndex) => (
+                          <Tr key={subIndex}>
+                            <Td>
+                              <Textarea
+                                name="activity"
+                                value={activity.activity}
+                                onChange={(e) =>
+                                  handleChange(e, index, subIndex)
+                                }
+                                required
+                              />
+                            </Td>
+                            <Td>
+                              <Textarea
+                                name="verification"
+                                value={activity.verification}
+                                onChange={(e) =>
+                                  handleChange(e, index, subIndex)
+                                }
+                                required
+                              />
+                            </Td>
+                            <Td>
+                              {/* Timeframe */}
+                              <FormControl isRequired>
+                                <FormLabel>Timeframe</FormLabel>
+                                {activity.timeframe.map((value, monthIndex) => (
+                                  <Checkbox
+                                    key={monthIndex}
+                                    isChecked={value}
+                                    onChange={() => {
+                                      setSelectedMonths([]);
+                                      activity.timeframe[monthIndex] =
+                                        !activity.timeframe[monthIndex];
+                                      console.log(activity.timeframe);
+                                    }}
+                                  >
+                                    {new Date(2024, monthIndex).toLocaleString(
+                                      "default",
+                                      { month: "long" }
+                                    )}
+                                  </Checkbox>
+                                ))}
+                              </FormControl>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
 
-                  <Button
-                    onClick={() => handleAddActivity(index)}
-                    colorScheme="teal"
-                  >
-                    Add Activity
-                  </Button>
-                </FormControl>
-
-            
-                
-              </VStack>
-             
+                    <Button
+                      onClick={() => handleAddActivity(index)}
+                      colorScheme="teal"
+                    >
+                      Add Activity
+                    </Button>
+                  </FormControl>
+                </VStack>
               </Box>
-              
             ))}
-             <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
+            <Button onClick={handleAddObjective} colorScheme="purple" ml="auto">
               Add Objective
             </Button>
 
+            {/* Sustainability of the Project */}
+            <FormControl isRequired>
+              <FormLabel>Sustainability of the Project</FormLabel>
+              <Textarea
+                name="sustainability"
+                value={formData.sustainability}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
 
-                {/* Sustainability of the Project */}
-        <FormControl isRequired>
-          <FormLabel>Sustainability of the Project</FormLabel>
-          <Textarea
-            name="sustainability"
-            value={formData.sustainability}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
+            {/* Explain the Monitoring Process of the Project */}
+            <FormControl isRequired>
+              <FormLabel>
+                Explain the Monitoring Process of the Project
+              </FormLabel>
+              <Textarea
+                name="monitoringProcess"
+                value={formData.monitoringProcess}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
 
-        {/* Explain the Monitoring Process of the Project */}
-        <FormControl isRequired>
-          <FormLabel>Explain the Monitoring Process of the Project</FormLabel>
-          <Textarea
-            name="monitoringProcess"
-            value={formData.monitoringProcess}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
+            {/* Methodology of Evaluation */}
+            <FormControl isRequired>
+              <FormLabel>Methodology of Evaluation</FormLabel>
+              <Textarea
+                name="evaluationMethodology"
+                value={formData.evaluationMethodology}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
 
-        {/* Methodology of Evaluation */}
-        <FormControl isRequired>
-          <FormLabel>Methodology of Evaluation</FormLabel>
-          <Textarea
-            name="evaluationMethodology"
-            value={formData.evaluationMethodology}
-            onChange={(e) => handleChange(e)}
-            required
-          />
-        </FormControl>
+            {BudgetTable()}
 
-{BudgetTable()}
+            <Heading as="h1" size="xl" mb={6}>
+              Signatures
+            </Heading>
 
-<Heading as="h1" size="xl" mb={6}>
-    Signatures
-  </Heading>
-
-
-  {/* Project-In-Charge agreement */}
-  <FormControl isRequired>
-    <Checkbox
-      name="projectInChargeAgreement"
-      onChange={handleChange}
-      value={formData.projectInChargeAgreementDate}
-
-      size="lg"
-    >
-      The Project-In-Charge agree
-    </Checkbox>
-    <Input
-      type="date"
-      name="projectInChargeAgreementDate"
-      onChange={handleChange}
-      value={formData.projectInChargeAgreementDate}
-
-      required
-    />
-  </FormControl>
-
-  
+            {/* Project-In-Charge agreement */}
+            <FormControl isRequired>
+              <Checkbox
+                name="projectInChargeAgreement"
+                onChange={handleChange}
+                value={formData.projectInChargeAgreementDate}
+                size="lg"
+              >
+                The Project-In-Charge agree
+              </Checkbox>
+              <Input
+                type="date"
+                name="projectInChargeAgreementDate"
+                onChange={handleChange}
+                value={formData.projectInChargeAgreementDate}
+                required
+              />
+            </FormControl>
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit">

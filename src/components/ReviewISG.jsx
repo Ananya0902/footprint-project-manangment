@@ -21,8 +21,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
+import {useParams} from "react-router-dom";
 
 export const ReviewISG = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
@@ -39,7 +42,7 @@ export const ReviewISG = () => {
       },
       projectInCharge: {
         name: "",
-        cellNumber: "",
+        mobile: "",
         email: "",
       },
       overallProjectPeriod: "",
@@ -77,8 +80,71 @@ export const ReviewISG = () => {
     // Additional Fields
     comment: "",
   });
+
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const formDataCopy = { ...formData }; // Create a copy of formData to avoid direct mutation
+
+  // Map basicInformation fields
+  formDataCopy.basicInformation = {
+    ...formDataCopy.basicInformation,
+    projectInCharge: projectData.applicant,
+    NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
+    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+    TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+    address: projectData.address || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
+    numberOfBeneficiaries: projectData.NumberOfBeneficiaries || "",
+    residentialVillages: projectData.ResidentialVillages || "",
+    selectionCriteriaAndProfile: projectData.SelectionCriteriaAndProfile || "",
+    DescriptionOfBeneficiary: projectData.DescriptionOfBeneficiary || "",
+    problemAnalysis: projectData.problemAnalysis || "",
+    solutionAnalysis: projectData.solutionAnalysis || "",
+  };
+
+  // Map logicalFramework fields
+  formDataCopy.logicalFramework.goal = projectData.goal || "";
+  formDataCopy.logicalFramework.objectives = projectData.objectives.map(
+    (objective) => ({
+      objective: objective.objective || "",
+      results: objective.results || [""],
+      activities: objective.activities.map((activity) => ({
+        activity: activity.activity || "",
+        timeframe: activity.timeframe || [false],
+        verification: activity.verification || "",
+      })),
+    })
+  );
+
+  // Map sustainability, monitoringProcess, evaluationMethodology fields
+  formDataCopy.sustainability = projectData.sustainability || "";
+  formDataCopy.monitoringProcess = projectData.monitoringProcess || "";
+  formDataCopy.evaluationMethodology = projectData.evaluationMethodology || "";
+
+  // Map budgetDetails fields
+  setBudgetData(
+    projectData.budgetData.map((item) => ({
+      budget: item.budget || "",
+      cost: item.cost || "",
+    }))
+  );
+
+  formDataCopy.signatures.projectInChargeAgreement =
+    projectData.project_in_charge_agree.agree || false;
+  formDataCopy.signatures.projectInChargeAgreementDate =
+    projectData.project_in_charge_agree.date || "";
+  formDataCopy.signatures.provincialSuperiorAgreement =
+    projectData.provincial_superior_agree.agree || false;
+  formDataCopy.signatures.provincialSuperiorAgreementDate =
+    projectData.provincial_superior_agree.date || "";
+
+  // Additional Fields
+  formDataCopy.comment = projectData.comment || "";
+
+  // Update the state with the modified formDataCopy
+  setFormData(formDataCopy);
 
   const handleChange = (e, index, subIndex) => {
     const { name, value } = e.target;
@@ -143,99 +209,35 @@ export const ReviewISG = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const req = {
-      basicInformation: {
-        NameOfSociety: formData.basicInformation.NAMEOFTHESOCIETY,
-        DateOfSubmission: formData.basicInformation.dATEOFSUBMISSION,
-        TitleOfProject: formData.basicInformation.TITLEOFTHEPROJECT,
-        address: formData.basicInformation.address,
-        provincialSuperior: {
-          name: formData.basicInformation.provincialSuperior.name,
-          cellNumber: formData.basicInformation.provincialSuperior.cellNumber,
-          email: formData.basicInformation.provincialSuperior.email,
-        },
-        projectInCharge: {
-          name: formData.basicInformation.projectInCharge.name,
-          cellNumber: formData.basicInformation.projectInCharge.cellNumber,
-          email: formData.basicInformation.projectInCharge.email,
-        },
-        overallProjectPeriod: formData.basicInformation.overallProjectPeriod,
-        overallProjectBudget: formData.basicInformation.overallProjectBudget,
-        numberOfBeneficiaries: formData.basicInformation.numberOfBeneficiaries,
-        residentialVillages: formData.basicInformation.residentialVillages,
-        selectionCriteriaAndProfile:
-          formData.basicInformation.selectionCriteriaAndProfile,
-        descriptionOfBeneficiary:
-          formData.basicInformation.descriptionOfBeneficiary,
-        problemAnalysis: formData.basicInformation.problemAnalysis,
-        solutionAnalysis: formData.basicInformation.solutionAnalysis,
-      },
-      logicalFramework: {
-        goal: formData.logicalFramework.goal,
-        objectives: formData.logicalFramework.objectives.map((objective) => ({
-          objective: objective.objective,
-          results: objective.results,
-          activities: objective.activities.map((activity) => ({
-            activity: activity.activity,
-            timeframe: activity.timeframe,
-            verification: activity.verification,
-          })),
-        })),
-      },
-      sustainability: formData.sustainability,
-      monitoringProcess: formData.monitoringProcess,
-      evaluationMethodology: formData.evaluationMethodology,
-      budgetDetails: budgetData.map((item) => ({
-        budget: item.budget,
-        cost: item.cost,
-      })),
-      signatures: {
-        projectCoordinatorAgreement:
-          formData.signatures.projectCoordinatorAgreement,
-        projectCoordinatorAgreementDate:
-          formData.signatures.projectCoordinatorAgreementDate,
-        projectInChargeAgreement: formData.signatures.projectInChargeAgreement,
-        projectInChargeAgreementDate:
-          formData.signatures.projectInChargeAgreementDate,
-        provincialSuperiorAgreement:
-          formData.signatures.provincialSuperiorAgreement,
-        provincialSuperiorAgreementDate:
-          formData.signatures.provincialSuperiorAgreementDate,
-      },
-    };
+    // Add your form submission logic here
     try {
-      setIsLoading(true);
-      const res = await authAxios.post("/projects/createISG");
-      setIsLoading(false);
-      if (res.data.success) {
-        setIsSubmitted(true);
+      const req = {
+        projectID: projectData._id,
+        comment_box_provincial_superior: formData.comment,
+        provincial_superior_agree: {
+          agree: formData.provincialSuperiorAgreement,
+        },
+      };
+      const res = await authAxios.put("/projects/editreviewerISG/", req);
+      if (res.data.success) setIsSubmitted(true);
+      else {
         showToast({
-          title: "Submitted the form succeesfully",
-          status: "success",
-          duration: 5000,
-        });
-      } else {
-        showToast({
-          title: "Unsuccessful submission",
+          title: "Error submitting the reviewed doc",
           status: "error",
           duration: 5000,
         });
-        showToast({
-          title: "Unsuccessful submission",
-          status: "error",
-          duration: 5000,
-        });
+        console.log(res.data);
       }
-    } catch (error) {
-      setIsLoading(false);
+    } catch (e) {
+      console.log(e);
       showToast({
-        title: "Unsuccessful submission",
+        title: "Error submitting the reviewed doc",
+        description: e,
         status: "error",
         duration: 5000,
       });
     }
   };
-
   const BudgetTable = () => {
     // Function to handle changes in budget data
     const handleBudgetChange = (index, field, value) => {

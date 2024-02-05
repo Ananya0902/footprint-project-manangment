@@ -25,6 +25,113 @@ import authAxios from "../AuthAxios";
 import { useParams } from "react-router-dom";
 
 const ReviewWelfareHomeForChildren = () => {
+  const [formData, setFormData] = useState({
+    projectTitle: "Sample Project Title",
+    projectRegion: "Sample Project Region",
+    institutionName: "Sample Institution Name",
+    overallProjectPeriod: "Sample Project Period",
+    overallProjectBudget: "Sample Project Budget",
+    projectInChargeName: "Sample Project In Charge Name",
+    projectInChargeEmail: "sample@example.com",
+    presidentOfSocietyName: "Sample President Name",
+    presidentOfSocietyEmail: "president@example.com",
+    goalOfInstitution: "Sample Goal of Institution",
+    rational: "Sample Rational",
+    totalChildren: {
+      previousYear: "Sample Previous Year Total Children",
+      presentYear: "Sample Present Year Total Children",
+    },
+    rehabilitatedWithGuardians: {
+      previousYear: "Sample Previous Year Rehabilitated with Guardians",
+      presentYear: "Sample Present Year Rehabilitated with Guardians",
+    },
+    shiftedToOtherNGOs: {
+      previousYear: "Sample Previous Year Shifted to Other NGOs",
+      presentYear: "Sample Present Year Shifted to Other NGOs",
+    },
+    pursuingHigherStudies: {
+      previousYear: "Sample Previous Year Pursuing Higher Studies",
+      presentYear: "Sample Present Year Pursuing Higher Studies",
+    },
+    settledInLife: {
+      previousYear: "Sample Previous Year Settled in Life",
+      presentYear: "Sample Present Year Settled in Life",
+    },
+    settledAndWorking: {
+      previousYear: "Sample Previous Year Settled and Working",
+      presentYear: "Sample Present Year Settled and Working",
+    },
+    otherCategory: {
+      previousYear: "Sample Previous Year Other Category",
+      presentYear: "Sample Present Year Other Category",
+    },
+    bridgeEducationPreviousYear: "Sample Bridge Education Previous Year",
+    bridgeEducationPresentYear: "Sample Bridge Education Present Year",
+    kindergartenPreviousYear: "Sample Kindergarten Previous Year",
+    kindergartenPresentYear: "Sample Kindergarten Present Year",
+    // and so on for other fields...
+    personalSituation: {
+      childrenWithParentsPreviousYear:
+        "Sample Children with Parents Previous Year",
+      childrenWithParentsPresentYear:
+        "Sample Children with Parents Present Year",
+      // and so on for other personal situation fields...
+    },
+    economicBackground: {
+      agriculturalLabour: "Sample Agricultural Labour",
+      marginalFarmers: "Sample Marginal Farmers",
+      // and so on for other economic background fields...
+    },
+    multipleSupport: {
+      fundScholarships: {
+        girls: {
+          previousYear: "Sample Girls Fund Scholarships Previous Year",
+          presentYear: "Sample Girls Fund Scholarships Present Year",
+        },
+        boys: {
+          previousYear: "Sample Boys Fund Scholarships Previous Year",
+          presentYear: "Sample Boys Fund Scholarships Present Year",
+        },
+      },
+      tuitionClothing: {
+        girls: {
+          previousYear: "Sample Girls Tuition Clothing Previous Year",
+          presentYear: "Sample Girls Tuition Clothing Present Year",
+        },
+        boys: {
+          previousYear: "Sample Boys Tuition Clothing Previous Year",
+          presentYear: "Sample Boys Tuition Clothing Present Year",
+        },
+      },
+      // and so on for other multiple support fields...
+    },
+    presentSituationinternalChallenges: "Sample Internal Challenges",
+    presentSituationexternalChallenges: "Sample External Challenges",
+    focusAreasDescription: "Sample Focus Areas Description",
+    monitoringProcess: "Sample Monitoring Process",
+    sustainability: "Sample Sustainability",
+    staff: "Sample Staff",
+    projectInChargeAgreement: "Sample Project In Charge Agreement",
+    projectInChargeAgreementDate: "2024-02-05",
+    provincialSuperiorAgreement: false,
+    provincialSuperiorComment: "",
+    logicalFramework: {
+      goal: "Sample Logical Framework Goal",
+      objectives: [
+        {
+          objective: "Sample Objective 1",
+          results: ["Sample Result 1"],
+          activities: ["Sample Activity 1"],
+        },
+        {
+          objective: "Sample Objective 2",
+          results: ["Sample Result 2"],
+          activities: ["Sample Activity 2"],
+        },
+      ],
+    },
+  });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const showToast = useToast();
   const projectData = JSON.parse(
@@ -37,8 +144,8 @@ const ReviewWelfareHomeForChildren = () => {
         <Box>Nothing to show</Box>
       </>
     );
-  console.log(projectData);
-  const formData = {
+
+  setFormData({
     projectTitle: projectData.project_title || "",
     projectRegion: projectData.general_information.project_region || "",
     institutionName: projectData.general_information.institution_name || "",
@@ -370,7 +477,6 @@ const ReviewWelfareHomeForChildren = () => {
     projectInChargeAgreementDate:
       projectData.projectInChargeAgreementDate || "",
     provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
     provincialSuperiorComment: "",
     logicalFramework: {
       goal: projectData.solution_analysis_logical_framework.goal || "",
@@ -383,8 +489,7 @@ const ReviewWelfareHomeForChildren = () => {
           })
         ),
     },
-  };
-
+  });
   // Populating budgetRows
   const budgetRowsData = projectData.budget.budget_particular.map(
     (budgetItem) => ({
@@ -419,7 +524,34 @@ const ReviewWelfareHomeForChildren = () => {
       .toFixed(2);
   };
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    try {
+      const res = await authAxios.put("/projects/editWHFCReviewer", {
+        comment: formData.provincialSuperiorComment,
+        agree: formData.provinciaalSuperiorAgreement,
+        project_number: projectData.project_number,
+      });
+      if (res.data.success) {
+        showToast({
+          title: "Review succesful",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        showToast({
+          title: "Review unsuccesful",
+          duration: 5000,
+          status: "error",
+        });
+      }
+    } catch (e) {
+      showToast({
+        title: "Review unsuccesful",
+        duration: 5000,
+        status: "error",
+      });
+    }
+  };
 
   return (
     <ChakraProvider>
@@ -1971,18 +2103,32 @@ const ReviewWelfareHomeForChildren = () => {
               />
             </FormControl>
             <FormControl isRequired>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                size="lg"
-              >
-                Provincial Superior Agreement
-              </Checkbox>
+              <Textarea
+                type="text"
+                name="provincialSuperiorComment"
+                value={formData.provincialSuperiorComment}
+                onChange={(e) => {
+                  setFormData((prevData) => {
+                    prevData.provincialSuperiorComment = e.target.value;
+                    return { ...prevData };
+                  });
+                }}
+              />
             </FormControl>
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+          <Button
+            colorScheme="blue"
+            type="submit"
+            mx="3"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
+            Accept
+          </Button>
+          {/* Submit Button */}
+          <Button colorScheme="red" type="submit" mx="3">
+            Revert
           </Button>
         </form>
       </Box>

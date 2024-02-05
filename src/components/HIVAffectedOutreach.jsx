@@ -219,10 +219,12 @@ const HIVAffectedOutreach = () => {
   };
 
   const handleChange = (e) => {
+    console.log(e.target.name , e.target.value); 
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    console.log(formData);
   };
 
   const handleChangeObjective = (e, index, subIndex) => {
@@ -587,7 +589,7 @@ const HIVAffectedOutreach = () => {
           <FormControl mb={4}>
             <FormLabel>Support Programmes Till Date</FormLabel>
             <Textarea
-              name="Support Programmes Till Date"
+              name="supportProgrammesTillDate"
               onChange={handleChange}
               value={formData.supportProgrammesTillDate || ""}
 
@@ -618,7 +620,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Bridge education</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeEducationPreviousYear"
                     onChange={handleChange}
                     value={formData.bridgeEducationPreviousYear || ""}
@@ -626,7 +628,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeEducationPresentYear"
                     onChange={handleChange}
                     value={formData.bridgeEducationPresentYear || ""}
@@ -639,7 +641,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Kindergarten</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="kindergartenPreviousYear"
                     onChange={handleChange}
                     value={formData.kindergartenPreviousYear || ""}
@@ -647,7 +649,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="kindergartenPresentYear"
                     onChange={handleChange}
                     value={formData.kindergartenPresentYear || ""}
@@ -660,7 +662,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Other:</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducationPreviousYear"
                     onChange={handleChange}
                     value={formData.otherEducationPreviousYear || ""}
@@ -668,7 +670,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducationPresentYear"
                     onChange={handleChange}
                     value={formData.otherEducationPresentYear || ""}
@@ -696,7 +698,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Bridge School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeSchoolPreviousYear"
                     onChange={handleChange}
                     value={formData.bridgeSchoolPreviousYear || ""}
@@ -704,7 +706,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeSchoolPresentYear"
                     onChange={handleChange}
                     value={formData.bridgeSchoolPresentYear || ""}
@@ -717,7 +719,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Primary School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="primarySchoolPreviousYear"
                     onChange={handleChange}
                     value={formData.primarySchoolPreviousYear || ""}
@@ -725,7 +727,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="primarySchoolPresentYear"
                     onChange={handleChange}
                     value={formData.primarySchoolPresentYear || ""}
@@ -738,7 +740,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Other</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation610PreviousYear"
                     onChange={handleChange}
                     value={formData.otherEducation610PreviousYear || ""}
@@ -746,7 +748,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation610PresentYear"
                     onChange={handleChange}
                     value={formData.otherEducation610PresentYear || ""}
@@ -774,7 +776,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Secondary School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="secondarySchoolPreviousYear"
                     onChange={handleChange}
                     value={formData.secondarySchoolPreviousYear || ""}
@@ -782,7 +784,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="secondarySchoolPresentYear"
                     onChange={handleChange}
                     value={formData.secondarySchoolPresentYear || ""}
@@ -795,7 +797,7 @@ const HIVAffectedOutreach = () => {
                 <Td>High School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="highSchoolPreviousYear"
                     onChange={handleChange}
                     value={formData.highSchoolPreviousYear || ""}
@@ -803,7 +805,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="highSchoolPresentYear"
                     onChange={handleChange}
                     value={formData.highSchoolPresentYear || ""}
@@ -816,7 +818,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Other</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation1115PreviousYear"
                     onChange={handleChange}
                     value={formData.otherEducation1115PreviousYear || ""}
@@ -824,7 +826,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation1115PresentYear"
                     onChange={handleChange}
                     value={formData.otherEducation1115PresentYear || ""}
@@ -851,7 +853,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Undergraduate</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="undergraduatePreviousYear"
                     onChange={handleChange}
                     value={formData.undergraduatePreviousYear || ""}
@@ -859,7 +861,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="undergraduatePresentYear"
                     onChange={handleChange}
                     value={formData.undergraduatePresentYear || ""}
@@ -870,7 +872,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Technical/Vocational education</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="technicalVocationalEducationPreviousYear"
                     onChange={handleChange}
                     value={
@@ -880,7 +882,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="technicalVocationalEducationPresentYear"
                     onChange={handleChange}
                     value={
@@ -893,7 +895,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Bridge School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="youth16AndAbovebridgeSchoolPreviousYear"
                     onChange={handleChange}
                     value={
@@ -903,7 +905,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="youth16AndAbovebridgeSchoolPresentYear"
                     onChange={handleChange}
                     value={
@@ -916,7 +918,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Other</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation16AbovePreviousYear"
                     onChange={handleChange}
                     value={formData.otherEducation16AbovePreviousYear || ""}
@@ -924,7 +926,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation16AbovePresentYear"
                     onChange={handleChange}
                     value={formData.otherEducation16AbovePresentYear || ""}
@@ -953,7 +955,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Children/students with parents</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="childrenWithParentsPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -970,7 +972,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="childrenWithParentsPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -992,7 +994,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Semi-orphans (living with relatives)</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="semiOrphansPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1008,7 +1010,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="semiOrphansPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1029,7 +1031,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Orphans</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="orphansPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1043,7 +1045,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="orphansPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(e, "orphans", "PresentYear")
@@ -1058,7 +1060,7 @@ const HIVAffectedOutreach = () => {
                 <Td>HIV-infected/affected</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="hivInfectedAffectedPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1075,7 +1077,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="hivInfectedAffectedPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1097,7 +1099,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Differently-abled children</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="differentlyAbledChildrenPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1114,7 +1116,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="differentlyAbledChildrenPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1136,7 +1138,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Parents in conflict</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="parentsInConflictPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1153,7 +1155,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="parentsInConflictPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1175,7 +1177,7 @@ const HIVAffectedOutreach = () => {
                 <Td>Other aliments</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherAlimentsPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1191,7 +1193,7 @@ const HIVAffectedOutreach = () => {
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherAlimentsPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
