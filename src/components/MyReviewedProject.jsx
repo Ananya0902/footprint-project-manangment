@@ -7,7 +7,6 @@ import {
   Text,
   Button,
   VStack,
-  useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import authAxios from "../AuthAxios";
@@ -31,7 +30,6 @@ const ReviewProjects = () => {
     //mapped project.filter((project)=>project.created_at.getFullYear() === year)
   };
 
-  const showToast = useToast();
   const [projectList, setProjectList] = useReducer(
     (prev, next) => {
       const newProjectList = { ...prev, ...next };
@@ -289,7 +287,7 @@ const ReviewProjects = () => {
                     mb={2}
                     borderRadius="full"
                   >
-                    Review
+                    View Project
                   </Button>
                 </Box>
               ))}

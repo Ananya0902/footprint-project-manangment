@@ -27,7 +27,9 @@ import { useParams } from "react-router-dom";
 const ReviewWelfareHomeForChildren = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const showToast = useToast();
-  const projectData = JSON.parse(decodeURI(useParams()?.project ?? "{}"));
+  const projectData = JSON.parse(
+    decodeURIComponent(useParams().project || "{}")
+  );
   // form details
   if (Object.keys(projectData).length === 0)
     return (
@@ -369,7 +371,7 @@ const ReviewWelfareHomeForChildren = () => {
       projectData.projectInChargeAgreementDate || "",
     provincialSuperiorAgreement: false,
     provincialSuperiorAgreementDate: "",
-    provincialSuperiorComment: '',
+    provincialSuperiorComment: "",
     logicalFramework: {
       goal: projectData.solution_analysis_logical_framework.goal || "",
       objectives:
@@ -396,13 +398,13 @@ const ReviewWelfareHomeForChildren = () => {
   // Populating achievements
   const achievements = {
     academic:
-      projectData.achievements_of_school_and_college_children
-        .academic_achievements || [],
+      projectData.key_information.achievements_of_school_and_college_children
+        ?.academic_achievements || [],
     sport:
-      projectData.achievements_of_school_and_college_children
+      projectData.key_information.achievements_of_school_and_college_children
         .sport_achievements || [],
     other:
-      projectData.achievements_of_school_and_college_children
+      projectData.key_information.achievements_of_school_and_college_children
         .other_achievements || [],
   };
 
@@ -1942,7 +1944,7 @@ const ReviewWelfareHomeForChildren = () => {
           </FormControl>
           <FormControl mt={2}>
             <FormLabel>Total Budget Current Year</FormLabel>
-            <Input readOnly />
+            <Input readOnly value={calculateTotalCosts("budgetCurrentYear")} />
           </FormControl>
 
           <VStack align="start" spacing={4} mb={8}>
@@ -1967,6 +1969,14 @@ const ReviewWelfareHomeForChildren = () => {
                 readOnly
                 value={formData.projectInChargeAgreementDateF}
               />
+            </FormControl>
+            <FormControl isRequired>
+              <Checkbox
+                name="provincialSuperiorAgreement"
+                size="lg"
+              >
+                Provincial Superior Agreement
+              </Checkbox>
             </FormControl>
           </VStack>
 
