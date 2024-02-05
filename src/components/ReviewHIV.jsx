@@ -26,6 +26,7 @@ import {useParams} from "react-router-dom";
 
 const ReviewHIV = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
   const showToast = useToast();
   const [formData, setFormData] = useState({
     projectTitle: "",

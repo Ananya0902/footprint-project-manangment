@@ -19,10 +19,12 @@ import {
   Tr,
   Th,
   Td,
+  useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
 const HIVAffectedOutreach = () => {
+  const showToast = useToast();
   const [formData, setFormData] = useState({
     projectTitle: "",
     projectRegion: "",
@@ -219,7 +221,7 @@ const HIVAffectedOutreach = () => {
   };
 
   const handleChange = (e) => {
-    console.log(e.target.name , e.target.value); 
+    console.log(e.target.name, e.target.value);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -449,21 +451,38 @@ const HIVAffectedOutreach = () => {
       },
     };
 
-    console.log(req);
     try {
       const res = await authAxios.post("/projects/createHIV/", req);
+      if (res.data.success) {
+        showToast({
+          title: "Success",
+          duration: 5000,
+          status: "success",
+        });
+        setIsSubmitted(true);
+      } else {
+        showToast({
+          title: "Failure",
+          duration: 5000,
+          status: "error",
+        });
+      }
       console.log(res);
     } catch (error) {
+      showToast({
+        title: "Failure",
+        duration: 5000,
+        status: "error",
+      });
       console.log(error);
     }
-    setIsSubmitted(true);
   };
 
   return (
     <ChakraProvider>
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6} align="center">
-        HIV Affect Outreach Application Form     
+          HIV Affect Outreach Application Form
         </Heading>
 
         {isSubmitted && (
@@ -524,7 +543,7 @@ const HIVAffectedOutreach = () => {
           <FormControl mb={4}>
             <FormLabel>Overall Project Budget</FormLabel>
             <Input
-              type="text"
+              type="number"
               name="overallProjectBudget"
               onChange={handleChange}
               value={formData.overallProjectBudget || ""}
@@ -592,7 +611,6 @@ const HIVAffectedOutreach = () => {
               name="supportProgrammesTillDate"
               onChange={handleChange}
               value={formData.supportProgrammesTillDate || ""}
-
             />
           </FormControl>
 
@@ -1308,15 +1326,13 @@ const HIVAffectedOutreach = () => {
             </Tbody>
           </Table>
 
-
-
           {/* Challenges Faced By the benificiary */}
           <Box mb={4}>
             <Heading as="h3" size="md">
               Challenges Faced By The Benificiary
             </Heading>
             <Textarea
-              name="challengesFacedByTheBenificiary"
+              name="challengesFaced"
               value={formData.challengesFaced}
               onChange={handleChange}
               placeholder="Enter text..."

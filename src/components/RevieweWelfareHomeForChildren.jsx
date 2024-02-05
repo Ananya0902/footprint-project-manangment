@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ChakraProvider,
   Box,
@@ -25,127 +25,10 @@ import authAxios from "../AuthAxios";
 import { useParams } from "react-router-dom";
 
 const ReviewWelfareHomeForChildren = () => {
-  const [formData, setFormData] = useState({
-    projectTitle: "Sample Project Title",
-    projectRegion: "Sample Project Region",
-    institutionName: "Sample Institution Name",
-    overallProjectPeriod: "Sample Project Period",
-    overallProjectBudget: "Sample Project Budget",
-    projectInChargeName: "Sample Project In Charge Name",
-    projectInChargeEmail: "sample@example.com",
-    presidentOfSocietyName: "Sample President Name",
-    presidentOfSocietyEmail: "president@example.com",
-    goalOfInstitution: "Sample Goal of Institution",
-    rational: "Sample Rational",
-    totalChildren: {
-      previousYear: "Sample Previous Year Total Children",
-      presentYear: "Sample Present Year Total Children",
-    },
-    rehabilitatedWithGuardians: {
-      previousYear: "Sample Previous Year Rehabilitated with Guardians",
-      presentYear: "Sample Present Year Rehabilitated with Guardians",
-    },
-    shiftedToOtherNGOs: {
-      previousYear: "Sample Previous Year Shifted to Other NGOs",
-      presentYear: "Sample Present Year Shifted to Other NGOs",
-    },
-    pursuingHigherStudies: {
-      previousYear: "Sample Previous Year Pursuing Higher Studies",
-      presentYear: "Sample Present Year Pursuing Higher Studies",
-    },
-    settledInLife: {
-      previousYear: "Sample Previous Year Settled in Life",
-      presentYear: "Sample Present Year Settled in Life",
-    },
-    settledAndWorking: {
-      previousYear: "Sample Previous Year Settled and Working",
-      presentYear: "Sample Present Year Settled and Working",
-    },
-    otherCategory: {
-      previousYear: "Sample Previous Year Other Category",
-      presentYear: "Sample Present Year Other Category",
-    },
-    bridgeEducationPreviousYear: "Sample Bridge Education Previous Year",
-    bridgeEducationPresentYear: "Sample Bridge Education Present Year",
-    kindergartenPreviousYear: "Sample Kindergarten Previous Year",
-    kindergartenPresentYear: "Sample Kindergarten Present Year",
-    // and so on for other fields...
-    personalSituation: {
-      childrenWithParentsPreviousYear:
-        "Sample Children with Parents Previous Year",
-      childrenWithParentsPresentYear:
-        "Sample Children with Parents Present Year",
-      // and so on for other personal situation fields...
-    },
-    economicBackground: {
-      agriculturalLabour: "Sample Agricultural Labour",
-      marginalFarmers: "Sample Marginal Farmers",
-      // and so on for other economic background fields...
-    },
-    multipleSupport: {
-      fundScholarships: {
-        girls: {
-          previousYear: "Sample Girls Fund Scholarships Previous Year",
-          presentYear: "Sample Girls Fund Scholarships Present Year",
-        },
-        boys: {
-          previousYear: "Sample Boys Fund Scholarships Previous Year",
-          presentYear: "Sample Boys Fund Scholarships Present Year",
-        },
-      },
-      tuitionClothing: {
-        girls: {
-          previousYear: "Sample Girls Tuition Clothing Previous Year",
-          presentYear: "Sample Girls Tuition Clothing Present Year",
-        },
-        boys: {
-          previousYear: "Sample Boys Tuition Clothing Previous Year",
-          presentYear: "Sample Boys Tuition Clothing Present Year",
-        },
-      },
-      // and so on for other multiple support fields...
-    },
-    presentSituationinternalChallenges: "Sample Internal Challenges",
-    presentSituationexternalChallenges: "Sample External Challenges",
-    focusAreasDescription: "Sample Focus Areas Description",
-    monitoringProcess: "Sample Monitoring Process",
-    sustainability: "Sample Sustainability",
-    staff: "Sample Staff",
-    projectInChargeAgreement: "Sample Project In Charge Agreement",
-    projectInChargeAgreementDate: "2024-02-05",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorComment: "",
-    logicalFramework: {
-      goal: "Sample Logical Framework Goal",
-      objectives: [
-        {
-          objective: "Sample Objective 1",
-          results: ["Sample Result 1"],
-          activities: ["Sample Activity 1"],
-        },
-        {
-          objective: "Sample Objective 2",
-          results: ["Sample Result 2"],
-          activities: ["Sample Activity 2"],
-        },
-      ],
-    },
-  });
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const showToast = useToast();
   const projectData = JSON.parse(
     decodeURIComponent(useParams().project || "{}")
   );
-  // form details
-  if (Object.keys(projectData).length === 0)
-    return (
-      <>
-        <Box>Nothing to show</Box>
-      </>
-    );
-
-  setFormData({
+  const [formData, setFormData] = useState({
     projectTitle: projectData.project_title || "",
     projectRegion: projectData.general_information.project_region || "",
     institutionName: projectData.general_information.institution_name || "",
@@ -490,17 +373,16 @@ const ReviewWelfareHomeForChildren = () => {
         ),
     },
   });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const showToast = useToast();
   // Populating budgetRows
-  const budgetRowsData = projectData.budget.budget_particular.map(
+  const budgetRows = projectData.budget.budget_particular.map(
     (budgetItem) => ({
       description: budgetItem.expense_description || "",
       costsLastYear: budgetItem.costs_last_year || "",
       budgetCurrentYear: budgetItem.budget_current_year || "",
     })
   );
-  const budgetRows = budgetRowsData;
-
-  // Populating achievements
   const achievements = {
     academic:
       projectData.key_information.achievements_of_school_and_college_children
@@ -513,6 +395,7 @@ const ReviewWelfareHomeForChildren = () => {
         .other_achievements || [],
   };
 
+  console.log("formData", formData);
   // Assuming res contains the response from the GET API
   // Parse the response and set the state variables
 
@@ -524,34 +407,42 @@ const ReviewWelfareHomeForChildren = () => {
       .toFixed(2);
   };
 
-  const handleSubmit = async () => {
-    try {
-      const res = await authAxios.put("/projects/editWHFCReviewer", {
-        comment: formData.provincialSuperiorComment,
-        agree: formData.provinciaalSuperiorAgreement,
-        project_number: projectData.project_number,
-      });
-      if (res.data.success) {
-        showToast({
-          title: "Review succesful",
-          duration: 5000,
-          status: "success",
-        });
-      } else {
-        showToast({
-          title: "Review unsuccesful",
-          duration: 5000,
-          status: "error",
-        });
-      }
-    } catch (e) {
-      showToast({
-        title: "Review unsuccesful",
-        duration: 5000,
-        status: "error",
-      });
-    }
-  };
+  // const handleSubmit = async () => {
+  //   console.log("submit");
+  //   try {
+  //     await new Promise(
+  //       () => setTimeout(100000)
+  //     )
+  //     const res = await authAxios.put("/projects/editWHFCReviewer", {
+  //       comment: formData.provincialSuperiorComment,
+  //       agree: formData.provinciaalSuperiorAgreement,
+  //       project_number: projectData.project_number,
+  //     });
+  //     if (res.data.success) {
+  //       showToast({
+  //         title: "Review succesful",
+  //         duration: 5000,
+  //         status: "success",
+  //       });
+  //     } else {
+  //       showToast({
+  //         title: "Review unsuccesful",
+  //         duration: 5000,
+  //         status: "error",
+  //       });
+  //     }
+  //   } catch (e) {
+      
+  //     showToast({
+  //       title: "Review unsuccesful",
+  //       duration: 5000,
+  //       status: "error",
+  //     });
+  //   }
+    
+  // };
+
+  const handleSubmit = () => console.log('Error');
 
   return (
     <ChakraProvider>
@@ -2103,6 +1994,7 @@ const ReviewWelfareHomeForChildren = () => {
               />
             </FormControl>
             <FormControl isRequired>
+              <FormLabel>Comment</FormLabel>
               <Textarea
                 type="text"
                 name="provincialSuperiorComment"
@@ -2122,14 +2014,16 @@ const ReviewWelfareHomeForChildren = () => {
             colorScheme="blue"
             type="submit"
             mx="3"
-            onClick={() => (formData.provincialSuperiorAgreement = true)}
+            onClick={() => {
+              formData.provincialSuperiorAgreement = true;
+            }}
           >
             Accept
           </Button>
-          {/* Submit Button */}
+          {/* Submit Button
           <Button colorScheme="red" type="submit" mx="3">
             Revert
-          </Button>
+          </Button> */}
         </form>
       </Box>
     </ChakraProvider>

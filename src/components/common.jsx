@@ -601,7 +601,7 @@ export const Common = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl isRequired>
+                              <FormControl >
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
