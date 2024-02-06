@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-export const ApproveCG = () => {
+export const ViewCG = () => {
   const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -695,7 +695,7 @@ export const ApproveCG = () => {
 
           <VStack align="start" spacing={4} mb={8}>
            {/* Project Coordinator agreement */}
-           <FormControl isRequired>
+           <FormControl >
               <Checkbox
                 name="projectCoordinatorAgreement"
                 onChange={handleChange}
@@ -707,7 +707,7 @@ export const ApproveCG = () => {
                 type="date"
                 name="projectCoordinatorAgreementDate"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
           </VStack>
@@ -726,40 +726,34 @@ export const ApproveCG = () => {
             </FormControl>
 
             {/* Comment for approver */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Comment(For Approver)</FormLabel>
               <Input
                 type="text"
                 name="commentApprover"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
+            <FormControl >
               <FormLabel>Amount Approved by Project Coordinator</FormLabel>
               <Input
                 type="number"
                 name="amountApprovedByProjectCoordinator"
                 onChange={handleChange}
-                required
+                readOnly
               />
             </FormControl>
 
 
           </VStack>
-          {/* Submit Button */}
-          <Button colorScheme="blue" mx={3} type="submit">
-            Submit
-          </Button>
-          {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
-          </Button>
+          
+          
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ApproveCG;
+export default ViewCG;

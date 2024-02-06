@@ -20,7 +20,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 
-const ViewEduRUTG = () => {
+const EditEGS = () => {
   const [formData, setFormData] = useState({
     presentProjectYear: "",
     projectTitle: "",
@@ -74,8 +74,6 @@ const ViewEduRUTG = () => {
     ],
     projectInChargeAgreement: "",
     projectInChargeAgreementDate: "",
-    commentReviewer:"",
-    commentApprover:"",
   });
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -288,88 +286,81 @@ const ViewEduRUTG = () => {
 
         <VStack spacing={4} align="start" p={4}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-           {/* Project Information */}
-<FormControl mb={4}>
-  <FormLabel>Present Project Year</FormLabel>
-  <Input
-    type="text"
-    name="presentProjectYear"
-    onChange={handleChange}
-    value={formData.presentProjectYear || ""}
-    readOnly
-  />
-</FormControl>
+            {/* Project Information */}
+            <FormControl mb={4}>
+              <FormLabel>Present Project Year</FormLabel>
+              <Input
+                type="text"
+                name="presentProjectYear"
+                onChange={handleChange}
+                value={formData.presentProjectYear || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Project Title</FormLabel>
-  <Input
-    type="text"
-    name="projectTitle"
-    onChange={handleChange}
-    value={formData.projectTitle || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Title</FormLabel>
+              <Input
+                type="text"
+                name="projectTitle"
+                onChange={handleChange}
+                value={formData.projectTitle || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Project Number</FormLabel>
-  <Input
-    type="text"
-    name="projectNumber"
-    onChange={handleChange}
-    value={formData.projectNumber || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Number</FormLabel>
+              <Input
+                type="text"
+                name="projectNumber"
+                onChange={handleChange}
+                value={formData.projectNumber || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Project Region</FormLabel>
-  <Input
-    type="text"
-    name="projectRegion"
-    onChange={handleChange}
-    value={formData.projectRegion || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Region</FormLabel>
+              <Input
+                type="text"
+                name="projectRegion"
+                onChange={handleChange}
+                value={formData.projectRegion || ""}
+              />
+            </FormControl>
 
-{/* General Information */}
-<Heading as="h2" size="lg" mt={6} mb={4}>
-  General Information
-</Heading>
+            {/* General Information */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              General Information
+            </Heading>
 
-<FormControl mb={4}>
-  <FormLabel>Overall Project Period</FormLabel>
-  <Input
-    type="text"
-    name="overallProjectPeriod"
-    onChange={handleChange}
-    value={formData.overallProjectPeriod || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Overall Project Period</FormLabel>
+              <Input
+                type="text"
+                name="overallProjectPeriod"
+                onChange={handleChange}
+                value={formData.overallProjectPeriod || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Overall Project Budget</FormLabel>
-  <Input
-    type="text"
-    name="overallProjectBudget"
-    onChange={handleChange}
-    value={formData.overallProjectBudget || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Overall Project Budget</FormLabel>
+              <Input
+                type="text"
+                name="overallProjectBudget"
+                onChange={handleChange}
+                value={formData.overallProjectBudget || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Full Address</FormLabel>
-  <Input
-    type="text"
-    name="address"
-    onChange={handleChange}
-    value={formData.address || ""}
-    readOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Full Address</FormLabel>
+              <Input
+                type="text"
+                name="address"
+                onChange={handleChange}
+                value={formData.address || ""}
+              />
+            </FormControl>
 
             <Table variant="simple" mb={4}>
               <Thead>
@@ -389,7 +380,6 @@ const ViewEduRUTG = () => {
                       name="provincialSuperiorName"
                       onChange={handleChange}
                       value={formData.provincialSuperiorName || ""}
-                      readOnly
                     />
                   </Td>
                   <Td>
@@ -398,7 +388,6 @@ const ViewEduRUTG = () => {
                       name="provincialSuperiorEmail"
                       onChange={handleChange}
                       value={formData.provincialSuperiorEmail || ""}
-                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -412,7 +401,6 @@ const ViewEduRUTG = () => {
                       name="projectInchargeName"
                       onChange={handleChange}
                       value={formData.projectInchargeName || ""}
-                      readOnly
                     />
                   </Td>
                   <Td>
@@ -421,7 +409,6 @@ const ViewEduRUTG = () => {
                       name="projectInchargeEmail"
                       onChange={handleChange}
                       value={formData.projectInchargeEmail || ""}
-                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -442,72 +429,71 @@ const ViewEduRUTG = () => {
               </Tbody>
             </Table>
 
-           {/* Project Summary */}
-<Heading as="h2" size="lg" mt={6} mb={4}>
-  Project Summary
-</Heading>
+            {/* Project Summary */}
+            <Heading as="h2" size="lg" mt={6} mb={4}>
+              Project Summary
+            </Heading>
 
-<FormControl mb={4}>
-  <FormLabel>Project Location - Geographical Area</FormLabel>
-  <Textarea
-    name="projectLocation"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.projectLocation || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Project Location - Geographical Area</FormLabel>
+              <Textarea
+                name="projectLocation"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.projectLocation || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Work of Sisters of St.Ann’s in the project area</FormLabel>
-  <Textarea
-    name="workOfSisters"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.workOfSisters || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                Work of Sisters of St.Ann’s in the project area
+              </FormLabel>
+              <Textarea
+                name="workOfSisters"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.workOfSisters || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>General Socio Economic conditions of the Beneficiaries</FormLabel>
-  <Textarea
-    name="socioEconomicConditions"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.socioEconomicConditions || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                General Socio Economic conditions of the Beneficiaries
+              </FormLabel>
+              <Textarea
+                name="socioEconomicConditions"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.socioEconomicConditions || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Problems identified and Consequences</FormLabel>
-  <Textarea
-    name="identifiedProblems"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.identifiedProblems || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Problems identified and Consequences</FormLabel>
+              <Textarea
+                name="identifiedProblems"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.identifiedProblems || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>Need of the project</FormLabel>
-  <Textarea
-    name="needOfProject"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.needOfProject || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Need of the project</FormLabel>
+              <Textarea
+                name="needOfProject"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.needOfProject || ""}
+              />
+            </FormControl>
 
-<FormControl mb={4}>
-  <FormLabel>
-    Identification of the Beneficiaries (how are the beneficiaries selected)
-  </FormLabel>
-  <Textarea
-    name="beneficiarySelection"
-    onChange={handleProjectSummaryChange}
-    value={formData.projectSummary.beneficiarySelection || ""}
-    isReadOnly
-  />
-</FormControl>
+            <FormControl mb={4}>
+              <FormLabel>
+                Identification of the Beneficiaries (how are the beneficiaries
+                selected)
+              </FormLabel>
+              <Textarea
+                name="beneficiarySelection"
+                onChange={handleProjectSummaryChange}
+                value={formData.projectSummary.beneficiarySelection || ""}
+              />
+            </FormControl>
 
             {/* Target Group Table */}
             <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -538,7 +524,7 @@ const ViewEduRUTG = () => {
                         onChange={(e) =>
                           handleTargetGroupChange(index, "name", e.target.value)
                         }
-                        value={row.name} readOnly
+                        value={row.name}
                       />
                     </Td>
                     <Td>
@@ -552,7 +538,7 @@ const ViewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.caste} readOnly
+                        value={row.caste}
                       />
                     </Td>
                     <Td>
@@ -566,7 +552,7 @@ const ViewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.occupationOfParents} readOnly
+                        value={row.occupationOfParents}
                       />
                     </Td>
                     <Td>
@@ -580,7 +566,7 @@ const ViewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.familyBackgroundAndNeedOfSupport}readOnly
+                        value={row.familyBackgroundAndNeedOfSupport}
                       />
                     </Td>
                     <Td>
@@ -594,7 +580,7 @@ const ViewEduRUTG = () => {
                             e.target.value
                           )
                         }
-                        value={row.classOfStudyOrInstitution}readOnly
+                        value={row.classOfStudyOrInstitution}
                       />
                     </Td>
                     <Td>
@@ -609,7 +595,6 @@ const ViewEduRUTG = () => {
                           )
                         }
                         value={row.eligibilityOfScholarshipAndExpectedAmount}
-                        readOnly
                       />
                     </Td>
                     <Td>
@@ -624,7 +609,6 @@ const ViewEduRUTG = () => {
                           )
                         }
                         value={row.contributionFromFamily}
-                        readOnly
                       />
                     </Td>
                   </Tr>
@@ -633,9 +617,9 @@ const ViewEduRUTG = () => {
             </Table>
 
             {/* Add Row Button */}
-            {/* <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
+            <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
               Add Row
-            </Button> */}
+            </Button>
 
             {/* Logical Framework */}
 
@@ -648,12 +632,12 @@ const ViewEduRUTG = () => {
             >
               logical Framework
             </Heading>
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
                 onChange={(e) => handleChangeObjective(e)}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -678,19 +662,19 @@ const ViewEduRUTG = () => {
               >
                 <VStack key={index} align="start" spacing={4} mb={8}>
                   {/* Objective */}
-                  <FormControl >
+                  <FormControl isRequired>
                     <hr />
                     <FormLabel>Objective {index + 1}</FormLabel>
                     <Textarea
                       name="objective"
                       value={objective.objective}
                       onChange={(e) => handleChangeObjective(e, index)}
-                      readOnly
+                      required
                     />
                   </FormControl>
 
                   {/* Results */}
-                  <FormControl >
+                  <FormControl isRequired>
                     <FormLabel>Results</FormLabel>
                     {objective.results.map((result, subIndex) => (
                       <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -700,20 +684,20 @@ const ViewEduRUTG = () => {
                           onChange={(e) =>
                             handleChangeObjective(e, index, subIndex)
                           }
-                          readOnly
+                          required
                         />
-                        {/* <Button
+                        <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
-                        </Button> */}
+                        </Button>
                       </VStack>
                     ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
-                  <FormControl >
+                  <FormControl isRequired>
                     <FormLabel>Activities and Means of Verification</FormLabel>
                     <Table variant="simple">
                       <Thead>
@@ -732,7 +716,7 @@ const ViewEduRUTG = () => {
                                 onChange={(e) =>
                                   handleChangeObjective(e, index, subIndex)
                                 }
-                                readOnly
+                                required
                               />
                             </Td>
                             <Td>
@@ -742,12 +726,12 @@ const ViewEduRUTG = () => {
                                 onChange={(e) =>
                                   handleChangeObjective(e, index, subIndex)
                                 }
-                                readOnly
+                                required
                               />
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl >
+                              <FormControl isRequired>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
@@ -773,38 +757,38 @@ const ViewEduRUTG = () => {
                       </Tbody>
                     </Table>
 
-                    {/* <Button
+                    <Button
                       onClick={() => handleAddActivity(index)}
                       colorScheme="teal"
                     >
                       Add Activity
-                    </Button> */}
+                    </Button>
                   </FormControl>
 
-                  {/* <Button
+                  <Button
                     onClick={handleAddObjective}
                     colorScheme="purple"
                     ml="auto"
                   >
                     Add Objective
-                  </Button> */}
+                  </Button>
                 </VStack>
               </Box>
             ))}
 
             {/* Sustainability of the Project */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
                 value={formData.sustainability}
                 onChange={(e) => handleChange(e)}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Explain the Monitoring Process of the Project */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>
                 Explain the Monitoring Process of the Project
               </FormLabel>
@@ -812,18 +796,18 @@ const ViewEduRUTG = () => {
                 name="monitoringProcess"
                 value={formData.monitoringProcess}
                 onChange={(e) => handleChange(e)}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Mode of Evaluation */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Mode of Evaluation</FormLabel>
               <Textarea
                 name="evaluation"
                 value={formData.evaluation}
                 onChange={(e) => handleChange(e)}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -854,7 +838,6 @@ const ViewEduRUTG = () => {
                           )
                         }
                         value={row.description}
-                        readOnly
                       />
                     </Td>
                     <Td>
@@ -864,7 +847,7 @@ const ViewEduRUTG = () => {
                         onChange={(e) =>
                           handleBudgetChange(index, "costs", e.target.value)
                         }
-                        value={row.costs}readOnly
+                        value={row.costs}
                       />
                     </Td>
                   </Tr>
@@ -873,9 +856,9 @@ const ViewEduRUTG = () => {
             </Table>
 
             {/* Add Row Button */}
-            {/* <Button onClick={handleAddBudgetRow} colorScheme="teal">
+            <Button onClick={handleAddBudgetRow} colorScheme="teal">
               Add Expense
-            </Button> */}
+            </Button>
 
             {/* Calculate Total Cost */}
             <Heading as="h3" size="md" mb={5}>
@@ -883,7 +866,7 @@ const ViewEduRUTG = () => {
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl >
+            <FormControl isRequired>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
@@ -895,37 +878,18 @@ const ViewEduRUTG = () => {
                 type="date"
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
-
-{/* Comment(Reviewer) */}
- <FormControl >
-              <FormLabel>Comment(Reviewer)</FormLabel>
-              <Textarea
-                name="commentReviewer"
-                value={formData.commentReviewer}
-                onChange={(e) => handleChange(e)}
-                readOnly
-              />
-            </FormControl>
-{/* Comment(Approver) */}
- <FormControl >
-              <FormLabel>Comment(Approver)</FormLabel>
-              <Textarea
-                name="commentApprover"
-                value={formData.Approver}
-                onChange={(e) => handleChange(e)}
-                readOnly
-              />
-            </FormControl>
-
           </form>
         </VStack>
-        
+        {/* Submit Button */}
+        <Button colorScheme="blue" type="submit">
+          Submit
+        </Button>
       </Box>
     </ChakraProvider>
   );
 };
 
-export default ViewEduRUTG;
+export default EditEGS;
