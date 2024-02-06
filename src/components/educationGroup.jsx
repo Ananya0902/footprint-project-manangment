@@ -112,7 +112,7 @@ const EducationGroup = () => {
       });
     } else {
       formData[name] = value;
-      setFormData({...formData});
+      setFormData({ ...formData });
     }
   };
 
@@ -166,12 +166,13 @@ const EducationGroup = () => {
       evaluationProcess: formData.evaluationProcess,
       conclusion: formData.conclusion,
       project_in_charge_agree: {
-        agree: true, 
+        agree: true,
       },
     };
 
     try {
       const res = await authAxios.post("/projects/createEG", req);
+      console.log(res);
       setIsLoading(false);
       if (res.data.success) {
         showToast({
@@ -188,6 +189,7 @@ const EducationGroup = () => {
         });
       }
     } catch (e) {
+      console.log(e);
       setIsLoading(false);
       showToast({
         title: "Unsuccessful submission",
@@ -208,7 +210,7 @@ const EducationGroup = () => {
       if (field === "totalFemale" || field === "totalMale") {
         newData[index].total = calculateTotal(
           parseInt(newData[index].totalFemale) || 0,
-          parseInt(newData[index].totalMale) || 0,
+          parseInt(newData[index].totalMale) || 0
         );
       }
       console.log(tableData);
@@ -324,6 +326,7 @@ const EducationGroup = () => {
                 <Td>
                   <Input
                     type="number"
+                    isRequired
                     value={row.serialNo}
                     readOnly
                   />
@@ -331,6 +334,7 @@ const EducationGroup = () => {
                 <Td>
                   <Input
                     type="text"
+                    isRequired
                     value={row.name}
                     onChange={(e) =>
                       handleInformationInputChange(
@@ -344,6 +348,7 @@ const EducationGroup = () => {
                 <Td>
                   <Input
                     type="text"
+                    isRequired
                     value={row.casteAddress}
                     onChange={(e) =>
                       handleInformationInputChange(
@@ -357,6 +362,7 @@ const EducationGroup = () => {
                 <Td>
                   <Input
                     type="text"
+                    isRequired
                     value={row.recommendedBy}
                     onChange={(e) =>
                       handleInformationInputChange(
@@ -370,6 +376,7 @@ const EducationGroup = () => {
                 <Td>
                   <Textarea
                     value={row.familyBackground}
+                    isRequired
                     onChange={(e) =>
                       handleInformationInputChange(
                         index,
@@ -412,111 +419,102 @@ const EducationGroup = () => {
     };
 
     return (
-      <Box p={4}>
+      <Box p={4} overflowX="auto" maxW="100%">
         <Heading as="h1" size="l" mb={6}>
           Target Group - Studies and Finance Details
         </Heading>
 
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>S.No</Th>
-              <Th>Name</Th>
-              <Th>Study Proposed to be Supported</Th>
-              <Th>Total Expense of Studies</Th>
-              <Th>Contribution from Family / Others</Th>
-              <Th>Eligibility of Scholarship</Th>
-              <Th>Expected Amount</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {studiesTableData.map((row, index) => (
-              <Tr key={index}>
-                <Td>
-                  <Input
-                    type="number"
-                    value={row.serialNo}
-                    readOnly
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    value={row.name}
-                    onChange={(e) =>
-                      handleStudiesInputChange(index, "name", e.target.value)
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    value={row.studyProposed}
-                    onChange={(e) =>
-                      handleStudiesInputChange(
-                        index,
-                        "studyProposed",
-                        e.target.value
-                      )
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="number"
-                    value={row.totalExpense}
-                    onChange={(e) =>
-                      handleStudiesInputChange(
-                        index,
-                        "totalExpense",
-                        e.target.value
-                      )
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="number"
-                    value={row.contribution}
-                    onChange={(e) =>
-                      handleStudiesInputChange(
-                        index,
-                        "contribution",
-                        e.target.value
-                      )
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="text"
-                    value={row.scholarshipEligibility}
-                    onChange={(e) =>
-                      handleStudiesInputChange(
-                        index,
-                        "scholarshipEligibility",
-                        e.target.value
-                      )
-                    }
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="number"
-                    value={row.expectedAmount}
-                    onChange={(e) =>
-                      handleStudiesInputChange(
-                        index,
-                        "expectedAmount",
-                        e.target.value
-                      )
-                    }
-                  />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+        <Box
+          display="grid"
+          gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+          gap={4}
+        >
+          {studiesTableData.map((row, index) => (
+            <Box key={index} borderWidth="1px" borderRadius="md" p={2}>
+              <Box>S.No: {row.serialNo}</Box>
+              <Box>
+                <Input
+                  type="text"
+                  value={row.name}
+                  onChange={(e) =>
+                    handleStudiesInputChange(index, "name", e.target.value)
+                  }
+                  placeholder="Name"
+                />
+              </Box>
+              <Box>
+                <Input
+                  type="text"
+                  value={row.studyProposed}
+                  onChange={(e) =>
+                    handleStudiesInputChange(
+                      index,
+                      "studyProposed",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Study Proposed"
+                />
+              </Box>
+              <Box>
+                <Input
+                  type="number"
+                  value={row.totalExpense}
+                  onChange={(e) =>
+                    handleStudiesInputChange(
+                      index,
+                      "totalExpense",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Total Expense"
+                />
+              </Box>
+              <Box>
+                <Input
+                  type="number"
+                  value={row.contribution}
+                  onChange={(e) =>
+                    handleStudiesInputChange(
+                      index,
+                      "contribution",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Contribution"
+                />
+              </Box>
+              <Box>
+                <Input
+                  type="text"
+                  value={row.scholarshipEligibility}
+                  onChange={(e) =>
+                    handleStudiesInputChange(
+                      index,
+                      "scholarshipEligibility",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Scholarship Eligibility"
+                />
+              </Box>
+              <Box>
+                <Input
+                  type="number"
+                  value={row.expectedAmount}
+                  onChange={(e) =>
+                    handleStudiesInputChange(
+                      index,
+                      "expectedAmount",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Expected Amount"
+                />
+              </Box>
+            </Box>
+          ))}
+        </Box>
 
         <Button onClick={handleAddStudiesRow}>Add Row</Button>
       </Box>
@@ -604,68 +602,6 @@ const EducationGroup = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      value={formData.provincialSuperiorName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      value={formData.provincialSuperiorCellNumber}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      value={formData.provincialSuperiorEmail}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                </Tr>
-                {/* Project In-Charge */}
-                <Tr>
-                  <Td>Project In-Charge</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="projectInChargeName"
-                      value={formData.projectInChargeName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="projectInChargeCellNumber"
-                      value={formData.projectInChargeCellNumber}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="projectInChargeEmail"
-                      value={formData.projectInChargeEmail}
-                      onChange={handleChange}
-                      required
-                    />
-                  </Td>
-                </Tr>
                 {/* Project Coordinators */}
                 <Tr>
                   <Td>Project Coordinator 1</Td>

@@ -64,10 +64,10 @@ const ReviewProjects = () => {
         );
         const getAllHOI = getAllHOIData ?? [];
 
-        const getAllEGSData = await fetchDataForReviewerRoute(
-          "getAllEGSReviewer"
+        const getAllEGData = await fetchDataForReviewerRoute(
+          "getAllEGReviewer"
         );
-        const getAllEGS = getAllEGSData ?? [];
+        const getAllEGReviewer = getAllEGData ?? [];
 
         const getAllEIReviewerData = await fetchDataForReviewerRoute(
           "getallEIReviewer"
@@ -128,7 +128,7 @@ const ReviewProjects = () => {
                 project: project,
               };
             }),
-          EGS: getAllEGS
+          EGS: getAllEGSReviewer
             .filter(
               (value) =>
                 value.general_information.provincial_superior.comment === null
@@ -217,6 +217,15 @@ const ReviewProjects = () => {
                 project: project,
               };
             }),
+          EG: getAllEGReviewer
+            .filter((value) => value.comment_box_provincial_superior === null)
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+            
         };
 
         setProjectList(newProjectList);
