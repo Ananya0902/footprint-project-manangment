@@ -20,51 +20,65 @@ import {
   Image,
   ChakraProvider,
 } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import authAxios from "../AuthAxios";
 
 const DisplayForm = () => {
+  const projectData = JSON.parse(
+    decodeURIComponent(useParams()?.project ?? "{}")
+  );
   // Define formData object
   const [formData, setFormData] = useState({
-    nameofSociety: "Sample Society",
-    nameOfSelfEmployment: "Sample Self-Employment",
-    dateOfSubmission: "2024-02-03",
-    provincialSuperiorName: "John Doe",
-    provincialSuperiorContact: "+1234567890",
-    projectInchargeName: "Jane Smith",
-    projectInchargeContact: "+9876543210",
-    projectInchargeEmail: "jane@example.com",
-    beneficiaryName: "John Doe",
-    beneficiaryContact: "+1234567890",
-    beneficiaryEmail: "john@example.com",
-    beneficiaryAddress: "123 Sample Street, Sample City",
-    aadharCardNo: "1234 5678 9012",
-    gender: "male",
-    dob: "1990-01-01",
-    fatherName: "John Doe Sr.",
-    maritalStatus: "married",
-    spouseName: "Jane Doe",
-    child: 2,
-    eduStatus: "Studying",
-    religion: "Christian",
-    casteTribe: "General",
-    presentFamilySituationDetails: "Details about family situation",
-    smallScaleBusinessDetails: "Details about small-scale business",
-    monthlyEarnings: 5000,
-    businessIdeaDetails: "Details about business idea",
-    businessStrengthsPreviousYear: "Strengths of previous year",
-    businessWeaknessesPreviousYear: "Weaknesses of previous year",
-    riskIdentification: "Risks identified",
-    riskMitigationMeasures: "Measures for risk mitigation",
-    businessSustainability: "Sustainability of business",
-    expectedBenefits: "Expected benefits and outcomes",
-    amountApprovedByProjectCoordinator: 10000,
+    nameofSociety: projectData.nameOfSociety,
+    nameOfSelfEmployment: projectData.nameOfSelfEmployment,
+    dateOfSubmission: projectData.dateOfSubmission,
+    provincialSuperiorName: projectData.nameOfProvincialSuperior,
+    provincialSuperiorContact: projectData.contactOfProvincialSuperior,
+    projectInchargeName: projectData.nameOfProjectIncharge,
+    projectInchargeContact: projectData.contactOfProjectIncharge,
+    projectInchargeEmail: projectData.emailOfProjectIncharge,
+    beneficiaryName: projectData.name,
+    beneficiaryContact: projectData.mobile,
+    beneficiaryEmail: projectData.email,
+    beneficiaryAddress: projectData.address,
+    aadharCardNo: projectData.aadhar_no,
+    gender: projectData.gender,
+    dob: projectData.DOB,
+    maritalStatus: projectData.married,
+    spouseName: projectData.spouse_name,
+    child: projectData.no_of_children,
+    eduStatus: projectData.education_status,
+    religion: projectData.religion,
+    casteTribe: projectData.caste,
+    presentFamilySituationDetails: projectData.present_family_situation,
+    smallScaleBusinessDetails: projectData.smallScaleBusinessDetails,
+    monthlyEarnings: projectData.monthlyEarnings,
+    businessIdeaDetails: projectData.businessIdeaDetails,
+    businessStrengthsPreviousYear: projectData.businessStrengthsPreviousYear,
+    businessWeaknessesPreviousYear: projectData.businessWeaknessesPreviousYear,
+    riskIdentification: projectData.riskIdentification,
+    riskMitigationMeasures: projectData.riskMitigationMeasures,
+    businessSustainability: projectData.businessSustainability,
+    expectedBenefits: projectData.expectedBenefits,
     // Revenue Goals
-    revenueData: [
-      { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
-    ],
+    revenueData: projectData.revenueGoals,
     // Budget Details
-    budgetData: [{ budget: "", cost: "" }],
+    budgetData: projectData.budget_cost_table,
     // Document Upload
-    documents: [{ name: "", file: null }],
+    documents: [
+      { name: "aadhar_img", file: projectData.aadhar_img },
+      { name: "request_letter_img", file: projectData.request_letter_img },
+      {
+        name: "quotations_regarding_the_purchase_img",
+        file: projectData.quotations_regarding_the_purchase_img,
+      },
+      {
+        name: "other_supporting_documents",
+        file: projectData.other_supporting_documents,
+      },
+    ],
+    provincialSuperiorAgree: false,
+    provincialSuperiorComment: null,
   });
 
   const calculateTotals = (column) => {
@@ -72,7 +86,18 @@ const DisplayForm = () => {
       return total + (parseInt(row[column], 10) || 0);
     }, 0);
   };
-  
+
+  const handleSubmit = async () => {
+    try {
+      const res = await authAxios.put("/projects/editreviewerSI/", {
+        provincial_superior_agree: {
+          agree: formData.provincialSuperiorAgree,
+        },
+        projectID: projectData._id,
+        comment_box_provincial_superior: formData.provincialSuperiorComment,
+      });
+    } catch (error) {}
+  };
 
   return (
     <ChakraProvider>
@@ -87,7 +112,7 @@ const DisplayForm = () => {
           Social individual Project Application Form
         </Heading>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           {/* All the read-only fields */}
           <VStack align="start" spacing={4} mb={8}>
             <FormControl isReadOnly>
@@ -376,24 +401,6 @@ const DisplayForm = () => {
                   isReadOnly
                 />
               </FormControl>
-
-              {/* Project Coordinator agreement */}
-              <FormControl isRequired>
-                <Checkbox
-                  name="projectCoordinatorAgreement"
-                  isChecked
-                  isReadOnly
-                >
-                  The Project Coordinator agree
-                </Checkbox>
-                <Input
-                  type="date"
-                  name="projectCoordinatorAgreementDate"
-                  value={formData.projectCoordinatorAgreementDate}
-                  isReadOnly
-                />
-              </FormControl>
-
               {/* Project-In-Charge agreement */}
               <FormControl isRequired>
                 <Checkbox name="projectInChargeAgreement" isChecked isReadOnly>
@@ -406,42 +413,33 @@ const DisplayForm = () => {
                   isReadOnly
                 />
               </FormControl>
-
-              {/* Provincial Superior agreement */}
+              Provincial Superior Comment
               <FormControl isRequired>
-                <Checkbox
-                  name="provincialSuperiorAgreement"
-                  isChecked
-                  isReadOnly
-                >
-                  The Provincial Superior agree
-                </Checkbox>
-                <Input
-                  type="date"
-                  name="provincialSuperiorAgreementDate"
-                  value={formData.provincialSuperiorAgreementDate}
-                  isReadOnly
+                <Textarea
+                  type="text"
+                  onChange={(e) => {
+                    setFormData((prevData) => {
+                      prevData.provincialSuperiorComment = e.target.value;
+                      return { ...prevData };
+                    });
+                  }}
+                  name="provincialSuperiorComment"
+                  value={formData.provincialSuperiorComment}
                 />
               </FormControl>
             </VStack>
-          </VStack>
-
-          {/* Amount Approved by Project Coordinator */}
-          <VStack align="start" spacing={4} mb={8}>
-            <FormControl isReadOnly>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                value={formData.amountApprovedByProjectCoordinator}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Remarks */}
-            {/* <FormControl>
-                <FormLabel>Remarks (Optional)</FormLabel>
-                <Textarea name="remarks" onChange={handleChange} />
-              </FormControl> */}
+            {/* Submit Button */}
+            <Button
+              colorScheme="blue"
+              mx="3"
+              type="submit"
+              onClick={() => (formData.provincialSuperiorAgree = true)}
+            >
+              Accept
+            </Button>
+            <Button colorScheme="red" mx="3" type="submit" flex={1}>
+              Revert
+            </Button>
           </VStack>
 
           {/* Submit Button */}

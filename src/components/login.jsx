@@ -94,7 +94,7 @@ const LoginPage = () => {
           response = await authAxios.post("/users/approverlogin", req);
           if (response.data.isVarified !== true) {
             showToast({
-              title: "Welcome sir, logging you in soon",
+              title: "Welcome, logging you in soon",
               status: "loading",
               duration: 5000,
               isClosable: true,

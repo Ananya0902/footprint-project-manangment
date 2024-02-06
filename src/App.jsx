@@ -160,25 +160,26 @@ const App = () => {
           <Route path="/BiAnnualHealthIndividualReport" element={<BiAnnualHealthIndividualReport/>} /> 
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
 
-          <Route path='/RevieweWelfareHomeForChildren' element={<ReviewWelfareHomeForChildren/>} />
+          <Route path='/ReviewWHFC/:project' element={<ReviewWelfareHomeForChildren/>} />
                     
-          <Route path='/ReviewEI' element={<ReviewEI/>} />          
+          <Route path='/ReviewEI/:project' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
-          <Route path='/ReviewNPDP' element={<ReviewNPDP/>} />          
+          <Route path='/ViewEI' element={<ViewEI/>} />          
+          <Route path='/ReviewNPDP/:project' element={<ReviewNPDP/>} />          
           <Route path='/ApproveNPDP' element={<ApproveNPDP/>} />          
-          
-          <Route path='/ReviewEGS' element={<ReviewEduRUTG/>} />
-          <Route path='/ApproveEGS' element={<ApproveEduRUTG/>} />
-          
-          <Route path='/ReviewDPLG' element={<ReviewDPLG/>} />
+          <Route path='/viewNPDP' element={<ViewNPDP/>} />
+          <Route path='/ReviewEGS/:project' element={<ReviewEduRUTG/>} />
+          <Route path='/ApproveEduRUTG' element={<ApproveEduRUTG/>} />
+          <Route path='/ViewEduRUTG' element={<ViewEduRUTG/>} />
+          <Route path='/ReviewDPLG/:project' element={<ReviewDPLG/>} />
           <Route path='/ApproveDPLG' element={<ApproveDPLG/>} />
-          <Route path='/ReviewCG' element={<ReviewCG/>} />
+          <Route path='/ReviewCG/:project' element={<ReviewCG/>} />
           <Route path='/ApproveCG' element={<ApproveCG/>} />
           <Route path='/ApproveEG' element={<ApproveEG/>} />
-          <Route path='/ReviewEG' element={<ReviewEG/>} />
-          <Route path='/ReviewISG' element={<ReviewISG/>} />
+          <Route path='/ReviewEG/:project' element={<ReviewEG/>} />
+          <Route path='/ReviewISG/:project' element={<ReviewISG/>} />
           <Route path='/ApproveISG' element={<ApproveISG/>} />
-          <Route path='/ReviewHIV' element={<ReviewHIV/>} />
+          <Route path='/ReviewHIV/:project' element={<ReviewHIV/>} />
           <Route path='/ApproveHIV' element={<ApproveHIV/>} />
 
           <Route path='/EditHIV' element={<EditHIV/>} />
