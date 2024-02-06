@@ -728,7 +728,7 @@ const ReviewHIO = () => {
           >
             Accept
           </Button>
-          <Button colorScheme="red" mx="3" type="submit" flex={1}>
+          <Button colorScheme="red" mx="3" type="submit" flex={1}  onClick={() => (formData.provincialSuperiorAgreement = false)}>
             Revert
           </Button>
         </form>

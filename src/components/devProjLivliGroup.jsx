@@ -79,6 +79,8 @@ export const DevProjectLivlihoodGroup = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e, index, subIndex) => {
+    const { name, value } = e.target;
+
     const updatedData = { ...formData };
 
     if (e.target.name === "goal") {
@@ -98,7 +100,7 @@ export const DevProjectLivlihoodGroup = () => {
       ].verification = e.target.value;
     }
     else {
-      updatedData[e.target.name] = e.target.value;
+      updatedData[name] = value;
     }
 
     setFormData(updatedData);
@@ -140,8 +142,8 @@ export const DevProjectLivlihoodGroup = () => {
         DateOfSubmission: formData.dATEOFSUBMISSION,
         TitleOfProject: formData.TITLEOFTHEPROJECT,
         address: formData.address,
-        overallProjectPeriod: formData.overallProjectPeriod,
-        overallProjectBudget: formData.overallProjectBudget,
+        OverallProjectPeriod: formData.overallProjectPeriod,
+        OverallProjectBudget: formData.overallProjectBudget,
         ProjectOfInitialProject: formData.projOfIntialProject,
         problemAnalysis: formData.problemAnalysis,
         solutionAnalysis: formData.solutionAnalysis,
@@ -238,7 +240,7 @@ export const DevProjectLivlihoodGroup = () => {
               <Tr key={index}>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     value={row.budget}
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
@@ -719,7 +721,7 @@ export const DevProjectLivlihoodGroup = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl isRequired>
+                              <FormControl >
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
