@@ -33,8 +33,13 @@ const ProjectsToBeApproved = () => {
       try {
         const getAllHOI = (await authAxios.get("projects/getallHOIapprover"))
           .data.data;
+
         const getAllEOI =
           (await authAxios.get("projects/getallEOIapprover")).data.data ?? [];
+          console.log(getAllEOI);
+
+        const getAllHIV =
+          (await authAxios.get("projects/getallHIVApprover")).data.data ?? [];
           console.log(getAllEOI);
 
         setHealthProjectList(
@@ -48,11 +53,10 @@ const ProjectsToBeApproved = () => {
             })
         );
         setEducationProjectList(
-          getAllEOI
-            .filter((val) => val.project_coordinator_agree.agree === false)
+          getAllHIV
             .map((project) => {
               return {
-                id: project.project_code,
+                id: project.project_number,
                 project: project,
               };
             })
@@ -92,7 +96,7 @@ const ProjectsToBeApproved = () => {
               <Button
                 colorScheme="blue"
                 as={Link}
-                to={`/ApproveHIO/${encodeURIComponent(
+                to={`/ApproveHOI/${encodeURIComponent(
                   JSON.stringify(project.project)
                 )}`} // Update this route as needed
                 mb={2}
@@ -117,7 +121,7 @@ const ProjectsToBeApproved = () => {
               <Button
                 colorScheme="blue"
                 as={Link}
-                to={`/ApproveEIO/${encodeURIComponent(
+                to={`/ApproveHIV/${encodeURIComponent(
                   JSON.stringify(project.project)
                 )}`} // Update this route as needed
                 mb={2}
