@@ -69,6 +69,7 @@ import ReviewISG from "./components/ReviewISG";
 import ApproveISG from "./components/ApproveISG";
 import ReviewHIV from "./components/ReviewHIV";
 import ApproveHIV from "./components/ApproveHIV";
+import ReviewSocialIndividual from "./components/ReviewSocialIndividual";
 
 
 
@@ -134,7 +135,7 @@ const App = () => {
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
 
           <Route path='/ReviewWHFC/:project' element={<ReviewWelfareHomeForChildren/>} />
-                    
+          <Route path="/ReviewSI/:project" element={<ReviewSocialIndividual/>}/>
           <Route path='/ReviewEI/:project' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
           <Route path='/ViewEI' element={<ViewEI/>} />          
