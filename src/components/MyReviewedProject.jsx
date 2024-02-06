@@ -281,7 +281,7 @@ const ReviewProjects = () => {
                   <Button
                     colorScheme="blue"
                     as={Link}
-                    to={`/View${key}/${encodeURIComponent(
+                    to={`/Review${key}/${encodeURIComponent(
                       JSON.stringify(project.project)
                     )}`} // Update this route as needed
                     mb={2}

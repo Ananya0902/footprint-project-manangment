@@ -15,13 +15,13 @@ import {
   Alert,
   AlertIcon,
   InputGroup,
-  useToast , 
+  useToast,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import authAxios from '../AuthAxios' ; 
+import authAxios from "../AuthAxios";
 
 const ReviewEI = () => {
-  const showToast = useToast() ; 
+  const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
 
   const [formData, setFormData] = useState({
@@ -144,7 +144,8 @@ const ReviewEI = () => {
     motherHealthStatusOthers: projectData.health_status_of_mother_others || "",
     residentialStatus: projectData.residential_status || "",
     residentialStatusOthers: projectData.residential_status_others || "",
-    familySituationDetails: projectData.family_situation_of_the_beneficiary || "",
+    familySituationDetails:
+      projectData.family_situation_of_the_beneficiary || "",
     financialSupportDetails: projectData.financialSupportDetails || "",
     familyEmploymentDetails: projectData.familyEmploymentDetails || "",
     previousEducationDetails: projectData.previousEducationDetails || "",
@@ -163,12 +164,15 @@ const ReviewEI = () => {
     totalCostOfStudy: projectData.totalCostOfStudy || 0, // Assuming 0 as the default value
     scholarshipExpected: projectData.scholarshipExpected || 0, // Assuming 0 as the default value
     beneficiaryContribution: projectData.beneficiaryContribution || 0, // Assuming 0 as the default value
-    totalScholarshipAndContribution: projectData.totalScholarshipAndContribution || 0, // Assuming 0 as the default value
+    totalScholarshipAndContribution:
+      projectData.totalScholarshipAndContribution || 0, // Assuming 0 as the default value
     balanceAmountRequested: projectData.balanceAmountRequested || 0, // Assuming 0 as the default value
     beneficiaryAgreement: projectData.benificary_agree.agree || false,
     beneficiaryAgreementDate: projectData.benificary_agree.date || "",
-    projectInChargeAgreement: projectData.project_in_charge_agree.agree || false,
-    projectInChargeAgreementDate: projectData.project_in_charge_agree.date || "",
+    projectInChargeAgreement:
+      projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date || "",
     provincialSuperiorAgreement: "", // Assuming not present in req
     provincialSuperiorAgreementDate: "", // Assuming not present in req
     comment: "", // Assuming not present in req
@@ -187,6 +191,7 @@ const ReviewEI = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('submit');
     // Add your form submission logic here
     try {
       const req = {
@@ -197,6 +202,7 @@ const ReviewEI = () => {
         },
       };
       const res = await authAxios.put("/projects/editreviewerEI/", req);
+      console.log(res);
       if (res.data.success) setIsSubmitted(true);
       else {
         showToast({
@@ -1173,11 +1179,20 @@ const ReviewEI = () => {
             mx="3"
             colorScheme="blue"
             type="submit"
-            onClick={() => (formData.provincialSuperiorAgreement = true)}
+            onClick={() => {
+              formData.provincialSuperiorAgreement = true;
+            }}
           >
             Accept
           </Button>
-          <Button colorScheme="red" type="submit" mx={3}>
+          <Button
+            colorScheme="red"
+            type="submit"
+            mx={3}
+            onClick={() => {
+              formData.provincialSuperiorAgreement = false;
+            }}
+          >
             Revert
           </Button>
         </form>

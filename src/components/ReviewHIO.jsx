@@ -387,7 +387,7 @@ const ReviewHIO = () => {
                 type="number"
                 name="numberOfChildren"
                 onChange={handleChange}
-                value={formData.numberOfChildren || ""}
+                value={formData.numberOfChildren}
                 readOnly
               />
             </FormControl>

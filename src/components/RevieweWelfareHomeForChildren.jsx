@@ -50,194 +50,181 @@ const ReviewWelfareHomeForChildren = () => {
     totalChildren: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[0].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[0].previous_year 
+          || 0,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[0].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[0].present_year,
     },
     rehabilitatedWithGuardians: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[1].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[1].previous_year,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[1].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[1].present_year ,
     },
     shiftedToOtherNGOs: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[2].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[2].previous_year,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[2].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[2].present_year ,
     },
     pursuingHigherStudies: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[3].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[3].previous_year ,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[3].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[3].present_year,
     },
     settledInLife: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[4].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[4].previous_year,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[4].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[4].present_year,
     },
     settledAndWorking: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[5].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[5].previous_year,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[5].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[5].present_year,
     },
     otherCategory: {
       previousYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[6].previous_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[6].previous_year,
       presentYear:
         projectData.key_information
-          .statistics_of_passed_out_rehabilitated_children[6].present_year ||
-        "",
+          .statistics_of_passed_out_rehabilitated_children[6].present_year,
     },
     bridgeEducationPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[0]
-        .previous_year || "",
+        .previous_year || 0,
     bridgeEducationPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[0]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     kindergartenPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[1]
-        .previous_year || "",
+        .previous_year || 0,
     kindergartenPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[1]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     otherEducationPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[2]
-        .previous_year || "",
+        .previous_year || 0,
     otherEducationPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[2]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     bridgeSchoolPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[3]
-        .previous_year || "",
+        .previous_year || 0,
     bridgeSchoolPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[3]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     primarySchoolPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[4]
-        .previous_year || "",
+        .previous_year || 0,
     primarySchoolPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[4]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     otherEducation610PreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[5]
-        .previous_year || "",
+        .previous_year || 0,
     otherEducation610PresentYear:
       projectData.key_information.age_profile_of_children_and_youth[5]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     secondarySchoolPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[6]
-        .previous_year || "",
+        .previous_year || 0,
     secondarySchoolPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[6]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     highSchoolPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[7]
-        .previous_year || "",
+        .previous_year || 0,
     highSchoolPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[7]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     otherEducation1115PreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[8]
-        .previous_year || "",
+        .previous_year || 0,
     otherEducation1115PresentYear:
       projectData.key_information.age_profile_of_children_and_youth[8]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     undergraduatePreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[9]
-        .previous_year || "",
+        .previous_year || 0,
     undergraduatePresentYear:
       projectData.key_information.age_profile_of_children_and_youth[9]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     technicalVocationalEducationPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[10]
-        .previous_year || "",
+        .previous_year || 0,
     technicalVocationalEducationPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[10]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     otherEducation16AbovePreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[11]
-        .previous_year || "",
+        .previous_year || 0,
     otherEducation16AbovePresentYear:
       projectData.key_information.age_profile_of_children_and_youth[11]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     youth16AndAbovebridgeSchoolPreviousYear:
       projectData.key_information.age_profile_of_children_and_youth[12]
-        .previous_year || "",
+        .previous_year || 0,
     youth16AndAbovebridgeSchoolPresentYear:
       projectData.key_information.age_profile_of_children_and_youth[12]
-        .present_academic_year || "",
+        .present_academic_year || 0,
     personalSituation: {
       childrenWithParentsPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[0]
-          .previous_year || "",
+          .previous_year || 0,
       childrenWithParentsPresentYear:
         projectData.key_information.personal_situation_of_children_youth[0]
-          .present_academic_year || "",
+          .present_academic_year || 0,
       semiOrphansPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[1]
-          .previous_year || "",
+          .previous_year || 0,
       semiOrphansPresentYear:
         projectData.key_information.personal_situation_of_children_youth[1]
-          .present_academic_year || "",
+          .present_academic_year || 0,
       orphansPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[2]
-          .previous_year || "",
+          .previous_year || 0,
       orphansPresentYear:
         projectData.key_information.personal_situation_of_children_youth[2]
-          .present_academic_year || "",
+          .present_academic_year || 0,
       hivInfectedAffectedPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[3]
-          .previous_year || "",
+          .previous_year || 0,
       hivInfectedAffectedPresentYear:
         projectData.key_information.personal_situation_of_children_youth[3]
-          .present_academic_year || "",
+          .present_academic_year || 0,
       differentlyAbledChildrenPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[4]
-          .previous_year || "",
+          .previous_year || 0,
       differentlyAbledChildrenPresentYear:
         projectData.key_information.personal_situation_of_children_youth[4]
-          .present_academic_year || "",
+          .present_academic_year || 0,
       parentsInConflictPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[5]
-          .previous_year || "",
+          .previous_year || 0,
       parentsInConflictPresentYear:
         projectData.key_information.personal_situation_of_children_youth[5]
-          .present_academic_year || "",
+          .present_academic_year || 0,
       otherAlimentsPreviousYear:
         projectData.key_information.personal_situation_of_children_youth[6]
-          .previous_year || "",
+          .previous_year || 0,
       otherAlimentsPresentYear:
         projectData.key_information.personal_situation_of_children_youth[6]
-          .present_academic_year || "",
+          .present_academic_year || 0,
     },
     economicBackground: {
       agriculturalLabour:
@@ -262,21 +249,21 @@ const ReviewWelfareHomeForChildren = () => {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[0]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[0]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
         boys: {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[1]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[1]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
       },
       tuitionClothing: {
@@ -284,21 +271,21 @@ const ReviewWelfareHomeForChildren = () => {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[2]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[2]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
         boys: {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[3]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[3]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
       },
       nutrition: {
@@ -306,21 +293,21 @@ const ReviewWelfareHomeForChildren = () => {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[4]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[4]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
         boys: {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[5]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[5]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
       },
       freeResidence: {
@@ -328,21 +315,21 @@ const ReviewWelfareHomeForChildren = () => {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[6]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[6]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
         boys: {
           previousYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[7]
-              .number_previous_year || "",
+              .number_previous_year || 0,
           presentYear:
             projectData.key_information
               .multiple_support_provided_for_integrated_development[7]
-              .number_present_academic_year || "",
+              .number_present_academic_year || 0,
         },
       },
     },
@@ -356,9 +343,10 @@ const ReviewWelfareHomeForChildren = () => {
     monitoringProcess: projectData.monitoring_and_evaluation || "",
     sustainability: projectData.sustainability || "",
     staff: projectData.staff || "",
-    projectInChargeAgreement: projectData.projectInChargeAgreement || "",
+    projectInChargeAgreement:
+      projectData.mailing_list.project_in_charge.agree || "",
     projectInChargeAgreementDate:
-      projectData.projectInChargeAgreementDate || "",
+      projectData.mailing_list.project_in_charge.date.substring(0, 10) || "",
     provincialSuperiorAgreement: false,
     provincialSuperiorComment: "",
     logicalFramework: {
@@ -376,13 +364,11 @@ const ReviewWelfareHomeForChildren = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const showToast = useToast();
   // Populating budgetRows
-  const budgetRows = projectData.budget.budget_particular.map(
-    (budgetItem) => ({
-      description: budgetItem.expense_description || "",
-      costsLastYear: budgetItem.costs_last_year || "",
-      budgetCurrentYear: budgetItem.budget_current_year || "",
-    })
-  );
+  const budgetRows = projectData.budget.budget_particular.map((budgetItem) => ({
+    description: budgetItem.expense_description || "",
+    costsLastYear: budgetItem.costs_last_year || "",
+    budgetCurrentYear: budgetItem.budget_current_year || "",
+  }));
   const achievements = {
     academic:
       projectData.key_information.achievements_of_school_and_college_children
@@ -395,7 +381,6 @@ const ReviewWelfareHomeForChildren = () => {
         .other_achievements || [],
   };
 
-  console.log("formData", formData);
   // Assuming res contains the response from the GET API
   // Parse the response and set the state variables
 
@@ -407,42 +392,39 @@ const ReviewWelfareHomeForChildren = () => {
       .toFixed(2);
   };
 
-  // const handleSubmit = async () => {
-  //   console.log("submit");
-  //   try {
-  //     await new Promise(
-  //       () => setTimeout(100000)
-  //     )
-  //     const res = await authAxios.put("/projects/editWHFCReviewer", {
-  //       comment: formData.provincialSuperiorComment,
-  //       agree: formData.provinciaalSuperiorAgreement,
-  //       project_number: projectData.project_number,
-  //     });
-  //     if (res.data.success) {
-  //       showToast({
-  //         title: "Review succesful",
-  //         duration: 5000,
-  //         status: "success",
-  //       });
-  //     } else {
-  //       showToast({
-  //         title: "Review unsuccesful",
-  //         duration: 5000,
-  //         status: "error",
-  //       });
-  //     }
-  //   } catch (e) {
-      
-  //     showToast({
-  //       title: "Review unsuccesful",
-  //       duration: 5000,
-  //       status: "error",
-  //     });
-  //   }
-    
-  // };
 
-  const handleSubmit = () => console.log('Error');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("submit");
+    try {
+      const res = await authAxios.put("/projects/editWHFCReviewer", {
+        comment: formData.provincialSuperiorComment,
+        agree: formData.provincialSuperiorAgreement,
+        project_number: projectData.project_number,
+      });
+      console.log(res.data);
+      if (res.data.success) {
+        showToast({
+          title: "Review succesful",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        showToast({
+          title: "Review unsuccesful",
+          duration: 5000,
+          status: "error",
+        });
+      }
+    } catch (e) {
+      console.log(e.response);
+      showToast({
+        title: "Review unsuccesful",
+        duration: 5000,
+        status: "error",
+      });
+    }
+  };
 
   return (
     <ChakraProvider>
@@ -635,7 +617,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="previousYear"
                     name="totalChildren"
                     readOnly
-                    value={formData.totalChildren.previousYear || ""}
+                    value={formData.totalChildren.previousYear}
                   />
                 </Td>
                 <Td>
@@ -644,7 +626,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="presentYear"
                     name="totalChildren"
                     readOnly
-                    value={formData.totalChildren.presentYear || ""}
+                    value={formData.totalChildren.presentYear}
                   />
                 </Td>
               </Tr>
@@ -661,7 +643,7 @@ const ReviewWelfareHomeForChildren = () => {
                     name="rehabilitatedWithGuardians"
                     readOnly
                     value={
-                      formData.rehabilitatedWithGuardians.previousYear || ""
+                      formData.rehabilitatedWithGuardians.previousYear 
                     }
                   />
                 </Td>
@@ -672,7 +654,7 @@ const ReviewWelfareHomeForChildren = () => {
                     name="rehabilitatedWithGuardians"
                     readOnly
                     value={
-                      formData.rehabilitatedWithGuardians.presentYear || ""
+                      formData.rehabilitatedWithGuardians.presentYear 
                     }
                   />
                 </Td>
@@ -687,7 +669,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="previousYear"
                     name="shiftedToOtherNGOs"
                     readOnly
-                    value={formData.shiftedToOtherNGOs.previousYear || ""}
+                    value={formData.shiftedToOtherNGOs.previousYear}
                   />
                 </Td>
                 <Td>
@@ -696,7 +678,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="presentYear"
                     name="shiftedToOtherNGOs"
                     readOnly
-                    value={formData.shiftedToOtherNGOs.presentYear || ""}
+                    value={formData.shiftedToOtherNGOs.presentYear}
                   />
                 </Td>
               </Tr>
@@ -710,7 +692,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="previousYear"
                     name="pursuingHigherStudies"
                     readOnly
-                    value={formData.pursuingHigherStudies.previousYear || ""}
+                    value={formData.pursuingHigherStudies.previousYear}
                   />
                 </Td>
                 <Td>
@@ -719,7 +701,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="presentYear"
                     name="pursuingHigherStudies"
                     readOnly
-                    value={formData.pursuingHigherStudies.presentYear || ""}
+                    value={formData.pursuingHigherStudies.presentYear}
                   />
                 </Td>
               </Tr>
@@ -736,7 +718,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="previousYear"
                     name="settledInLife"
                     readOnly
-                    value={formData.settledInLife.previousYear || ""}
+                    value={formData.settledInLife.previousYear }
                   />
                 </Td>
                 <Td>
@@ -745,7 +727,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="presentYear"
                     name="settledInLife"
                     readOnly
-                    value={formData.settledInLife.presentYear || ""}
+                    value={formData.settledInLife.presentYear }
                   />
                 </Td>
               </Tr>
@@ -759,7 +741,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="previousYear"
                     name="settledAndWorking"
                     readOnly
-                    value={formData.settledAndWorking.previousYear || ""}
+                    value={formData.settledAndWorking.previousYear }
                   />
                 </Td>
                 <Td>
@@ -768,7 +750,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="presentYear"
                     name="settledAndWorking"
                     readOnly
-                    value={formData.settledAndWorking.presentYear || ""}
+                    value={formData.settledAndWorking.presentYear }
                   />
                 </Td>
               </Tr>
@@ -782,7 +764,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="previousYear"
                     name="otherCategory"
                     readOnly
-                    value={formData.otherCategory.previousYear || ""}
+                    value={formData.otherCategory.previousYear }
                   />
                 </Td>
                 <Td>
@@ -791,7 +773,7 @@ const ReviewWelfareHomeForChildren = () => {
                     data-year="presentYear"
                     name="otherCategory"
                     readOnly
-                    value={formData.otherCategory.presentYear || ""}
+                    value={formData.otherCategory.presentYear }
                   />
                 </Td>
               </Tr>
@@ -1658,7 +1640,7 @@ const ReviewWelfareHomeForChildren = () => {
               <Input
                 key={index}
                 type="text"
-                value={achievement.description}
+                value={achievement}
                 readOnly
                 mb={2}
               />
@@ -1674,7 +1656,7 @@ const ReviewWelfareHomeForChildren = () => {
               <Input
                 key={index}
                 type="text"
-                value={achievement.description}
+                value={achievement}
                 readOnly
                 mb={2}
               />
@@ -1690,7 +1672,7 @@ const ReviewWelfareHomeForChildren = () => {
               <Input
                 key={index}
                 type="text"
-                value={achievement.description}
+                value={achievement}
                 readOnly
                 mb={2}
               />
@@ -1763,7 +1745,10 @@ const ReviewWelfareHomeForChildren = () => {
           </Heading>
           <FormControl isRequired>
             <FormLabel>Goal of the Project</FormLabel>
-            <Textarea name="goal" readOnly required />
+            <Textarea name="goal" readOnly value={
+              formData.logicalFramework.goal
+            } />
+
           </FormControl>
 
           {/* Objectives */}
@@ -1990,7 +1975,7 @@ const ReviewWelfareHomeForChildren = () => {
                 name="projectInChargeAgreementDate"
                 required
                 readOnly
-                value={formData.projectInChargeAgreementDateF}
+                value={formData.projectInChargeAgreementDate}
               />
             </FormControl>
             <FormControl isRequired>
@@ -2014,16 +1999,20 @@ const ReviewWelfareHomeForChildren = () => {
             colorScheme="blue"
             type="submit"
             mx="3"
-            onClick={() => {
-              formData.provincialSuperiorAgreement = true;
-            }}
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
           >
             Accept
           </Button>
-          {/* Submit Button
-          <Button colorScheme="red" type="submit" mx="3">
+          <Button
+            colorScheme="red"
+            type="submit"
+            mx="3"
+            onClick={() => {
+              formData.provincialSuperiorAgreement = false;
+            }}
+          >
             Revert
-          </Button> */}
+          </Button>
         </form>
       </Box>
     </ChakraProvider>

@@ -102,6 +102,7 @@ const ReviewEIO = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log('submit');
     e.preventDefault();
     // Add your form submission logic here
     try {
@@ -112,6 +113,7 @@ const ReviewEIO = () => {
           agree: formData.provincialSuperiorAgreement,
         },
       };
+      console.log(req);
       const res = await authAxios.put("/projects/editreviewerEOI/", req);
       if (res.data.success) setIsSubmitted(true);
       else {
@@ -1018,7 +1020,7 @@ const ReviewEIO = () => {
             colorScheme="blue"
             mx="3"
             type="submit"
-            onClick={() => (formData.provincialSuperiorAgreement = true)}
+            onClick={() => {(formData.provincialSuperiorAgreement = true)}}
           >
             Accept
           </Button>
