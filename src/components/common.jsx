@@ -131,12 +131,6 @@ export const Common = () => {
       DateOfSubmission: formData.dATEOFSUBMISSION,
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
-      // provincialSuperiorName: formData.provincialSuperiorName,
-      // provincialSuperiorCellNumber: formData.provincialSuperiorCellNumber,
-      // provincialSuperiorEmail: formData.provincialSuperiorEmail,
-      // projectInChargeName: formData.projectInChargeName,
-      // projectInChargeCellNumber: formData.projectInChargeCellNumber,
-      // projectInChargeEmail: formData.projectInChargeEmail,
       OverallProjectPeriod: formData.overallProjectPeriod,
       OverallProjectBudget: formData.overallProjectBudget,
       problemAnalysis: formData.problemAnalysis,
@@ -146,7 +140,8 @@ export const Common = () => {
       project_in_charge_agree: {
         agree: true,
       },
-      benficiary_agreement: true,
+      beneficiaryAgreement: true,
+      beneficiaryAgreementDate: new Date(),
       ProjectArea: formData.projectArea, // Add projectArea
       directBeneficiaries: formData.directBeneficiaries, // Add directBeneficiaries
       indirectBeneficiaries: formData.indirectBeneficiaries, // Add indirectBeneficiaries
@@ -333,68 +328,6 @@ export const Common = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorName}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorCellNumber}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorEmail}
-                      required
-                    />
-                  </Td>
-                </Tr>
-                {/* Project In-Charge */}
-                <Tr>
-                  <Td>Project In-Charge</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="projectInChargeName"
-                      onChange={handleChange}
-                      value={formData.projectInChargeName}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="projectInChargeCellNumber"
-                      onChange={handleChange}
-                      value={formData.projectInChargeCellNumber}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="projectInChargeEmail"
-                      onChange={handleChange}
-                      value={formData.projectInChargeEmail}
-                      required
-                    />
-                  </Td>
-                </Tr>
                 {/* Project Coordinators */}
                 <Tr>
                   <Td>Project Coordinator 1</Td>

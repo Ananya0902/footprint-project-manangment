@@ -121,7 +121,7 @@ const ReviewProjects = () => {
 
         const newProjectList = {
           HOI: getAllHOI
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
@@ -131,16 +131,16 @@ const ReviewProjects = () => {
           EGS: getAllEGS
             .filter(
               (value) =>
-                value.general_information.provincial_superior.agree === false
+                value.general_information.provincial_superior.comment === null
             )
             .map((project) => {
               return {
-                id: project.project_code,
+                id: project.project_number,
                 project: project,
               };
             }),
           EI: getAllEIReviewer
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
@@ -148,7 +148,7 @@ const ReviewProjects = () => {
               };
             }),
           SI: getAllSIReviewer
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
@@ -156,7 +156,7 @@ const ReviewProjects = () => {
               };
             }),
           DPLG: getAllDPLGReviewer
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
@@ -165,7 +165,7 @@ const ReviewProjects = () => {
             }),
           HIV: getAllHIVReviewer
             .filter(
-              (value) => value.mailing_list.provincial_superior.agree === false
+              (value) => value.mailing_list.provincial_superior.comment === false
             )
             .map((project) => {
               return {
@@ -175,7 +175,7 @@ const ReviewProjects = () => {
             }),
           WHFC: getAllWHFCReviewer
             .filter(
-              (value) => value.mailing_list.provincial_superior.agree === false
+              (value) => value.mailing_list.provincial_superior.comment === null
             )
             .map((project) => {
               return {
@@ -185,7 +185,7 @@ const ReviewProjects = () => {
             }),
           NPDP: getAllNPDPReviewer
             .filter(
-              (value) => value.mailing_list.provincial_superior.agree === false
+              (value) => value.mailing_list.provincial_superior.comment === null
             )
             .map((project) => {
               return {
@@ -194,7 +194,7 @@ const ReviewProjects = () => {
               };
             }),
           EOI: getAllEOIReviewer
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
@@ -202,7 +202,7 @@ const ReviewProjects = () => {
               };
             }),
           ISG: getAllISGReviewer
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
@@ -210,7 +210,7 @@ const ReviewProjects = () => {
               };
             }),
           CG: getAllCGReviewer
-            .filter((value) => value.provincial_superior_agree.agree === false)
+            .filter((value) => value.comment_box_provincial_superior === null)
             .map((project) => {
               return {
                 id: project.project_code,
