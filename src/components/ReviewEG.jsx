@@ -925,7 +925,9 @@ const ReviewEG = () => {
             Accept
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
+          <Button colorScheme="red" mx={3} type="submit"      
+            onClick={() => (formData.provincialSuperiorAgreement = false)}
+>
             Revert
           </Button>
         </form>
