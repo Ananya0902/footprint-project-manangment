@@ -18,9 +18,14 @@ import {
   Th,
   Td,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
+import authAxios from "../AuthAxios";
 
 const EducationRuralUrbanTribalGroup = () => {
+  const showToast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     presentProjectYear: "",
     projectTitle: "",
@@ -64,7 +69,7 @@ const EducationRuralUrbanTribalGroup = () => {
       ],
     },
     evaluation: "",
-    monitoringprocess: "",
+    monitoringProcess: "",
     sustainability: "",
     budget: [
       {
@@ -78,7 +83,11 @@ const EducationRuralUrbanTribalGroup = () => {
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    // Send requestBody to the backend
+    e.preventDefault();
+    console.log("inside handle submit");
+
     const req = {
       project_title: formData.projectTitle,
       general_information: {
@@ -86,17 +95,7 @@ const EducationRuralUrbanTribalGroup = () => {
         overall_project_period: formData.overallProjectPeriod,
         overall_project_budget: parseInt(formData.overallProjectBudget), // Assuming it's a number
       },
-      beneficiaries: formData.targetGroup.map((target) => ({
-        name: target.name,
-        caste: target.caste,
-        occupation_of_parents: target.occupationOfParents,
-        family_background_and_need_of_support:
-          target.familyBackgroundAndNeedOfSupport,
-        class_of_study_or_name_of_institution: target.classOfStudyOrInstitution,
-        eligibility_of_scholarship_and_expected_amount:
-          target.eligibilityOfScholarshipAndExpectedAmount,
-        contribution_from_family: target.contributionFromFamily,
-      })),
+      
       project_summary: {
         project_location_geographical_area:
           formData.projectSummary.projectLocation,
@@ -107,7 +106,8 @@ const EducationRuralUrbanTribalGroup = () => {
         problems_identified_and_consequences:
           formData.projectSummary.identifiedProblems,
         need_of_the_project: formData.projectSummary.needOfProject,
-        identification_of_the_beneficiaries: formData.targetGroup.map(
+
+        target_group: formData.targetGroup.map(
           (target) => ({
             name: target.name,
             caste: target.caste,
@@ -129,25 +129,54 @@ const EducationRuralUrbanTribalGroup = () => {
             activities: objective.activities.map((activity) => ({
               activity: activity.activity,
               months: activity.months,
-              means_of_verification: activity.means_of_verification,
+              means_of_verification: activity.verification,
             })),
           })),
         },
         sustainability: formData.sustainability,
-        monitoring_process_of_the_project: formData.monitoringprocess,
+        monitoring_process_of_the_project: formData.monitoringProcess,
         mode_of_evaluation: formData.evaluation,
         budget: {
           expenses: formData.budget.map((item) => ({
             description: item.description,
             costs: parseInt(item.costs), // Assuming it's a number
           })),
-          total: parseInt(calculateTotalCosts('cost')) ?? 0, // Should be calculated
+          total: parseInt(calculateTotalCosts("cost")) ?? 0, // Should be calculated
         },
       },
     };
 
-    // Send requestBody to the backend
-    e.preventDefault();
+    console.log("working before try");
+    console.log(req);
+    try {
+      const res = await authAxios.post("/projects/createEGS", req);
+      console.log(res);
+      setIsLoading(false);
+      if (res.data.success) {
+        showToast({
+          title: "Successful submission",
+          duration: 5000,
+          status: "success",
+        });
+        setIsSubmitted(true);
+      } else {
+        showToast({
+          title: "Unsuccessful submission",
+          duration: 5000,
+          status: "error",
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      setIsLoading(false);
+      showToast({
+        title: "Unsuccessful submission",
+        duration: 5000,
+        status: "error",
+      });
+    }
+
     // Handle form submission logic here
     console.log("Form submitted with data:", formData);
   };
@@ -722,7 +751,7 @@ const EducationRuralUrbanTribalGroup = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl isRequired>
+                              <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
@@ -872,12 +901,17 @@ const EducationRuralUrbanTribalGroup = () => {
                 required
               />
             </FormControl>
+
+            {/* Submit Button */}
+            <Button
+              colorScheme="blue"
+              type="submit"
+              onClick={() => console.log("click")}
+            >
+              Submit
+            </Button>
           </form>
         </VStack>
-        {/* Submit Button */}
-        <Button colorScheme="blue" type="submit">
-          Submit
-        </Button>
       </Box>
     </ChakraProvider>
   );

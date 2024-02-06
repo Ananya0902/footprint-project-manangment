@@ -8,11 +8,14 @@ import {
   Textarea,
   Button,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios.js";
 
 const NextPhaseForm = () => {
+  const showToast = useToast();
   return (
+    
     <Formik
       initialValues={{
         phase: "",
@@ -63,9 +66,27 @@ const NextPhaseForm = () => {
         console.log(values);
         try {
           const res = await authAxios.post("projects/createNPDP", values);
-          console.log(res);
-        } catch (error) {
-          console.log(error);
+          
+          if (res.data.success) {
+            showToast({
+              title: "Successful submission",
+              duration: 5000,
+              status: "success",
+            });
+          } else {
+            showToast({
+              title: "Unsuccessful submission",
+              duration: 5000,
+              status: "error",
+            });
+          }
+        } catch (e) {
+          
+          showToast({
+            title: "Unsuccessful submission",
+            duration: 5000,
+            status: "error",
+          });
         }
       }}
     >
@@ -128,7 +149,7 @@ const NextPhaseForm = () => {
             <FormControl id="overall_project_budget" isRequired>
               <FormLabel>Overall Project Budget</FormLabel>
               <Field
-                type='number'
+                type="number"
                 name="key_data_of_project.overall_project_budget"
                 as={Input}
               />
@@ -391,15 +412,17 @@ const NextPhaseForm = () => {
                             />
                           </FormControl>
                           <FormControl
-                            id={`beneficiaries_and_contribution[${index}].contribution`}
+                            id={`beneficiaries_and_contribution.${index}.contribution`}
                             isRequired
                           >
                             <FormLabel>Contribution</FormLabel>
                             <Field
-                              name={`beneficiaries_and_contribution[${index}].contribution`}
+                              name={`beneficiaries_and_contribution.${index}.contribution`}
                               as={Input}
+                              type="number"
                             />
                           </FormControl>
+
                           <Button
                             mt="4"
                             onClick={() => {

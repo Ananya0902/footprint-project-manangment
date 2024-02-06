@@ -24,7 +24,7 @@ import authAxios from "../AuthAxios";
 
 const EducationGroup = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const showToast = useToast;
+  const showToast = useToast();
   const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: "", // Name of the Society
     dATEOFSUBMISSION: "", // Date of Submission
@@ -73,7 +73,7 @@ const EducationGroup = () => {
   });
   const [studiesTableData, setStudiesTableData] = useState([
     {
-      serialNo: "",
+      serialNo: 1,
       name: "",
       studyProposed: "",
       totalExpense: "",
@@ -85,7 +85,7 @@ const EducationGroup = () => {
 
   const [informationTableData, setInformationTableData] = useState([
     {
-      serialNo: "",
+      serialNo: 1,
       name: "",
       casteAddress: "",
       recommendedBy: "",
@@ -123,7 +123,7 @@ const EducationGroup = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -171,7 +171,7 @@ const EducationGroup = () => {
     };
 
     try {
-      const res = authAxios.post("/createEG", req);
+      const res = await authAxios.post("/projects/createEG", req);
       setIsLoading(false);
       if (res.data.success) {
         showToast({
@@ -757,6 +757,7 @@ const EducationGroup = () => {
                       <Td>
                         <Input
                           type="text"
+                          name="objectives"
                           value={objective}
                           onChange={(e) => handleChange(e, index)}
                           required

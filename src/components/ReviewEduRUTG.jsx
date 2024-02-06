@@ -69,7 +69,7 @@ const ReviewEduRUTG = () => {
       ],
     },
     evaluation: "",
-    monitoringprocess: "",
+    monitoringProcess: "",
     sustainability: "",
     budget: [
       {
@@ -103,7 +103,7 @@ const ReviewEduRUTG = () => {
       projectData.general_information?.overall_project_period || "",
     overallProjectBudget:
       projectData.general_information?.overall_project_budget || "",
-    targetGroup: projectData.beneficiaries.map((beneficiary) => ({
+    targetGroup: projectData.project_summary.target_group.map((beneficiary) => ({
       name: beneficiary.name || "",
       caste: beneficiary.caste || "",
       occupationOfParents: beneficiary.occupation_of_parents || "",
@@ -115,6 +115,23 @@ const ReviewEduRUTG = () => {
         beneficiary.eligibility_of_scholarship_and_expected_amount || "",
       contributionFromFamily: beneficiary.contribution_from_family || "",
     })),
+    logicalFramework: {
+      goal:
+        projectData.project_summary?.solution_analysis_logical_framework
+          ?.goal || "",
+      objectives:
+        projectData.project_summary?.solution_analysis_logical_framework?.objectives.map(
+          (objective) => ({
+            objective: objective.objective || "",
+            results:[ objective.results_and_outcomes], // Assuming it's a string
+            activities: objective.activities.map((activity) => ({
+              activity: activity.activity || "",
+              months: activity.months || "",
+              verification: activity.means_of_verification || "",
+            })),
+          })
+        ) || [],
+    },
     projectSummary: {
       projectLocation:
         projectData.project_summary?.project_location_geographical_area || "",
@@ -127,25 +144,9 @@ const ReviewEduRUTG = () => {
       identifiedProblems:
         projectData.project_summary?.problems_identified_and_consequences || "",
       needOfProject: projectData.project_summary?.need_of_the_project || "",
-      solutionAnalysisLogicalFramework: {
-        goal:
-          projectData.project_summary?.solution_analysis_logical_framework
-            ?.goal || "",
-        objectives:
-          projectData.project_summary?.solution_analysis_logical_framework?.objectives.map(
-            (objective) => ({
-              objective: objective.objective || "",
-              results: objective.results_and_outcomes.split(",") || [""], // Assuming it's a string
-              activities: objective.activities.map((activity) => ({
-                activity: activity.activity || "",
-                months: activity.months || "",
-                means_of_verification: activity.means_of_verification || "",
-              })),
-            })
-          ) || [],
-      },
+      
       sustainability: projectData.project_summary?.sustainability || "",
-      monitoringprocess:
+      monitoringProcess:
         projectData.project_summary?.monitoring_process_of_the_project || "",
       evaluation: projectData.project_summary?.mode_of_evaluation || "",
       budget: {

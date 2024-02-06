@@ -32,16 +32,7 @@ export const InstitutionalSkillTrainingForm = () => {
       dATEOFSUBMISSION: "",
       TITLEOFTHEPROJECT: "",
       address: "",
-      provincialSuperior: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
-      projectInCharge: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
+      
       overallProjectPeriod: "",
       overallProjectBudget: "",
       numberOfBeneficiaries: "",
@@ -140,6 +131,7 @@ export const InstitutionalSkillTrainingForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("inside handle submit");
     const req = {
       basicInformation: {
         NameOfSociety: formData.basicInformation.NAMEOFTHESOCIETY,
@@ -200,9 +192,11 @@ export const InstitutionalSkillTrainingForm = () => {
           formData.signatures.provincialSuperiorAgreementDate,
       },
     };
+    console.log(req);
     try {
       setIsLoading(true);
-      const res = await authAxios.post("/projects/createISG" , req);
+      const res = await authAxios.post("/projects/createISG", req);
+      console.log(res);
       setIsLoading(false);
       if (res.data.success) {
         setIsSubmitted(true);
@@ -224,6 +218,7 @@ export const InstitutionalSkillTrainingForm = () => {
         });
       }
     } catch (error) {
+      console.log(error);
       setIsLoading(false);
       showToast({
         title: "Unsuccessful submission",
@@ -329,6 +324,7 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="text"
                 name="basicInformation.NAMEOFTHESOCIETY"
                 onChange={handleChange}
+                value={formData.basicInformation.NAMEOFTHESOCIETY}
                 required
               />
             </FormControl>
@@ -339,6 +335,8 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="date"
                 name="basicInformation.dATEOFSUBMISSION"
                 onChange={handleChange}
+                value={formData.basicInformation.dATEOFSUBMISSION}
+
                 required
               />
             </FormControl>
@@ -349,6 +347,8 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="text"
                 name="basicInformation.TITLEOFTHEPROJECT"
                 onChange={handleChange}
+                value={formData.basicInformation.TITLEOFTHEPROJECT}
+
                 required
               />
             </FormControl>
@@ -359,65 +359,12 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="text"
                 name="basicInformation.address"
                 onChange={handleChange}
+                value={formData.basicInformation.address}
+
                 required
               />
             </FormControl>
-            {/* Provincial Superior */}
-            <FormControl isRequired>
-              <FormLabel>Provincial Superior Name</FormLabel>
-              <Input
-                type="text"
-                name="basicInformation.provincialSuperior.name"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Provincial Superior Cell Number</FormLabel>
-              <Input
-                type="tel"
-                name="basicInformation.provincialSuperior.cellNumber"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Provincial Superior Email</FormLabel>
-              <Input
-                type="email"
-                name="basicInformation.provincialSuperior.email"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* Project In-Charge */}
-            <FormControl isRequired>
-              <FormLabel>Project In-Charge Name</FormLabel>
-              <Input
-                type="text"
-                name="basicInformation.projectInCharge.name"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Project In-Charge Cell Number</FormLabel>
-              <Input
-                type="tel"
-                name="basicInformation.projectInCharge.cellNumber"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Project In-Charge Email</FormLabel>
-              <Input
-                type="email"
-                name="basicInformation.projectInCharge.email"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+          
             {/* Overall Project Period */}
             <FormControl isRequired>
               <FormLabel>Overall Project Period (in months)</FormLabel>
@@ -425,6 +372,8 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="number"
                 name="basicInformation.overallProjectPeriod"
                 onChange={handleChange}
+                value={formData.basicInformation.overallProjectPeriod}
+
                 required
               />
             </FormControl>
@@ -435,6 +384,8 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="number"
                 name="basicInformation.overallProjectBudget"
                 onChange={handleChange}
+                value={formData.basicInformation.overallProjectBudget}
+
                 required
               />
             </FormControl>
@@ -446,6 +397,8 @@ export const InstitutionalSkillTrainingForm = () => {
                 type="number"
                 name="basicInformation.numberOfBeneficiaries"
                 onChange={handleChange}
+                value={formData.basicInformation.numberOfBeneficiaries}
+
                 required
               />
             </FormControl>
@@ -455,6 +408,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="basicInformation.residentialVillages"
                 onChange={handleChange}
+                value={formData.basicInformation.residentialVillages}
+
                 required
               />
             </FormControl>
@@ -466,6 +421,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="basicInformation.selectionCriteriaAndProfile"
                 onChange={handleChange}
+                value={formData.basicInformation.selectionCriteriaAndProfile}
+
                 required
               />
             </FormControl>
@@ -479,6 +436,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="basicInformation.descriptionOfBeneficiary"
                 onChange={handleChange}
+                value={formData.basicInformation.descriptionOfBeneficiary}
+
                 required
               />
             </FormControl>
@@ -490,6 +449,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="basicInformation.problemAnalysis"
                 onChange={handleChange}
+                value={formData.basicInformation.problemAnalysis}
+
                 required
               />
             </FormControl>
@@ -499,6 +460,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="basicInformation.solutionAnalysis"
                 onChange={handleChange}
+                value={formData.basicInformation.solutionAnalysis}
+
                 required
               />
             </FormControl>
@@ -588,7 +551,7 @@ export const InstitutionalSkillTrainingForm = () => {
                           </Td>
                           <Td>
                             {/* Timeframe */}
-                            <FormControl isRequired>
+                            <FormControl>
                               <FormLabel>Timeframe</FormLabel>
                               {activity.timeframe.map((value, monthIndex) => (
                                 <Checkbox
@@ -637,6 +600,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="sustainability"
                 onChange={handleChange}
+                value={formData.sustainability}
+
                 required
               />
             </FormControl>
@@ -648,6 +613,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="monitoringProcess"
                 onChange={handleChange}
+                value={formData.monitoringProcess}
+
                 required
               />
             </FormControl>
@@ -657,6 +624,8 @@ export const InstitutionalSkillTrainingForm = () => {
               <Textarea
                 name="evaluationMethodology"
                 onChange={handleChange}
+                value={formData.evaluationMethodology}
+
                 required
               />
             </FormControl>
@@ -667,7 +636,7 @@ export const InstitutionalSkillTrainingForm = () => {
               Signatures
             </Heading>
             {/* Project Coordinator agreement */}
-            <FormControl isRequired>
+            {/* <FormControl isRequired>
               <Checkbox
                 name="signatures.projectCoordinatorAgreement"
                 onChange={handleChange}
@@ -681,7 +650,7 @@ export const InstitutionalSkillTrainingForm = () => {
                 onChange={handleChange}
                 required
               />
-            </FormControl>
+            </FormControl> */}
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
               <Checkbox
@@ -701,7 +670,7 @@ export const InstitutionalSkillTrainingForm = () => {
               />
             </FormControl>
             {/* Provincial Superior agreement */}
-            <FormControl isRequired>
+            {/* <FormControl isRequired>
               <Checkbox
                 name="signatures.provincialSuperiorAgreement"
                 onChange={handleChange}
@@ -715,7 +684,7 @@ export const InstitutionalSkillTrainingForm = () => {
                 onChange={handleChange}
                 required
               />
-            </FormControl>
+            </FormControl> */}
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit">
