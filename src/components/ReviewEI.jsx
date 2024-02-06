@@ -23,96 +23,23 @@ import authAxios from "../AuthAxios";
 const ReviewEI = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
+  const imageMappings = {
+    photographUrl: projectData.photograph_benificary,
+    aadharCardCopy: projectData.aadhar_img,
+    feeQuotationOriginal: projectData.fee_quotation_from_the_institution_img,
+    scholarshipProof:
+      projectData.proof_of_scholarship_received_from_government_img,
+    medicalConfirmationOriginal: projectData.medical_confirmation_img,
+    casteCertificateCopy: projectData.caste_certificate_img,
+    affidavitProofOriginal: projectData.affidavit_proof_img,
+    requestLetterOriginal: projectData.request_letter_img,
+    deathCertificateCopy: projectData.death_certificate_img,
+    markListPreviousYear: projectData.mark_list_of_previous_year,
+  };
 
   const [formData, setFormData] = useState({
-    provincialSuperiorName: "Ananya",
-    provincialSuperiorContact: "",
-    projectInchargeName: "",
-    projectInchargeContact: "",
-    projectInchargeEmail: "",
-    beneficiaryName: "",
-    beneficiaryContact: "",
-    beneficiaryEmail: "",
-    beneficiaryAddress: "",
-    aadharCardNo: "",
-    gender: "male", // Assuming 'male' is the default value
-    dob: "",
-    fatherName: "",
-    motherName: "",
-    motherTongue: "",
-    religion: "",
-    casteTribe: "",
-    // Family Information
-    fatherOccupation: "",
-    fatherMonthlyIncome: 0, // Assuming 0 as the default value
-    motherOccupation: "",
-    motherMonthlyIncome: 0, // Assuming 0 as the default value
-
-    // Details about Mother and Father
-    motherStatus: "healthy", // Assuming 'healthy' as the default value
-    fatherStatus: "healthy", // Assuming 'healthy' as the default value
-    grandmotherSupport: "yes", // Assuming 'yes' as the default value
-    grandfatherSupport: "yes", // Assuming 'yes' as the default value
-    fatherHealthStatus: "chronicallySick", // Assuming 'chronicallySick' as the default value
-    fatherHealthStatusOthers: "", // Initialize to an empty string
-    motherHealthStatus: "chronicallySick", // Assuming 'chronicallySick' as the default value
-    motherHealthStatusOthers: "", // Initialize to an empty string
-    residentialStatus: "houseOwner", // Assuming 'houseOwner' as the default value
-    residentialStatusOthers: "", // Initialize to an empty string
-
-    // Family Situation and Employment
-    familySituationDetails: "",
-    financialSupportDetails: "",
-    familyEmploymentDetails: "",
-    // Educational Background / Present Education
-    previousEducationDetails: "",
-    previousInstitutionDetails: "",
-    previousMarksPercentage: 0, // Assuming 0 as the default value
-    presentEducationDetails: "",
-    presentInstitutionDetails: "",
-    educationalAspiration: "",
-    sustainabilityDetails: "",
-
-    // Information on Financial Support
-    eligibleForScholarship: "yes", // Assuming 'yes' as the default value
-    expectedScholarshipAmount: 0, // Assuming 0 as the default value
-    familyFinancialContribution: 0, // Assuming 0 as the default value
-    noFamilySupportReasons: "", // Initialize to an empty string
-
-    // Present Education/Training
-    presentStudy: "",
-    budgetDetails: "",
-    totalCostOfStudy: 0, // Assuming 0 as the default value
-    scholarshipExpected: 0, // Assuming 0 as the default value
-    beneficiaryContribution: 0, // Assuming 0 as the default value
-    totalScholarshipAndContribution: 0, // Assuming 0 as the default value
-    balanceAmountRequested: 0, // Assuming 0 as the default value
-
-    // Documents Needed
-    aadharCardCopyUrl: null, // Initialize to null or an empty string
-    feeQuotationOriginalUrl: null, // Initialize to null or an empty string
-    scholarshipProofUrl: null, // Initialize to null or an empty string
-    medicalConfirmationOriginalUrl: null, // Initialize to null or an empty string
-    casteCertificateCopyUrl: null, // Initialize to null or an empty string
-    affidavitProofOriginalUrl: null, // Initialize to null or an empty string
-    requestLetterOriginalUrl: null, // Initialize to null or an empty string
-    deathCertificateCopyUrl: null, // Initialize to null or an empty string
-    markListPreviousYearUrl: null, // Initialize to null or an empty string
-
-    // Signatures
-    beneficiaryAgreement: false,
-    beneficiaryAgreementDate: "",
-    projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
-
-    // Additional Fields
-    comment: "",
-  });
-
-  // Populate formData from req
-  const updatedFormData = {
+    ...imageMappings,
     provincialSuperiorName: "", // Assuming not present in req
     provincialSuperiorContact: "", // Assuming not present in req
     projectInchargeName: projectData.applicant.name,
@@ -153,8 +80,8 @@ const ReviewEI = () => {
     previousMarksPercentage: projectData.previousMarksPercentage || 0, // Assuming 0 as the default value
     presentEducationDetails: projectData.presentEducationDetails || "",
     presentInstitutionDetails: projectData.presentInstitutionDetails || "",
-    educationalAspiration: projectData.educationalAspiration || "",
-    sustainabilityDetails: projectData.sustainabilityDetails || "",
+    educationalAspiration: projectData.educationalAspiration || "", // not present 
+    sustainabilityDetails: projectData.sustainabilityDetails || "", // sustainability 
     eligibleForScholarship: projectData.eligibleForScholarship || "",
     expectedScholarshipAmount: projectData.expectedScholarshipAmount || 0, // Assuming 0 as the default value
     familyFinancialContribution: projectData.familyFinancialContribution || 0, // Assuming 0 as the default value
@@ -176,9 +103,9 @@ const ReviewEI = () => {
     provincialSuperiorAgreement: "", // Assuming not present in req
     provincialSuperiorAgreementDate: "", // Assuming not present in req
     comment: "", // Assuming not present in req
-  };
-
-  setFormData(updatedFormData);
+  });
+  console.log(formData);
+  // Populate formData from req
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -191,7 +118,7 @@ const ReviewEI = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('submit');
+    console.log("submit");
     // Add your form submission logic here
     try {
       const req = {
@@ -244,32 +171,6 @@ const ReviewEI = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Provincial Superior */}
-            <FormControl>
-              <FormLabel>Name of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                onChange={handleChange}
-                value={formData.provincialSuperiorName}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Provincial Superior */}
-            <FormControl>
-              <FormLabel>Contact of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                onChange={handleChange}
-                value={formData.provincialSuperiorContact}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
-
           <VStack align="start" spacing={4} mb={8}>
             {/* Name of Project Incharge */}
             <FormControl>
@@ -804,7 +705,8 @@ const ReviewEI = () => {
               </FormLabel>
               <Textarea
                 name="educationalAspiration"
-                onChange={handleChange}
+                readOnly
+                value={formData.educationalAspiration}
                 required
               />
             </FormControl>
@@ -818,7 +720,7 @@ const ReviewEI = () => {
               <Textarea
                 name="sustainabilityDetails"
                 onChange={handleChange}
-                value={formData.motherHealthStatusOthers}
+                value={formData.sustainabilityDetails}
                 readOnly
               />
             </FormControl>
@@ -990,7 +892,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.aadharCardUrl}
+                src={formData.aadharCardCopy}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1004,7 +906,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.feeQuotationUrl}
+                src={formData.feeQuotationOriginal}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1018,7 +920,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.scholarshipProofUrl}
+                src={formData.scholarshipProof}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1033,7 +935,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.medicalConfirmationUrl}
+                src={formData.medicalConfirmationOriginal}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1045,7 +947,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.casteCertificateUrl}
+                src={formData.casteCertificateCopy}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1071,7 +973,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.requestLetterUrl}
+                src={formData.requestLetterOriginal}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1085,7 +987,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.deathCertificateUrl}
+                src={formData.deathCertificateCopy}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1097,7 +999,7 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.markListPreviousYearUrl}
+                src={formData.markListPreviousYear}
                 alt="Dan Abramov"
               />
             </FormControl>
@@ -1148,17 +1050,6 @@ const ReviewEI = () => {
                 }
                 readOnly
               />
-            </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agree
-              </Checkbox>
             </FormControl>
           </VStack>
           <VStack align="start" spacing={4} mb={8}>

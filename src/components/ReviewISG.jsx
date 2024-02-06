@@ -21,70 +21,17 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export const ReviewISG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
-
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
-  const [formData, setFormData] = useState({
-    basicInformation: {
-      NAMEOFTHESOCIETY: "",
-      dATEOFSUBMISSION: "",
-      TITLEOFTHEPROJECT: "",
-      address: "",
-      provincialSuperior: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
-      projectInCharge: {
-        name: "",
-        mobile: "",
-        email: "",
-      },
-      overallProjectPeriod: "",
-      overallProjectBudget: "",
-      numberOfBeneficiaries: "",
-      residentialVillages: "",
-      selectionCriteriaAndProfile: "",
-      descriptionOfBeneficiary: "",
-      problemAnalysis: "",
-      solutionAnalysis: "",
-    },
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
-    },
-    sustainability: "",
-    monitoringProcess: "",
-    evaluationMethodology: "",
-    budgetDetails: [{ budget: "", cost: "" }],
-    signatures: {
-      projectCoordinatorAgreement: false,
-      projectCoordinatorAgreementDate: "",
-      projectInChargeAgreement: false,
-      projectInChargeAgreementDate: "",
-      provincialSuperiorAgreement: false,
-      provincialSuperiorAgreementDate: "",
-    },
-
-    // Additional Fields
-    comment: "",
-  });
 
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const formDataCopy = { ...formData }; // Create a copy of formData to avoid direct mutation
+  console.log(projectData);
+  const formDataCopy = {}; // Create a copy of formData to avoid direct mutation
 
   // Map basicInformation fields
   formDataCopy.basicInformation = {
@@ -103,11 +50,11 @@ export const ReviewISG = () => {
     problemAnalysis: projectData.problemAnalysis || "",
     solutionAnalysis: projectData.solutionAnalysis || "",
   };
-
   // Map logicalFramework fields
-  formDataCopy.logicalFramework.goal = projectData.goal || "";
-  formDataCopy.logicalFramework.objectives = projectData.objectives.map(
-    (objective) => ({
+  formDataCopy.logicalFramework = {
+    ...formDataCopy.logicalFramework,
+    goal: projectData.goal || "",
+    objectives: projectData.objectives.map((objective) => ({
       objective: objective.objective || "",
       results: objective.results || [""],
       activities: objective.activities.map((activity) => ({
@@ -115,36 +62,35 @@ export const ReviewISG = () => {
         timeframe: activity.timeframe || [false],
         verification: activity.verification || "",
       })),
-    })
-  );
+    })),
+  };
 
   // Map sustainability, monitoringProcess, evaluationMethodology fields
   formDataCopy.sustainability = projectData.sustainability || "";
   formDataCopy.monitoringProcess = projectData.monitoringProcess || "";
   formDataCopy.evaluationMethodology = projectData.evaluationMethodology || "";
+  formDataCopy.comment = "";
 
+  formDataCopy.signatures = {
+    projectInCharge: projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date || "",
+    provincialSuperiorAgreement: false,
+  };
+
+  const [formData, setFormData] = useState(formDataCopy);
+  console.log(formData);
   // Map budgetDetails fields
-  setBudgetData(
+  const [budgetData, setBudgetData] = useState(
     projectData.budgetData.map((item) => ({
       budget: item.budget || "",
       cost: item.cost || "",
     }))
   );
 
-  formDataCopy.signatures.projectInChargeAgreement =
-    projectData.project_in_charge_agree.agree || false;
-  formDataCopy.signatures.projectInChargeAgreementDate =
-    projectData.project_in_charge_agree.date || "";
-  formDataCopy.signatures.provincialSuperiorAgreement =
-    projectData.provincial_superior_agree.agree || false;
-  formDataCopy.signatures.provincialSuperiorAgreementDate =
-    projectData.provincial_superior_agree.date || "";
-
   // Additional Fields
-  formDataCopy.comment = projectData.comment || "";
 
   // Update the state with the modified formDataCopy
-  setFormData(formDataCopy);
 
   const handleChange = (e, index, subIndex) => {
     const { name, value } = e.target;
@@ -215,12 +161,18 @@ export const ReviewISG = () => {
         projectID: projectData._id,
         comment_box_provincial_superior: formData.comment,
         provincial_superior_agree: {
-          agree: formData.provincialSuperiorAgreement,
+          agree: formData.signatures.provincialSuperiorAgreement,
         },
       };
       const res = await authAxios.put("/projects/editreviewerISG/", req);
-      if (res.data.success) setIsSubmitted(true);
-      else {
+      if (res.data.success) {
+        showToast({
+          title: " submitted the reviewed doc",
+          status: "success",
+          duration: 5000,
+        });
+        setIsSubmitted(true);
+      } else {
         showToast({
           title: "Error submitting the reviewed doc",
           status: "error",
@@ -334,6 +286,7 @@ export const ReviewISG = () => {
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.NAMEOFTHESOCIETY}
                 name="basicInformation.NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 readOnly
@@ -344,6 +297,7 @@ export const ReviewISG = () => {
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
+                value={formData.basicInformation.dATEOFSUBMISSION}
                 name="basicInformation.dATEOFSUBMISSION"
                 onChange={handleChange}
                 readOnly
@@ -354,6 +308,7 @@ export const ReviewISG = () => {
               <FormLabel>TITLE OF THE PROJECT</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.TITLEOFTHEPROJECT}
                 name="basicInformation.TITLEOFTHEPROJECT"
                 onChange={handleChange}
                 readOnly
@@ -364,42 +319,19 @@ export const ReviewISG = () => {
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.address}
                 name="basicInformation.address"
                 onChange={handleChange}
                 readOnly
               />
             </FormControl>
             {/* Provincial Superior */}
-            <FormControl>
-              <FormLabel>Provincial Superior Name</FormLabel>
-              <Input
-                type="text"
-                name="basicInformation.provincialSuperior.name"
-                onChange={handleChange}
-                readOnly
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Provincial Superior Cell Number</FormLabel>
-              <Input
-                type="tel"
-                name="basicInformation.provincialSuperior.cellNumber"
-                onChange={handleChange}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Provincial Superior Email</FormLabel>
-              <Input
-                type="email"
-                name="basicInformation.provincialSuperior.email"
-                onChange={handleChange}
-              />
-            </FormControl>
             {/* Project In-Charge */}
             <FormControl>
               <FormLabel>Project In-Charge Name</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.projectInCharge.name}
                 name="basicInformation.projectInCharge.name"
                 onChange={handleChange}
                 readOnly
@@ -409,6 +341,7 @@ export const ReviewISG = () => {
               <FormLabel>Project In-Charge Cell Number</FormLabel>
               <Input
                 type="tel"
+                value={formData.basicInformation.projectInCharge.mobile}
                 name="basicInformation.projectInCharge.cellNumber"
                 onChange={handleChange}
                 readOnly
@@ -418,6 +351,7 @@ export const ReviewISG = () => {
               <FormLabel>Project In-Charge Email</FormLabel>
               <Input
                 type="email"
+                value={formData.basicInformation.projectInCharge.email}
                 name="basicInformation.projectInCharge.email"
                 onChange={handleChange}
                 readOnly
@@ -428,6 +362,7 @@ export const ReviewISG = () => {
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
+                value={formData.basicInformation.overallProjectPeriod}
                 name="basicInformation.overallProjectPeriod"
                 onChange={handleChange}
                 readOnly
@@ -438,6 +373,7 @@ export const ReviewISG = () => {
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
+                value={formData.basicInformation.overallProjectBudget}
                 name="basicInformation.overallProjectBudget"
                 onChange={handleChange}
                 readOnly
@@ -449,6 +385,7 @@ export const ReviewISG = () => {
               <FormLabel>Number of Beneficiaries</FormLabel>
               <Input
                 type="number"
+                value={formData.basicInformation.numberOfBeneficiaries}
                 name="basicInformation.numberOfBeneficiaries"
                 onChange={handleChange}
                 readOnly
@@ -459,6 +396,7 @@ export const ReviewISG = () => {
               <FormLabel>Residential Villages of the Beneficiaries</FormLabel>
               <Textarea
                 name="basicInformation.residentialVillages"
+                value={formData.basicInformation.residentialVillages}
                 onChange={handleChange}
                 readOnly
               />
@@ -470,6 +408,7 @@ export const ReviewISG = () => {
               </FormLabel>
               <Textarea
                 name="basicInformation.selectionCriteriaAndProfile"
+                value={formData.basicInformation.selectionCriteriaAndProfile}
                 onChange={handleChange}
                 readOnly
               />
@@ -483,6 +422,7 @@ export const ReviewISG = () => {
               </FormLabel>
               <Textarea
                 name="basicInformation.descriptionOfBeneficiary"
+                value={formData.basicInformation.DescriptionOfBeneficiary}
                 onChange={handleChange}
                 readOnly
               />
@@ -494,6 +434,7 @@ export const ReviewISG = () => {
               </FormLabel>
               <Textarea
                 name="basicInformation.problemAnalysis"
+                value={formData.basicInformation.problemAnalysis}
                 onChange={handleChange}
                 readOnly
               />
@@ -503,6 +444,7 @@ export const ReviewISG = () => {
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="basicInformation.solutionAnalysis"
+                value={formData.basicInformation.solutionAnalysis}
                 onChange={handleChange}
                 readOnly
               />
@@ -516,6 +458,7 @@ export const ReviewISG = () => {
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="logicalFramework.goal"
+                value={formData.logicalFramework.goal}
                 onChange={handleChange}
                 readOnly
               />
@@ -642,6 +585,7 @@ export const ReviewISG = () => {
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
+                value={formData.sustainability}
                 onChange={handleChange}
                 readOnly
               />
@@ -653,6 +597,7 @@ export const ReviewISG = () => {
               </FormLabel>
               <Textarea
                 name="monitoringProcess"
+                value={formData.monitoringProcess}
                 onChange={handleChange}
                 readOnly
               />
@@ -662,6 +607,7 @@ export const ReviewISG = () => {
               <FormLabel>Methodology of Evaluation</FormLabel>
               <Textarea
                 name="evaluationMethodology"
+                value={formData.evaluationMethodology}
                 onChange={handleChange}
                 readOnly
               />
@@ -672,13 +618,12 @@ export const ReviewISG = () => {
             <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
-
-            {/* Project-In-Charge agreement */}
+            Project-In-Charge agreement
             <FormControl>
               <Checkbox
                 name="signatures.projectInChargeAgreement"
                 onChange={handleChange}
-                value={formData.signatures.projectInChargeAgreement}
+                isChecked={formData.signatures.projectInCharge}
                 readOnly
                 size="lg"
               >
@@ -686,23 +631,16 @@ export const ReviewISG = () => {
               </Checkbox>
               <Input
                 type="date"
-                value={formData.projectInChargeAgreementDate}
+                value={formData.signatures.projectInChargeAgreementDate.substring(
+                  0,
+                  10
+                )}
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
                 readOnly
               />
             </FormControl>
-
             {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="signatures.provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agree
-              </Checkbox>
-            </FormControl>
           </VStack>
           <VStack align="start" spacing={4} mb={8}>
             {/* Comment */}
@@ -711,17 +649,39 @@ export const ReviewISG = () => {
               <Input
                 type="text"
                 name="comment"
-                onChange={handleChange}
+                value={formData.comment}
+                onChange={(e) => {
+                  setFormData((prevData) => {
+                    return {
+                      ...prevData,
+                      comment: e.target.value,
+                    };
+                  });
+                }}
                 required
               />
             </FormControl>
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" mx={3} type="submit">
+          <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => {
+              formData.signatures.provincialSuperiorAgreement = true;
+            }}
+          >
             Submit
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
+          <Button
+            colorScheme="red"
+            mx={3}
+            type="submit"
+            onClick={() => {
+              formData.signatures.provincialSuperiorAgreement = false;
+            }}
+          >
             Decline
           </Button>
         </form>

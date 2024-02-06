@@ -46,7 +46,7 @@ const EducationIndividualOngoing = () => {
     } catch (error) {
       showToast({
         title: "Error uploading image to cloudinary",
-        description: error,
+        description: 'error',
         duration: 5000,
       });
     }

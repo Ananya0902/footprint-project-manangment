@@ -19,24 +19,24 @@ import {
   Td,
   Image,
   ChakraProvider,
+  useToast,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import authAxios from "../AuthAxios";
 
-const DisplayForm = () => {
+const ReviewSocialIndividual = () => {
+  const showToast = useToast();
   const projectData = JSON.parse(
     decodeURIComponent(useParams()?.project ?? "{}")
   );
+  console.log(projectData);
   // Define formData object
   const [formData, setFormData] = useState({
-    nameofSociety: projectData.nameOfSociety,
+    photographFile: projectData.photograph_benificary,
     nameOfSelfEmployment: projectData.nameOfSelfEmployment,
-    dateOfSubmission: projectData.dateOfSubmission,
-    provincialSuperiorName: projectData.nameOfProvincialSuperior,
-    provincialSuperiorContact: projectData.contactOfProvincialSuperior,
-    projectInchargeName: projectData.nameOfProjectIncharge,
-    projectInchargeContact: projectData.contactOfProjectIncharge,
-    projectInchargeEmail: projectData.emailOfProjectIncharge,
+    projectInchargeName: projectData.applicant.name,
+    projectInchargeContact: projectData.applicant.mobile,
+    projectInchargeEmail: projectData.applicant.email,
     beneficiaryName: projectData.name,
     beneficiaryContact: projectData.mobile,
     beneficiaryEmail: projectData.email,
@@ -44,6 +44,10 @@ const DisplayForm = () => {
     aadharCardNo: projectData.aadhar_no,
     gender: projectData.gender,
     dob: projectData.DOB,
+    projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
+    projectInChargeAgreement: projectData.project_in_charge_agree.agree,
+    benificiaryAgree: projectData.benificary_agree.agree,
+    benificiaryAgreeDate: projectData.benificary_agree.date,
     maritalStatus: projectData.married,
     spouseName: projectData.spouse_name,
     child: projectData.no_of_children,
@@ -87,7 +91,8 @@ const DisplayForm = () => {
     }, 0);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const res = await authAxios.put("/projects/editreviewerSI/", {
         provincial_superior_agree: {
@@ -96,7 +101,28 @@ const DisplayForm = () => {
         projectID: projectData._id,
         comment_box_provincial_superior: formData.provincialSuperiorComment,
       });
-    } catch (error) {}
+      if (res.data.success) {
+        showToast({
+          title: "Success",
+          status: "success",
+          duration: 5000,
+        });
+      } else {
+        showToast({
+          title: "Error",
+          status: "error",
+          duration: 5000,
+        });
+      }
+      console.log(res.data);
+    } catch (error) {
+      showToast({
+        title: "Error",
+        status: "error",
+        duration: 5000,
+      });
+      console.log(error);
+    }
   };
 
   return (
@@ -116,10 +142,6 @@ const DisplayForm = () => {
           {/* All the read-only fields */}
           <VStack align="start" spacing={4} mb={8}>
             <FormControl isReadOnly>
-              <FormLabel>Name of society</FormLabel>
-              <Input type="text" value={formData.nameofSociety} readOnly />
-            </FormControl>
-            <FormControl isReadOnly>
               <FormLabel>Name of self employment</FormLabel>
               <Input
                 type="text"
@@ -127,64 +149,40 @@ const DisplayForm = () => {
                 readOnly
               />
             </FormControl>
+          </VStack>
+
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Name of Project Incharge */}
             <FormControl isReadOnly>
-              <FormLabel>Date of Submission</FormLabel>
-              <Input type="date" value={formData.dateOfSubmission} readOnly />
+              <FormLabel>Name of Project Incharge</FormLabel>
+              <Input
+                type="text"
+                value={formData.projectInchargeName}
+                readOnly
+              />
             </FormControl>
-            <VStack align="start" spacing={4} mb={8}>
-              {/* Name of Provincial Superior */}
-              <FormControl isReadOnly>
-                <FormLabel>Name of Provincial Superior</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.provincialSuperiorName}
-                  readOnly
-                />
-              </FormControl>
 
-              {/* Contact of Provincial Superior */}
-              <FormControl isReadOnly>
-                <FormLabel>Contact of Provincial Superior</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.provincialSuperiorContact}
-                  readOnly
-                />
-              </FormControl>
-            </VStack>
+            {/* Contact of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Contact of Project Incharge</FormLabel>
+              <Input
+                type="text"
+                value={formData.projectInchargeContact}
+                readOnly
+              />
+            </FormControl>
 
-            <VStack align="start" spacing={4} mb={8}>
-              {/* Name of Project Incharge */}
-              <FormControl isReadOnly>
-                <FormLabel>Name of Project Incharge</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.projectInchargeName}
-                  readOnly
-                />
-              </FormControl>
-
-              {/* Contact of Project Incharge */}
-              <FormControl isReadOnly>
-                <FormLabel>Contact of Project Incharge</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.projectInchargeContact}
-                  readOnly
-                />
-              </FormControl>
-
-              {/* Email of Project Incharge */}
-              <FormControl isReadOnly>
-                <FormLabel>Email of Project Incharge</FormLabel>
-                <Input
-                  type="email"
-                  value={formData.projectInchargeEmail}
-                  readOnly
-                />
-              </FormControl>
-            </VStack>
-
+            {/* Email of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Email of Project Incharge</FormLabel>
+              <Input
+                type="email"
+                value={formData.projectInchargeEmail}
+                readOnly
+              />
+            </FormControl>
+          </VStack>
+          <VStack>
             {/* Personal Information of the Beneficiary */}
             <Heading as="h1" size="xl" mb={6}>
               Personal Information of the Beneficiary
@@ -238,12 +236,6 @@ const DisplayForm = () => {
             <FormControl isReadOnly>
               <FormLabel>Date of Birth</FormLabel>
               <Input type="date" value={formData.dob} readOnly />
-            </FormControl>
-
-            {/* Occupation */}
-            <FormControl isReadOnly>
-              <FormLabel>Occupation</FormLabel>
-              <Input type="text" value={formData.fatherName} readOnly />
             </FormControl>
 
             {/* Marital Status */}
@@ -363,7 +355,7 @@ const DisplayForm = () => {
           <Flex justify="center" align="center" wrap="wrap">
             {formData.documents.map((doc, index) => (
               <Box key={index} w="50%">
-                <Image src={doc.url} alt={doc.name} />
+                <Image src={doc.file} alt={doc.name} />
               </Box>
             ))}
           </Flex>
@@ -397,25 +389,26 @@ const DisplayForm = () => {
                 <Input
                   type="date"
                   name="beneficiaryAgreementDate"
-                  value={formData.beneficiaryAgreementDate}
-                  isReadOnly
+                  value={formData.benificiaryAgreeDate.substring(0,10)}
+                  readOnly
                 />
               </FormControl>
               {/* Project-In-Charge agreement */}
               <FormControl isRequired>
-                <Checkbox name="projectInChargeAgreement" isChecked isReadOnly>
+                <Checkbox name="projectInChargeAgreement" isChecked readOnly>
                   The Project-In-Charge agree
                 </Checkbox>
                 <Input
                   type="date"
                   name="projectInChargeAgreementDate"
-                  value={formData.projectInChargeAgreementDate}
-                  isReadOnly
+                  value={formData.projectInChargeAgreementDate.substring(0,10)}
+                  readOnly
                 />
               </FormControl>
-              Provincial Superior Comment
               <FormControl isRequired>
+                Provincial Superior Comment
                 <Textarea
+                required
                   type="text"
                   onChange={(e) => {
                     setFormData((prevData) => {
@@ -428,21 +421,26 @@ const DisplayForm = () => {
                 />
               </FormControl>
             </VStack>
-            {/* Submit Button */}
-            <Button
-              colorScheme="blue"
-              mx="3"
-              type="submit"
-              onClick={() => (formData.provincialSuperiorAgree = true)}
-            >
-              Accept
-            </Button>
-            <Button colorScheme="red" mx="3" type="submit" flex={1}>
-              Revert
-            </Button>
           </VStack>
 
           {/* Submit Button */}
+          <Button
+            colorScheme="blue"
+            mx="3"
+            type="submit"
+            onClick={() => (formData.provincialSuperiorAgree = true)}
+          >
+            Accept
+          </Button>
+          <Button
+            colorScheme="red"
+            mx="3"
+            type="submit"
+            flex={1}
+            onClick={() => (formData.provincialSuperiorAgree = false)}
+          >
+            Revert
+          </Button>
           {/* The submit button can be hidden or disabled for read-only view */}
         </form>
       </Box>
@@ -450,4 +448,4 @@ const DisplayForm = () => {
   );
 };
 
-export default DisplayForm;
+export default ReviewSocialIndividual;

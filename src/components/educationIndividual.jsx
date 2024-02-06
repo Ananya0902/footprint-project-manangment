@@ -40,9 +40,9 @@ const EducationIndividual = () => {
   };
 
   const handleSubmit = async (e) => {
-    setIsLoading(true);
     const handleImageUpload = async (file) => {
       try {
+        console.log("try");
         const form = new FormData();
         form.append("file", file);
         form.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
@@ -52,7 +52,7 @@ const EducationIndividual = () => {
       } catch (error) {
         showToast({
           title: "Error uploading image to cloudinary",
-          description: error,
+          status: "error",
           duration: 5000,
         });
       }
@@ -62,42 +62,56 @@ const EducationIndividual = () => {
       const image = {};
 
       try {
+        console.log("images");
+        image.photograph_benificary = await handleImageUpload(
+          e.target.photographUrl.files[0]
+        );
+
         image.aadhar_img = await handleImageUpload(
           e.target.aadharCardCopy.files[0]
         );
+        console.log("image1");
         image.fee_quotation_from_the_institution_img = await handleImageUpload(
           e.target.feeQuotationOriginal.files[0]
         );
+        console.log("image2");
         image.proof_of_scholarship_received_from_government_img =
           await handleImageUpload(e.target.scholarshipProof.files[0]);
+        console.log("image3");
         image.medical_confirmation_img = e.target.medicalConfirmationOriginal
           .files[0]
           ? await handleImageUpload(
               e.target.medicalConfirmationOriginal.files[0]
             )
           : "";
+        console.log("image4");
         image.caste_certificate_img = await handleImageUpload(
           e.target.casteCertificateCopy.files[0]
         );
+        console.log("image5");
         image.affidavit_proof_img = e.target.affidavitProofOriginal.files[0]
           ? await handleImageUpload(e.target.affidavitProofOriginal.files[0])
           : "";
         image.request_letter_img = await handleImageUpload(
           e.target.requestLetterOriginal.files[0]
         );
+        console.log("image6");
         image.death_certificate_img = e.target.deathCertificateCopy.files[0]
           ? await handleImageUpload(e.target.deathCertificateCopy.files[0])
           : "";
+        console.log("image7");
         image.mark_list_of_previous_year = await handleImageUpload(
           e.target.markListPreviousYear.files[0]
         );
+        console.log("image8");
 
         // At this point, the image object contains URLs for all the images
         return image;
       } catch (error) {
+        console.log(error);
         showToast({
           title: "Error uploading image to cloudinary",
-          description: error,
+          description: "error",
           duration: 5000,
         });
         return {}; // Or handle the error as needed in your application
@@ -105,12 +119,15 @@ const EducationIndividual = () => {
     };
     e.preventDefault();
 
-    const image = await convertImagesToUrls();
+    setIsLoading(true);
+    
+    try {
+      const image = await convertImagesToUrls(e);
+      console.log(image);
 
     const req = {
-      photograph_benificary: e.target.photographUrl.value,
       name: e.target.beneficiaryName.value,
-      mobile: parseInt(e.target.beneficiaryContact.value),
+      mobile: e.target.beneficiaryContact.value,
       email: e.target.beneficiaryEmail.value,
       address: e.target.beneficiaryAddress.value,
       aadhar_no: parseInt(e.target.aadharCardNo.value),
@@ -137,7 +154,7 @@ const EducationIndividual = () => {
       health_status_of_mother_others: e.target.motherHealthStatusOthers
         ? e.target.motherHealthStatusOthers.value
         : "",
-      residential_status: e.target.residentialStatus.value,
+      residential_status: e.target.residentialStatus?.value ?? '',
       residential_status_others: e.target.residentialStatusOthers
         ? e.target.residentialStatusOthers.value
         : "",
@@ -170,18 +187,17 @@ const EducationIndividual = () => {
       ),
       balanceAmountRequested: parseInt(e.target.balanceAmountRequested.value),
       benificary_agree: {
-        agree: e.target.beneficiaryAgreement.checked,
-        date: e.target.beneficiaryAgreementDate.value,
+        agree: true,
       },
       project_in_charge_agree: {
-        agree: e.target.projectInChargeAgreement.checked,
-        date: e.target.projectInChargeAgreementDate.value,
+        agree: true,
       },
       ...image,
     };
 
-    try {
-      const res = await authAxios.post("/createEI", req);
+    console.log(req);
+
+      const res = await authAxios.post("projects/createEI", req);
       console.log(res.data);
       setIsLoading(false);
       if (res.data.success) {
@@ -199,6 +215,7 @@ const EducationIndividual = () => {
       }
     } catch (error) {
       setIsLoading(false);
+      console.log(error);
       showToast({
         title: "Unsuccessful form submission",
         duration: 5000,
@@ -211,23 +228,29 @@ const EducationIndividual = () => {
 
   return (
     <ChakraProvider>
-       {isLoading && <>
-      <Modal isOpen={true} onClose={onClose}>
-        <ModalOverlay />
-    
-        <ModalContent>
-        <ModalBody display="flex" alignItems="center" justifyContent="center">
-          {/* Use CircularProgress directly as the content */}
-          <CircularProgress
-            isIndeterminate
-            color="green.400"
-            thickness="4px"
-            size="60px"
-          />
-        </ModalBody>
-      </ModalContent>
-      </Modal>
-      </>}
+      {isLoading && (
+        <>
+          <Modal isOpen={true} onClose={onClose}>
+            <ModalOverlay />
+
+            <ModalContent>
+              <ModalBody
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {/* Use CircularProgress directly as the content */}
+                <CircularProgress
+                  isIndeterminate
+                  color="green.400"
+                  thickness="4px"
+                  size="60px"
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </>
+      )}
       <Box p={4}>
         <Heading
           as="h1"
@@ -558,9 +581,9 @@ const EducationIndividual = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                <option value="died">Died</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Died">Died</option>
               </Select>
             </FormControl>
 
@@ -572,9 +595,9 @@ const EducationIndividual = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                <option value="died">Died</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Died">Died</option>
               </Select>
             </FormControl>
 
@@ -586,14 +609,14 @@ const EducationIndividual = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="chronicallySick">Chronically Sick</option>
-                <option value="hivPositive">HIV/AIDS positive</option>
-                <option value="disabled">Disabled</option>
-                <option value="alcoholic">Alcoholic</option>
-                <option value="others">Others</option>
+                <option value="Chronically Sick">Chronically Sick</option>
+                <option value="HIV/AIDS positive">HIV/AIDS positive</option>
+                <option value="Disabled">Disabled</option>
+                <option value="Alcoholic">Alcoholic</option>
+                <option value="Others">Others</option>
               </Select>
               {/* Conditional input for 'Others' */}
-              {formData.fatherHealthStatus === "others" && (
+              {formData.fatherHealthStatus === "Others" && (
                 <Input
                   type="text"
                   name="fatherHealthStatusOthers"
@@ -612,11 +635,11 @@ const EducationIndividual = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="chronicallySick">Chronically Sick</option>
-                <option value="hivPositive">HIV/AIDS positive</option>
-                <option value="disabled">Disabled</option>
-                <option value="alcoholic">Alcoholic</option>
-                <option value="others">Others</option>
+                <option value="Chronically Sick">Chronically Sick</option>
+                <option value="HIV/AIDS positive">HIV/AIDS positive</option>
+                <option value="Disabled">Disabled</option>
+                <option value="Alcoholic">Alcoholic</option>
+                <option value="Others">Others</option>
               </Select>
               {/* Conditional input for 'Others' */}
               {formData.motherHealthStatus === "others" && (
@@ -633,7 +656,11 @@ const EducationIndividual = () => {
             {/* Residential Status */}
             <FormControl isRequired>
               <FormLabel>Residential Status</FormLabel>
-              <Select name="residentialStatus" onChange={handleChange} required>
+              <Select
+                name="residentialStatus"
+                onChange={handleChange}
+                required
+              >
                 <option value="houseOwner">House Owner</option>
                 <option value="landOwner">Land Owner</option>
                 <option value="rentedHouse">Rented House</option>
@@ -797,8 +824,8 @@ const EducationIndividual = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
               </Select>
             </FormControl>
 
@@ -809,8 +836,8 @@ const EducationIndividual = () => {
                 type="number"
                 name="expectedScholarshipAmount"
                 onChange={handleChange}
-                required={formData.eligibleForScholarship === "yes"}
-                disabled={formData.eligibleForScholarship === "no"}
+                required={formData.eligibleForScholarship === "Yes"}
+                disabled={formData.eligibleForScholarship === "No"}
               />
             </FormControl>
 
@@ -825,7 +852,7 @@ const EducationIndividual = () => {
               />
             </FormControl>
 
-            {/* If no support from family, mention the reasons? */}
+            {/* If No support from family, mention the reasons? */}
             <FormControl isRequired>
               <FormLabel>
                 If no support from the family, mention the reasons?
@@ -1041,92 +1068,6 @@ const EducationIndividual = () => {
             <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
-
-            {/* Beneficiary / Family member agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="beneficiaryAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Beneficiary / Family member agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="beneficiaryAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Remarks */}
-            <FormControl>
-              <FormLabel>Remarks (Optional)</FormLabel>
-              <Textarea name="remarks" onChange={handleChange} />
-            </FormControl>
           </VStack>
 
           {/* Submit Button */}

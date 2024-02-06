@@ -25,14 +25,14 @@ import authAxios from "../AuthAxios";
 export const InstitutionalSkillTrainingForm = () => {
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+  const [budgetData, setBudgetData] = useState([{ budget: 0, cost: 0 }]);
   const [formData, setFormData] = useState({
     basicInformation: {
       NAMEOFTHESOCIETY: "",
       dATEOFSUBMISSION: "",
       TITLEOFTHEPROJECT: "",
       address: "",
-      
+
       overallProjectPeriod: "",
       overallProjectBudget: "",
       numberOfBeneficiaries: "",
@@ -55,7 +55,6 @@ export const InstitutionalSkillTrainingForm = () => {
     sustainability: "",
     monitoringProcess: "",
     evaluationMethodology: "",
-    budgetDetails: [{ budget: "", cost: "" }],
     signatures: {
       projectCoordinatorAgreement: false,
       projectCoordinatorAgreementDate: "",
@@ -71,6 +70,8 @@ export const InstitutionalSkillTrainingForm = () => {
   const handleChange = (e, index, subIndex) => {
     const { name, value } = e.target;
     const updatedData = { ...formData };
+    console.log(name, value);
+    console.log(formData);
     if (name.includes("signatures")) {
       updatedData.signatures[name.split(".")[1]] = value;
     } else if (
@@ -79,9 +80,6 @@ export const InstitutionalSkillTrainingForm = () => {
     ) {
       const [field, role] = name.split(".");
       updatedData.basicInformation[role][field] = value;
-    } else if (name.includes("budgetDetails")) {
-      const [field, dataIndex] = name.split(".");
-      updatedData.budgetDetails[dataIndex][field] = value;
     } else if (name.includes("objective")) {
       updatedData.logicalFramework.objectives[index].objective = value;
     } else if (name.includes("result")) {
@@ -91,13 +89,16 @@ export const InstitutionalSkillTrainingForm = () => {
       updatedData.logicalFramework.objectives[index].activities[subIndex][
         "activity"
       ] = value;
+    } else if (name.includes("logicalFramework")) {
+      updatedData.logicalFramework[name.split(".")[1]] = value;
     } else if (name.includes("verification")) {
-      console.log(e.target.name, e.target.value);
       updatedData.logicalFramework.objectives[index].activities[subIndex][
         "verification"
       ] = value;
+    } else if (name.includes("basicInformation")) {
+      updatedData.basicInformation[name.split(".")[1]] = value;
     } else {
-      updatedData.basicInformation[name] = value;
+      updatedData[name] = value;
     }
 
     setFormData(updatedData);
@@ -132,68 +133,47 @@ export const InstitutionalSkillTrainingForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("inside handle submit");
-    const req = {
-      basicInformation: {
+
+    try {
+      const req = {
         NameOfSociety: formData.basicInformation.NAMEOFTHESOCIETY,
         DateOfSubmission: formData.basicInformation.dATEOFSUBMISSION,
         TitleOfProject: formData.basicInformation.TITLEOFTHEPROJECT,
         address: formData.basicInformation.address,
-        provincialSuperior: {
-          name: formData.basicInformation.provincialSuperior.name,
-          cellNumber: formData.basicInformation.provincialSuperior.cellNumber,
-          email: formData.basicInformation.provincialSuperior.email,
-        },
-        projectInCharge: {
-          name: formData.basicInformation.projectInCharge.name,
-          cellNumber: formData.basicInformation.projectInCharge.cellNumber,
-          email: formData.basicInformation.projectInCharge.email,
-        },
-        overallProjectPeriod: formData.basicInformation.overallProjectPeriod,
-        overallProjectBudget: formData.basicInformation.overallProjectBudget,
-        numberOfBeneficiaries: formData.basicInformation.numberOfBeneficiaries,
-        residentialVillages: formData.basicInformation.residentialVillages,
-        selectionCriteriaAndProfile:
+        OverallProjectPeriod: parseInt(
+          formData.basicInformation.overallProjectPeriod
+        ),
+        OverallProjectBudget: parseInt(
+          formData.basicInformation.overallProjectBudget
+        ),
+        NumberOfBeneficiaries: parseInt(
+          formData.basicInformation.numberOfBeneficiaries
+        ),
+        ResidentialVillages: formData.basicInformation.residentialVillages,
+        SelectionCriteriaAndProfile:
           formData.basicInformation.selectionCriteriaAndProfile,
-        descriptionOfBeneficiary:
+        DescriptionOfBeneficiary:
           formData.basicInformation.descriptionOfBeneficiary,
         problemAnalysis: formData.basicInformation.problemAnalysis,
         solutionAnalysis: formData.basicInformation.solutionAnalysis,
-      },
-      logicalFramework: {
         goal: formData.logicalFramework.goal,
         objectives: formData.logicalFramework.objectives.map((objective) => ({
           objective: objective.objective,
           results: objective.results,
-          activities: objective.activities.map((activity) => ({
-            activity: activity.activity,
-            timeframe: activity.timeframe,
-            verification: activity.verification,
-          })),
+          activities: objective.activities,
         })),
-      },
-      sustainability: formData.sustainability,
-      monitoringProcess: formData.monitoringProcess,
-      evaluationMethodology: formData.evaluationMethodology,
-      budgetDetails: budgetData.map((item) => ({
-        budget: item.budget,
-        cost: item.cost,
-      })),
-      signatures: {
-        projectCoordinatorAgreement:
-          formData.signatures.projectCoordinatorAgreement,
-        projectCoordinatorAgreementDate:
-          formData.signatures.projectCoordinatorAgreementDate,
-        projectInChargeAgreement: formData.signatures.projectInChargeAgreement,
-        projectInChargeAgreementDate:
-          formData.signatures.projectInChargeAgreementDate,
-        provincialSuperiorAgreement:
-          formData.signatures.provincialSuperiorAgreement,
-        provincialSuperiorAgreementDate:
-          formData.signatures.provincialSuperiorAgreementDate,
-      },
-    };
-    console.log(req);
-    try {
+        sustainability: formData.sustainability,
+        monitoringProcess: formData.monitoringProcess,
+        evaluationMethodology: formData.evaluationMethodology,
+        budgetData: budgetData.map((budgetDetail) => ({
+          budget: parseInt(budgetDetail.budget),
+          cost: parseInt(budgetDetail.cost),
+        })),
+        project_in_charge_agree: {
+          agree: formData.signatures.projectInChargeAgreement,
+        },
+      };
+      // Now you can use this requestObject for validation or further processing
       setIsLoading(true);
       const res = await authAxios.post("/projects/createISG", req);
       console.log(res);
@@ -231,6 +211,7 @@ export const InstitutionalSkillTrainingForm = () => {
   const BudgetTable = () => {
     // Function to handle changes in budget data
     const handleBudgetChange = (index, field, value) => {
+      console.log(budgetData);
       const newData = [...budgetData];
       newData[index][field] = value;
       setBudgetData(newData);
@@ -238,7 +219,7 @@ export const InstitutionalSkillTrainingForm = () => {
 
     // Function to add a new row for budget details
     const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: "", cost: "" }]);
+      setBudgetData([...budgetData, { budget: 0, cost: 0 }]);
     };
 
     // Function to calculate the total amount
@@ -267,7 +248,7 @@ export const InstitutionalSkillTrainingForm = () => {
               <Tr key={index}>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     value={row.budget}
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
@@ -336,7 +317,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.dATEOFSUBMISSION"
                 onChange={handleChange}
                 value={formData.basicInformation.dATEOFSUBMISSION}
-
                 required
               />
             </FormControl>
@@ -348,7 +328,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.TITLEOFTHEPROJECT"
                 onChange={handleChange}
                 value={formData.basicInformation.TITLEOFTHEPROJECT}
-
                 required
               />
             </FormControl>
@@ -360,11 +339,10 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.address"
                 onChange={handleChange}
                 value={formData.basicInformation.address}
-
                 required
               />
             </FormControl>
-          
+
             {/* Overall Project Period */}
             <FormControl isRequired>
               <FormLabel>Overall Project Period (in months)</FormLabel>
@@ -373,7 +351,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.overallProjectPeriod"
                 onChange={handleChange}
                 value={formData.basicInformation.overallProjectPeriod}
-
                 required
               />
             </FormControl>
@@ -385,7 +362,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.overallProjectBudget"
                 onChange={handleChange}
                 value={formData.basicInformation.overallProjectBudget}
-
                 required
               />
             </FormControl>
@@ -398,7 +374,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.numberOfBeneficiaries"
                 onChange={handleChange}
                 value={formData.basicInformation.numberOfBeneficiaries}
-
                 required
               />
             </FormControl>
@@ -409,7 +384,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.residentialVillages"
                 onChange={handleChange}
                 value={formData.basicInformation.residentialVillages}
-
                 required
               />
             </FormControl>
@@ -422,7 +396,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.selectionCriteriaAndProfile"
                 onChange={handleChange}
                 value={formData.basicInformation.selectionCriteriaAndProfile}
-
                 required
               />
             </FormControl>
@@ -437,7 +410,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.descriptionOfBeneficiary"
                 onChange={handleChange}
                 value={formData.basicInformation.descriptionOfBeneficiary}
-
                 required
               />
             </FormControl>
@@ -450,7 +422,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.problemAnalysis"
                 onChange={handleChange}
                 value={formData.basicInformation.problemAnalysis}
-
                 required
               />
             </FormControl>
@@ -461,7 +432,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="basicInformation.solutionAnalysis"
                 onChange={handleChange}
                 value={formData.basicInformation.solutionAnalysis}
-
                 required
               />
             </FormControl>
@@ -601,7 +571,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="sustainability"
                 onChange={handleChange}
                 value={formData.sustainability}
-
                 required
               />
             </FormControl>
@@ -614,7 +583,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="monitoringProcess"
                 onChange={handleChange}
                 value={formData.monitoringProcess}
-
                 required
               />
             </FormControl>
@@ -625,7 +593,6 @@ export const InstitutionalSkillTrainingForm = () => {
                 name="evaluationMethodology"
                 onChange={handleChange}
                 value={formData.evaluationMethodology}
-
                 required
               />
             </FormControl>

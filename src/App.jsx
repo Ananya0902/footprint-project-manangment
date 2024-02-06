@@ -84,6 +84,7 @@ import ViewDPLG from "./components/ViewDPLG";
 import ViewHIV from "./components/ViewHIV";
 import ViewISG from "./components/ViewISG";
 import ViewWHCG from "./components/ViewWHCG";
+import ReviewSocialIndividual from "./components/ReviewSocialIndividual";
 
 
 const PrivateRoute = ({ path, element }) => {
@@ -141,7 +142,7 @@ const App = () => {
           <Route path="/QuaterlyReportDevelopment" element={<QuaterlyReportDevelopment />} />
           <Route path="/ReviewHOI/:project" element={<ReviewHIO />} />
           <Route path="/ReviewEOI/:project" element={<ReviewEIO/>} />
-          {/* <Route path="/ReviewSIO" element={<ReviewSIO/>} /> */}
+          <Route path="/ReviewSI" element={<ReviewSocialIndividual/>} />
           <Route path="/ApproveHOI/:project" element={<ApproveHIO />} />
           <Route path="/ApproveEOI/:project" element={<ApproveEIO />} />
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
@@ -161,7 +162,7 @@ const App = () => {
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
 
           <Route path='/ReviewWHFC/:project' element={<ReviewWelfareHomeForChildren/>} />
-                    
+          <Route path="/ReviewSI/:project" element={<ReviewSocialIndividual/>}/>
           <Route path='/ReviewEI/:project' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
           <Route path='/ViewEI' element={<ViewEI/>} />          
@@ -180,7 +181,7 @@ const App = () => {
           <Route path='/ReviewISG/:project' element={<ReviewISG/>} />
           <Route path='/ApproveISG' element={<ApproveISG/>} />
           <Route path='/ReviewHIV/:project' element={<ReviewHIV/>} />
-          <Route path='/ApproveHIV' element={<ApproveHIV/>} />
+          <Route path='/ApproveHIV/:project' element={<ApproveHIV/>} />
 
           <Route path='/EditHIV' element={<EditHIV/>} />
           <Route path='/EditCG' element={<EditCG/>} />

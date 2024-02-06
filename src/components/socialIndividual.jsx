@@ -31,7 +31,7 @@ import authAxios from "../AuthAxios";
 
 const SocialIndividual = () => {
   const [formData, setFormData] = useState({});
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: 0 }]);
+  const [budgetData, setBudgetData] = useState([{ budget: 0, cost: 0 }]);
   const [revenueData, setRevenueData] = useState([
     { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
   ]);
@@ -62,7 +62,7 @@ const SocialIndividual = () => {
     } catch (error) {
       showToast({
         title: "Error uploading image to cloudinary",
-        description: error,
+        status: "error",
         duration: 5000,
       });
     }
@@ -74,7 +74,8 @@ const SocialIndividual = () => {
     e.preventDefault();
     // Add your form submission logic here
     try {
-      setIsLoading((prevLoading) => !prevLoading);
+      setIsLoading(true);
+
       const photographUrl = await handleImageUpload(
         e.target.photographFile.files[0]
       );
@@ -86,16 +87,9 @@ const SocialIndividual = () => {
       const otherDocumentsUrl = await handleImageUpload(documents[3].file);
 
       const req = {
-        revenueGoals: revenueData,
-        nameOfSociety: e.target.nameofSociety.value,
+      revenueGoals: revenueData,
         nameOfSelfEmployment: e.target.nameOfSelfEmployment.value,
-        dateOfSubmission: e.target.dateOfSubmission.value,
-        nameOfProvincialSuperior: e.target.provincialSuperiorName.value,
-        contactOfProvincialSuperior: e.target.provincialSuperiorContact.value,
-        nameOfProjectIncharge: e.target.projectInchargeName.value,
-        contactOfProjectIncharge: e.target.projectInchargeContact.value,
-        emailOfProjectIncharge: e.target.projectInchargeEmail.value,
-        photograph_benificary: e.target.photographFile.value,
+        photograph_benificary: photographUrl,
         name: e.target.beneficiaryName.value,
         mobile: e.target.beneficiaryContact.value,
         email: e.target.beneficiaryEmail.value,
@@ -127,27 +121,15 @@ const SocialIndividual = () => {
         quotations_regarding_the_purchase_img: quotationRegardingPurchase,
         other_supporting_documents: otherDocumentsUrl,
         benificary_agree: {
-          agree: e.target.beneficiaryAgreement.value,
-          date: e.target.beneficiaryAgreementDate.value,
-        },
-        project_coordinator_agree: {
-          agree: e.target.projectCoordinatorAgreement.value,
-          date: e.target.projectCoordinatorAgreementDate.value,
+          agree: true,
         },
         project_in_charge_agree: {
-          agree: e.target.projectInChargeAgreement.value,
-          date: e.target.projectInChargeAgreementDate.value,
+          agree: true,
         },
-        provincial_superior_agree: {
-          agree: e.target.provincialSuperiorAgreement.value,
-          date: e.target.provincialSuperiorAgreementDate.value,
-        },
-        comment_box_provincial_superior: null, // You need to handle this separately based on your requirements
-        comment_box_project_coordinator: null, // You need to handle this separately based on your requirements
       };
 
       // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
-
+      console.log(req);
       const response = await authAxios.post("/projects/createSI", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
@@ -166,6 +148,7 @@ const SocialIndividual = () => {
         });
       }
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
     }
   };
@@ -527,84 +510,8 @@ const SocialIndividual = () => {
                 required
               />
             </FormControl>
-            {/* Date of Submission */}
-            <FormControl isRequired>
-              <FormLabel>Date of Submission</FormLabel>
-              <Input
-                type="date"
-                name="dateOfSubmission"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* Name of Provincial Superior */}
-            <FormControl isRequired>
-              <FormLabel>Name of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Contact of Provincial Superior */}
-            <FormControl isRequired>
-              <FormLabel>Contact of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
           </VStack>
 
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl isRequired>
-              <FormLabel>Name of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Name of Project Coordinator
-            <FormControl isRequired>
-              <FormLabel>Name of Project Coordinator</FormLabel>
-              <Input
-                type="text"
-                name="projectCoordinatorName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl> */}
-
-            {/* Contact of Project Incharge */}
-            <FormControl isRequired>
-              <FormLabel>Contact of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeContact"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl isRequired>
-              <FormLabel>Email of Project Incharge</FormLabel>
-              <Input
-                type="email"
-                name="projectInchargeEmail"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
 
           <VStack align="start" spacing={4} mb={8}>
             {/*Personal Information of the Beneficiary */}
@@ -706,16 +613,6 @@ const SocialIndividual = () => {
               <Input type="date" name="dob" onChange={handleChange} required />
             </FormControl>
 
-            {/* Occupation*/}
-            <FormControl isRequired>
-              <FormLabel>Occupation</FormLabel>
-              <Input
-                type="text"
-                name="fatherName"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
 
             {/*Marital Status*/}
             <FormControl isRequired>
@@ -908,93 +805,9 @@ const SocialIndividual = () => {
               />
             </FormControl>
           </VStack>
-          {BudgetTable}
+          {BudgetTable()}
           {DocumentUpload()}
           <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Beneficiary / Family member agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="beneficiaryAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Beneficiary / Family member agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="beneficiaryAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
             {/* Remarks */}
             {/* <FormControl>
               <FormLabel>Remarks (Optional)</FormLabel>

@@ -25,81 +25,32 @@ import { useParams } from "react-router-dom";
 
 export const ReviewDPLG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
-  const [formData, setFormData] = useState({
-    NAMEOFTHESOCIETY: "",
-    dATEOFSUBMISSION: "",
-    TITLEOFTHEPROJECT: "",
-    address: "",
-    provincialSuperiorName: "",
-    provincialSuperiorCellNumber: "",
-    provincialSuperiorEmail: "",
-    projectInChargeName: "",
-    projectInChargeCellNumber: "",
-    projectInChargeEmail: "",
-    projOfIntialProject: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    problemAnalysis: "",
-    solutionAnalysis: "",
-    sustainability: "",
-    monitoringProcess: "",
-
-    projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
-
-    // Additional Fields
-    comment: "",
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [
-            {
-              activity: "",
-              verification: "",
-              timeframe: Array.from({ length: 12 }).fill(false),
-            },
-          ],
-        },
-      ],
-    },
-  });
-  const [studiesTableData, setStudiesTableData] = useState([
-    {
-      serialNo: "",
-      name: "",
-      familySituation: "",
-      natureOfLivelihood: "",
-      requestedAmount: "",
-    },
-  ]);
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+  console.log(projectData);
+  const [studiesTableData, setStudiesTableData] = useState(
+    projectData.studies_table_data.map((item) => ({
+      serialNo: item.serialNo || "",
+      name: item.name || "",
+      familySituation: item.family_situation || "",
+      natureOfLivelihood: item.nature_livlihood || "",
+      requestedAmount: item.requested_amount || "",
+    }))
+  );
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
-
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
   // Populate formData
-  const updatedFormData = {
+  const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
     dATEOFSUBMISSION: projectData.DateOfSubmission || "",
     TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
     address: projectData.address || "",
-    provincialSuperiorName: projectData.provincialSuperiorName || "",
-    provincialSuperiorCellNumber:
-      projectData.provincialSuperiorCellNumber || "",
-    provincialSuperiorEmail: projectData.provincialSuperiorEmail || "",
-    projectInChargeName: projectData.projectInChargeName || "",
-    projectInChargeCellNumber: projectData.projectInChargeCellNumber || "",
-    projectInChargeEmail: projectData.projectInChargeEmail || "",
+    projectInChargeName: projectData.applicant.name || "",
+    projectInChargeCellNumber: projectData.applicant.mobile || "",
+    projectInChargeEmail: projectData.applicant.email || "",
     projOfIntialProject: projectData.ProjectOfInitialProject || "",
-    overallProjectPeriod: projectData.overallProjectPeriod || "",
-    overallProjectBudget: projectData.overallProjectBudget || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
     problemAnalysis: projectData.problemAnalysis || "",
     solutionAnalysis: projectData.solutionAnalysis || "",
     sustainability: projectData.sustainability || "",
@@ -107,7 +58,7 @@ export const ReviewDPLG = () => {
     projectInChargeAgreement:
       projectData.project_in_charge_agree.agree || false,
     projectInChargeAgreementDate:
-      projectData.project_in_charge_agree.date || "",
+      projectData.project_in_charge_agree.date.substring(0, 10) || "",
     provincialSuperiorAgreement: projectData.provincialSuperiorAgree || false,
     provincialSuperiorAgreementDate:
       projectData.provincialSuperiorAgreementDate || "",
@@ -125,29 +76,19 @@ export const ReviewDPLG = () => {
         })),
       })),
     },
-  };
-
-  // Populate studiesTableData
-  const updatedStudiesTableData = projectData.studies_table_data.map(
-    (item) => ({
-      serialNo: item.serialNo || "",
-      name: item.name || "",
-      familySituation: item.family_situation || "",
-      natureOfLivelihood: item.nature_livlihood || "",
-      requestedAmount: item.requested_amount || "",
-    })
+  });
+  const [budgetData, setBudgetData] = useState(
+    projectData.budget_cost_table.map((item) => ({
+      budget: item.budget || "",
+      cost: item.cost || "",
+    }))
   );
 
-  // Populate budgetData
-  const updatedBudgetData = projectData.budget_cost_table.map((item) => ({
-    budget: item.budget || "",
-    cost: item.cost || "",
-  }));
+  console.log(budgetData);
+  console.log(formData);
+  console.log(studiesTableData);
 
   // Set the state
-  setFormData(updatedFormData);
-  setStudiesTableData(updatedStudiesTableData);
-  setBudgetData(updatedBudgetData);
 
   const handleChange = (e, index, subIndex) => {
     const updatedData = { ...formData };
@@ -187,8 +128,9 @@ export const ReviewDPLG = () => {
       };
       const res = await authAxios.put(
         "/projects/editreviewerDPLG/",
-        projectData
+        req,
       );
+      console.log(res);
       if (res.data.success) setIsSubmitted(true);
       else {
         showToast({
@@ -201,7 +143,7 @@ export const ReviewDPLG = () => {
     } catch (e) {
       console.log(e);
       showToast({
-        title: "Error submitting the reviewed doc",
+      title: "Error submitting the reviewed doc",
         description: e,
         status: "error",
         duration: 5000,
@@ -466,36 +408,6 @@ export const ReviewDPLG = () => {
               </Thead>
               <Tbody>
                 {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorName}
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorCellNumber}
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorEmail}
-                      readOnly
-                    />
-                  </Td>
-                </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -619,6 +531,7 @@ export const ReviewDPLG = () => {
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
+                value={formData.logicalFramework.goal}
                 onChange={(e) => handleChange(e)}
                 readOnly
               />
@@ -792,8 +705,7 @@ export const ReviewDPLG = () => {
             <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreement}
+                isChecked={formData.projectInChargeAgreement}
                 readOnly
                 size="lg"
               >
@@ -836,12 +748,18 @@ export const ReviewDPLG = () => {
             colorScheme="blue"
             mx={3}
             type="submit"
-            onClick={(formData.provincialSuperiorAgreement = true)}
+            onClick={() => {
+              formData.provincialSuperiorAgreement = true;
+            }}
           >
             Submit
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
+          <Button colorScheme="red" mx={3} type="submit"
+          onClick={() => {
+            formData.provincialSuperiorAgreement = false;
+          }}
+          >
             Decline
           </Button>
         </form>

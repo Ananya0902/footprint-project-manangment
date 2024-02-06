@@ -25,52 +25,55 @@ import { useParams } from "react-router-dom";
 
 export const ReviewCG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
+  // const [formData, setFormData] = useState({
+  //   NAMEOFTHESOCIETY: "",
+  //   dATEOFSUBMISSION: "",
+  //   TITLEOFTHEPROJECT: "",
+  //   address: "",
+  //   provincialSuperiorName: "",
+  //   provincialSuperiorCellNumber: "",
+  //   provincialSuperiorEmail: "",
+  //   projectInChargeName: "",
+  //   projectInChargeCellNumber: "",
+  //   projectInChargeEmail: "",
+  //   projOfIntialProject: "",
+  //   overallProjectPeriod: "",
+  //   overallProjectBudget: "",
+  //   problemAnalysis: "",
+  //   solutionAnalysis: "",
+  //   sustainability: "", // Add sustainability
+  //   monitoringProcess: "", // Add monitoringProcess
+  //   projectInChargeAgreement: false,
+  //   projectInChargeAgreementDate: "",
+  //   provincialSuperiorAgreement: false,
+  //   provincialSuperiorAgreementDate: "",
+  //   comment: "",
 
-  const [formData, setFormData] = useState({
-    NAMEOFTHESOCIETY: "",
-    dATEOFSUBMISSION: "",
-    TITLEOFTHEPROJECT: "",
-    address: "",
-    provincialSuperiorName: "",
-    provincialSuperiorCellNumber: "",
-    provincialSuperiorEmail: "",
-    projectInChargeName: "",
-    projectInChargeCellNumber: "",
-    projectInChargeEmail: "",
-    projOfIntialProject: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    problemAnalysis: "",
-    solutionAnalysis: "",
-    sustainability: "", // Add sustainability
-    monitoringProcess: "", // Add monitoringProcess
-    projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
-    comment: "",
-
-    projectArea: "", // Add projectArea
-    directBeneficiaries: "", // Add directBeneficiaries
-    indirectBeneficiaries: "", // Add indirectBeneficiaries
-    evaluationMethodology: "", // Add evaluationMethodology
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
-    },
-  });
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+  //   projectArea: "", // Add projectArea
+  //   directBeneficiaries: "", // Add directBeneficiaries
+  //   indirectBeneficiaries: "", // Add indirectBeneficiaries
+  //   evaluationMethodology: "", // Add evaluationMethodology
+  //   logicalFramework: {
+  //     goal: "",
+  //     objectives: [
+  //       {
+  //         objective: "",
+  //         results: [""],
+  //         activities: [],
+  //       },
+  //     ],
+  //   },
+  // });
+  // const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
 
   // Assuming projectData contains the fetched data from the backend
 
   // Populate formData from projectData
-  const updatedFormData = {
+  const [formData, setFormData] = useState({
+    projectInChargeName: projectData.applicant.name,
+    projectInChargeEmail: projectData.applicant.email,
+    projectInChargeCellNumber: projectData.applicant.mobile,
     NAMEOFTHESOCIETY: projectData.nameOfSociety || "",
     dATEOFSUBMISSION: projectData.DateOfSubmission || "",
     TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
@@ -84,7 +87,7 @@ export const ReviewCG = () => {
     projectInChargeAgreement:
       projectData.project_in_charge_agree.agree || false,
     projectInChargeAgreementDate:
-      projectData.project_in_charge_agree.date || false, // You haven't provided this in projectData
+      projectData.project_in_charge_agree.date.substring(0, 10), // You haven't provided this in projectData
     projectArea: projectData.ProjectArea || "",
     directBeneficiaries: projectData.directBeneficiaries || "",
     indirectBeneficiaries: projectData.indirectBeneficiaries || "",
@@ -98,25 +101,24 @@ export const ReviewCG = () => {
       })),
     },
     // Other fields can be added as per requirement
-  };
-
-  // Populate budgetData from projectData
-  const updatedBudgetData = projectData.budget_cost_table || [];
+  });
+  const [budgetData, setBudgetData] = useState(
+    projectData.budget_cost_table || []
+  );
 
   // Populate logicalFramework if present in projectData
-  if (projectData.goal && projectData.objectives) {
-    updatedFormData.logicalFramework = {
-      goal: projectData.goal || "",
-      objectives: projectData.objectives.map((objective) => ({
-        objective: objective.objective || "",
-        results: objective.results || [""],
-        activities: objective.activities || [],
-      })),
-    };
-  }
+  // if (projectData.goal && projectData.objectives) {
+  //   updatedFormData.logicalFramework = {
+  //     goal: projectData.goal || "",
+  //     objectives: projectData.objectives.map((objective) => ({
+  //       objective: objective.objective || "",
+  //       results: objective.results || [""],
+  //       activities: objective.activities || [],
+  //     })),
+  //   };
+  // }
 
   // Update the state with the updatedFormData
-  setFormData(updatedFormData);
 
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
@@ -125,7 +127,6 @@ export const ReviewCG = () => {
 
   const handleChange = (e, index, subIndex) => {
     const updatedData = { ...formData };
-
     if (e.target.name === "goal") {
       updatedData.logicalFramework.goal = e.target.value;
     } else if (e.target.name === "objective") {
@@ -154,10 +155,10 @@ export const ReviewCG = () => {
 
     try {
       setIsLoading((prevLoading) => !prevLoading);
-      const response = await authAxios.post("/projects/editreviewerCG", {
-        projectId: projectData._id,
+      const response = await authAxios.put("/projects/editreviewerCG", {
+        projectID: projectData._id,
         comment_box_provincial_superior: formData.comment,
-        provincial_superior_agree: formData.provincialSuperiorAgreement,
+        provincial_superior_agree: {agree: formData.provincialSuperiorAgreement},
       });
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
@@ -330,37 +331,6 @@ export const ReviewCG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorName}
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorCellNumber}
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorEmail}
-                      readOnly
-                    />
-                  </Td>
-                </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -507,6 +477,7 @@ export const ReviewCG = () => {
                 name="goal"
                 onChange={(e) => handleChange(e)}
                 readOnly
+                value={formData.logicalFramework.goal}
               />
             </FormControl>
 
@@ -669,7 +640,7 @@ export const ReviewCG = () => {
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
-                value={formData.projectInChargeAgreement}
+                isChecked={formData.projectInChargeAgreement}
                 readOnly
                 size="lg"
               >
@@ -717,7 +688,12 @@ export const ReviewCG = () => {
             Accept
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
+          <Button
+            colorScheme="red"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
             REvert
           </Button>
         </form>
