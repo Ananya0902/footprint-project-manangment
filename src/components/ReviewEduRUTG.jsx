@@ -26,67 +26,8 @@ import authAxios from "../AuthAxios";
 const ReviewEduRUTG = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
   const [formData, setFormData] = useState({
-    presentProjectYear: "",
-    projectTitle: "",
-    projectRegion: "",
-    projectNumber: 0,
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    address: "",
-    provincialSuperiorName: "",
-    provincialSuperiorEmail: "",
-    projectInchargeName: "",
-    projectInchargeEmail: "",
-    projectSummary: {
-      projectLocation: "",
-      workOfSisters: "",
-      socioEconomicConditions: "",
-      identifiedProblems: "",
-      needOfProject: "",
-      beneficiarySelection: "",
-    },
-    targetGroup: [
-      {
-        sn: 1,
-        name: "",
-        caste: "",
-        occupationOfParents: "",
-        familyBackgroundAndNeedOfSupport: "",
-        classOfStudyOrInstitution: "",
-        eligibilityOfScholarshipAndExpectedAmount: "",
-        contributionFromFamily: "",
-      },
-    ],
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
-    },
-    evaluation: "",
-    monitoringProcess: "",
-    sustainability: "",
-    budget: [
-      {
-        description: "",
-        costs: 0,
-      },
-    ],
-    projectInChargeAgreement: "",
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    comment: "",
-  });
-  const [selectedMonths, setSelectedMonths] = useState([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // Populate formData from req
-  const updatedFormData = {
     projectTitle: projectData.project_title || "",
     projectInchargeName:
       projectData.general_information.project_incharge.ref.name,
@@ -103,18 +44,20 @@ const ReviewEduRUTG = () => {
       projectData.general_information?.overall_project_period || "",
     overallProjectBudget:
       projectData.general_information?.overall_project_budget || "",
-    targetGroup: projectData.project_summary.target_group.map((beneficiary) => ({
-      name: beneficiary.name || "",
-      caste: beneficiary.caste || "",
-      occupationOfParents: beneficiary.occupation_of_parents || "",
-      familyBackgroundAndNeedOfSupport:
-        beneficiary.family_background_and_need_of_support || "",
-      classOfStudyOrInstitution:
-        beneficiary.class_of_study_or_name_of_institution || "",
-      eligibilityOfScholarshipAndExpectedAmount:
-        beneficiary.eligibility_of_scholarship_and_expected_amount || "",
-      contributionFromFamily: beneficiary.contribution_from_family || "",
-    })),
+    targetGroup: projectData.project_summary.target_group.map(
+      (beneficiary) => ({
+        name: beneficiary.name || "",
+        caste: beneficiary.caste || "",
+        occupationOfParents: beneficiary.occupation_of_parents || "",
+        familyBackgroundAndNeedOfSupport:
+          beneficiary.family_background_and_need_of_support || "",
+        classOfStudyOrInstitution:
+          beneficiary.class_of_study_or_name_of_institution || "",
+        eligibilityOfScholarshipAndExpectedAmount:
+          beneficiary.eligibility_of_scholarship_and_expected_amount || "",
+        contributionFromFamily: beneficiary.contribution_from_family || "",
+      })
+    ),
     logicalFramework: {
       goal:
         projectData.project_summary?.solution_analysis_logical_framework
@@ -123,10 +66,26 @@ const ReviewEduRUTG = () => {
         projectData.project_summary?.solution_analysis_logical_framework?.objectives.map(
           (objective) => ({
             objective: objective.objective || "",
-            results:[ objective.results_and_outcomes], // Assuming it's a string
+            results: [objective.results_and_outcomes], // Assuming it's a string
             activities: objective.activities.map((activity) => ({
               activity: activity.activity || "",
-              months: activity.months || "",
+              months:
+                activity.months.length < 12
+                  ? [
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                    ]
+                  : activity.months,
               verification: activity.means_of_verification || "",
             })),
           })
@@ -144,38 +103,46 @@ const ReviewEduRUTG = () => {
       identifiedProblems:
         projectData.project_summary?.problems_identified_and_consequences || "",
       needOfProject: projectData.project_summary?.need_of_the_project || "",
-      
+
       sustainability: projectData.project_summary?.sustainability || "",
       monitoringProcess:
         projectData.project_summary?.monitoring_process_of_the_project || "",
       evaluation: projectData.project_summary?.mode_of_evaluation || "",
-      budget: {
-        expenses:
-          projectData.project_summary?.budget?.expenses.map((expense) => ({
-            description: expense.description || "",
-            costs: expense.costs || 0, // Assuming it's a number
-          })) || [],
-        total: projectData.project_summary?.budget?.total || 0, // Assuming it's a number
-      },
     },
-  };
-
-  setFormData(updatedFormData);
+    budget: {
+      expenses:
+        projectData.project_summary?.budget?.expenses.map((expense) => ({
+          description: expense.description || "",
+          costs: expense.costs || 0,
+        })) || [],
+      total: projectData.project_summary?.budget?.total || 0,
+    },
+    provincialSuperiorAgreement: false,
+    comment: null,
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  console.log(formData);
+  // Populate formData from req
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
     try {
       const req = {
-        projectID: projectData._id,
-        comment_box_provincial_superior: formData.comment,
-        provincial_superior_agree: {
-          agree: formData.provincialSuperiorAgreement,
-        },
+        project_number: projectData.project_number,
+        comment: formData.comment,
+        agree: formData.provincialSuperiorAgreement,
       };
       const res = await authAxios.put("/projects/editEGSReviewer/", req);
-      if (res.data.success) setIsSubmitted(true);
-      else {
+      console.log(res);
+      if (res.data.success) {
+        showToast({
+          title: "Submitted",
+          status: "success",
+          duration: 5000,
+        });
+        setIsSubmitted(true);
+      } else {
         showToast({
           title: "Error submitting the reviewed doc",
           status: "error",
@@ -532,7 +499,7 @@ const ReviewEduRUTG = () => {
               />
             </FormControl>
 
-            <FormControl mb={4}>
+            {/* <FormControl mb={4}>
               <FormLabel>
                 Identification of the Beneficiaries (how are the beneficiaries
                 selected)
@@ -543,7 +510,7 @@ const ReviewEduRUTG = () => {
                 value={formData.projectSummary.beneficiarySelection || ""}
                 isReadOnly
               />
-            </FormControl>
+            </FormControl> */}
 
             {/* Target Group Table */}
             <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -693,7 +660,7 @@ const ReviewEduRUTG = () => {
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
-                onChange={(e) => handleChangeObjective(e)}
+                value={formData.logicalFramework.goal}
                 readOnly
               />
             </FormControl>
@@ -790,17 +757,8 @@ const ReviewEduRUTG = () => {
                               {/* Timeframe */}
                               <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
-                                {activity.timeframe.map((value, monthIndex) => (
-                                  <Checkbox
-                                    key={monthIndex}
-                                    isChecked={value}
-                                    onChange={() => {
-                                      setSelectedMonths([]);
-                                      activity.timeframe[monthIndex] =
-                                        !activity.timeframe[monthIndex];
-                                      console.log(activity.timeframe);
-                                    }}
-                                  >
+                                {activity.months.map((value, monthIndex) => (
+                                  <Checkbox key={monthIndex} isChecked={value}>
                                     {new Date(2024, monthIndex).toLocaleString(
                                       "default",
                                       { month: "long" }
@@ -838,7 +796,7 @@ const ReviewEduRUTG = () => {
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
-                value={formData.sustainability}
+                value={formData.projectSummary.sustainability}
                 onChange={(e) => handleChange(e)}
                 readOnly
               />
@@ -851,7 +809,7 @@ const ReviewEduRUTG = () => {
               </FormLabel>
               <Textarea
                 name="monitoringProcess"
-                value={formData.monitoringProcess}
+                value={formData.projectSummary.monitoringProcess}
                 onChange={(e) => handleChange(e)}
                 readOnly
               />
@@ -862,7 +820,7 @@ const ReviewEduRUTG = () => {
               <FormLabel>Mode of Evaluation</FormLabel>
               <Textarea
                 name="evaluation"
-                value={formData.evaluation}
+                value={formData.projectSummary.evaluation}
                 onChange={(e) => handleChange(e)}
                 readOnly
               />
@@ -881,19 +839,12 @@ const ReviewEduRUTG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {formData.budget.map((row, index) => (
+                {/* {formData.budget.map((row, index) => (
                   <Tr key={index}>
                     <Td>
                       <Input
                         type="text"
                         name={`budget[${index}].description`}
-                        onChange={(e) =>
-                          handleBudgetChange(
-                            index,
-                            "description",
-                            e.target.value
-                          )
-                        }
                         value={row.description}
                         readOnly
                       />
@@ -902,15 +853,12 @@ const ReviewEduRUTG = () => {
                       <Input
                         type="number"
                         name={`budget[${index}].costs`}
-                        onChange={(e) =>
-                          handleBudgetChange(index, "costs", e.target.value)
-                        }
                         value={row.costs}
                         readOnly
                       />
                     </Td>
                   </Tr>
-                ))}
+                ))} */}
               </Tbody>
             </Table>
 
@@ -920,23 +868,23 @@ const ReviewEduRUTG = () => {
             </Button> */}
 
             {/* Calculate Total Cost */}
-            <Heading as="h3" size="md" mb={5}>
+            {/* <Heading as="h3" size="md" mb={5}>
               Total Cost: {calculateTotalCosts("costs")}
-            </Heading>
+            </Heading> */}
 
             {/* Project-In-Charge agreement */}
             <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
-                onChange={handleChange}
+                isChecked={formData.projectInchargeAgreement}
                 size="lg"
               >
                 The Project-In-Charge agree
               </Checkbox>
               <Input
                 type="date"
+                value={formData.projectInchargeAgreementDate.substring(0, 10)}
                 name="projectInChargeAgreementDate"
-                onChange={handleChange}
                 readOnly
               />
             </FormControl>
@@ -951,21 +899,30 @@ const ReviewEduRUTG = () => {
                 required
               />
             </FormControl>
+            <Button
+              colorScheme="blue"
+              mx={3}
+              type="submit"
+              onClick={() => {
+                formData.provincialSuperiorAgreement = true;
+              }}
+            >
+              Accept
+            </Button>
+            {/* decline  Button */}
+            <Button
+              colorScheme="red"
+              mx={3}
+              type="submit"
+              onClick={() => {
+                formData.provincialSuperiorAgreement = false;
+              }}
+            >
+              Decline
+            </Button>
           </form>
         </VStack>
         {/* Submit Button */}
-        <Button
-          colorScheme="blue"
-          mx={3}
-          type="submit"
-          onClick={() => (formData.provincialSuperiorAgreement = true)}
-        >
-          Accept
-        </Button>
-        {/* decline  Button */}
-        <Button colorScheme="red" mx={3} type="submit">
-          Decline
-        </Button>
       </Box>
     </ChakraProvider>
   );

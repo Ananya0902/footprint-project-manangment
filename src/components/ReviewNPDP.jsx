@@ -11,11 +11,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios.js";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ReviewNPDP = () => {
   const showToast = useToast();
   const req = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(req);
 
   return (
     <Formik
@@ -23,14 +24,15 @@ const ReviewNPDP = () => {
       onSubmit={async (e) => {
         // Add your form submission logic here
         try {
-          const req = {
-            projectID: req._id,
-            comment_box_provincial_superior: e.comment,
-            provincial_superior_agree: {
-              agree: e.provincialSuperiorAgree,
-            },
+          const request = {
+            project_number: req.project_number,
+            comment: e.comment,
+            agree: e.provincialSuperiorAgree,
           };
-          const res = await authAxios.put("/projects/editreviewerEOI/", req);
+          const res = await authAxios.put(
+            "/projects/editNPDPReviewer/",
+            request
+          );
           if (res.data.success) {
             showToast({
               title: "Submitting the reviewed documents",
@@ -49,7 +51,6 @@ const ReviewNPDP = () => {
           console.log(e);
           showToast({
             title: "Error submitting the reviewed doc",
-            description: e,
             status: "error",
             duration: 5000,
           });
@@ -90,17 +91,28 @@ const ReviewNPDP = () => {
             </FormControl>
             <FormControl id="mailing_list.project_in_charge.ref.name" mb={4}>
               <FormLabel>Project InCharge Name</FormLabel>
-              <Field as={Input} name="mailing_list.project_in_charge.ref.name" readOnly />
+              <Field
+                as={Input}
+                name="mailing_list.project_in_charge.ref.name"
+                readOnly
+              />
             </FormControl>
             <FormControl id="mailing_list.project_in_charge.ref.email" mb={4}>
               <FormLabel>Project InCharge Email</FormLabel>
-              <Field as={Input} name="mailing_list.project_in_charge.ref.email" readOnly />
+              <Field
+                as={Input}
+                name="mailing_list.project_in_charge.ref.email"
+                readOnly
+              />
             </FormControl>
             <FormControl id="mailing_list.project_in_charge.ref.mobile" mb={4}>
               <FormLabel>Project InCharge Contact</FormLabel>
-              <Field as={Input} name="mailing_list.project_in_charge.ref.contact" readOnly />
+              <Field
+                as={Input}
+                name="mailing_list.project_in_charge.ref.mobile"
+                readOnly
+              />
             </FormControl>
-        
 
             <Heading size="md" mb={6} justifyContent="center" pt="8">
               Key Data of The Project
@@ -120,7 +132,7 @@ const ReviewNPDP = () => {
               <Field
                 name="key_data_of_project.project_area_description"
                 as={Textarea}
-                placeholder="Is the project area of the previous phase or are new villages taken up ( Full details of the villages to be enclosed as annexure)"
+                placeholder="Is the project area of the previous pse or are new villages taken up ( Full details of the villages to be enclosed as annexure)"
                 readOnly
               />
             </FormControl>
