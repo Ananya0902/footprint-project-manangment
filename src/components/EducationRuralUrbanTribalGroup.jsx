@@ -97,15 +97,6 @@ const EducationRuralUrbanTribalGroup = () => {
           target.eligibilityOfScholarshipAndExpectedAmount,
         contribution_from_family: target.contributionFromFamily,
       })),
-      objectives: formData.logicalFramework.objectives.map((objective) => ({
-        objective: objective.objective,
-        results_and_outcomes: objective.results,
-        activities: objective.activities.map((activity) => ({
-          activity: activity.activity,
-          months: activity.months,
-          means_of_verification: activity.means_of_verification,
-        })),
-      })),
       project_summary: {
         project_location_geographical_area:
           formData.projectSummary.projectLocation,

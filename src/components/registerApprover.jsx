@@ -20,10 +20,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FaKey, FaMobileAlt, FaUser, FaEnvelope } from "react-icons/fa";
 import authAxios from "../AuthAxios";
+import {useNavigate} from 'react-router-dom';
 
 // RegisterApproverPage component
 const RegisterApproverPage = () => {
-  const showToast = useToast() ; 
+  const navigate = useNavigate(); 
+  const showToast = useToast();
   // Formik for form management
   const formik = useFormik({
     initialValues: {
@@ -50,35 +52,28 @@ const RegisterApproverPage = () => {
       console.log("Registering Approver with:", values);
       try {
         const req = {
-          name : values.name,
-          email : values.email , 
-          password : values.password,
-          mobile : values.mobileNumber
-
-        }
-        const response = await authAxios.post(
-          '/users/approversignup' , 
-          req 
-        ) ; 
-        showToast(
-          {
-            title: "Approver registration" , 
-            description : "Approver has been successfully register, please login" , 
-            status : "success" , 
-            duration : 500 , 
-            isClosable : true
-          }
-        ) ; 
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          mobile: values.mobileNumber,
+        };
+        const response = await authAxios.post("/users/approversignup", req);
+        showToast({
+          title: "Approver registration",
+          description: "Approver has been successfully register, please login",
+          status: "success",
+          duration: 500,
+          isClosable: true,
+        });
+        navigate('/login');
       } catch (error) {
-        showToast(
-          {
-            title: "Error registering approver" , 
-            description : "Error registering approver" , 
-            status : "error" , 
-            duration : 500 , 
-            isClosable : true
-          }
-        )
+        showToast({
+          title: "Error registering approver",
+          description: "Error registering approver",
+          status: "error",
+          duration: 500,
+          isClosable: true,
+        });
       }
     },
   });
@@ -160,7 +155,9 @@ const RegisterApproverPage = () => {
           {/* Mobile Number input */}
           <FormControl
             id="mobileNumber"
-            isInvalid={formik.touched.mobileNumber && formik.errors.mobileNumber}
+            isInvalid={
+              formik.touched.mobileNumber && formik.errors.mobileNumber
+            }
             isRequired
             mt={2}
           >

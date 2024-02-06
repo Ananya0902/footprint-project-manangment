@@ -98,11 +98,14 @@ const ReviewHIO = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
+    console.log(formData.provincialSuperiorAgreement);
     try {
       const req = {
         projectID: projectData._id,
         comment_box_provincial_superior: formData.comment,
-        provincial_superior_agree:{agree: e.target.provincialSuperiorAgreement.checked},
+        provincial_superior_agree: {
+          agree: formData.provincialSuperiorAgreement,
+        },
       };
       const res = await authAxios.put("/projects/editreviewerHOI/", req);
       if (res.data.success) setIsSubmitted(true);
@@ -118,7 +121,6 @@ const ReviewHIO = () => {
       console.log(e);
       showToast({
         title: "Error submitting the reviewed doc",
-        description: e,
         status: "error",
         duration: 5000,
       });
@@ -385,7 +387,7 @@ const ReviewHIO = () => {
                 type="number"
                 name="numberOfChildren"
                 onChange={handleChange}
-                value={formData.numberOfChildren || ""}
+                value={formData.numberOfChildren}
                 readOnly
               />
             </FormControl>
@@ -659,7 +661,7 @@ const ReviewHIO = () => {
                 type="date"
                 name="beneficiaryAgreementDate"
                 onChange={handleChange}
-                value={formData.beneficiaryAgreementDate.substring(0,10) || ""}
+                value={formData.beneficiaryAgreementDate.substring(0, 10) || ""}
                 readOnly
               />
             </FormControl>
@@ -679,12 +681,14 @@ const ReviewHIO = () => {
                 type="date"
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
-                value={formData.projectInChargeAgreementDate.substring(0,10) || ""}
+                value={
+                  formData.projectInChargeAgreementDate.substring(0, 10) || ""
+                }
                 readOnly
               />
             </FormControl>
 
-            {/* Provincial Superior agreement */}
+            {/* Provincial Superior agreement
             <FormControl isRequired>
               <Checkbox
                 name="provincialSuperiorAgreement"
@@ -699,7 +703,7 @@ const ReviewHIO = () => {
                 onChange={handleChange}
                 required
               />
-            </FormControl>
+            </FormControl> */}
           </VStack>
 
           <VStack align="start" spacing={4} mb={8}>
@@ -716,8 +720,16 @@ const ReviewHIO = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+          <Button
+            colorScheme="blue"
+            mx="3"
+            type="submit"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
+            Accept
+          </Button>
+          <Button colorScheme="red" mx="3" type="submit" flex={1}>
+            Revert
           </Button>
         </form>
       </Box>

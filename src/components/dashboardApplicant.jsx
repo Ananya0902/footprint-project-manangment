@@ -131,7 +131,7 @@ const DashboardApplicant = () => {
             </Text>
             <Button
               as={Link}
-              to="/groupProjects"
+              to={`/groupProjects/${userDetails.apostolate}`}
               colorScheme="teal"
               mt={4}
               borderRadius="full"

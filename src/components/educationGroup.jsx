@@ -166,8 +166,7 @@ const EducationGroup = () => {
       evaluationProcess: formData.evaluationProcess,
       conclusion: formData.conclusion,
       project_in_charge_agree: {
-        agree: formData.projectCoordinatorAgreement,
-        date: formData.projectCoordinatorAgreementDate,
+        agree: true, 
       },
     };
 

@@ -202,7 +202,7 @@ export const InstitutionalSkillTrainingForm = () => {
     };
     try {
       setIsLoading(true);
-      const res = await authAxios.post("/projects/createISG");
+      const res = await authAxios.post("/projects/createISG" , req);
       setIsLoading(false);
       if (res.data.success) {
         setIsSubmitted(true);
@@ -661,7 +661,7 @@ export const InstitutionalSkillTrainingForm = () => {
               />
             </FormControl>
             {/* Budget Table */}
-            <BudgetTable />
+            {BudgetTable()}
             {/* Signatures */}
             <Heading as="h1" size="xl" mb={6}>
               Signatures
