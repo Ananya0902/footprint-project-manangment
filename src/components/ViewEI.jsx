@@ -1131,10 +1131,6 @@ const ViewEI = () => {
           </VStack>
 
 
-          {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
-          </Button>
         </form>
       </Box>
     </ChakraProvider>

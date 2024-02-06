@@ -1,7 +1,8 @@
 // Import necessary libraries and components
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
+import AuthService from './AuthService';
 import Home from "./components/home";
 import LoginPage from "./components/login";
 import RegisterPage from "./components/register";
@@ -69,6 +70,30 @@ import ReviewISG from "./components/ReviewISG";
 import ApproveISG from "./components/ApproveISG";
 import ReviewHIV from "./components/ReviewHIV";
 import ApproveHIV from "./components/ApproveHIV";
+import EditHIV from "./components/editHIV";
+import EditCG from "./components/editCG";
+import EditNPDP from "./components/editNPDP";
+import EditWHCG from "./components/editWHCG";
+import EditISG from "./components/editISG";
+import EditDPLG from "./components/editDPLG";
+import EditEGS from "./components/editEGS";
+import EditEG from "./components/editEG";
+import ViewCG from "./components/ViewCG";
+import ViewEG from "./components/ViewEG";
+import ViewDPLG from "./components/ViewDPLG";
+import ViewHIV from "./components/ViewHIV";
+import ViewISG from "./components/ViewISG";
+import ViewWHCG from "./components/ViewWHCG";
+
+
+const PrivateRoute = ({ path, element }) => {
+  return AuthService.isAuthenticated() ? (
+    element
+  ) : (
+    <Navigate to="/login" />
+  );
+};
+
 
 
 
@@ -82,7 +107,9 @@ const App = () => {
           <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/registerApprover" element={<RegisterApproverPage />} />
+
+          <Route path="/registerApprover" element={<PrivateRoute element={<RegisterApproverPage />} />} />
+
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
         
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
@@ -112,13 +139,13 @@ const App = () => {
           <Route path="/ApprovedProjects" element={<ApprovedProjects/>} />
           <Route path="/ApprovedProjectsForReviewer" element={<ApprovedProjectsForReviewer reviewerProvince="north" />} />
           <Route path="/QuaterlyReportDevelopment" element={<QuaterlyReportDevelopment />} />
-          <Route path="/ReviewHIO/:project" element={<ReviewHIO />} />
-          <Route path="/ReviewEIO/:project" element={<ReviewEIO/>} />
+          <Route path="/ReviewHOI/:project" element={<ReviewHIO />} />
+          <Route path="/ReviewEOI/:project" element={<ReviewEIO/>} />
           {/* <Route path="/ReviewSIO" element={<ReviewSIO/>} /> */}
-          <Route path="/ApproveHIO/:project" element={<ApproveHIO />} />
-          <Route path="/ApproveEIO/:project" element={<ApproveEIO />} />
+          <Route path="/ApproveHOI/:project" element={<ApproveHIO />} />
+          <Route path="/ApproveEOI/:project" element={<ApproveEIO />} />
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
-          <Route path="/viewProject/:project" element={<ViewProject/>} /> 
+          
           <Route path="/nextPhaseDevelopmentProject" element={<NextPhaseForm/>} /> 
 
           <Route path="/WelfareHomeGroup" element={<WelfareHomeGroup/>} /> 
@@ -137,13 +164,12 @@ const App = () => {
                     
           <Route path='/ReviewEI' element={<ReviewEI/>} />          
           <Route path='/ApproveEI' element={<ApproveEI/>} />          
-          <Route path='/ViewEI' element={<ViewEI/>} />          
           <Route path='/ReviewNPDP' element={<ReviewNPDP/>} />          
           <Route path='/ApproveNPDP' element={<ApproveNPDP/>} />          
-          <Route path='/viewNPDP' element={<ViewNPDP/>} />
-          <Route path='/ReviewEduRUTG' element={<ReviewEduRUTG/>} />
-          <Route path='/ApproveEduRUTG' element={<ApproveEduRUTG/>} />
-          <Route path='/ViewEduRUTG' element={<ViewEduRUTG/>} />
+          
+          <Route path='/ReviewEGS' element={<ReviewEduRUTG/>} />
+          <Route path='/ApproveEGS' element={<ApproveEduRUTG/>} />
+          
           <Route path='/ReviewDPLG' element={<ReviewDPLG/>} />
           <Route path='/ApproveDPLG' element={<ApproveDPLG/>} />
           <Route path='/ReviewCG' element={<ReviewCG/>} />
@@ -154,7 +180,29 @@ const App = () => {
           <Route path='/ApproveISG' element={<ApproveISG/>} />
           <Route path='/ReviewHIV' element={<ReviewHIV/>} />
           <Route path='/ApproveHIV' element={<ApproveHIV/>} />
+
+          <Route path='/EditHIV' element={<EditHIV/>} />
+          <Route path='/EditCG' element={<EditCG/>} />
+          <Route path='/EditNPDP' element={<EditNPDP/>} />
+          <Route path='/EditWHCG' element={<EditWHCG/>} />
+          <Route path='/EditISG' element={<EditISG/>} />
+          <Route path='/EditDPLG' element={<EditDPLG/>} />
+          <Route path='/EditEGS' element={<EditEGS/>} />
+          <Route path='/EditEG' element={<EditEG/>} />
+
+
+          <Route path="/viewHOIProject/:project" element={<ViewProject/>} /> 
+          <Route path='/ViewCG' element={<ViewCG/>} />
+          <Route path='/ViewEGS' element={<ViewEduRUTG/>} />
+          <Route path='/viewNPDP' element={<ViewNPDP/>} />
+          <Route path='/ViewEI' element={<ViewEI/>} />          
+          <Route path='/ViewEG' element={<ViewEG/>} />          
+          <Route path='/ViewDPLG' element={<ViewDPLG/>} />          
+          <Route path='/ViewHIV' element={<ViewHIV/>} />          
+          <Route path='/ViewISG' element={<ViewISG/>} />          
+          <Route path='/ViewWHCG' element={<ViewWHCG/>} />          
                   
+       
                  
 
         </Routes>

@@ -548,12 +548,7 @@ const ViewNPDP= () => {
               <Field as={Textarea} name="commentApprover" readOnly/>
             </FormControl>
 
-            <Button mt={4} colorScheme="teal" mx={3} type="submit">
-              Submit
-            </Button>
-            <Button mt={4} colorScheme="red"  mx={3} type="submit">
-              Decline
-            </Button>
+            
           </Form>
         </Box>
       )}

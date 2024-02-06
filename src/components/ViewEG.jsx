@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useParams ,useEffect} from "react";
 import {
   ChakraProvider,
   Box,
@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-const ReviewEG = () => {
+const ViewEG = () => {
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast;
   const [formData, setFormData] = useState({
@@ -47,10 +47,6 @@ const ReviewEG = () => {
     projectGoal: "",
     objectives: [""], // Initial empty objective
 
-    // Target Group Information Table is there
-
-    // Target Group Studies Table is there already
-
     // Other Proposed Activities
     otherActivities: "",
 
@@ -70,7 +66,9 @@ const ReviewEG = () => {
     projectInChargeAgreementDate: "",
     provincialSuperiorAgreement: false,
     provincialSuperiorAgreementDate: "",
-    comment:"",
+    commentReviewer: "",
+    commentApprover: "",
+    amountApprovedByProjectCoordinator: "",
   });
   const [studiesTableData, setStudiesTableData] = useState([
     {
@@ -97,6 +95,69 @@ const ReviewEG = () => {
     { class: "", totalFemale: "", totalMale: "", total: 0 },
   ]);
 
+  // Assuming projectData is the fetched data
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+
+  useEffect(() => {
+    // Check if projectData is available
+    if (projectData) {
+      setFormData({
+        ...formData,
+        NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
+        dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+        TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+        address: projectData.address || "",
+
+        // Contacts Table
+        provincialSuperiorName: projectData.provincialSuperiorName || "",
+        provincialSuperiorCellNumber: projectData.provincialSuperiorCellNumber || "",
+        provincialSuperiorEmail: projectData.provincialSuperiorEmail || "",
+        projectInChargeName: projectData.projectInChargeName || "",
+        projectInChargeCellNumber: projectData.projectInChargeCellNumber || "",
+        projectInChargeEmail: projectData.projectInChargeEmail || "",
+
+        // Overall Project Information
+        overallProjectPeriod: projectData.OverallProjectPeriod || "",
+        overallProjectBudget: projectData.OverallProjectBudget || "",
+        beneficiariesSupported: projectData.beneficiariesSupported || "",
+        outcomeImpact: projectData.outcomeImpact || "",
+        projectGoal: projectData.goal || "", // Assuming 'goal' is the correct key
+        objectives: projectData.objectives || [""],
+
+        // Other Proposed Activities
+        otherActivities: projectData.otherActivities || "",
+
+        // Monitoring Methods
+        monitoringMethods: projectData.monitoringMethods || "",
+
+        // Evaluation Process and Responsible Person
+        evaluationProcess: projectData.evaluationProcess || "",
+
+        // Conclusion
+        conclusion: projectData.conclusion || "",
+
+        // Signatures
+      projectCoordinatorAgreement: projectData.project_in_charge_agree?.agree || false,
+      projectCoordinatorAgreementDate: projectData.project_in_charge_agree?.date || "",
+      projectInChargeAgreement: projectData.project_in_charge_agree?.agree || false,
+      projectInChargeAgreementDate: projectData.project_in_charge_agree?.date || "",
+      provincialSuperiorAgreement: projectData.provincial_superior_agree?.agree || false,
+      provincialSuperiorAgreementDate: projectData.provincial_superior_agree?.date || "",
+      commentReviewer: projectData.commentReviewer || "",
+      commentApprover: projectData.commentApprover || "",
+      amountApprovedByProjectCoordinator: projectData.amountApprovedByProjectCoordinator || "",
+      
+    });
+      // Assuming projectData has the same structure as studiesTableData and informationTableData
+      setStudiesTableData(projectData.targetGroupStudies || []);
+      setInformationTableData(projectData.targetGroupInformation || []);
+      setTableData(projectData.peopleDetails || []);
+    }
+  }, [projectData]);
+
+ 
+
+
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e, index) => {
@@ -113,7 +174,7 @@ const ReviewEG = () => {
       });
     } else {
       formData[name] = value;
-      setFormData({...formData});
+      setFormData({ ...formData });
     }
   };
 
@@ -122,83 +183,6 @@ const ReviewEG = () => {
       ...formData,
       objectives: [...formData.objectives, ""], // Add a new empty objective
     });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // Add your form submission logic here
-    const req = {
-      NameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
-      TitleOfProject: formData.TITLEOFTHEPROJECT,
-      address: formData.address,
-      OverallProjectPeriod: formData.overallProjectPeriod,
-      OverallProjectBudget: formData.overallProjectBudget,
-      beneficiariesSupported: formData.beneficiariesSupported,
-      outcomeImpact: formData.outcomeImpact,
-      goal: formData.projectGoal,
-      objectives: formData.objectives,
-      peopleDetails: tableData.map((row) => ({
-        class: row.class,
-        totalFemale: row.totalFemale,
-        totalMale: row.totalMale,
-        total: row.total,
-      })),
-      targetGroupInformation: informationTableData.map((row) => ({
-        serialNo: row.serialNo,
-        name: row.name,
-        casteAddress: row.casteAddress,
-        recommendedBy: row.recommendedBy,
-        familyBackground: row.familyBackground,
-      })),
-      targetGroupStudies: studiesTableData.map((row) => ({
-        serialNo: row.serialNo,
-        name: row.name,
-        studyProposed: row.studyProposed,
-        totalExpense: row.totalExpense,
-        contribution: row.contribution,
-        scholarshipEligibility: row.scholarshipEligibility,
-        expectedAmount: row.expectedAmount,
-      })),
-      otherActivities: formData.otherActivities,
-      monitoringMethods: formData.monitoringMethods,
-      evaluationProcess: formData.evaluationProcess,
-      conclusion: formData.conclusion,
-      project_in_charge_agree: {
-        agree: formData.projectCoordinatorAgreement,
-        date: formData.projectCoordinatorAgreementDate,
-      },
-    };
-
-    try {
-      const res = authAxios.post("/createEG", req);
-      setIsLoading(false);
-      if (res.data.success) {
-        showToast({
-          title: "Successful submission",
-          duration: 5000,
-          status: "success",
-        });
-        setIsSubmitted(true);
-      } else {
-        showToast({
-          title: "Unsuccessful submission",
-          duration: 5000,
-          status: "error",
-        });
-      }
-    } catch (e) {
-      setIsLoading(false);
-      showToast({
-        title: "Unsuccessful submission",
-        duration: 5000,
-        status: "error",
-      });
-    }
-
-    // Now you can use this request object to send data to your server for validation.
   };
 
   const PeopleDetailsTable = () => {
@@ -210,18 +194,11 @@ const ReviewEG = () => {
       if (field === "totalFemale" || field === "totalMale") {
         newData[index].total = calculateTotal(
           parseInt(newData[index].totalFemale) || 0,
-          parseInt(newData[index].totalMale) || 0,
+          parseInt(newData[index].totalMale) || 0
         );
       }
       console.log(tableData);
       setTableData(newData);
-    };
-
-    const handleAddRow = () => {
-      setTableData([
-        ...tableData,
-        { class: "", totalFemale: "", totalMale: "", total: 0 },
-      ]);
     };
 
     return (
@@ -248,7 +225,8 @@ const ReviewEG = () => {
                     value={row.class}
                     onChange={(e) =>
                       handleInputChange(index, "class", e.target.value)
-                    } readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -257,7 +235,8 @@ const ReviewEG = () => {
                     value={row.totalFemale}
                     onChange={(e) =>
                       handleInputChange(index, "totalFemale", e.target.value)
-                    } readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -266,7 +245,8 @@ const ReviewEG = () => {
                     value={row.totalMale}
                     onChange={(e) =>
                       handleInputChange(index, "totalMale", e.target.value)
-                    } readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>{row.total}</Td>
@@ -324,11 +304,7 @@ const ReviewEG = () => {
             {informationTableData.map((row, index) => (
               <Tr key={index}>
                 <Td>
-                  <Input
-                    type="number"
-                    value={row.serialNo}
-                    readOnly
-                  />
+                  <Input type="number" value={row.serialNo} readOnly />
                 </Td>
                 <Td>
                   <Input
@@ -340,7 +316,8 @@ const ReviewEG = () => {
                         "name",
                         e.target.value
                       )
-                    } readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -353,7 +330,8 @@ const ReviewEG = () => {
                         "casteAddress",
                         e.target.value
                       )
-                    } readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -366,7 +344,8 @@ const ReviewEG = () => {
                         "recommendedBy",
                         e.target.value
                       )
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -378,7 +357,8 @@ const ReviewEG = () => {
                         "familyBackground",
                         e.target.value
                       )
-                    } readOnly
+                    }
+                    readOnly
                   />
                 </Td>
               </Tr>
@@ -435,11 +415,7 @@ const ReviewEG = () => {
             {studiesTableData.map((row, index) => (
               <Tr key={index}>
                 <Td>
-                  <Input
-                    type="number"
-                    value={row.serialNo}
-                    readOnly
-                  />
+                  <Input type="number" value={row.serialNo} readOnly />
                 </Td>
                 <Td>
                   <Input
@@ -447,7 +423,8 @@ const ReviewEG = () => {
                     value={row.name}
                     onChange={(e) =>
                       handleStudiesInputChange(index, "name", e.target.value)
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -460,7 +437,8 @@ const ReviewEG = () => {
                         "studyProposed",
                         e.target.value
                       )
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -473,7 +451,8 @@ const ReviewEG = () => {
                         "totalExpense",
                         e.target.value
                       )
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -486,7 +465,8 @@ const ReviewEG = () => {
                         "contribution",
                         e.target.value
                       )
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -499,7 +479,8 @@ const ReviewEG = () => {
                         "scholarshipEligibility",
                         e.target.value
                       )
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -512,7 +493,8 @@ const ReviewEG = () => {
                         "expectedAmount",
                         e.target.value
                       )
-                    }readOnly
+                    }
+                    readOnly
                   />
                 </Td>
               </Tr>
@@ -545,10 +527,10 @@ const ReviewEG = () => {
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl >
+            <FormControl>
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
@@ -560,7 +542,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* DATE OF SUBMISSION */}
-            <FormControl >
+            <FormControl>
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
@@ -572,7 +554,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* TITLE OF THE PROJECT */}
-            <FormControl >
+            <FormControl>
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
@@ -584,14 +566,13 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* ADDRESS*/}
-            <FormControl >
+            <FormControl>
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                
               />
             </FormControl>
 
@@ -684,7 +665,7 @@ const ReviewEG = () => {
               </Tbody>
             </Table>
             {/* Overall Project Period */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
@@ -696,7 +677,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
@@ -708,7 +689,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Number of Beneficiaries supported in the previous years */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Number of Beneficiaries supported in the previous years
               </FormLabel>
@@ -722,7 +703,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Outcome / Impact in the lives of the passed-out students */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Outcome / Impact in the lives of the passed-out students
               </FormLabel>
@@ -735,7 +716,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Goal of the project */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Goal of the project</FormLabel>
               <Textarea
                 name="projectGoal"
@@ -745,7 +726,7 @@ const ReviewEG = () => {
               />
             </FormControl>
             {/* Objectives of the project */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Objectives of the project</FormLabel>
               <Table variant="simple" mb={4}>
                 <Thead>
@@ -779,7 +760,7 @@ const ReviewEG = () => {
             {TargetGroupInformationTable()}
             {TargetGroupStudiesTable()}
             {/* Other Proposed Activities */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Apart from academic studies, what are the other proposed
                 activities for the overall development of the beneficiary
@@ -794,7 +775,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Monitoring Methods */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Propose the methods of monitoring the beneficiary's overall
                 growth and development:
@@ -808,7 +789,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Evaluation Process and Responsible Person */}
-            <FormControl >
+            <FormControl>
               <FormLabel>
                 Mention the process of evaluation of the growth of the
                 beneficiaries and who would be responsible.
@@ -822,7 +803,7 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Conclusion */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Conclusion</FormLabel>
               <Textarea
                 name="conclusion"
@@ -837,7 +818,7 @@ const ReviewEG = () => {
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl >
+            <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
@@ -857,48 +838,70 @@ const ReviewEG = () => {
             </FormControl>
 
             {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-    <Checkbox
-      name="provincialSuperiorAgreement"
-      onChange={handleChange}
-      value={formData.provincialSuperiorAgreement}
-     
-      size="lg"
-    >
-      The Provincial Superior agree
-    </Checkbox>
-    <Input
-      type="date"
-      name="provincialSuperiorAgreementDate"
-      onChange={handleChange}
-      value={formData.provincialSuperiorAgreementDate}
-required
-      
-    />
-  </FormControl>
-          {/* Comment */}
-          <FormControl isRequired>
+            <FormControl>
+              <Checkbox
+                name="provincialSuperiorAgreement"
+                onChange={handleChange}
+                size="lg"
+                readOnly
+              >
+                The Provincial Superior agree
+              </Checkbox>
+            </FormControl>
+
+            {/* Project Coordinator agreement */}
+            <FormControl>
+              <Checkbox
+                name="projectCoordinatorAgreement"
+                onChange={handleChange}
+                size="lg"
+              >
+                The Project Coordinator agree
+              </Checkbox>
+              <Input
+                type="date"
+                name="projectCoordinatorAgreementDate"
+                onChange={handleChange}
+                readOnly
+              />
+            </FormControl>
+            {/* Comment for reviewer */}
+            <FormControl>
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
-                name="comment"
+                name="commentReviewer"
                 onChange={handleChange}
-                required
+                value={formData.commentReviewer || ""}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Comment for approver */}
+            <FormControl>
+              <FormLabel>Comment(For Approver)</FormLabel>
+              <Input
+                type="text"
+                name="commentApprover"
+                onChange={handleChange}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Amount Approved by Project Coordinator */}
+            <FormControl>
+              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <Input
+                type="number"
+                name="amountApprovedByProjectCoordinator"
+                onChange={handleChange}
+                readOnly
               />
             </FormControl>
           </VStack>
-
-            {/* Submit Button */}
-            <Button colorScheme="blue" mx={3} type="submit">
-            Submit
-          </Button>
-          {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
-          </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ReviewEG;
+export default ViewEG;

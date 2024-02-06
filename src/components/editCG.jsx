@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-export const ApproveCG = () => {
+export const EditCG = () => {
   const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -43,14 +43,6 @@ export const ApproveCG = () => {
     monitoringProcess: "", // Add monitoringProcess
     projectInChargeAgreement: false,
   projectInChargeAgreementDate: "",
-  projectCoordinatorAgreement:false,
-  projectCoordinatorAgreementDate:"",
-
-  // Additional Fields
-  commentReviewer: "",
-  commentApprover:"",
-  amountApprovedByProjectCoordinator:"",
-
   projectArea: "", // Add projectArea
   directBeneficiaries: "", // Add directBeneficiaries
   indirectBeneficiaries: "", // Add indirectBeneficiaries
@@ -99,7 +91,39 @@ export const ApproveCG = () => {
     setFormData(updatedData);
   };
 
+//   const handleMonthChange = (month) => {
+//     const updatedMonths = selectedMonths.includes(month)
+//       ? selectedMonths.filter((selectedMonth) => selectedMonth !== month)
+//       : [...selectedMonths, month];
+//     setSelectedMonths(updatedMonths);
+//   };
 
+  const handleAddObjective = () => {
+    const updatedData = { ...formData };
+    updatedData.logicalFramework.objectives.push({
+      objective: "",
+      results: [""],
+      activities: [],
+    });
+    setFormData(updatedData);
+  };
+
+  const handleAddResult = (index) => {
+    const updatedData = { ...formData };
+    updatedData.logicalFramework.objectives[index].results.push("");
+    setFormData(updatedData);
+  };
+
+  const handleAddActivity = (index) => {
+    const updatedData = { ...formData };
+    updatedData.logicalFramework.objectives[index].activities.push({
+      activity: "",
+      verification: "",
+      timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
+     
+    });
+    setFormData(updatedData);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,13 +152,10 @@ export const ApproveCG = () => {
       sustainability: formData.sustainability,
       monitoringProcess: formData.monitoringProcess,
       evaluationMethodology: formData.evaluationMethodology,
-      projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
-
-    // Additional Fields
-    comment: "",
+      project_in_charge_agree: {
+        agree: formData.projectInChargeAgreement,
+        date: formData.projectInChargeAgreementDate || new Date(),
+      },
       budgetData: budgetData.map((item) => ({
         budget: item.budget,
         cost: item.cost,
@@ -259,18 +280,18 @@ export const ApproveCG = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
                 name="NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 value={formData.NAMEOFTHESOCIETY}
-                readOnly
+                required
               />
             </FormControl>
             {/* DATE OF SUBMISSION */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
@@ -278,11 +299,11 @@ export const ApproveCG = () => {
                 onChange={handleChange}
                 value={formData.dATEOFSUBMISSION}
 
-                readOnly
+                required
               />
             </FormControl>
             {/* TITLE OF THE PROJECT */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
@@ -290,11 +311,11 @@ export const ApproveCG = () => {
                 onChange={handleChange}
                 value={formData.TITLEOFTHEPROJECT}
 
-                readOnly
+                required
               />
             </FormControl>
             {/* ADDRESS*/}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
@@ -302,7 +323,7 @@ export const ApproveCG = () => {
                 onChange={handleChange}
                 value={formData.address}
 
-                readOnly
+                required
               />
             </FormControl>
             {/* Contacts Table */}
@@ -326,7 +347,7 @@ export const ApproveCG = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorName}
 
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -336,7 +357,7 @@ export const ApproveCG = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorCellNumber}
 
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -346,7 +367,7 @@ export const ApproveCG = () => {
                       onChange={handleChange}
                       value={formData.provincialSuperiorEmail}
 
-                      readOnly
+                      required
                     />
                   </Td>
                 </Tr>
@@ -360,7 +381,7 @@ export const ApproveCG = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeName}
 
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -370,7 +391,7 @@ export const ApproveCG = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeCellNumber}
 
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -380,7 +401,7 @@ export const ApproveCG = () => {
                       onChange={handleChange}
                       value={formData.projectInChargeEmail}
 
-                      readOnly
+                      required
                     />
                   </Td>
                 </Tr>
@@ -400,7 +421,7 @@ export const ApproveCG = () => {
               </Tbody>
             </Table>
            {/* Overall Project Period */}
-           <FormControl >
+           <FormControl isRequired>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
@@ -408,12 +429,12 @@ export const ApproveCG = () => {
                 onChange={handleChange}
                 value={formData.overallProjectPeriod}
 
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
@@ -421,17 +442,17 @@ export const ApproveCG = () => {
                 onChange={handleChange}
                 value={formData.overallProjectBudget}
 
-                readOnly
+                required
               />
             </FormControl>
             {/* Project Area */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Project Area</FormLabel>
               <Textarea name="projectArea"
                onChange={handleChange}
                value={formData.projectArea}
 
-               readOnly />
+                required />
             </FormControl>
 
             {/* Number of Beneficiaries */}
@@ -446,7 +467,7 @@ export const ApproveCG = () => {
                   onChange={handleChange}
                   value={formData.directBeneficiaries}
 
-                  readOnly
+                  required
                 />
               </FormControl>
               {/* Indirect Beneficiaries */}
@@ -458,32 +479,32 @@ export const ApproveCG = () => {
                   onChange={handleChange}
                   value={formData.indirectBeneficiaries}
 
-                  readOnly
+                  required
                 />
               </FormControl>
             </FormControl>
 
             {/* Analysis of the Problem */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Analysis of the Problem</FormLabel>
               <Textarea
                 name="problemAnalysis"
                 onChange={handleChange}
                 value={formData.problemAnalysis}
 
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Solution Analysis */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="solutionAnalysis"
                 onChange={handleChange}
                 value={formData.solutionAnalysis}
 
-                readOnly
+                required
               />
             </FormControl>
 
@@ -498,12 +519,12 @@ export const ApproveCG = () => {
             >
               logical Framework
             </Heading>
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
                 onChange={(e) => handleChange(e)}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -522,19 +543,19 @@ export const ApproveCG = () => {
                  <Box key={index} border="1px solid #ccc" borderRadius="lg" p={4} mb={8}>
               <VStack key={index} align="start" spacing={4} mb={8}>
                 {/* Objective */}
-                <FormControl >
+                <FormControl isRequired>
                     <hr />
                   <FormLabel>Objective {index + 1}</FormLabel>
                   <Textarea
                     name="objective"
                     value={objective.objective}
                     onChange={(e) => handleChange(e, index)}
-                    readOnly
+                    required
                   />
                 </FormControl>
 
                 {/* Results */}
-                <FormControl >
+                <FormControl isRequired>
                   <FormLabel>Results</FormLabel>
                   {objective.results.map((result, subIndex) => (
                     <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -542,15 +563,20 @@ export const ApproveCG = () => {
                         name="result"
                         value={result}
                         onChange={(e) => handleChange(e, index, subIndex)}
-                        readOnly
+                        required
                       />
-                     
+                      <Button
+                        onClick={() => handleAddResult(index)}
+                        colorScheme="teal"
+                      >
+                        Add Result
+                      </Button>
                     </VStack>
                   ))}
                 </FormControl>
 
                 {/* Activities and Means of Verification */}
-                <FormControl >
+                <FormControl isRequired>
                   <FormLabel>Activities and Means of Verification</FormLabel>
                   <Table variant="simple">
                     <Thead>
@@ -567,7 +593,7 @@ export const ApproveCG = () => {
                               name="activity"
                               value={activity.activity}
                               onChange={(e) => handleChange(e, index, subIndex)}
-                              readOnly
+                              required
                             />
                           </Td>
                           <Td>
@@ -575,7 +601,7 @@ export const ApproveCG = () => {
                               name="verification"
                               value={activity.verification}
                               onChange={(e) => handleChange(e, index, subIndex)}
-                              readOnly
+                              required
                             />
                           </Td>
                           <Td>
@@ -591,7 +617,7 @@ export const ApproveCG = () => {
                                     activity.timeframe[monthIndex] =
                                       !activity.timeframe[monthIndex];
                                     console.log(activity.timeframe);
-                                  }}readOnly
+                                  }}
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -606,7 +632,12 @@ export const ApproveCG = () => {
                     </Tbody>
                   </Table>
 
-                  
+                  <Button
+                    onClick={() => handleAddActivity(index)}
+                    colorScheme="teal"
+                  >
+                    Add Activity
+                  </Button>
                 </FormControl>
 
             
@@ -616,150 +647,81 @@ export const ApproveCG = () => {
               </Box>
               
             ))}
-             
+             <Button onClick={handleAddObjective} colorScheme="purple"  ml="auto">
+              Add Objective
+            </Button>
 
 
                 {/* Sustainability of the Project */}
-        <FormControl >
+        <FormControl isRequired>
           <FormLabel>Sustainability of the Project</FormLabel>
           <Textarea
             name="sustainability"
             value={formData.sustainability}
             onChange={(e) => handleChange(e)}
-            readOnly
+            required
           />
         </FormControl>
 
         {/* Explain the Monitoring Process of the Project */}
-        <FormControl >
+        <FormControl isRequired>
           <FormLabel>Explain the Monitoring Process of the Project</FormLabel>
           <Textarea
             name="monitoringProcess"
             value={formData.monitoringProcess}
             onChange={(e) => handleChange(e)}
-            readOnly
+            required
           />
         </FormControl>
 
         {/* Methodology of Evaluation */}
-        <FormControl >
+        <FormControl isRequired>
           <FormLabel>Methodology of Evaluation</FormLabel>
           <Textarea
             name="evaluationMethodology"
             value={formData.evaluationMethodology}
             onChange={(e) => handleChange(e)}
-            readOnly
+            required
           />
         </FormControl>
 
 {BudgetTable()}
 
 <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl >
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreement}
-                readOnly
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"               
-                 value={formData.projectInChargeAgreementDate}
-                    
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                readOnly
-              />
-            </FormControl>
-
-              {/* Provincial Superior agreement */}
-              <FormControl >
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-                readOnly
-              >
-                The Provincial Superior agree
-              </Checkbox>
-            </FormControl>
-          </VStack>
+    Signatures
+  </Heading>
 
 
-          <VStack align="start" spacing={4} mb={8}>
-           {/* Project Coordinator agreement */}
-           <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
+  {/* Project-In-Charge agreement */}
+  <FormControl isRequired>
+    <Checkbox
+      name="projectInChargeAgreement"
+      onChange={handleChange}
+      value={formData.projectInChargeAgreementDate}
 
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Comment for reviewer */}
-            <FormControl>
-              <FormLabel>Comment(For Reviewer)</FormLabel>
-              <Input
-                type="text"
-                name="commentReviewer"
-                onChange={handleChange}
-                value={formData.commentReviewer || ""}
-                readOnly
-              />
-            </FormControl>
+      size="lg"
+    >
+      The Project-In-Charge agree
+    </Checkbox>
+    <Input
+      type="date"
+      name="projectInChargeAgreementDate"
+      onChange={handleChange}
+      value={formData.projectInChargeAgreementDate}
 
-            {/* Comment for approver */}
-            <FormControl isRequired>
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+      required
+    />
+  </FormControl>
 
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-
+  
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" mx={3} type="submit">
+          <Button colorScheme="blue" type="submit">
             Submit
-          </Button>
-          {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
           </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ApproveCG;
+export default EditCG;

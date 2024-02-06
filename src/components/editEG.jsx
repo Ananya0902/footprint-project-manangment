@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
 
-const ReviewEG = () => {
+const EditEG = () => {
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast;
   const [formData, setFormData] = useState({
@@ -70,7 +70,6 @@ const ReviewEG = () => {
     projectInChargeAgreementDate: "",
     provincialSuperiorAgreement: false,
     provincialSuperiorAgreementDate: "",
-    comment:"",
   });
   const [studiesTableData, setStudiesTableData] = useState([
     {
@@ -248,7 +247,7 @@ const ReviewEG = () => {
                     value={row.class}
                     onChange={(e) =>
                       handleInputChange(index, "class", e.target.value)
-                    } readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -257,7 +256,7 @@ const ReviewEG = () => {
                     value={row.totalFemale}
                     onChange={(e) =>
                       handleInputChange(index, "totalFemale", e.target.value)
-                    } readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -266,7 +265,7 @@ const ReviewEG = () => {
                     value={row.totalMale}
                     onChange={(e) =>
                       handleInputChange(index, "totalMale", e.target.value)
-                    } readOnly
+                    }
                   />
                 </Td>
                 <Td>{row.total}</Td>
@@ -275,7 +274,7 @@ const ReviewEG = () => {
           </Tbody>
         </Table>
 
-        {/* <Button onClick={handleAddRow}>Add Row</Button> */}
+        <Button onClick={handleAddRow}>Add Row</Button>
       </Box>
     );
   };
@@ -340,7 +339,7 @@ const ReviewEG = () => {
                         "name",
                         e.target.value
                       )
-                    } readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -353,7 +352,7 @@ const ReviewEG = () => {
                         "casteAddress",
                         e.target.value
                       )
-                    } readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -366,7 +365,7 @@ const ReviewEG = () => {
                         "recommendedBy",
                         e.target.value
                       )
-                    }readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -378,7 +377,7 @@ const ReviewEG = () => {
                         "familyBackground",
                         e.target.value
                       )
-                    } readOnly
+                    }
                   />
                 </Td>
               </Tr>
@@ -386,7 +385,7 @@ const ReviewEG = () => {
           </Tbody>
         </Table>
 
-        {/* <Button onClick={handleAddInformationRow}>Add Row</Button> */}
+        <Button onClick={handleAddInformationRow}>Add Row</Button>
       </Box>
     );
   };
@@ -447,7 +446,7 @@ const ReviewEG = () => {
                     value={row.name}
                     onChange={(e) =>
                       handleStudiesInputChange(index, "name", e.target.value)
-                    }readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -460,7 +459,7 @@ const ReviewEG = () => {
                         "studyProposed",
                         e.target.value
                       )
-                    }readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -473,7 +472,7 @@ const ReviewEG = () => {
                         "totalExpense",
                         e.target.value
                       )
-                    }readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -486,7 +485,7 @@ const ReviewEG = () => {
                         "contribution",
                         e.target.value
                       )
-                    }readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -499,7 +498,7 @@ const ReviewEG = () => {
                         "scholarshipEligibility",
                         e.target.value
                       )
-                    }readOnly
+                    }
                   />
                 </Td>
                 <Td>
@@ -512,7 +511,7 @@ const ReviewEG = () => {
                         "expectedAmount",
                         e.target.value
                       )
-                    }readOnly
+                    }
                   />
                 </Td>
               </Tr>
@@ -520,7 +519,7 @@ const ReviewEG = () => {
           </Tbody>
         </Table>
 
-        {/* <Button onClick={handleAddStudiesRow}>Add Row</Button> */}
+        <Button onClick={handleAddStudiesRow}>Add Row</Button>
       </Box>
     );
   };
@@ -548,50 +547,50 @@ const ReviewEG = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
                 name="NAMEOFTHESOCIETY"
                 value={formData.NAMEOFTHESOCIETY}
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* DATE OF SUBMISSION */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
                 name="dATEOFSUBMISSION"
                 value={formData.dATEOFSUBMISSION}
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* TITLE OF THE PROJECT */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
                 name="TITLEOFTHEPROJECT"
                 value={formData.TITLEOFTHEPROJECT}
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* ADDRESS*/}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                
+                required
               />
             </FormControl>
 
@@ -615,7 +614,7 @@ const ReviewEG = () => {
                       name="provincialSuperiorName"
                       value={formData.provincialSuperiorName}
                       onChange={handleChange}
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -624,7 +623,7 @@ const ReviewEG = () => {
                       name="provincialSuperiorCellNumber"
                       value={formData.provincialSuperiorCellNumber}
                       onChange={handleChange}
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -633,7 +632,7 @@ const ReviewEG = () => {
                       name="provincialSuperiorEmail"
                       value={formData.provincialSuperiorEmail}
                       onChange={handleChange}
-                      readOnly
+                      required
                     />
                   </Td>
                 </Tr>
@@ -646,7 +645,7 @@ const ReviewEG = () => {
                       name="projectInChargeName"
                       value={formData.projectInChargeName}
                       onChange={handleChange}
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -655,7 +654,7 @@ const ReviewEG = () => {
                       name="projectInChargeCellNumber"
                       value={formData.projectInChargeCellNumber}
                       onChange={handleChange}
-                      readOnly
+                      required
                     />
                   </Td>
                   <Td>
@@ -664,7 +663,7 @@ const ReviewEG = () => {
                       name="projectInChargeEmail"
                       value={formData.projectInChargeEmail}
                       onChange={handleChange}
-                      readOnly
+                      required
                     />
                   </Td>
                 </Tr>
@@ -684,31 +683,31 @@ const ReviewEG = () => {
               </Tbody>
             </Table>
             {/* Overall Project Period */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
                 name="overallProjectPeriod"
                 value={formData.overallProjectPeriod}
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
                 name="overallProjectBudget"
                 value={formData.overallProjectBudget}
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Number of Beneficiaries supported in the previous years */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>
                 Number of Beneficiaries supported in the previous years
               </FormLabel>
@@ -717,12 +716,12 @@ const ReviewEG = () => {
                 name="beneficiariesSupported"
                 value={formData.beneficiariesSupported}
                 onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Outcome / Impact in the lives of the passed-out students */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>
                 Outcome / Impact in the lives of the passed-out students
               </FormLabel>
@@ -730,22 +729,22 @@ const ReviewEG = () => {
                 name="outcomeImpact"
                 onChange={handleChange}
                 value={formData.outcomeImpact}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Goal of the project */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Goal of the project</FormLabel>
               <Textarea
                 name="projectGoal"
                 onChange={handleChange}
                 value={formData.projectGoal}
-                readOnly
+                required
               />
             </FormControl>
             {/* Objectives of the project */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Objectives of the project</FormLabel>
               <Table variant="simple" mb={4}>
                 <Thead>
@@ -761,16 +760,16 @@ const ReviewEG = () => {
                           type="text"
                           value={objective}
                           onChange={(e) => handleChange(e, index)}
-                          readOnly
+                          required
                         />
                       </Td>
                     </Tr>
                   ))}
                 </Tbody>
               </Table>
-              {/* <Button onClick={handleAddObjective} colorScheme="teal">
+              <Button onClick={handleAddObjective} colorScheme="teal">
                 Add Objective
-              </Button> */}
+              </Button>
             </FormControl>
             {PeopleDetailsTable()}
             <Heading as="h1" size="xl" mb={6}>
@@ -779,7 +778,7 @@ const ReviewEG = () => {
             {TargetGroupInformationTable()}
             {TargetGroupStudiesTable()}
             {/* Other Proposed Activities */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>
                 Apart from academic studies, what are the other proposed
                 activities for the overall development of the beneficiary
@@ -789,12 +788,12 @@ const ReviewEG = () => {
                 name="otherActivities"
                 onChange={handleChange}
                 value={formData.otherActivities}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Monitoring Methods */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>
                 Propose the methods of monitoring the beneficiary's overall
                 growth and development:
@@ -803,12 +802,12 @@ const ReviewEG = () => {
                 name="monitoringMethods"
                 onChange={handleChange}
                 value={formData.monitoringMethods}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Evaluation Process and Responsible Person */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>
                 Mention the process of evaluation of the growth of the
                 beneficiaries and who would be responsible.
@@ -817,18 +816,18 @@ const ReviewEG = () => {
                 name="evaluationProcess"
                 onChange={handleChange}
                 value={formData.evaluationProcess}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Conclusion */}
-            <FormControl >
+            <FormControl isRequired>
               <FormLabel>Conclusion</FormLabel>
               <Textarea
                 name="conclusion"
                 onChange={handleChange}
                 value={formData.conclusion}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -836,14 +835,30 @@ const ReviewEG = () => {
               Signatures
             </Heading>
 
+            {/* Project Coordinator agreement */}
+            {/* <FormControl isRequired>
+    <Checkbox
+      name="projectCoordinatorAgreement"
+      onChange={handleChange}
+      size="lg"
+    >
+      The Project Coordinator agree
+    </Checkbox>
+    <Input
+      type="date"
+      name="projectCoordinatorAgreementDate"
+      onChange={handleChange}
+      required
+    />
+  </FormControl> */}
+
             {/* Project-In-Charge agreement */}
-            <FormControl >
+            <FormControl isRequired>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
                 size="lg"
                 defaultChecked={formData.projectInChargeAgreement}
-                readOnly
               >
                 The Project-In-Charge agree
               </Checkbox>
@@ -852,17 +867,15 @@ const ReviewEG = () => {
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
                 value={formData.projectInChargeAgreementDate}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Provincial Superior agreement */}
-            <FormControl isRequired>
+            {/* <FormControl isRequired>
     <Checkbox
       name="provincialSuperiorAgreement"
       onChange={handleChange}
-      value={formData.provincialSuperiorAgreement}
-     
       size="lg"
     >
       The Provincial Superior agree
@@ -871,34 +884,19 @@ const ReviewEG = () => {
       type="date"
       name="provincialSuperiorAgreementDate"
       onChange={handleChange}
-      value={formData.provincialSuperiorAgreementDate}
-required
-      
+      required
     />
   </FormControl>
-          {/* Comment */}
-          <FormControl isRequired>
-              <FormLabel>Comment(For Reviewer)</FormLabel>
-              <Input
-                type="text"
-                name="comment"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+           */}
           </VStack>
 
-            {/* Submit Button */}
-            <Button colorScheme="blue" mx={3} type="submit">
+          {/* Submit Button */}
+          <Button colorScheme="blue" type="submit">
             Submit
-          </Button>
-          {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
           </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ReviewEG;
+export default EditEG;

@@ -654,7 +654,7 @@ const ViewProject = () => {
             </FormControl>
           </VStack>
 
-          {/* Submit Button */}
+          {/* Print Button */}
             <Button
               onClick={() => window.print()}
               colorScheme="blue"
