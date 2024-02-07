@@ -15,6 +15,7 @@ import {
 import { Formik, Form } from 'formik';
 import useLogOut from '../hooks/logout';
 import authAxios from "../AuthAxios.js";
+import {useParams} from 'react-router-dom';
 
 const ProfilePageApprover = () => {
   const showToast = useToast();
@@ -23,41 +24,16 @@ const ProfilePageApprover = () => {
   const [changedPassword, setChangedPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const userData = JSON.parse(decodeURIComponent(useParams().profile))
  
   const [userDetails, setUserDetails] = useState({
-    name: "",
-    email: "",
-    mobileNumber: "",
+    name: userData.name , 
+    email: userData.email,
+    mobileNumber: userData.mobile,
     newPassword: "",
     confirmPassword: "",
   });
-  useEffect(() => {
-    const getApproversData = async () => {
-      try {
-        const approversData = await authAxios.get("users/getApprover");
-        if(approversData.data.success === false) return; 
-        setUserDetails((prevDetails) => {
-          console.log("Setting user details", prevDetails);
-          return {
-            ...prevDetails,
-            name: approversData.data.data.name,
-            email: approversData.data.data.email,
-            mobileNumber: approversData.data.data.mobile,
-          };
-        });
-        console.log("userDetails", userDetails);
-      } catch (error) {
-        showToast({
-          title: "Error getting applicant data",
-          duration: 500,
-          isClosable: true,
-          status: "error",
-        });
-      }
-    };
-    getApproversData();
-    return () => {};
-  } , []);
+  
 
   const handleToggleChangePassword = () => {
     setShowChangePassword(!showChangePassword);

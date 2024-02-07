@@ -124,7 +124,7 @@ const App = () => {
           <Route path="/MonthlyReportDevelopment" element={<MonthlyReportDevelopmentProject />} />
           <Route path="/profileApplicant/:userDetails" element={<ProfilePageApplicant />} />
           <Route path="/profileReviewer" element={<ProfilePageReviewer />} />
-          <Route path="/profileApprover" element={<ProfilePageApprover />} />
+          <Route path="/profileApprover/profile" element={<ProfilePageApprover />} />
           <Route path="/registerApprover" element={<RegisterApproverPage />} />
           <Route path="/dashboardApplicant" element={<DashboardApplicant />} />
           <Route path="/dashboardReviewer" element={<DashboardReviewer />} />
@@ -135,7 +135,7 @@ const App = () => {
           <Route path="/groupProjects/:selectedAppostolate" element={<GroupProjects  />} />
           <Route path="/myProjects" element={<MyProjects/>} />
           <Route path="/projectsToBeReviewed" element={<ProjectsToBeReviewed/>} />
-          <Route path="/ProjectsToBeApproved" element={<ProjectsToBeApproved/>} />
+          <Route path="/ProjectsToBeApproved/:profile" element={<ProjectsToBeApproved/>} />
           <Route path="/MyReviewedProject" element={<MyReviewedProject/>} />
           <Route path="/ApprovedProjects" element={<ApprovedProjects/>} />
           <Route path="/ApprovedProjectsForReviewer" element={<ApprovedProjectsForReviewer reviewerProvince="north" />} />
