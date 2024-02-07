@@ -572,6 +572,28 @@ const ReviewHIV = () => {
                     readOnly
                   />
                 </Td>
+                
+              </Tr>{/* Row 2 */}
+              <Tr>
+                <Td>Project Incharge</Td>
+                <Td>
+                  <Input
+                    type="text"
+                    name="mailingList.projectInCharge.name"
+                    onChange={handleChange}
+                    value={formData.mailingList.projectInCharge.name || ""}
+                    readOnly
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="email"
+                    name="mailingList.projectInCharge.email"
+                    onChange={handleChange}
+                    value={formData.mailingList.projectInCharge.email || ""}
+                    readOnly
+                  />
+                </Td>
               </Tr>
 
               {/* Project Coordinators */}
@@ -1680,7 +1702,7 @@ const ReviewHIV = () => {
               value={formData.provincialSuperiorAgreementDate}
               required
             />
-          </FormControl>
+          </FormControl>*/}
           <FormControl isRequired>
             <FormLabel>Comment(For Reviewer)</FormLabel>
             <Input
@@ -1691,7 +1713,7 @@ const ReviewHIV = () => {
               required
             />
           </FormControl> 
-          */}
+          
 
           {/* Submit Button */}
           <Button

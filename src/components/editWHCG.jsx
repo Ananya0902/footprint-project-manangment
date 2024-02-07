@@ -18,595 +18,411 @@ import {
   Tbody,
   Tr,
   Th,
+  useToast,
   Td,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
+import { useParams } from "react-router-dom";
 
 const EditWHCG = () => {
+  const projectData = JSON.parse(
+    decodeURIComponent(useParams().project || "{}")
+  );
   const [formData, setFormData] = useState({
-    projectTitle: "",
-    projectRegion: "",
-    institutionName: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    presidentOfSocietyName: "",
-    presidentOfSocietyEmail: "",
-    goalOfInstitution: "",
-    rational: "",
-    totalChildren: { previousYear: "", presentYear: "" },
-    rehabilitatedWithGuardians: { previousYear: "", presentYear: "" },
-    shiftedToOtherNGOs: { previousYear: "", presentYear: "" },
-    pursuingHigherStudies: { previousYear: "", presentYear: "" },
-    settledInLife: { previousYear: "", presentYear: "" },
-    settledAndWorking: { previousYear: "", presentYear: "" },
-    otherCategory: { previousYear: "", presentYear: "" },
-    bridgeEducationPreviousYear: "",
-    bridgeEducationPresentYear: "",
-    kindergartenPreviousYear: "",
-    kindergartenPresentYear: "",
-    otherEducationPreviousYear: "",
-    otherEducationPresentYear: "",
-    bridgeSchoolPreviousYear: "",
-    bridgeSchoolPresentYear: "",
-    primarySchoolPreviousYear: "",
-    primarySchoolPresentYear: "",
-    otherEducation610PreviousYear: "",
-    otherEducation610PresentYear: "",
-    secondarySchoolPreviousYear: "",
-    secondarySchoolPresentYear: "",
-    highSchoolPreviousYear: "",
-    highSchoolPresentYear: "",
-    otherEducation1115PreviousYear: "",
-    otherEducation1115PresentYear: "",
-    undergraduatePreviousYear: "",
-    undergraduatePresentYear: "",
-    technicalVocationalEducationPreviousYear: "",
-    technicalVocationalEducationPresentYear: "",
-    youth16AndAbovebridgeSchoolPreviousYear: "",
-    youth16AndAbovebridgeSchoolPresentYear: "",
-    otherEducation16AbovePreviousYear: "",
-    otherEducation16AbovePresentYear: "",
+    projectTitle: projectData.project_title || "",
+    projectRegion: projectData.general_information.project_region || "",
+    institutionName: projectData.general_information.institution_name || "",
+    overallProjectPeriod:
+      projectData.general_information.overall_project_period || "",
+    overallProjectBudget:
+      projectData.general_information.overall_project_budget || "",
+    projectInChargeName: projectData.mailing_list.project_in_charge.ref.name,
+    projectInChargeEmail: projectData.mailing_list.project_in_charge.ref.email,
+    presidentOfSocietyName:
+      projectData.mailing_list.president_of_the_society.name || "",
+    presidentOfSocietyEmail:
+      projectData.mailing_list.president_of_the_society.email || "",
+    goalOfInstitution:
+      projectData.key_information.goal_purpose_of_institution
+        .goal_and_purpose || "",
+    rational:
+      projectData.key_information.goal_purpose_of_institution.rational || "",
+    totalChildren: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[0].previous_year 
+          || 0,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[0].present_year,
+    },
+    rehabilitatedWithGuardians: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[1].previous_year,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[1].present_year ,
+    },
+    shiftedToOtherNGOs: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[2].previous_year,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[2].present_year ,
+    },
+    pursuingHigherStudies: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[3].previous_year ,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[3].present_year,
+    },
+    settledInLife: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[4].previous_year,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[4].present_year,
+    },
+    settledAndWorking: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[5].previous_year,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[5].present_year,
+    },
+    otherCategory: {
+      previousYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[6].previous_year,
+      presentYear:
+        projectData.key_information
+          .statistics_of_passed_out_rehabilitated_children[6].present_year,
+    },
+    bridgeEducationPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[0]
+        .previous_year || 0,
+    bridgeEducationPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[0]
+        .present_academic_year || 0,
+    kindergartenPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[1]
+        .previous_year || 0,
+    kindergartenPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[1]
+        .present_academic_year || 0,
+    otherEducationPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[2]
+        .previous_year || 0,
+    otherEducationPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[2]
+        .present_academic_year || 0,
+    bridgeSchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[3]
+        .previous_year || 0,
+    bridgeSchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[3]
+        .present_academic_year || 0,
+    primarySchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[4]
+        .previous_year || 0,
+    primarySchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[4]
+        .present_academic_year || 0,
+    otherEducation610PreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[5]
+        .previous_year || 0,
+    otherEducation610PresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[5]
+        .present_academic_year || 0,
+    secondarySchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[6]
+        .previous_year || 0,
+    secondarySchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[6]
+        .present_academic_year || 0,
+    highSchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[7]
+        .previous_year || 0,
+    highSchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[7]
+        .present_academic_year || 0,
+    otherEducation1115PreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[8]
+        .previous_year || 0,
+    otherEducation1115PresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[8]
+        .present_academic_year || 0,
+    undergraduatePreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[9]
+        .previous_year || 0,
+    undergraduatePresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[9]
+        .present_academic_year || 0,
+    technicalVocationalEducationPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[10]
+        .previous_year || 0,
+    technicalVocationalEducationPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[10]
+        .present_academic_year || 0,
+    otherEducation16AbovePreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[11]
+        .previous_year || 0,
+    otherEducation16AbovePresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[11]
+        .present_academic_year || 0,
+    youth16AndAbovebridgeSchoolPreviousYear:
+      projectData.key_information.age_profile_of_children_and_youth[12]
+        .previous_year || 0,
+    youth16AndAbovebridgeSchoolPresentYear:
+      projectData.key_information.age_profile_of_children_and_youth[12]
+        .present_academic_year || 0,
     personalSituation: {
-      childrenWithParentsPreviousYear: "",
-      childrenWithParentsPresentYear: "",
-      semiOrphansPreviousYear: "",
-      semiOrphansPresentYear: "",
-      orphansPreviousYear: "",
-      orphansPresentYear: "",
-      hivInfectedAffectedPreviousYear: "",
-      hivInfectedAffectedPresentYear: "",
-      differentlyAbledChildrenPreviousYear: "",
-      differentlyAbledChildrenPresentYear: "",
-      parentsInConflictPreviousYear: "",
-      parentsInConflictPresentYear: "",
-      otherAlimentsPreviousYear: "",
-      otherAlimentsPresentYear: "",
+      childrenWithParentsPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[0]
+          .previous_year || 0,
+      childrenWithParentsPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[0]
+          .present_academic_year || 0,
+      semiOrphansPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[1]
+          .previous_year || 0,
+      semiOrphansPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[1]
+          .present_academic_year || 0,
+      orphansPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[2]
+          .previous_year || 0,
+      orphansPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[2]
+          .present_academic_year || 0,
+      hivInfectedAffectedPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[3]
+          .previous_year || 0,
+      hivInfectedAffectedPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[3]
+          .present_academic_year || 0,
+      differentlyAbledChildrenPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[4]
+          .previous_year || 0,
+      differentlyAbledChildrenPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[4]
+          .present_academic_year || 0,
+      parentsInConflictPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[5]
+          .previous_year || 0,
+      parentsInConflictPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[5]
+          .present_academic_year || 0,
+      otherAlimentsPreviousYear:
+        projectData.key_information.personal_situation_of_children_youth[6]
+          .previous_year || 0,
+      otherAlimentsPresentYear:
+        projectData.key_information.personal_situation_of_children_youth[6]
+          .present_academic_year || 0,
     },
     economicBackground: {
-      agriculturalLabour: "",
-      marginalFarmers: "",
-      parentsSelfEmployed: "",
-      parentsInformalSector: "",
-      anyOther: "",
+      agriculturalLabour:
+        projectData.key_information.economic_background_of_parents[0].number ||
+        "",
+      marginalFarmers:
+        projectData.key_information.economic_background_of_parents[1].number ||
+        "",
+      parentsSelfEmployed:
+        projectData.key_information.economic_background_of_parents[2].number ||
+        "",
+      parentsInformalSector:
+        projectData.key_information.economic_background_of_parents[3].number ||
+        "",
+      anyOther:
+        projectData.key_information.economic_background_of_parents[4].number ||
+        "",
     },
     multipleSupport: {
       fundScholarships: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[0]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[0]
+              .number_present_academic_year || 0,
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[1]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[1]
+              .number_present_academic_year || 0,
+        },
       },
       tuitionClothing: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[2]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[2]
+              .number_present_academic_year || 0,
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[3]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[3]
+              .number_present_academic_year || 0,
+        },
       },
       nutrition: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[4]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[4]
+              .number_present_academic_year || 0,
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[5]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[5]
+              .number_present_academic_year || 0,
+        },
       },
       freeResidence: {
-        girls: { previousYear: "", presentYear: "" },
-        boys: { previousYear: "", presentYear: "" },
+        girls: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[6]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[6]
+              .number_present_academic_year || 0,
+        },
+        boys: {
+          previousYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[7]
+              .number_previous_year || 0,
+          presentYear:
+            projectData.key_information
+              .multiple_support_provided_for_integrated_development[7]
+              .number_present_academic_year || 0,
+        },
       },
     },
-    presentSituationinternalChallenges: "",
-    presentSituationexternalChallenges: "",
-    focusAreasDescription: "",
-    monitoringProcess: "",
-    sustainability: "",
-    staff: "",
-    projectInChargeAgreement: "",
-    projectInChargeAgreementDate: "",
+    presentSituationinternalChallenges:
+      projectData.present_situation_of_inmates
+        .internal_challenges_and_present_difficulties || "",
+    presentSituationexternalChallenges:
+      projectData.present_situation_of_inmates
+        .external_challenges_and_present_difficulties || "",
+    focusAreasDescription: projectData.focus_areas_in_present_year || "",
+    monitoringProcess: projectData.monitoring_and_evaluation || "",
+    sustainability: projectData.sustainability || "",
+    staff: projectData.staff || "",
+    projectInChargeAgreement:
+      projectData.mailing_list.project_in_charge.agree || "",
+    projectInChargeAgreementDate:
+      projectData.mailing_list.project_in_charge.date.substring(0, 10) || "",
+    provincialSuperiorAgreement: false,
     logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
+      goal: projectData.solution_analysis_logical_framework.goal || "",
+      objectives:
+        projectData.solution_analysis_logical_framework.objectives.map(
+          (objective) => ({
+            objective: objective.objective || "",
+            results: objective.results || [""],
+            activities: objective.activities || [],
+          })
+        ),
     },
   });
-  const [selectedMonths, setSelectedMonths] = useState([]);
-  const [achievements, setAchievements] = useState({
-    academic: [],
-    sport: [],
-    other: [],
-  });
-  // State to manage dynamic rows in the budget table
-  const [budgetRows, setBudgetRows] = useState([
-    { description: "", costsLastYear: "", budgetCurrentYear: "" },
-  ]);
-
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // Function to handle changes in the budget table
-  const handleBudgetChange = (index, field, value) => {
-    const updatedRows = [...budgetRows];
-    updatedRows[index][field] = value;
-    setBudgetRows(updatedRows);
+  const showToast = useToast();
+  // Populating budgetRows
+  const budgetRows = projectData.budget.budget_particular.map((budgetItem) => ({
+    description: budgetItem.expense_description || "",
+    costsLastYear: budgetItem.costs_last_year || "",
+    budgetCurrentYear: budgetItem.budget_current_year || "",
+  }));
+  const achievements = {
+    academic:
+      projectData.key_information.achievements_of_school_and_college_children
+        ?.academic_achievements || [],
+    sport:
+      projectData.key_information.achievements_of_school_and_college_children
+        .sport_achievements || [],
+    other:
+      projectData.key_information.achievements_of_school_and_college_children
+        .other_achievements || [],
   };
 
-  // Function to add a new row to the budget table
-  const handleAddBudgetRow = () => {
-    setBudgetRows([
-      ...budgetRows,
-      { description: "", costsLastYear: "", budgetCurrentYear: "" },
-    ]);
-  };
+  // Assuming res contains the response from the GET API
+  // Parse the response and set the state variables
 
-  // Function to calculate total costs for last year and current year
+  // Parsing the response and setting the state variable
+
   const calculateTotalCosts = (field) => {
     return budgetRows
       .reduce((total, row) => total + parseFloat(row[field]) || 0, 0)
       .toFixed(2);
   };
-  const handleAddObjective = () => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives.push({
-      objective: "",
-      results: [""],
-      activities: [],
-    });
-    setFormData(updatedData);
-  };
 
-  const handleAddResult = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].results.push("");
-    setFormData(updatedData);
-  };
-
-  const handleAddActivity = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].activities.push({
-      activity: "",
-      verification: "",
-      indicator: "",
-      timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
-    });
-    setFormData(updatedData);
-  };
-
-  const handleAddAchievement = (category) => {
-    setAchievements((prevAchievements) => ({
-      ...prevAchievements,
-      [category]: [...prevAchievements[category],""],
-    }));
-  };
-
-  const handleAchievementChange = (category, index, value) => {
-    setAchievements((prevAchievements) => {
-      const updatedAchievements = [...prevAchievements[category]];
-      updatedAchievements[index] = value;
-      return { ...prevAchievements, [category]: updatedAchievements };
-    });
-  };
-  const handleChangePersonalSituation = (e, category, year) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      personalSituation: {
-        ...prevData.personalSituation,
-        [`${category}${year}`]: e.target.value,
-      },
-    }));
-  };
-
-  const handleChangeEconomicBackground = (e, field) => {
-    const updatedData = { ...formData };
-    updatedData.economicBackground[field] = e.target.value;
-    setFormData(updatedData);
-  };
-  const handleChangeMultipleSupport = (e, category, gender, year) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      multipleSupport: {
-        ...prevData.multipleSupport,
-        [category]: {
-          ...prevData.multipleSupport[category],
-          [gender]: {
-            ...prevData.multipleSupport[category][gender],
-            [year]: e.target.value,
-          },
-        },
-      },
-    }));
-  };
-
-  const handleChangeStatisticTable = (e, category) => {
-    const year = e.target.getAttribute("data-year");
-    const value = e.target.value;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [category]: {
-        ...prevData[category],
-        [year]: value,
-      },
-    }));
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleChangeObjective = (e, index, subIndex) => {
-    const updatedData = { ...formData };
-
-    if (e.target.name === "goal") {
-      updatedData.logicalFramework.goal = e.target.value;
-    } else if (e.target.name === "objective") {
-      updatedData.logicalFramework.objectives[index].objective = e.target.value;
-    } else if (e.target.name === "result") {
-      updatedData.logicalFramework.objectives[index].results[subIndex] =
-        e.target.value;
-    } else if (e.target.name === "activity") {
-      updatedData.logicalFramework.objectives[index].activities[
-        subIndex
-      ].activity = e.target.value;
-    } else if (e.target.name === "verification") {
-      updatedData.logicalFramework.objectives[index].activities[
-        subIndex
-      ].verification = e.target.value;
-    } else if (e.target.name === "indicator") {
-      updatedData.logicalFramework.objectives[index].activities[
-        subIndex
-      ].indicator = e.target.value;
-    }
-
-    setFormData(updatedData);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // find budget total
-    const budgetTotal = {
-      costs_last_year: 0,
-      budget_current_year: 0,
-    };
-
-    const req = {
-      project_title: formData.projectTitle,
-      general_information: {
-        project_region: formData.projectRegion,
-        institution_name: formData.institutionName,
-        overall_project_period: formData.overallProjectPeriod,
-        overall_project_budget: formData.overallProjectBudget,
-      },
-      mailing_list: {
-        president_of_the_society: {
-          name: formData.presidentOfSocietyName,
-          email: formData.presidentOfSocietyEmail,
-        },
-      },
-      key_information: {
-        goal_purpose_of_institution: {
-          goal_and_purpose: formData.goalOfInstitution,
-          rational: formData.rational,
-        },
-        statistics_of_passed_out_rehabilitated_children: [
-          {
-            description: "Total number of children in the institution",
-            previous_year: formData.totalChildren.previousYear,
-            present_year: formData.totalChildren.presentYear,
-          },
-          {
-            description:
-              "Children who are rehabilitated with their guardians/parents",
-            previous_year: formData.rehabilitatedWithGuardians.previousYear,
-            present_year: formData.rehabilitatedWithGuardians.presentYear,
-          },
-          {
-            description: "Children who are shifted to other NGOs / Govt",
-            previous_year: formData.shiftedToOtherNGOs.previousYear,
-            present_year: formData.shiftedToOtherNGOs.presentYear,
-          },
-          {
-            description: "Children who are pursuing higher studies outside",
-            previous_year: formData.pursuingHigherStudies.previousYear,
-            present_year: formData.pursuingHigherStudies.presentYear,
-          },
-          {
-            description:
-              "Children who completed the studies and settled down in life (i.e. married etc.)",
-            previous_year: formData.settledInLife.previousYear,
-            present_year: formData.settledInLife.presentYear,
-          },
-          {
-            description: "Children who are now settled and working",
-            previous_year: formData.settledAndWorking.previousYear,
-            present_year: formData.settledAndWorking.presentYear,
-          },
-          {
-            description: "Any other category kindly mention",
-            previous_year: formData.otherCategory.previousYear,
-            present_year: formData.otherCategory.presentYear,
-          },
-        ],
-        age_profile_of_children_and_youth: [
-          {
-            age_category: "Children below 5 years",
-            education: "Bridge education",
-            present_academic_year: formData.bridgeEducationPresentYear,
-            previous_year: formData.bridgeEducationPreviousYear,
-          },
-          {
-            age_category: "Children below 5 years",
-            education: "Kindergarten",
-            present_academic_year: formData.kindergartenPresentYear,
-            previous_year: formData.kindergartenPreviousYear,
-          },
-          {
-            age_category: "Children below 5 years",
-            education: "Other",
-            present_academic_year: formData.otherEducationPresentYear,
-            previous_year: formData.otherEducationPreviousYear,
-          },
-          {
-            age_category: "Children between 6 to 10 years",
-            education: "Bridge School",
-            present_academic_year: formData.bridgeSchoolPresentYear,
-            previous_year: formData.bridgeSchoolPreviousYear,
-          },
-          {
-            age_category: "Children between 6 to 10 years",
-            education: "Primary School",
-            present_academic_year: formData.primarySchoolPresentYear,
-            previous_year: formData.primarySchoolPreviousYear,
-          },
-          {
-            age_category: "Children between 6 to 10 years",
-            education: "Other",
-            present_academic_year: formData.otherEducation610PresentYear,
-            previous_year: formData.otherEducation610PreviousYear,
-          },
-          {
-            age_category: "Youth between 11 to 15 years old",
-            education: "Secondary School",
-            present_academic_year: formData.secondarySchoolPresentYear,
-            previous_year: formData.secondarySchoolPreviousYear,
-          },
-          {
-            age_category: "Youth between 11 to 15 years old",
-            education: "High School",
-            present_academic_year: formData.highSchoolPresentYear,
-            previous_year: formData.highSchoolPreviousYear,
-          },
-          {
-            age_category: "Youth between 11 to 15 years old",
-            education: "Other",
-            present_academic_year: formData.otherEducation1115PresentYear,
-            previous_year: formData.otherEducation1115PreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Undergraduate",
-            present_academic_year: formData.undergraduatePresentYear,
-            previous_year: formData.undergraduatePreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Technical/Vocational Education",
-            present_academic_year:
-              formData.technicalVocationalEducationPresentYear,
-            previous_year: formData.technicalVocationalEducationPreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Other",
-            present_academic_year: formData.otherEducation16AbovePresentYear,
-            previous_year: formData.otherEducation16AbovePreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Bridge School",
-            present_academic_year:
-              formData.youth16AndAbovebridgeSchoolPresentYear,
-            previous_year: formData.youth16AndAbovebridgeSchoolPreviousYear,
-          },
-        ],
-        personal_situation_of_children_youth: [
-          {
-            description: "Children/students with parents",
-            previous_year:
-              formData.personalSituation.childrenWithParentsPreviousYear,
-            present_academic_year:
-              formData.personalSituation.childrenWithParentsPresentYear,
-          },
-          {
-            description: "Semi-orphans (living with relatives)",
-            previous_year: formData.personalSituation.semiOrphansPreviousYear,
-            present_academic_year:
-              formData.personalSituation.semiOrphansPresentYear,
-          },
-          {
-            description: "Orphans",
-            previous_year: formData.personalSituation.orphansPreviousYear,
-            present_academic_year:
-              formData.personalSituation.orphansPresentYear,
-          },
-          {
-            description: "HIV-infected/affected",
-            previous_year:
-              formData.personalSituation.hivInfectedAffectedPreviousYear,
-            present_academic_year:
-              formData.personalSituation.hivInfectedAffectedPresentYear,
-          },
-          {
-            description: "Differently-abled children",
-            previous_year:
-              formData.personalSituation.differentlyAbledChildrenPreviousYear,
-            present_academic_year:
-              formData.personalSituation.differentlyAbledChildrenPresentYear,
-          },
-          {
-            description: "Parents in conflict",
-            previous_year:
-              formData.personalSituation.parentsInConflictPreviousYear,
-            present_academic_year:
-              formData.personalSituation.parentsInConflictPresentYear,
-          },
-          {
-            description: "Other aliments",
-            previous_year: formData.personalSituation.otherAlimentsPreviousYear,
-            present_academic_year:
-              formData.personalSituation.otherAlimentsPresentYear,
-          },
-        ],
-        economic_background_of_parents: [
-          {
-            description: "Agricultural Labour",
-            number: formData.economicBackground.agriculturalLabour,
-          },
-          {
-            description:
-              "Marginal farmers (Number of parents with less than two and half acres of land)",
-            number: formData.economicBackground.marginalFarmers,
-          },
-          {
-            description: "Parents self-employed",
-            number: formData.economicBackground.parentsSelfEmployed,
-          },
-          {
-            description: "Parents working in the informal sector",
-            number: formData.economicBackground.parentsInformalSector,
-          },
-          {
-            description: "Any other",
-            number: formData.economicBackground.anyOther,
-          },
-        ],
-        multiple_support_provided_for_integrated_development: [
-          {
-            form_of_support: "Fund/scholarships",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.fundScholarships.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.fundScholarships.girls.presentYear,
-          },
-          {
-            form_of_support: "Fund/scholarships",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.fundScholarships.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.fundScholarships.boys.presentYear,
-          },
-          {
-            form_of_support: "Tuition and clothing",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.tuitionClothing.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.tuitionClothing.girls.presentYear,
-          },
-          {
-            form_of_support: "Tuition and clothing",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.tuitionClothing.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.tuitionClothing.boys.presentYear,
-          },
-          {
-            form_of_support: "Nutrition",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.nutrition.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.nutrition.girls.presentYear,
-          },
-          {
-            form_of_support: "Nutrition",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.nutrition.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.nutrition.boys.presentYear,
-          },
-          {
-            form_of_support: "Free Residence",
-            gender: "Girls",
-            number_previous_year:
-              formData.multipleSupport.freeResidence.girls.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.freeResidence.girls.presentYear,
-          },
-          {
-            form_of_support: "Free Residence",
-            gender: "Boys",
-            number_previous_year:
-              formData.multipleSupport.freeResidence.boys.previousYear,
-            number_present_academic_year:
-              formData.multipleSupport.freeResidence.boys.presentYear,
-          },
-        ],
-        achievements_of_school_and_college_children: {
-          academic_achievements: achievements.academic,
-          sport_achievements: achievements.sport,
-          other_achievements: achievements.other,
-        },
-      },
-      present_situation_of_inmates: {
-        internal_challenges_and_present_difficulties:
-          formData.presentSituationexternalChallenges,
-        external_challenges_and_present_difficulties:
-          formData.presentSituationexternalChallenges,
-      },
-      focus_areas_in_present_year: formData.focusAreasDescription,
-      solution_analysis_logical_framework: formData.logicalFramework,
-      staff: formData.staff,
-      sustainability: formData.sustainability,
-      monitoring_and_evaluation: formData.monitoringProcess,
-      budget: {
-        budget_particular: budgetRows.map((budget) => {
-          budgetTotal.costs_last_year += budget.costsLastYear;
-          budgetTotal.budget_current_year += budget.budgetCurrentYear;
-          return {
-            expense_description: budget.description,
-            costs_last_year: budget.costsLastYear,
-            budget_current_year: budget.budgetCurrentYear,
-          };
-        }),
-        total: budgetTotal,
-      },
-    };
-
-    console.log(req);
+    console.log("submit");
     try {
-      const res = await authAxios.post(
-        '/projects/createWHFC/' , req
-      );
-      console.log(res);
-      
-    } catch (error) {
-      console.log(error)
+      const res = await authAxios.put("/projects/editWHFCReviewer", {
+        comment: formData.provincialSuperiorComment,
+        agree: formData.provincialSuperiorAgreement,
+        project_number: projectData.project_number,
+      });
+      console.log(res.data);
+      if (res.data.success) {
+        showToast({
+          title: "Review succesful",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        showToast({
+          title: "Review unsuccesful",
+          duration: 5000,
+          status: "error",
+        });
+      }
+    } catch (e) {
+      console.log(e.response);
+      showToast({
+        title: "Review unsuccesful",
+        duration: 5000,
+        status: "error",
+      });
     }
-    setIsSubmitted(true);
   };
 
   return (
@@ -632,7 +448,7 @@ const EditWHCG = () => {
             <Input
               type="text"
               name="projectTitle"
-              onChange={handleChange}
+              required
               value={formData.projectTitle || ""}
             />
           </FormControl>
@@ -647,18 +463,17 @@ const EditWHCG = () => {
             <Input
               type="text"
               name="projectRegion"
-              onChange={handleChange}
+              required
               value={formData.projectRegion || ""}
             />
           </FormControl>
-
 
           <FormControl mb={4}>
             <FormLabel>Institution Name</FormLabel>
             <Input
               type="text"
               name="institutionName"
-              onChange={handleChange}
+              required
               value={formData.institutionName || ""}
             />
           </FormControl>
@@ -668,7 +483,7 @@ const EditWHCG = () => {
             <Input
               type="text"
               name="overallProjectPeriod"
-              onChange={handleChange}
+              required
               value={formData.overallProjectPeriod || ""}
             />
           </FormControl>
@@ -678,7 +493,7 @@ const EditWHCG = () => {
             <Input
               type="text"
               name="overallProjectBudget"
-              onChange={handleChange}
+              required
               value={formData.overallProjectBudget || ""}
             />
           </FormControl>
@@ -699,12 +514,31 @@ const EditWHCG = () => {
             <Tbody>
               {/* Row 1 */}
               <Tr>
+                <Td>Project Incharge</Td>
+                <Td>
+                  <Input
+                    type="text"
+                    name="Name of the Project In Charge"
+                    required
+                    value={formData.projectInChargeName || ""}
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="email"
+                    name="Email Of project in charge"
+                    required
+                    value={formData.projectInChargeEmail || ""}
+                  />
+                </Td>
+              </Tr>
+              <Tr>
                 <Td>President of the Society</Td>
                 <Td>
                   <Input
                     type="text"
                     name="presidentOfSocietyName"
-                    onChange={handleChange}
+                    required
                     value={formData.presidentOfSocietyName || ""}
                   />
                 </Td>
@@ -712,7 +546,7 @@ const EditWHCG = () => {
                   <Input
                     type="email"
                     name="presidentOfSocietyEmail"
-                    onChange={handleChange}
+                    required
                     value={formData.presidentOfSocietyEmail || ""}
                   />
                 </Td>
@@ -742,7 +576,7 @@ const EditWHCG = () => {
             <FormLabel>Goal / Purpose of the Institution</FormLabel>
             <Textarea
               name="goalOfInstitution"
-              onChange={handleChange}
+              required
               value={formData.goalOfInstitution || ""}
             />
           </FormControl>
@@ -754,7 +588,7 @@ const EditWHCG = () => {
             </FormLabel>
             <Textarea
               name="rational"
-              onChange={handleChange}
+              required
               value={formData.rational || ""}
             />
           </FormControl>
@@ -781,10 +615,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="totalChildren"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "totalChildren")
-                    }
-                    value={formData.totalChildren.previousYear || ""}
+                    required
+                    value={formData.totalChildren.previousYear}
                   />
                 </Td>
                 <Td>
@@ -792,10 +624,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="totalChildren"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "totalChildren")
-                    }
-                    value={formData.totalChildren.presentYear || ""}
+                    required
+                    value={formData.totalChildren.presentYear}
                   />
                 </Td>
               </Tr>
@@ -810,14 +640,9 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="rehabilitatedWithGuardians"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(
-                        e,
-                        "rehabilitatedWithGuardians"
-                      )
-                    }
+                    required
                     value={
-                      formData.rehabilitatedWithGuardians.previousYear || ""
+                      formData.rehabilitatedWithGuardians.previousYear 
                     }
                   />
                 </Td>
@@ -826,14 +651,9 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="rehabilitatedWithGuardians"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(
-                        e,
-                        "rehabilitatedWithGuardians"
-                      )
-                    }
+                    required
                     value={
-                      formData.rehabilitatedWithGuardians.presentYear || ""
+                      formData.rehabilitatedWithGuardians.presentYear 
                     }
                   />
                 </Td>
@@ -847,10 +667,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="shiftedToOtherNGOs"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "shiftedToOtherNGOs")
-                    }
-                    value={formData.shiftedToOtherNGOs.previousYear || ""}
+                    required
+                    value={formData.shiftedToOtherNGOs.previousYear}
                   />
                 </Td>
                 <Td>
@@ -858,10 +676,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="shiftedToOtherNGOs"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "shiftedToOtherNGOs")
-                    }
-                    value={formData.shiftedToOtherNGOs.presentYear || ""}
+                    required
+                    value={formData.shiftedToOtherNGOs.presentYear}
                   />
                 </Td>
               </Tr>
@@ -874,10 +690,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="pursuingHigherStudies"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "pursuingHigherStudies")
-                    }
-                    value={formData.pursuingHigherStudies.previousYear || ""}
+                    required
+                    value={formData.pursuingHigherStudies.previousYear}
                   />
                 </Td>
                 <Td>
@@ -885,10 +699,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="pursuingHigherStudies"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "pursuingHigherStudies")
-                    }
-                    value={formData.pursuingHigherStudies.presentYear || ""}
+                    required
+                    value={formData.pursuingHigherStudies.presentYear}
                   />
                 </Td>
               </Tr>
@@ -904,10 +716,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="settledInLife"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledInLife")
-                    }
-                    value={formData.settledInLife.previousYear || ""}
+                    required
+                    value={formData.settledInLife.previousYear }
                   />
                 </Td>
                 <Td>
@@ -915,10 +725,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="settledInLife"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledInLife")
-                    }
-                    value={formData.settledInLife.presentYear || ""}
+                    required
+                    value={formData.settledInLife.presentYear }
                   />
                 </Td>
               </Tr>
@@ -931,10 +739,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="settledAndWorking"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledAndWorking")
-                    }
-                    value={formData.settledAndWorking.previousYear || ""}
+                    required
+                    value={formData.settledAndWorking.previousYear }
                   />
                 </Td>
                 <Td>
@@ -942,10 +748,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="settledAndWorking"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "settledAndWorking")
-                    }
-                    value={formData.settledAndWorking.presentYear || ""}
+                    required
+                    value={formData.settledAndWorking.presentYear }
                   />
                 </Td>
               </Tr>
@@ -958,10 +762,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="previousYear"
                     name="otherCategory"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "otherCategory")
-                    }
-                    value={formData.otherCategory.previousYear || ""}
+                    required
+                    value={formData.otherCategory.previousYear }
                   />
                 </Td>
                 <Td>
@@ -969,10 +771,8 @@ const EditWHCG = () => {
                     type="text"
                     data-year="presentYear"
                     name="otherCategory"
-                    onChange={(e) =>
-                      handleChangeStatisticTable(e, "otherCategory")
-                    }
-                    value={formData.otherCategory.presentYear || ""}
+                    required
+                    value={formData.otherCategory.presentYear }
                   />
                 </Td>
               </Tr>
@@ -1005,7 +805,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="bridgeEducationPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.bridgeEducationPreviousYear || ""}
                   />
                 </Td>
@@ -1013,7 +813,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="bridgeEducationPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.bridgeEducationPresentYear || ""}
                   />
                 </Td>
@@ -1026,7 +826,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="kindergartenPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.kindergartenPreviousYear || ""}
                   />
                 </Td>
@@ -1034,7 +834,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="kindergartenPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.kindergartenPresentYear || ""}
                   />
                 </Td>
@@ -1047,7 +847,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducationPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducationPreviousYear || ""}
                   />
                 </Td>
@@ -1055,7 +855,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducationPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducationPresentYear || ""}
                   />
                 </Td>
@@ -1083,7 +883,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="bridgeSchoolPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.bridgeSchoolPreviousYear || ""}
                   />
                 </Td>
@@ -1091,7 +891,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="bridgeSchoolPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.bridgeSchoolPresentYear || ""}
                   />
                 </Td>
@@ -1104,7 +904,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="primarySchoolPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.primarySchoolPreviousYear || ""}
                   />
                 </Td>
@@ -1112,7 +912,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="primarySchoolPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.primarySchoolPresentYear || ""}
                   />
                 </Td>
@@ -1125,7 +925,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducation610PreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducation610PreviousYear || ""}
                   />
                 </Td>
@@ -1133,7 +933,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducation610PresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducation610PresentYear || ""}
                   />
                 </Td>
@@ -1161,7 +961,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="secondarySchoolPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.secondarySchoolPreviousYear || ""}
                   />
                 </Td>
@@ -1169,7 +969,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="secondarySchoolPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.secondarySchoolPresentYear || ""}
                   />
                 </Td>
@@ -1182,7 +982,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="highSchoolPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.highSchoolPreviousYear || ""}
                   />
                 </Td>
@@ -1190,7 +990,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="highSchoolPresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.highSchoolPresentYear || ""}
                   />
                 </Td>
@@ -1203,7 +1003,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducation1115PreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducation1115PreviousYear || ""}
                   />
                 </Td>
@@ -1211,7 +1011,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducation1115PresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducation1115PresentYear || ""}
                   />
                 </Td>
@@ -1238,7 +1038,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="undergraduatePreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.undergraduatePreviousYear || ""}
                   />
                 </Td>
@@ -1246,7 +1046,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="undergraduatePresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.undergraduatePresentYear || ""}
                   />
                 </Td>
@@ -1257,7 +1057,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="technicalVocationalEducationPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={
                       formData.technicalVocationalEducationPreviousYear || ""
                     }
@@ -1267,7 +1067,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="technicalVocationalEducationPresentYear"
-                    onChange={handleChange}
+                    required
                     value={
                       formData.technicalVocationalEducationPresentYear || ""
                     }
@@ -1280,7 +1080,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="youth16AndAbovebridgeSchoolPreviousYear"
-                    onChange={handleChange}
+                    required
                     value={
                       formData.youth16AndAbovebridgeSchoolPreviousYear || ""
                     }
@@ -1290,7 +1090,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="youth16AndAbovebridgeSchoolPresentYear"
-                    onChange={handleChange}
+                    required
                     value={
                       formData.youth16AndAbovebridgeSchoolPresentYear || ""
                     }
@@ -1303,7 +1103,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducation16AbovePreviousYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducation16AbovePreviousYear || ""}
                   />
                 </Td>
@@ -1311,7 +1111,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherEducation16AbovePresentYear"
-                    onChange={handleChange}
+                    required
                     value={formData.otherEducation16AbovePresentYear || ""}
                   />
                 </Td>
@@ -1340,13 +1140,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="childrenWithParentsPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "childrenWithParents",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .childrenWithParentsPreviousYear || ""
@@ -1357,13 +1151,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="childrenWithParentsPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "childrenWithParents",
-                        "PresentYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .childrenWithParentsPresentYear || ""
@@ -1379,13 +1167,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="semiOrphansPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "semiOrphans",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation.semiOrphansPreviousYear || ""
                     }
@@ -1395,13 +1177,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="semiOrphansPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "semiOrphans",
-                        "PresentYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation.semiOrphansPresentYear || ""
                     }
@@ -1416,13 +1192,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="orphansPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "orphans",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={formData.personalSituation.orphansPreviousYear || ""}
                   />
                 </Td>
@@ -1430,9 +1200,6 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="orphansPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(e, "orphans", "PresentYear")
-                    }
                     value={formData.personalSituation.orphansPresentYear || ""}
                   />
                 </Td>
@@ -1445,13 +1212,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="hivInfectedAffectedPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "hivInfectedAffected",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .hivInfectedAffectedPreviousYear || ""
@@ -1462,13 +1223,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="hivInfectedAffectedPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "hivInfectedAffected",
-                        "PresentYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .hivInfectedAffectedPresentYear || ""
@@ -1484,13 +1239,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="differentlyAbledChildrenPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "differentlyAbledChildren",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .differentlyAbledChildrenPreviousYear || ""
@@ -1501,13 +1250,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="differentlyAbledChildrenPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "differentlyAbledChildren",
-                        "PresentYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .differentlyAbledChildrenPresentYear || ""
@@ -1523,13 +1266,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="parentsInConflictPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "parentsInConflict",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation
                         .parentsInConflictPreviousYear || ""
@@ -1540,13 +1277,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="parentsInConflictPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "parentsInConflict",
-                        "PresentYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation.parentsInConflictPresentYear ||
                       ""
@@ -1562,13 +1293,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherAlimentsPreviousYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "otherAliments",
-                        "PreviousYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation.otherAlimentsPreviousYear || ""
                     }
@@ -1578,13 +1303,7 @@ const EditWHCG = () => {
                   <Input
                     type="text"
                     name="otherAlimentsPresentYear"
-                    onChange={(e) =>
-                      handleChangePersonalSituation(
-                        e,
-                        "otherAliments",
-                        "PresentYear"
-                      )
-                    }
+                    required
                     value={
                       formData.personalSituation.otherAlimentsPresentYear || ""
                     }
@@ -1614,9 +1333,7 @@ const EditWHCG = () => {
                   <Input
                     type="number"
                     name="agriculturalLabour"
-                    onChange={(e) =>
-                      handleChangeEconomicBackground(e, "agriculturalLabour")
-                    }
+                    required
                     value={formData.economicBackground.agriculturalLabour || ""}
                   />
                 </Td>
@@ -1632,9 +1349,7 @@ const EditWHCG = () => {
                   <Input
                     type="number"
                     name="marginalFarmers"
-                    onChange={(e) =>
-                      handleChangeEconomicBackground(e, "marginalFarmers")
-                    }
+                    required
                     value={formData.economicBackground.marginalFarmers || ""}
                   />
                 </Td>
@@ -1647,9 +1362,7 @@ const EditWHCG = () => {
                   <Input
                     type="number"
                     name="parentsSelfEmployed"
-                    onChange={(e) =>
-                      handleChangeEconomicBackground(e, "parentsSelfEmployed")
-                    }
+                    required
                     value={
                       formData.economicBackground.parentsSelfEmployed || ""
                     }
@@ -1664,9 +1377,7 @@ const EditWHCG = () => {
                   <Input
                     type="number"
                     name="parentsInformalSector"
-                    onChange={(e) =>
-                      handleChangeEconomicBackground(e, "parentsInformalSector")
-                    }
+                    required
                     value={
                       formData.economicBackground.parentsInformalSector || ""
                     }
@@ -1681,9 +1392,7 @@ const EditWHCG = () => {
                   <Input
                     type="number"
                     name="anyOther"
-                    onChange={(e) =>
-                      handleChangeEconomicBackground(e, "anyOther")
-                    }
+                    required
                     value={formData.economicBackground.anyOther || ""}
                   />
                 </Td>
@@ -1717,14 +1426,7 @@ const EditWHCG = () => {
                       formData.multipleSupport.fundScholarships.girls
                         .previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1736,14 +1438,7 @@ const EditWHCG = () => {
                       formData.multipleSupport.fundScholarships.girls
                         .presentYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1758,14 +1453,7 @@ const EditWHCG = () => {
                       formData.multipleSupport.fundScholarships.boys
                         .previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1776,14 +1464,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.fundScholarships.boys.presentYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "fundScholarships",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1801,14 +1482,7 @@ const EditWHCG = () => {
                       formData.multipleSupport.tuitionClothing.girls
                         .previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1819,14 +1493,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.tuitionClothing.girls.presentYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc, padding: 5px" }}
                   />
                 </Td>
@@ -1840,14 +1507,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.tuitionClothing.boys.previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1858,14 +1518,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.tuitionClothing.boys.presentYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "tuitionClothing",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1882,14 +1535,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.nutrition.girls.previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1898,14 +1544,7 @@ const EditWHCG = () => {
                     type="text"
                     name="nutritionGirlsPresentYear"
                     value={formData.multipleSupport.nutrition.girls.presentYear}
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1917,14 +1556,7 @@ const EditWHCG = () => {
                     type="text"
                     name="nutritionBoysPreviousYear"
                     value={formData.multipleSupport.nutrition.boys.previousYear}
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1933,14 +1565,7 @@ const EditWHCG = () => {
                     type="text"
                     name="nutritionBoysPresentYear"
                     value={formData.multipleSupport.nutrition.boys.presentYear}
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "nutrition",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1957,14 +1582,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.freeResidence.girls.previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "girls",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1975,14 +1593,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.freeResidence.girls.presentYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "girls",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -1996,14 +1607,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.freeResidence.boys.previousYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "boys",
-                        "previousYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -2014,14 +1618,7 @@ const EditWHCG = () => {
                     value={
                       formData.multipleSupport.freeResidence.boys.presentYear
                     }
-                    onChange={(e) =>
-                      handleChangeMultipleSupport(
-                        e,
-                        "freeResidence",
-                        "boys",
-                        "presentYear"
-                      )
-                    }
+                    required
                     style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                 </Td>
@@ -2042,16 +1639,11 @@ const EditWHCG = () => {
               <Input
                 key={index}
                 type="text"
-                value={achievement.description}
-                onChange={(e) =>
-                  handleAchievementChange("academic", index, e.target.value)
-                }
+                value={achievement}
+                required
                 mb={2}
               />
             ))}
-            <Button onClick={() => handleAddAchievement("academic")}>
-              Add Academic Achievement
-            </Button>
           </VStack>
 
           {/* Sport Achievements */}
@@ -2063,16 +1655,11 @@ const EditWHCG = () => {
               <Input
                 key={index}
                 type="text"
-                value={achievement.description}
-                onChange={(e) =>
-                  handleAchievementChange("sport", index, e.target.value)
-                }
+                value={achievement}
+                required
                 mb={2}
               />
             ))}
-            <Button onClick={() => handleAddAchievement("sport")}>
-              Add Sport Achievement
-            </Button>
           </VStack>
 
           {/* Other Achievements */}
@@ -2084,16 +1671,11 @@ const EditWHCG = () => {
               <Input
                 key={index}
                 type="text"
-                value={achievement.description}
-                onChange={(e) =>
-                  handleAchievementChange("other", index, e.target.value)
-                }
+                value={achievement}
+                required
                 mb={2}
               />
             ))}
-            <Button onClick={() => handleAddAchievement("other")}>
-              Add Other Achievement
-            </Button>
           </VStack>
 
           {/* Present Situation of the Inmates */}
@@ -2109,7 +1691,7 @@ const EditWHCG = () => {
             <Textarea
               name="presentSituationinternalChallenges"
               value={formData.presentSituationinternalChallenges}
-              onChange={handleChange}
+              required
               placeholder="Enter text..."
               size="md"
             />
@@ -2123,7 +1705,7 @@ const EditWHCG = () => {
             <Textarea
               name="presentSituationexternalChallenges"
               value={formData.presentSituationexternalChallenges}
-              onChange={handleChange}
+              required
               placeholder="Enter text..."
               size="md"
             />
@@ -2143,7 +1725,7 @@ const EditWHCG = () => {
             <Textarea
               name="focusAreasDescription"
               value={formData.focusAreasDescription}
-              onChange={handleChange}
+              required
               placeholder="Enter text..."
               size="md"
             />
@@ -2162,11 +1744,10 @@ const EditWHCG = () => {
           </Heading>
           <FormControl isRequired>
             <FormLabel>Goal of the Project</FormLabel>
-            <Textarea
-              name="goal"
-              onChange={(e) => handleChangeObjective(e)}
-              required
-            />
+            <Textarea name="goal" required value={
+              formData.logicalFramework.goal
+            } />
+
           </FormControl>
 
           {/* Objectives */}
@@ -2196,8 +1777,8 @@ const EditWHCG = () => {
                   <Textarea
                     name="objective"
                     value={objective.objective}
-                    onChange={(e) => handleChangeObjective(e, index)}
                     required
+                    
                   />
                 </FormControl>
 
@@ -2209,17 +1790,9 @@ const EditWHCG = () => {
                       <Textarea
                         name="result"
                         value={result}
-                        onChange={(e) =>
-                          handleChangeObjective(e, index, subIndex)
-                        }
                         required
+                        
                       />
-                      <Button
-                        onClick={() => handleAddResult(index)}
-                        colorScheme="teal"
-                      >
-                        Add Result
-                      </Button>
                     </VStack>
                   ))}
                 </FormControl>
@@ -2242,30 +1815,24 @@ const EditWHCG = () => {
                             <Textarea
                               name="activity"
                               value={activity.activity}
-                              onChange={(e) =>
-                                handleChangeObjective(e, index, subIndex)
-                              }
                               required
+                              
                             />
                           </Td>
                           <Td>
                             <Textarea
                               name="verification"
                               value={activity.verification}
-                              onChange={(e) =>
-                                handleChangeObjective(e, index, subIndex)
-                              }
                               required
+                              
                             />
                           </Td>
                           <Td>
                             <Textarea
                               name="indicator"
                               value={activity.indicator}
-                              onChange={(e) =>
-                                handleChangeObjective(e, index, subIndex)
-                              }
                               required
+                              
                             />
                           </Td>
                           <Td>
@@ -2276,12 +1843,7 @@ const EditWHCG = () => {
                                 <Checkbox
                                   key={monthIndex}
                                   isChecked={value}
-                                  onChange={() => {
-                                    setSelectedMonths([]);
-                                    activity.timeframe[monthIndex] =
-                                      !activity.timeframe[monthIndex];
-                                    console.log(activity.timeframe);
-                                  }}
+                                  required
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -2295,22 +1857,7 @@ const EditWHCG = () => {
                       ))}
                     </Tbody>
                   </Table>
-
-                  <Button
-                    onClick={() => handleAddActivity(index)}
-                    colorScheme="teal"
-                  >
-                    Add Activity
-                  </Button>
                 </FormControl>
-
-                <Button
-                  onClick={handleAddObjective}
-                  colorScheme="purple"
-                  ml="auto"
-                >
-                  Add Objective
-                </Button>
                 <hr />
               </VStack>
             </Box>
@@ -2327,8 +1874,8 @@ const EditWHCG = () => {
             <Textarea
               name="sustainability"
               value={formData.sustainability}
-              onChange={(e) => handleChange(e)}
               required
+              
             />
           </FormControl>
 
@@ -2344,8 +1891,8 @@ const EditWHCG = () => {
             <Textarea
               name="monitoringProcess"
               value={formData.monitoringProcess}
-              onChange={(e) => handleChange(e)}
               required
+              
             />
           </FormControl>
 
@@ -2360,12 +1907,7 @@ const EditWHCG = () => {
               What are the roles/jobs of the people? What is their educational
               background? Etc.
             </FormLabel>
-            <Textarea
-              name="staff"
-              value={formData.staff}
-              onChange={(e) => handleChange(e)}
-              required
-            />
+            <Textarea name="staff" value={formData.staff} required  />
           </FormControl>
 
           <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -2384,38 +1926,16 @@ const EditWHCG = () => {
               {budgetRows.map((row, index) => (
                 <Tr key={index}>
                   <Td>
-                    <Input
-                      type="text"
-                      value={row.description}
-                      onChange={(e) =>
-                        handleBudgetChange(index, "description", e.target.value)
-                      }
-                    />
+                    <Input type="text" value={row.description} required />
                   </Td>
                   <Td>
-                    <Input
-                      type="number"
-                      value={row.costsLastYear}
-                      onChange={(e) =>
-                        handleBudgetChange(
-                          index,
-                          "costsLastYear",
-                          e.target.value
-                        )
-                      }
-                    />
+                    <Input type="number" value={row.costsLastYear} required />
                   </Td>
                   <Td>
                     <Input
                       type="number"
                       value={row.budgetCurrentYear}
-                      onChange={(e) =>
-                        handleBudgetChange(
-                          index,
-                          "budgetCurrentYear",
-                          e.target.value
-                        )
-                      }
+                      required
                     />
                   </Td>
                 </Tr>
@@ -2423,23 +1943,15 @@ const EditWHCG = () => {
             </Tbody>
           </Table>
 
-          {/* Add row button */}
-          <Button colorScheme="teal" onClick={handleAddBudgetRow}>
-            Add Expense
-          </Button>
-
           {/* Total Costs */}
 
           <FormControl>
             <FormLabel>Total Costs Last Year</FormLabel>
-            <Input value={calculateTotalCosts("costsLastYear")} isReadOnly />
+            <Input value={calculateTotalCosts("costsLastYear")} readOnly />
           </FormControl>
           <FormControl mt={2}>
             <FormLabel>Total Budget Current Year</FormLabel>
-            <Input
-              value={calculateTotalCosts("budgetCurrentYear")}
-              isReadOnly
-            />
+            <Input readOnly value={calculateTotalCosts("budgetCurrentYear")} />
           </FormControl>
 
           <VStack align="start" spacing={4} mb={8}>
@@ -2448,26 +1960,44 @@ const EditWHCG = () => {
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
+            <FormControl isRequired >
               <Checkbox
                 name="projectInChargeAgreement"
-                onChange={handleChange}
                 size="lg"
+                isChecked={formData.projectInChargeAgreement}
               >
                 The Project-In-Charge agree
               </Checkbox>
+
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
-                onChange={handleChange}
                 required
+                
+                value={formData.projectInChargeAgreementDate}
               />
             </FormControl>
+            
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+          <Button
+            colorScheme="blue"
+            type="submit"
+            mx="3"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
+            Accept
+          </Button>
+          <Button
+            colorScheme="red"
+            type="submit"
+            mx="3"
+            onClick={() => {
+              formData.provincialSuperiorAgreement = false;
+            }}
+          >
+            Revert
           </Button>
         </form>
       </Box>
