@@ -1,4 +1,4 @@
-import React, { useState, useParams ,useEffect} from "react";
+import React, { useState ,useEffect} from "react";
 import {
   ChakraProvider,
   Box,
@@ -21,6 +21,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
+import {useParams} from 'react-router-dom';
 
 const ViewEG = () => {
   const [isLoading, setIsLoading] = useState(false);
