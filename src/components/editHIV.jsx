@@ -19,96 +19,270 @@ import {
   Tr,
   Th,
   Td,
+  useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
+import { useParams } from "react-router-dom";
 
 const EditHIV = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
+  const showToast = useToast();
+  const [budgetRows, setBudgetRows] = useState(
+    projectData.budget.budget_particular.map((item) => ({
+      description: item.expense_description || "",
+      costsLastYear: item.costs_last_year || "",
+      budgetCurrentYear: item.budget_current_year || "",
+    }))
+  );
   const [formData, setFormData] = useState({
-    projectTitle: "",
-    projectRegion: "",
-    institutionName: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    presidentOfSocietyName: "",
-    presidentOfSocietyEmail: "",
-    supportProgrammesTillDate: "",
-    bridgeEducationPreviousYear: "",
-    bridgeEducationPresentYear: "",
-    kindergartenPreviousYear: "",
-    kindergartenPresentYear: "",
-    otherEducationPreviousYear: "",
-    otherEducationPresentYear: "",
-    bridgeSchoolPreviousYear: "",
-    bridgeSchoolPresentYear: "",
-    primarySchoolPreviousYear: "",
-    primarySchoolPresentYear: "",
-    otherEducation610PreviousYear: "",
-    otherEducation610PresentYear: "",
-    secondarySchoolPreviousYear: "",
-    secondarySchoolPresentYear: "",
-    highSchoolPreviousYear: "",
-    highSchoolPresentYear: "",
-    otherEducation1115PreviousYear: "",
-    otherEducation1115PresentYear: "",
-    undergraduatePreviousYear: "",
-    undergraduatePresentYear: "",
-    technicalVocationalEducationPreviousYear: "",
-    technicalVocationalEducationPresentYear: "",
-    youth16AndAbovebridgeSchoolPreviousYear: "",
-    youth16AndAbovebridgeSchoolPresentYear: "",
-    otherEducation16AbovePreviousYear: "",
-    otherEducation16AbovePresentYear: "",
-    personalSituation: {
-      childrenWithParentsPreviousYear: "",
-      childrenWithParentsPresentYear: "",
-      semiOrphansPreviousYear: "",
-      semiOrphansPresentYear: "",
-      orphansPreviousYear: "",
-      orphansPresentYear: "",
-      hivInfectedAffectedPreviousYear: "",
-      hivInfectedAffectedPresentYear: "",
-      differentlyAbledChildrenPreviousYear: "",
-      differentlyAbledChildrenPresentYear: "",
-      parentsInConflictPreviousYear: "",
-      parentsInConflictPresentYear: "",
-      otherAlimentsPreviousYear: "",
-      otherAlimentsPresentYear: "",
+    projectInCharge: projectData.mailing_list.project_in_charge.ref,
+    projectTitle: projectData.project_title || "",
+    projectRegion: projectData.general_information.project_region || "",
+    institutionName: projectData.general_information.institution_name || "",
+    overallProjectPeriod:
+      projectData.general_information.overall_project_period || "",
+    overallProjectBudget:
+      projectData.general_information.overall_project_budget || "",
+    presidentOfSocietyName:
+      projectData.mailing_list.president_of_the_society.name || "",
+    presidentOfSocietyEmail:
+      projectData.mailing_list.president_of_the_society.email || "",
+    supportProgrammesTillDate:
+      projectData.key_information.support_programmes_till_date || "",
+    bridgeEducation: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[0]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[0]
+          .present_academic_year || "",
     },
-    economicBackground: {
-      agriculturalLabour: "",
-      marginalFarmers: "",
-      parentsSelfEmployed: "",
-      parentsInformalSector: "",
-      anyOther: "",
+    kindergarten: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[1]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[1]
+          .present_academic_year || "",
+    },
+    otherEducation: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[2]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[2]
+          .present_academic_year || "",
+    },
+    bridgeSchool: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[3]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[3]
+          .present_academic_year || "",
+    },
+    primarySchool: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[4]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[4]
+          .present_academic_year || "",
+    },
+    otherEducation610: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[5]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[5]
+          .present_academic_year || "",
+    },
+    secondarySchool: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[6]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[6]
+          .present_academic_year || "",
+    },
+    highSchool: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[7]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[7]
+          .present_academic_year || "",
+    },
+    otherEducation1115: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[8]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[8]
+          .present_academic_year || "",
+    },
+    undergraduate: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[9]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[9]
+          .present_academic_year || "",
+    },
+    technicalVocationalEducation: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[10]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[10]
+          .present_academic_year || "",
+    },
+    youth16AndAbovebridgeSchool: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[11]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[11]
+          .present_academic_year || "",
+    },
+    otherEducation16Above: {
+      previousYear:
+        projectData.key_information.age_profile_of_children_and_youth[12]
+          .previous_year || "",
+      presentYear:
+        projectData.key_information.age_profile_of_children_and_youth[12]
+          .present_academic_year || "",
     },
 
-    challengesFaced: "",
-    focusAreasDescription: "",
-    monitoringProcess: "",
-    sustainability: "",
-    projectInChargeAgreement: "",
-    projectInChargeAgreementDate: "",
+    personalSituation: {
+      childrenWithParents: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[0]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[0]
+            .present_academic_year || "",
+      },
+      semiOrphans: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[1]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[1]
+            .present_academic_year || "",
+      },
+      orphans: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[2]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[2]
+            .present_academic_year || "",
+      },
+      hivInfectedAffected: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[3]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[3]
+            .present_academic_year || "",
+      },
+      differentlyAbledChildren: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[4]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[4]
+            .present_academic_year || "",
+      },
+      parentsInConflict: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[5]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[5]
+            .present_academic_year || "",
+      },
+      otherAliments: {
+        previousYear:
+          projectData.key_information.personal_situation_of_children_youth[6]
+            .previous_year || "",
+        presentYear:
+          projectData.key_information.personal_situation_of_children_youth[6]
+            .present_academic_year || "",
+      },
+    },
+    economicBackground: {
+      agriculturalLabour:
+        projectData.key_information.economic_background_of_parents[0].number ||
+        0,
+      marginalFarmers:
+        projectData.key_information.economic_background_of_parents[1].number ||
+        0,
+      parentsSelfEmployed:
+        projectData.key_information.economic_background_of_parents[2].number ||
+        0,
+      parentsInformalSector:
+        projectData.key_information.economic_background_of_parents[3].number ||
+        0,
+      anyOther:
+        projectData.key_information.economic_background_of_parents[4].number ||
+        0,
+    },
+    challengesFacedByTheBenificiary:
+      projectData.challenges_faced_by_the_benificiary || "",
+    focusAreasInPresentYear: projectData.focus_areas_in_present_year || "",
+    monitoringAndEvaluation: projectData.monitoring_and_evaluation || "",
+    sustainability: projectData.sustainability || "",
+    mailingList: {
+      projectInCharge: {
+        name: projectData.mailing_list.project_in_charge.ref.name,
+        email: projectData.mailing_list.project_in_charge.ref.email,
+        contact: projectData.mailing_list.project_in_charge.ref.mobile,
+        agree: projectData.mailing_list.project_in_charge.agree || false,
+        date: projectData.mailing_list.project_in_charge.date || "",
+      },
+    },
     logicalFramework: {
-      goal: "",
+      goal: projectData.solution_analysis_logical_framework.goal || "",
       objectives: [
         {
-          objective: "",
-          results: [""],
-          activities: [],
+          objective:
+            projectData.solution_analysis_logical_framework.objectives[0]
+              .objective || "",
+          results: projectData.solution_analysis_logical_framework.objectives[0]
+            .results || [""],
+          activities: projectData.solution_analysis_logical_framework
+            .objectives[0].activities || [{}],
         },
       ],
     },
+   
   });
+
+  console.log(formData);
+
+  // Update the state with the modified formDataCopy
+  const achievementsCopy = {}; // Create a copy of achievements to avoid direct mutation
+
+  // Assuming projectData contains academic, sport, and other achievements arrays
+  achievementsCopy.academic = projectData.academic || [];
+  achievementsCopy.sport = projectData.sport || [];
+  achievementsCopy.other = projectData.other || [];
+
+  // Update the state with the modified achievementsCopy
+  // Map budget data to budgetRows
+
+  // Update the state with the modified budgetRowsCopy
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [achievements, setAchievements] = useState({
-    academic: [],
-    sport: [],
-    other: [],
+    achievementsCopy,
   });
+
   // State to manage dynamic rows in the budget table
-  const [budgetRows, setBudgetRows] = useState([
-    { description: "", costsLastYear: "", budgetCurrentYear: "" },
-  ]);
+
+  console.log(budgetRows);
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -133,6 +307,7 @@ const EditHIV = () => {
       .reduce((total, row) => total + parseFloat(row[field]) || 0, 0)
       .toFixed(2);
   };
+
   const handleAddObjective = () => {
     const updatedData = { ...formData };
     updatedData.logicalFramework.objectives.push({
@@ -254,214 +429,42 @@ const EditHIV = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // find budget total
-
-    const req = {
-      project_title: formData.projectTitle,
-      general_information: {
-        project_region: formData.projectRegion,
-        institution_name: formData.institutionName,
-        overall_project_period: formData.overallProjectPeriod,
-        overall_project_budget: formData.overallProjectBudget,
-      },
-      mailing_list: {
-        president_of_the_society: {
-          name: formData.presidentOfSocietyName,
-          email: formData.presidentOfSocietyEmail,
-        },
-      },
-      key_information: {
-        support_programmes_till_date: formData.supportProgrammesTillDate,
-        age_profile_of_children_and_youth: [
-          {
-            age_category: "Children below 5 years",
-            education: "Bridge education",
-            present_academic_year: formData.bridgeEducationPresentYear,
-            previous_year: formData.bridgeEducationPreviousYear,
-          },
-          {
-            age_category: "Children below 5 years",
-            education: "Kindergarten",
-            present_academic_year: formData.kindergartenPresentYear,
-            previous_year: formData.kindergartenPreviousYear,
-          },
-          {
-            age_category: "Children below 5 years",
-            education: "Other",
-            present_academic_year: formData.otherEducationPresentYear,
-            previous_year: formData.otherEducationPreviousYear,
-          },
-          {
-            age_category: "Children between 6 to 10 years",
-            education: "Bridge School",
-            present_academic_year: formData.bridgeSchoolPresentYear,
-            previous_year: formData.bridgeSchoolPreviousYear,
-          },
-          {
-            age_category: "Children between 6 to 10 years",
-            education: "Primary School",
-            present_academic_year: formData.primarySchoolPresentYear,
-            previous_year: formData.primarySchoolPreviousYear,
-          },
-          {
-            age_category: "Children between 6 to 10 years",
-            education: "Other",
-            present_academic_year: formData.otherEducation610PresentYear,
-            previous_year: formData.otherEducation610PreviousYear,
-          },
-          {
-            age_category: "Youth between 11 to 15 years old",
-            education: "Secondary School",
-            present_academic_year: formData.secondarySchoolPresentYear,
-            previous_year: formData.secondarySchoolPreviousYear,
-          },
-          {
-            age_category: "Youth between 11 to 15 years old",
-            education: "High School",
-            present_academic_year: formData.highSchoolPresentYear,
-            previous_year: formData.highSchoolPreviousYear,
-          },
-          {
-            age_category: "Youth between 11 to 15 years old",
-            education: "Other",
-            present_academic_year: formData.otherEducation1115PresentYear,
-            previous_year: formData.otherEducation1115PreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Undergraduate",
-            present_academic_year: formData.undergraduatePresentYear,
-            previous_year: formData.undergraduatePreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Technical/Vocational Education",
-            present_academic_year:
-              formData.technicalVocationalEducationPresentYear,
-            previous_year: formData.technicalVocationalEducationPreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Other",
-            present_academic_year: formData.otherEducation16AbovePresentYear,
-            previous_year: formData.otherEducation16AbovePreviousYear,
-          },
-          {
-            age_category: "Youth 16 and above",
-            education: "Bridge School",
-            present_academic_year:
-              formData.youth16AndAbovebridgeSchoolPresentYear,
-            previous_year: formData.youth16AndAbovebridgeSchoolPreviousYear,
-          },
-        ],
-        personal_situation_of_children_youth: [
-          {
-            description: "Children/students with parents",
-            previous_year:
-              formData.personalSituation.childrenWithParentsPreviousYear,
-            present_academic_year:
-              formData.personalSituation.childrenWithParentsPresentYear,
-          },
-          {
-            description: "Semi-orphans (living with relatives)",
-            previous_year: formData.personalSituation.semiOrphansPreviousYear,
-            present_academic_year:
-              formData.personalSituation.semiOrphansPresentYear,
-          },
-          {
-            description: "Orphans",
-            previous_year: formData.personalSituation.orphansPreviousYear,
-            present_academic_year:
-              formData.personalSituation.orphansPresentYear,
-          },
-          {
-            description: "HIV-infected/affected",
-            previous_year:
-              formData.personalSituation.hivInfectedAffectedPreviousYear,
-            present_academic_year:
-              formData.personalSituation.hivInfectedAffectedPresentYear,
-          },
-          {
-            description: "Differently-abled children",
-            previous_year:
-              formData.personalSituation.differentlyAbledChildrenPreviousYear,
-            present_academic_year:
-              formData.personalSituation.differentlyAbledChildrenPresentYear,
-          },
-          {
-            description: "Parents in conflict",
-            previous_year:
-              formData.personalSituation.parentsInConflictPreviousYear,
-            present_academic_year:
-              formData.personalSituation.parentsInConflictPresentYear,
-          },
-          {
-            description: "Other aliments",
-            previous_year: formData.personalSituation.otherAlimentsPreviousYear,
-            present_academic_year:
-              formData.personalSituation.otherAlimentsPresentYear,
-          },
-        ],
-        economic_background_of_parents: [
-          {
-            description: "Agricultural Labour",
-            number: formData.economicBackground.agriculturalLabour,
-          },
-          {
-            description:
-              "Marginal farmers (Number of parents with less than two and half acres of land)",
-            number: formData.economicBackground.marginalFarmers,
-          },
-          {
-            description: "Parents self-employed",
-            number: formData.economicBackground.parentsSelfEmployed,
-          },
-          {
-            description: "Parents working in the informal sector",
-            number: formData.economicBackground.parentsInformalSector,
-          },
-          {
-            description: "Any other",
-            number: formData.economicBackground.anyOther,
-          },
-        ],
-      },
-      challenges_faced_by_the_benificiary: formData.challengesFaced,
-      focus_areas_in_present_year: formData.focusAreasDescription,
-      solution_analysis_logical_framework: formData.logicalFramework,
-      sustainability: formData.sustainability,
-      monitoring_and_evaluation: formData.monitoringProcess,
-      budget: {
-        budget_particular: budgetRows.map((budget) => {
-          return {
-            expense_description: budget.description,
-            costs_last_year: budget.costsLastYear,
-            budget_current_year: budget.budgetCurrentYear,
-          };
-        }),
-        total: {
-          costs_last_year: calculateTotalCosts("costsLastYear"),
-          budget_current_year: calculateTotalCosts("budgetCurrentYear"),
-        },
-      },
-    };
-
-    console.log(req);
     try {
-      const res = await authAxios.post("/projects/createHIV/", req);
+      const res = await authAxios.put("/projects/editHIVReviewer", {
+        comment: formData.comment,
+        agree: formData.provincialSuperiorAgreement,
+        project_number: projectData.project_number,
+      });
       console.log(res);
-    } catch (error) {
-      console.log(error);
+      if (res.data.success) {
+        showToast({
+          title: "Review succesful",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        showToast({
+          title: "Review unsuccesful",
+          duration: 5000,
+          status: "error",
+        });
+      }
+    } catch (e) {
+      console.log(e);
+
+      showToast({
+        title: "Review unsuccesful",
+        duration: 5000,
+        status: "error",
+      });
     }
-    setIsSubmitted(true);
   };
 
   return (
     <ChakraProvider>
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6} align="center">
-        HIV Affect Outreach Application Form     
+          HIV Affect Outreach Application Form
         </Heading>
 
         {isSubmitted && (
@@ -474,13 +477,14 @@ const EditHIV = () => {
         <form onSubmit={handleSubmit}>
           {/* Project Information */}
 
-          <FormControl mb={4}>
+          <FormControl isRequired mb={4}>
             <FormLabel>Project Title</FormLabel>
             <Input
               type="text"
               name="projectTitle"
               onChange={handleChange}
               value={formData.projectTitle || ""}
+              required
             />
           </FormControl>
 
@@ -489,43 +493,47 @@ const EditHIV = () => {
             General Information
           </Heading>
 
-          <FormControl mb={4}>
+          <FormControl isRequired mb={4}>
             <FormLabel>Project Region</FormLabel>
             <Input
               type="text"
               name="projectRegion"
               onChange={handleChange}
               value={formData.projectRegion || ""}
+              required
             />
           </FormControl>
 
-          <FormControl mb={4}>
+          <FormControl isRequired mb={4}>
             <FormLabel>Institution Name</FormLabel>
             <Input
               type="text"
               name="institutionName"
               onChange={handleChange}
               value={formData.institutionName || ""}
+              required
             />
           </FormControl>
 
-          <FormControl mb={4}>
+          <FormControl isRequired mb={4}>
             <FormLabel>Overall Project Period</FormLabel>
             <Input
               type="text"
               name="overallProjectPeriod"
               onChange={handleChange}
               value={formData.overallProjectPeriod || ""}
+              required
             />
           </FormControl>
 
-          <FormControl mb={4}>
+          <FormControl isRequired mb={4}>
             <FormLabel>Overall Project Budget</FormLabel>
             <Input
               type="text"
               name="overallProjectBudget"
               onChange={handleChange}
               value={formData.overallProjectBudget || ""}
+              required
             />
           </FormControl>
 
@@ -552,6 +560,7 @@ const EditHIV = () => {
                     name="presidentOfSocietyName"
                     onChange={handleChange}
                     value={formData.presidentOfSocietyName || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -560,6 +569,29 @@ const EditHIV = () => {
                     name="presidentOfSocietyEmail"
                     onChange={handleChange}
                     value={formData.presidentOfSocietyEmail || ""}
+                    required
+                  />
+                </Td>
+                
+              </Tr>{/* Row 2 */}
+              <Tr>
+                <Td>Project Incharge</Td>
+                <Td>
+                  <Input
+                    type="text"
+                    name="mailingList.projectInCharge.name"
+                    onChange={handleChange}
+                    value={formData.mailingList.projectInCharge.name || ""}
+                    required
+                  />
+                </Td>
+                <Td>
+                  <Input
+                    type="email"
+                    name="mailingList.projectInCharge.email"
+                    onChange={handleChange}
+                    value={formData.mailingList.projectInCharge.email || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -584,13 +616,13 @@ const EditHIV = () => {
             Key Information
           </Heading>
 
-          <FormControl mb={4}>
+          <FormControl isRequired mb={4}>
             <FormLabel>Support Programmes Till Date</FormLabel>
             <Textarea
               name="Support Programmes Till Date"
               onChange={handleChange}
               value={formData.supportProgrammesTillDate || ""}
-
+              required
             />
           </FormControl>
 
@@ -621,7 +653,8 @@ const EditHIV = () => {
                     type="text"
                     name="bridgeEducationPreviousYear"
                     onChange={handleChange}
-                    value={formData.bridgeEducationPreviousYear || ""}
+                    value={formData.bridgeEducation.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -629,7 +662,8 @@ const EditHIV = () => {
                     type="text"
                     name="bridgeEducationPresentYear"
                     onChange={handleChange}
-                    value={formData.bridgeEducationPresentYear || ""}
+                    value={formData.bridgeEducation.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -642,7 +676,8 @@ const EditHIV = () => {
                     type="text"
                     name="kindergartenPreviousYear"
                     onChange={handleChange}
-                    value={formData.kindergartenPreviousYear || ""}
+                    value={formData.kindergarten.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -650,7 +685,8 @@ const EditHIV = () => {
                     type="text"
                     name="kindergartenPresentYear"
                     onChange={handleChange}
-                    value={formData.kindergartenPresentYear || ""}
+                    value={formData.kindergarten.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -663,7 +699,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducationPreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducationPreviousYear || ""}
+                    value={formData.otherEducation.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -671,7 +708,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducationPresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducationPresentYear || ""}
+                    value={formData.otherEducation.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -699,7 +737,8 @@ const EditHIV = () => {
                     type="text"
                     name="bridgeSchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.bridgeSchoolPreviousYear || ""}
+                    value={formData.bridgeSchool.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -707,7 +746,8 @@ const EditHIV = () => {
                     type="text"
                     name="bridgeSchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.bridgeSchoolPresentYear || ""}
+                    value={formData.bridgeSchool.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -720,7 +760,8 @@ const EditHIV = () => {
                     type="text"
                     name="primarySchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.primarySchoolPreviousYear || ""}
+                    value={formData.primarySchool.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -728,7 +769,8 @@ const EditHIV = () => {
                     type="text"
                     name="primarySchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.primarySchoolPresentYear || ""}
+                    value={formData.primarySchool.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -741,7 +783,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducation610PreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation610PreviousYear || ""}
+                    value={formData.otherEducation610.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -749,7 +792,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducation610PresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation610PresentYear || ""}
+                    value={formData.otherEducation610.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -777,7 +821,8 @@ const EditHIV = () => {
                     type="text"
                     name="secondarySchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.secondarySchoolPreviousYear || ""}
+                    value={formData.secondarySchool.previousYear}
+                    required
                   />
                 </Td>
                 <Td>
@@ -785,7 +830,8 @@ const EditHIV = () => {
                     type="text"
                     name="secondarySchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.secondarySchoolPresentYear || ""}
+                    value={formData.secondarySchool.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -798,7 +844,8 @@ const EditHIV = () => {
                     type="text"
                     name="highSchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.highSchoolPreviousYear || ""}
+                    value={formData.highSchool.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -806,7 +853,8 @@ const EditHIV = () => {
                     type="text"
                     name="highSchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.highSchoolPresentYear || ""}
+                    value={formData.highSchool.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -819,7 +867,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducation1115PreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation1115PreviousYear || ""}
+                    value={formData.otherEducation1115.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -827,7 +876,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducation1115PresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation1115PresentYear || ""}
+                    value={formData.otherEducation1115.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -852,9 +902,10 @@ const EditHIV = () => {
                 <Td>
                   <Input
                     type="text"
-                    name="undergraduatePreviousYear"
+                    name="undergraduate.previousYear"
                     onChange={handleChange}
-                    value={formData.undergraduatePreviousYear || ""}
+                    value={formData.undergraduate.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -862,7 +913,8 @@ const EditHIV = () => {
                     type="text"
                     name="undergraduatePresentYear"
                     onChange={handleChange}
-                    value={formData.undergraduatePresentYear || ""}
+                    value={formData.undergraduate.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -871,11 +923,12 @@ const EditHIV = () => {
                 <Td>
                   <Input
                     type="text"
-                    name="technicalVocationalEducationPreviousYear"
+                    name="technicalVocationalEducation.previousYear"
                     onChange={handleChange}
                     value={
-                      formData.technicalVocationalEducationPreviousYear || ""
+                      formData.technicalVocationalEducation.previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -884,8 +937,9 @@ const EditHIV = () => {
                     name="technicalVocationalEducationPresentYear"
                     onChange={handleChange}
                     value={
-                      formData.technicalVocationalEducationPresentYear || ""
+                      formData.technicalVocationalEducation.presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -894,11 +948,12 @@ const EditHIV = () => {
                 <Td>
                   <Input
                     type="text"
-                    name="youth16AndAbovebridgeSchoolPreviousYear"
+                    name="youth16AndAbovebridgeSchool.previousYear"
                     onChange={handleChange}
                     value={
-                      formData.youth16AndAbovebridgeSchoolPreviousYear || ""
+                      formData.youth16AndAbovebridgeSchool.previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -907,8 +962,9 @@ const EditHIV = () => {
                     name="youth16AndAbovebridgeSchoolPresentYear"
                     onChange={handleChange}
                     value={
-                      formData.youth16AndAbovebridgeSchoolPresentYear || ""
+                      formData.youth16AndAbovebridgeSchool.presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -917,9 +973,10 @@ const EditHIV = () => {
                 <Td>
                   <Input
                     type="text"
-                    name="otherEducation16AbovePreviousYear"
+                    name="otherEducation16Above.previousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation16AbovePreviousYear || ""}
+                    value={formData.otherEducation16Above.previousYear || ""}
+                    required
                   />
                 </Td>
                 <Td>
@@ -927,7 +984,8 @@ const EditHIV = () => {
                     type="text"
                     name="otherEducation16AbovePresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation16AbovePresentYear || ""}
+                    value={formData.otherEducation16Above.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -954,7 +1012,7 @@ const EditHIV = () => {
                 <Td>
                   <Input
                     type="text"
-                    name="childrenWithParentsPreviousYear"
+                    name="childrenWithParents.previousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
                         e,
@@ -963,9 +1021,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .childrenWithParentsPreviousYear || ""
+                      formData.personalSituation.childrenWithParents
+                        .previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -980,9 +1039,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .childrenWithParentsPresentYear || ""
+                      formData.personalSituation.childrenWithParents
+                        .presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1002,8 +1062,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.semiOrphansPreviousYear || ""
+                      formData.personalSituation.semiOrphans.previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -1018,8 +1079,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.semiOrphansPresentYear || ""
+                      formData.personalSituation.semiOrphans.presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1038,7 +1100,10 @@ const EditHIV = () => {
                         "PreviousYear"
                       )
                     }
-                    value={formData.personalSituation.orphansPreviousYear || ""}
+                    value={
+                      formData.personalSituation.orphans.previousYear || ""
+                    }
+                    required
                   />
                 </Td>
                 <Td>
@@ -1048,7 +1113,8 @@ const EditHIV = () => {
                     onChange={(e) =>
                       handleChangePersonalSituation(e, "orphans", "PresentYear")
                     }
-                    value={formData.personalSituation.orphansPresentYear || ""}
+                    value={formData.personalSituation.orphans.presentYear || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -1068,9 +1134,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .hivInfectedAffectedPreviousYear || ""
+                      formData.personalSituation.hivInfectedAffected
+                        .previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -1085,9 +1152,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .hivInfectedAffectedPresentYear || ""
+                      formData.personalSituation.hivInfectedAffected
+                        .presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1107,9 +1175,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .differentlyAbledChildrenPreviousYear || ""
+                      formData.personalSituation.differentlyAbledChildren
+                        .previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -1124,9 +1193,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .differentlyAbledChildrenPresentYear || ""
+                      formData.personalSituation.differentlyAbledChildren
+                        .presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1146,9 +1216,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation
-                        .parentsInConflictPreviousYear || ""
+                      formData.personalSituation.parentsInConflict
+                        .previousYear || ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -1163,9 +1234,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.parentsInConflictPresentYear ||
-                      ""
+                      formData.personalSituation.parentsInConflict
+                        .presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1185,8 +1257,10 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.otherAlimentsPreviousYear || ""
+                      formData.personalSituation.otherAliments.previousYear ||
+                      ""
                     }
+                    required
                   />
                 </Td>
                 <Td>
@@ -1201,8 +1275,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.otherAlimentsPresentYear || ""
+                      formData.personalSituation.otherAliments.presentYear || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1233,6 +1308,7 @@ const EditHIV = () => {
                       handleChangeEconomicBackground(e, "agriculturalLabour")
                     }
                     value={formData.economicBackground.agriculturalLabour || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -1251,6 +1327,7 @@ const EditHIV = () => {
                       handleChangeEconomicBackground(e, "marginalFarmers")
                     }
                     value={formData.economicBackground.marginalFarmers || ""}
+                    required
                   />
                 </Td>
               </Tr>
@@ -1268,6 +1345,7 @@ const EditHIV = () => {
                     value={
                       formData.economicBackground.parentsSelfEmployed || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1285,6 +1363,7 @@ const EditHIV = () => {
                     value={
                       formData.economicBackground.parentsInformalSector || ""
                     }
+                    required
                   />
                 </Td>
               </Tr>
@@ -1300,13 +1379,12 @@ const EditHIV = () => {
                       handleChangeEconomicBackground(e, "anyOther")
                     }
                     value={formData.economicBackground.anyOther || ""}
+                    required
                   />
                 </Td>
               </Tr>
             </Tbody>
           </Table>
-
-
 
           {/* Challenges Faced By the benificiary */}
           <Box mb={4}>
@@ -1319,6 +1397,7 @@ const EditHIV = () => {
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
+              required
             />
           </Box>
           {/* Focus Areas in the Present Year */}
@@ -1339,6 +1418,7 @@ const EditHIV = () => {
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
+              required
             />
           </Box>
 
@@ -1407,12 +1487,12 @@ const EditHIV = () => {
                         }
                         required
                       />
-                      <Button
+                      {/* <Button
                         onClick={() => handleAddResult(index)}
                         colorScheme="teal"
                       >
                         Add Result
-                      </Button>
+                      </Button> */}
                     </VStack>
                   ))}
                 </FormControl>
@@ -1463,7 +1543,7 @@ const EditHIV = () => {
                           </Td>
                           <Td>
                             {/* Timeframe */}
-                            <FormControl>
+                            <FormControl isRequired>
                               <FormLabel>Timeframe</FormLabel>
                               {activity.timeframe.map((value, monthIndex) => (
                                 <Checkbox
@@ -1475,6 +1555,7 @@ const EditHIV = () => {
                                       !activity.timeframe[monthIndex];
                                     console.log(activity.timeframe);
                                   }}
+                                  required
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -1489,21 +1570,21 @@ const EditHIV = () => {
                     </Tbody>
                   </Table>
 
-                  <Button
+                  {/* <Button
                     onClick={() => handleAddActivity(index)}
                     colorScheme="teal"
                   >
                     Add Activity
-                  </Button>
+                  </Button> */}
                 </FormControl>
 
-                <Button
+                {/* <Button
                   onClick={handleAddObjective}
                   colorScheme="purple"
                   ml="auto"
                 >
                   Add Objective
-                </Button>
+                </Button> */}
                 <hr />
               </VStack>
             </Box>
@@ -1536,7 +1617,7 @@ const EditHIV = () => {
             </FormLabel>
             <Textarea
               name="monitoringProcess"
-              value={formData.monitoringProcess}
+              value={formData.monitoringAndEvaluation}
               onChange={(e) => handleChange(e)}
               required
             />
@@ -1555,93 +1636,70 @@ const EditHIV = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {budgetRows.map((row, index) => (
-                <Tr key={index}>
-                  <Td>
-                    <Input
-                      type="text"
-                      value={row.description}
-                      onChange={(e) =>
-                        handleBudgetChange(index, "description", e.target.value)
-                      }
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="number"
-                      value={row.costsLastYear}
-                      onChange={(e) =>
-                        handleBudgetChange(
-                          index,
-                          "costsLastYear",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="number"
-                      value={row.budgetCurrentYear}
-                      onChange={(e) =>
-                        handleBudgetChange(
-                          index,
-                          "budgetCurrentYear",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </Td>
-                </Tr>
-              ))}
+              {budgetRows.map((row, index) => {
+                return (
+                  <Tr key={index}>
+                    <Td>
+                      <Input type="text" value={row.description} required />
+                    </Td>
+                    <Td>
+                      <Input type="number" value={row.costsLastYear} required />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="number"
+                        value={row.budgetCurrentYear}
+                        required
+                      />
+                    </Td>
+                  </Tr>
+                );
+              })}
             </Tbody>
           </Table>
-
-          {/* Add row button */}
-          <Button colorScheme="teal" onClick={handleAddBudgetRow}>
-            Add Expense
-          </Button>
-
-          {/* Total Costs */}
-
-          <FormControl>
+          <FormControl isRequired>
             <FormLabel>Total Costs Last Year</FormLabel>
-            <Input value={calculateTotalCosts("costsLastYear")} isReadOnly />
+            <Input value={calculateTotalCosts("costsLastYear")} readOnly />
           </FormControl>
-          <FormControl mt={2}>
+          <FormControl isRequired mt={2}>
             <FormLabel>Total Budget Current Year</FormLabel>
             <Input
               value={calculateTotalCosts("budgetCurrentYear")}
-              isReadOnly
+              readOnly
             />
           </FormControl>
 
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
+          <Heading as="h1" size="xl" mb={6}>
+            Signatures
+          </Heading>
 
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
+          {/* Project-In-Charge agreement */}
+          <FormControl isRequired>
+            Project-In Charge Agree
+            <Input
+              type="date"
+              name="projectInChargeAgreementDate"
+              onChange={handleChange}
+              value={formData.mailingList.projectInCharge.date.substring(0, 10)}
+              required
+            />
+          </FormControl>
+
+         
+          
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.provincialSuperiorAgreement = true)}
+          >
             Submit
+          </Button>
+          {/* decline Button */}
+          <Button colorScheme="red" mx={3} type="submit">
+            Decline
           </Button>
         </form>
       </Box>
