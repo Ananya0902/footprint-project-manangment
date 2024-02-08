@@ -230,9 +230,9 @@ const ReviewHIV = () => {
         projectData.key_information.economic_background_of_parents[4].number ||
         0,
     },
-    challengesFacedByTheBenificiary:
+    challengesFaced:
       projectData.challenges_faced_by_the_benificiary || "",
-    focusAreasInPresentYear: projectData.focus_areas_in_present_year || "",
+      focusAreasDescription: projectData.focus_areas_in_present_year || "",
     monitoringAndEvaluation: projectData.monitoring_and_evaluation || "",
     sustainability: projectData.sustainability || "",
     mailingList: {

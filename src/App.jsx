@@ -88,6 +88,7 @@ import ApproveSocialIndividual from './components/SocialIndividual/ApproveSocial
 import ApproveWelfareHomeForChildren from "./components/WelfareHealthForChildren/ApproveWelfareHealthForChildren";
 import AnnualRepHealthIndividual from './components/Reports/AnnualRepHealthIndividual'
 import RevertedProjects from "./components/Applicant/RevertedProjects";
+import ViewSI from "./components/SocialIndividual/viewSI";
 
 
 const PrivateRoute = ({ path, element }) => {
@@ -201,15 +202,18 @@ const App = () => {
 
 
           <Route path="/viewHOIProject/:project" element={<ViewProject/>} /> 
-          <Route path='/ViewCG' element={<ViewCG/>} />
+          <Route path='/ViewCG/:project' element={<ViewCG/>} />
           <Route path='/ViewEGS/:project' element={<ViewEduRUTG/>} />
-          <Route path='/viewNPDP' element={<ViewNPDP/>} />
-          <Route path='/ViewEI' element={<ViewEI/>} />          
+          <Route path='/viewNPDP/:project' element={<ViewNPDP/>} />
+          <Route path='/ViewEI/:project' element={<ViewEI/>} />          
           <Route path='/ViewEG' element={<ViewEG/>} />          
-          <Route path='/ViewDPLG' element={<ViewDPLG/>} />          
+          <Route path='/ViewDPLG/:project' element={<ViewDPLG/>} />          
           <Route path='/ViewHIV/:project' element={<ViewHIV/>} />          
-          <Route path='/ViewISG' element={<ViewISG/>} />          
-          <Route path='/ViewWHCG' element={<ViewWHFC/>} />          
+          <Route path='/ViewSG/:project' element={<ViewISG/>} />          
+          <Route path='/ViewWHFC/:project' element={<ViewWHCG/>} />   
+          <Route path='/ViewSI/:project' element={<ViewSI/>} />   
+
+
                   
        
                  

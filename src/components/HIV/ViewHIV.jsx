@@ -7,6 +7,7 @@ import {
   FormLabel,
   Input,
   Textarea,
+  
   Checkbox,
   Button,
   VStack,
@@ -227,7 +228,8 @@ const ViewHIV = () => {
         projectData.key_information.economic_background_of_parents[4].number ||
         0,
     },
-    challengesFaced: projectData.challenges_faced_by_the_benificiary || "",
+    challengesFaced:
+      projectData.challenges_faced_by_the_benificiary || "",
     focusAreasDescription: projectData.focus_areas_in_present_year || "",
     monitoringAndEvaluation: projectData.monitoring_and_evaluation || "",
     sustainability: projectData.sustainability || "",
@@ -1702,6 +1704,7 @@ const ViewHIV = () => {
             />
           </FormControl>
 
+
           {/* project coordinator agreement */}
           <FormControl>
             <FormLabel>Project coordinator</FormLabel>
@@ -1715,7 +1718,7 @@ const ViewHIV = () => {
                     value={a.ref.name}
                     readOnly
                   />
-                  <FormLabel>comment by project coordinator</FormLabel>
+          <FormLabel>Comment by Project Coordinator</FormLabel>
 
                   <Input
                     type="text"
@@ -1746,24 +1749,15 @@ const ViewHIV = () => {
             ))}
           </FormControl>
 
-          {/* <FormControl>
-            <FormLabel>Comment(For Approver)</FormLabel>
-            <Input
-              type="text"
-              name="commentApprover"
-              value={formData.commentApprover}
-              onChange={handleChange}
-            />
-          </FormControl> */}
 
-          <FormControl isRequired>
+          <FormControl >
             <FormLabel>Amount Approved by Coordinator</FormLabel>
             <Input
               type="number"
               name="amountApproved"
               value={formData.amountApproved}
               onChange={handleChange}
-              required
+              readOnly
             />
           </FormControl>
 
