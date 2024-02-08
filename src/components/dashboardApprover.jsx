@@ -22,7 +22,7 @@ const DashboardApprover = () => {
         const approversData = await authAxios.get("users/getApprover");
         if (approversData.data.success === false) return;
         setUserDetails(approversData.data.data);
-        console.log("userDetails", userDetails);
+        console.log("userDetails", approversData.data.data);
       } catch (error) {
         showToast({
           title: "Error getting approvers data",

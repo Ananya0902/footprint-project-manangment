@@ -19,52 +19,77 @@ import {
   Td,
   Image,
   ChakraProvider,
+  useToast,
 } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import authAxios from "../AuthAxios";
 
-const DisplayForm = () => {
+const ReviewSocialIndividual = () => {
+  const showToast = useToast();
+  const projectData = JSON.parse(
+    decodeURIComponent(useParams()?.project ?? "{}")
+  );
+  console.log(projectData);
   // Define formData object
   const [formData, setFormData] = useState({
-    nameofSociety: "Sample Society",
-    nameOfSelfEmployment: "Sample Self-Employment",
-    dateOfSubmission: "2024-02-03",
-    provincialSuperiorName: "John Doe",
-    provincialSuperiorContact: "+1234567890",
-    projectInchargeName: "Jane Smith",
-    projectInchargeContact: "+9876543210",
-    projectInchargeEmail: "jane@example.com",
-    beneficiaryName: "John Doe",
-    beneficiaryContact: "+1234567890",
-    beneficiaryEmail: "john@example.com",
-    beneficiaryAddress: "123 Sample Street, Sample City",
-    aadharCardNo: "1234 5678 9012",
-    gender: "male",
-    dob: "1990-01-01",
-    fatherName: "John Doe Sr.",
-    maritalStatus: "married",
-    spouseName: "Jane Doe",
-    child: 2,
-    eduStatus: "Studying",
-    religion: "Christian",
-    casteTribe: "General",
-    presentFamilySituationDetails: "Details about family situation",
-    smallScaleBusinessDetails: "Details about small-scale business",
-    monthlyEarnings: 5000,
-    businessIdeaDetails: "Details about business idea",
-    businessStrengthsPreviousYear: "Strengths of previous year",
-    businessWeaknessesPreviousYear: "Weaknesses of previous year",
-    riskIdentification: "Risks identified",
-    riskMitigationMeasures: "Measures for risk mitigation",
-    businessSustainability: "Sustainability of business",
-    expectedBenefits: "Expected benefits and outcomes",
-    amountApprovedByProjectCoordinator: 10000,
+    projectCoordinatorAgree : false , 
+    photographFile: projectData.photograph_benificary,
+    nameOfSelfEmployment: projectData.nameOfSelfEmployment,
+    projectInchargeName: projectData.applicant.name,
+    projectInchargeContact: projectData.applicant.mobile,
+    projectInchargeEmail: projectData.applicant.email,
+    provincialSuperiorName: projectData.reviewer.name,
+    provincialSuperiorContact: projectData.reviewer.mobile,
+    provincialSuperiorEmail: projectData.reviewer.email,
+    beneficiaryName: projectData.name,
+    beneficiaryContact: projectData.mobile,
+    beneficiaryEmail: projectData.email,
+    beneficiaryAddress: projectData.address,
+    aadharCardNo: projectData.aadhar_no,
+    gender: projectData.gender,
+    dob: projectData.DOB,
+    projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
+    projectInChargeAgreement: projectData.project_in_charge_agree.agree,
+    benificiaryAgree: projectData.benificary_agree.agree,
+    benificiaryAgreeDate: projectData.benificary_agree.date,
+    maritalStatus: projectData.married,
+    spouseName: projectData.spouse_name,
+    child: projectData.no_of_children,
+    eduStatus: projectData.education_status,
+    religion: projectData.religion,
+    casteTribe: projectData.caste,
+    presentFamilySituationDetails: projectData.present_family_situation,
+    smallScaleBusinessDetails: projectData.smallScaleBusinessDetails,
+    monthlyEarnings: projectData.monthlyEarnings,
+    businessIdeaDetails: projectData.businessIdeaDetails,
+    businessStrengthsPreviousYear: projectData.businessStrengthsPreviousYear,
+    businessWeaknessesPreviousYear: projectData.businessWeaknessesPreviousYear,
+    riskIdentification: projectData.riskIdentification,
+    riskMitigationMeasures: projectData.riskMitigationMeasures,
+    businessSustainability: projectData.businessSustainability,
+    expectedBenefits: projectData.expectedBenefits,
     // Revenue Goals
-    revenueData: [
-      { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
-    ],
+    revenueData: projectData.revenueGoals,
     // Budget Details
-    budgetData: [{ budget: "", cost: "" }],
+    budgetData: projectData.budget_cost_table,
     // Document Upload
-    documents: [{ name: "", file: null }],
+    documents: [
+      { name: "aadhar_img", file: projectData.aadhar_img },
+      { name: "request_letter_img", file: projectData.request_letter_img },
+      {
+        name: "quotations_regarding_the_purchase_img",
+        file: projectData.quotations_regarding_the_purchase_img,
+      },
+      {
+        name: "other_supporting_documents",
+        file: projectData.other_supporting_documents,
+      },
+    ],
+    provincialSuperiorAgree: projectData.provincial_superior_agree.agree,
+    provincialSuperiorAgreeDate: projectData.provincial_superior_agree.date,
+    provincialSuperiorComment: projectData.comment_box_provincial_superior,
+    comment: "",
+    amountApproved: 0,
   });
 
   const calculateTotals = (column) => {
@@ -72,7 +97,39 @@ const DisplayForm = () => {
       return total + (parseInt(row[column], 10) || 0);
     }, 0);
   };
-  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await authAxios.put("/projects/editapproverSI/", {
+        amount_approved: formData.amountApproved,
+        projectID: projectData._id,
+        comment_box_project_coordinator: formData.comment,
+        project_coordinator_agree : formData.projectCoordinatorAgree,
+      });
+      if (res.data.success) {
+        showToast({
+          title: "Success",
+          status: "success",
+          duration: 5000,
+        });
+      } else {
+        showToast({
+          title: "Error",
+          status: "error",
+          duration: 5000,
+        });
+      }
+      console.log(res.data);
+    } catch (error) {
+      showToast({
+        title: "Error",
+        status: "error",
+        duration: 5000,
+      });
+      console.log(error);
+    }
+  };
 
   return (
     <ChakraProvider>
@@ -87,13 +144,9 @@ const DisplayForm = () => {
           Social individual Project Application Form
         </Heading>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           {/* All the read-only fields */}
           <VStack align="start" spacing={4} mb={8}>
-            <FormControl isReadOnly>
-              <FormLabel>Name of society</FormLabel>
-              <Input type="text" value={formData.nameofSociety} readOnly />
-            </FormControl>
             <FormControl isReadOnly>
               <FormLabel>Name of self employment</FormLabel>
               <Input
@@ -102,64 +155,71 @@ const DisplayForm = () => {
                 readOnly
               />
             </FormControl>
+          </VStack>
+
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Name of Project Incharge */}
             <FormControl isReadOnly>
-              <FormLabel>Date of Submission</FormLabel>
-              <Input type="date" value={formData.dateOfSubmission} readOnly />
+              <FormLabel>Name of Project Incharge</FormLabel>
+              <Input
+                type="text"
+                value={formData.projectInchargeName}
+                readOnly
+              />
             </FormControl>
-            <VStack align="start" spacing={4} mb={8}>
-              {/* Name of Provincial Superior */}
-              <FormControl isReadOnly>
-                <FormLabel>Name of Provincial Superior</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.provincialSuperiorName}
-                  readOnly
-                />
-              </FormControl>
 
-              {/* Contact of Provincial Superior */}
-              <FormControl isReadOnly>
-                <FormLabel>Contact of Provincial Superior</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.provincialSuperiorContact}
-                  readOnly
-                />
-              </FormControl>
-            </VStack>
+            {/* Contact of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Contact of Project Incharge</FormLabel>
+              <Input
+                type="text"
+                value={formData.projectInchargeContact}
+                readOnly
+              />
+            </FormControl>
 
-            <VStack align="start" spacing={4} mb={8}>
-              {/* Name of Project Incharge */}
-              <FormControl isReadOnly>
-                <FormLabel>Name of Project Incharge</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.projectInchargeName}
-                  readOnly
-                />
-              </FormControl>
+            {/* Email of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Email of Project Incharge</FormLabel>
+              <Input
+                type="email"
+                value={formData.projectInchargeEmail}
+                readOnly
+              />
+            </FormControl>
+          </VStack>
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Name of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Name of Provincial Superior</FormLabel>
+              <Input
+                type="text"
+                value={formData.provincialSuperiorName}
+                readOnly
+              />
+            </FormControl>
 
-              {/* Contact of Project Incharge */}
-              <FormControl isReadOnly>
-                <FormLabel>Contact of Project Incharge</FormLabel>
-                <Input
-                  type="text"
-                  value={formData.projectInchargeContact}
-                  readOnly
-                />
-              </FormControl>
+            {/* Contact of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Contact of Provincial Superior</FormLabel>
+              <Input
+                type="text"
+                value={formData.provincialSuperiorContact}
+                readOnly
+              />
+            </FormControl>
 
-              {/* Email of Project Incharge */}
-              <FormControl isReadOnly>
-                <FormLabel>Email of Project Incharge</FormLabel>
-                <Input
-                  type="email"
-                  value={formData.projectInchargeEmail}
-                  readOnly
-                />
-              </FormControl>
-            </VStack>
-
+            {/* Email of Project Incharge */}
+            <FormControl isReadOnly>
+              <FormLabel>Email of Provincial Superior</FormLabel>
+              <Input
+                type="email"
+                value={formData.provincialSuperiorEmail}
+                readOnly
+              />
+            </FormControl>
+          </VStack>
+          <VStack>
             {/* Personal Information of the Beneficiary */}
             <Heading as="h1" size="xl" mb={6}>
               Personal Information of the Beneficiary
@@ -213,12 +273,6 @@ const DisplayForm = () => {
             <FormControl isReadOnly>
               <FormLabel>Date of Birth</FormLabel>
               <Input type="date" value={formData.dob} readOnly />
-            </FormControl>
-
-            {/* Occupation */}
-            <FormControl isReadOnly>
-              <FormLabel>Occupation</FormLabel>
-              <Input type="text" value={formData.fatherName} readOnly />
             </FormControl>
 
             {/* Marital Status */}
@@ -338,27 +392,12 @@ const DisplayForm = () => {
           <Flex justify="center" align="center" wrap="wrap">
             {formData.documents.map((doc, index) => (
               <Box key={index} w="50%">
-                <Image src={doc.url} alt={doc.name} />
+                <Image src={doc.file} alt={doc.name} />
               </Box>
             ))}
           </Flex>
 
           <VStack align="start" spacing={4} mb={8}>
-            {/* Signatures */}
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            <FormControl isReadOnly>
-              <Checkbox isChecked isReadOnly>
-                The Beneficiary / Family member agree
-              </Checkbox>
-              <Input
-                type="date"
-                value={formData.beneficiaryAgreementDate}
-                readOnly
-              />
-            </FormControl>
             {/* Signatures */}
             <Heading as="h1" size="xl" mb={6}>
               Signatures
@@ -372,79 +411,102 @@ const DisplayForm = () => {
                 <Input
                   type="date"
                   name="beneficiaryAgreementDate"
-                  value={formData.beneficiaryAgreementDate}
-                  isReadOnly
+                  value={formData.benificiaryAgreeDate.substring(0, 10)}
+                  readOnly
                 />
               </FormControl>
-
-              {/* Project Coordinator agreement */}
-              <FormControl isRequired>
-                <Checkbox
-                  name="projectCoordinatorAgreement"
-                  isChecked
-                  isReadOnly
-                >
-                  The Project Coordinator agree
-                </Checkbox>
-                <Input
-                  type="date"
-                  name="projectCoordinatorAgreementDate"
-                  value={formData.projectCoordinatorAgreementDate}
-                  isReadOnly
-                />
-              </FormControl>
-
               {/* Project-In-Charge agreement */}
               <FormControl isRequired>
-                <Checkbox name="projectInChargeAgreement" isChecked isReadOnly>
+                <Checkbox
+                  name="projectInChargeAgreement"
+                  isChecked={formData.projectInChargeAgreement}
+                  readOnly
+                >
                   The Project-In-Charge agree
                 </Checkbox>
                 <Input
                   type="date"
-                  name="projectInChargeAgreementDate"
-                  value={formData.projectInChargeAgreementDate}
-                  isReadOnly
+                  name="projectInChargeAgree"
+                  value={formData.projectInChargeAgreementDate.substring(0, 10)}
+                  readOnly
                 />
               </FormControl>
-
-              {/* Provincial Superior agreement */}
               <FormControl isRequired>
                 <Checkbox
-                  name="provincialSuperiorAgreement"
-                  isChecked
-                  isReadOnly
+                  name="projectInChargeAgreement"
+                  isChecked={formData.provincialSuperiorAgree}
+                  readOnly
                 >
-                  The Provincial Superior agree
+                  The Provincial Superior Agree
                 </Checkbox>
                 <Input
                   type="date"
-                  name="provincialSuperiorAgreementDate"
-                  value={formData.provincialSuperiorAgreementDate}
-                  isReadOnly
+                  name="provincialSuperiorAgrementDate"
+                  value={formData.provincialSuperiorAgreeDate.substring(0, 10)}
+                  readOnly
+                />
+              </FormControl>
+              <FormControl isRequired>
+                Provincial Superior Comment
+                <Textarea
+                  required
+                  type="text"
+                  readOnly
+                  name="provincialSuperiorComment"
+                  value={formData.provincialSuperiorComment}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                Comment(Project Coordinator)
+                <Textarea
+                  required
+                  type="text"
+                  onChange={(e) => {
+                    setFormData((prevData) => {
+                      prevData.comment = e.target.value;
+                      return { ...prevData };
+                    });
+                  }}
+                  name="comment"
+                  value={formData.comment}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                Amount Approved
+                <Input
+                  required
+                  type="number"
+                  onChange={(e) => {
+                    setFormData((prevData) => {
+                      prevData.amountApproved = e.target.value;
+                      return { ...prevData };
+                    });
+                  }}
+                  name="amountApproved"
+                  value={formData.amountApproved}
                 />
               </FormControl>
             </VStack>
           </VStack>
 
-          {/* Amount Approved by Project Coordinator */}
-          <VStack align="start" spacing={4} mb={8}>
-            <FormControl isReadOnly>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                value={formData.amountApprovedByProjectCoordinator}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Remarks */}
-            {/* <FormControl>
-                <FormLabel>Remarks (Optional)</FormLabel>
-                <Textarea name="remarks" onChange={handleChange} />
-              </FormControl> */}
-          </VStack>
-
           {/* Submit Button */}
+          <Button
+            colorScheme="blue"
+            mx="3"
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgree = true)}
+          >
+            Accept
+          </Button>
+          <Button
+            colorScheme="red"
+            mx="3"
+            type="submit"
+            flex={1}
+            onClick={() => (formData.projectCoordinatorAgree = false)}
+          >
+            Revert
+          </Button>
           {/* The submit button can be hidden or disabled for read-only view */}
         </form>
       </Box>
@@ -452,4 +514,4 @@ const DisplayForm = () => {
   );
 };
 
-export default DisplayForm;
+export default ReviewSocialIndividual;

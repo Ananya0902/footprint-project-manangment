@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import authAxios from "../AuthAxios";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ApproveProjects = () => {
   const approverProfile = JSON.parse(decodeURIComponent(useParams().profile));
@@ -47,10 +47,9 @@ const ApproveProjects = () => {
 
   // what Happens if one projectCoordinator decides to revert while other does not care
   // Tough nut that becomes hard to crack
-
+  console.log(approverProfile._id);
   const approved = (projectCoordinator) =>
-    projectCoordinator.ref === approverProfile._id &&
-    projectCoordinator.comment === null;
+    projectCoordinator.ref === approverProfile._id;
 
   const individualFilter = (value) =>
     value.comment_box_project_coordinator === null &&
@@ -153,9 +152,12 @@ const ApproveProjects = () => {
               // logic
               value?.general_information?.project_coordinators?.find(approved)
                 ? false
-                : true
+                : true &&
+                  value?.general_information?.provincial_superior.agree &&
+                  value?.general_information?.project_coordinators.length < 2
             )
             .map((project) => {
+              console.log(approverProfile._id);
               return {
                 id: project.project_number,
                 project: project,
@@ -175,7 +177,11 @@ const ApproveProjects = () => {
           }),
           DPLG: getAllDPLGApprover
             .filter((value) =>
-              value.project_coordinators.find(approved) ? false : true
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -187,7 +193,9 @@ const ApproveProjects = () => {
             .filter((value) =>
               value.mailing_list.project_coordinators.find(approved)
                 ? false
-                : true
+                : true &&
+                  value?.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -199,7 +207,9 @@ const ApproveProjects = () => {
             .filter((value) =>
               value.mailing_list.project_coordinators.find(approved)
                 ? false
-                : true
+                : true &&
+                  value?.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -211,7 +221,9 @@ const ApproveProjects = () => {
             .filter((value) =>
               value.mailing_list.project_coordinators.find(approved)
                 ? false
-                : true
+                : true &&
+                  value?.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -227,7 +239,11 @@ const ApproveProjects = () => {
           }),
           ISG: getAllISGApprover
             .filter((value) =>
-              value.project_coordinators.find(approved) ? false : true
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -237,7 +253,11 @@ const ApproveProjects = () => {
             }),
           CG: getAllCGApprover
             .filter((value) =>
-              value.project_coordinators.find(approved) ? false : true
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -247,7 +267,11 @@ const ApproveProjects = () => {
             }),
           EG: getAllEGApprover
             .filter((value) =>
-              value.project_coordinators.find(approved) ? false : true
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length < 2
             )
             .map((project) => {
               return {
@@ -273,7 +297,7 @@ const ApproveProjects = () => {
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
-          Projects to Be Reviewed
+          Projects to Be Approved
         </Heading>
 
         <VStack spacing={6} align="stretch">

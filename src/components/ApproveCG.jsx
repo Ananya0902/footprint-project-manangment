@@ -21,54 +21,110 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../AuthAxios";
+import { useParams } from "react-router-dom";
 
 export const ApproveCG = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
+  // const [formData, setFormData] = useState({
+  //   NAMEOFTHESOCIETY: "",
+  //   dATEOFSUBMISSION: "",
+  //   TITLEOFTHEPROJECT: "",
+  //   address: "",
+  //   provincialSuperiorName: "",
+  //   provincialSuperiorCellNumber: "",
+  //   provincialSuperiorEmail: "",
+  //   projectInChargeName: "",
+  //   projectInChargeCellNumber: "",
+  //   projectInChargeEmail: "",
+  //   projOfIntialProject: "",
+  //   overallProjectPeriod: "",
+  //   overallProjectBudget: "",
+  //   problemAnalysis: "",
+  //   solutionAnalysis: "",
+  //   sustainability: "", // Add sustainability
+  //   monitoringProcess: "", // Add monitoringProcess
+  //   projectInChargeAgreement: false,
+  //   projectInChargeAgreementDate: "",
+  //   provincialSuperiorAgreement: false,
+  //   provincialSuperiorAgreementDate: "",
+  //   comment: "",
+
+  //   projectArea: "", // Add projectArea
+  //   directBeneficiaries: "", // Add directBeneficiaries
+  //   indirectBeneficiaries: "", // Add indirectBeneficiaries
+  //   evaluationMethodology: "", // Add evaluationMethodology
+  //   logicalFramework: {
+  //     goal: "",
+  //     objectives: [
+  //       {
+  //         objective: "",
+  //         results: [""],
+  //         activities: [],
+  //       },
+  //     ],
+  //   },
+  // });
+  // const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+
+  // Assuming projectData contains the fetched data from the backend
+
+  // Populate formData from projectData
   const [formData, setFormData] = useState({
-    NAMEOFTHESOCIETY: "",
-    dATEOFSUBMISSION: "",
-    TITLEOFTHEPROJECT: "",
-    address: "",
-    provincialSuperiorName: "",
-    provincialSuperiorCellNumber: "",
-    provincialSuperiorEmail: "",
-    projectInChargeName: "",
-    projectInChargeCellNumber: "",
-    projectInChargeEmail: "",
-    projOfIntialProject: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    problemAnalysis: "",
-    solutionAnalysis: "",
-    sustainability: "", // Add sustainability
-    monitoringProcess: "", // Add monitoringProcess
-    projectInChargeAgreement: false,
-  projectInChargeAgreementDate: "",
-  projectCoordinatorAgreement:false,
-  projectCoordinatorAgreementDate:"",
-
-  // Additional Fields
-  commentReviewer: "",
-  commentApprover:"",
-  amountApprovedByProjectCoordinator:"",
-
-  projectArea: "", // Add projectArea
-  directBeneficiaries: "", // Add directBeneficiaries
-  indirectBeneficiaries: "", // Add indirectBeneficiaries
-  evaluationMethodology: "", // Add evaluationMethodology
+    projectInChargeName: projectData.applicant.name,
+    projectInChargeEmail: projectData.applicant.email,
+    projectInChargeCellNumber: projectData.applicant.mobile,
+    NAMEOFTHESOCIETY: projectData.nameOfSociety || "",
+    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+    TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+    address: projectData.address || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
+    problemAnalysis: projectData.problemAnalysis || "",
+    solutionAnalysis: projectData.solutionAnalysis || "",
+    sustainability: projectData.sustainability || "",
+    monitoringProcess: projectData.monitoringProcess || "",
+    projectInChargeAgreement:
+      projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date.substring(0, 10), // You haven't provided this in projectData
+    amountApproved: 0 , 
+    projectCoordinatorAgreement: false , 
+    commentReviewer: projectData.comment_box_provincial_superior,
+    provincialSuperiorAgreement: projectData.provincial_superior_agree.agree , 
+    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date.substring(0,10) , 
+    projectArea: projectData.ProjectArea || "",
+    directBeneficiaries: projectData.directBeneficiaries || "",
+    indirectBeneficiaries: projectData.indirectBeneficiaries || "",
+    evaluationMethodology: projectData.evaluationMethodology || "",
     logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
+      goal: projectData.goal || "",
+      objectives: projectData.objectives.map((objective) => ({
+        objective: objective.objective || "",
+        results: objective.results || [""],
+        activities: objective.activities || [],
+      })),
     },
+    // Other fields can be added as per requirement
   });
-  const [budgetData, setBudgetData] = useState([
-    { budget: '', cost: '' },
-  ]);
+  const [budgetData, setBudgetData] = useState(
+    projectData.budget_cost_table || []
+  );
+
+  // Populate logicalFramework if present in projectData
+  // if (projectData.goal && projectData.objectives) {
+  //   updatedFormData.logicalFramework = {
+  //     goal: projectData.goal || "",
+  //     objectives: projectData.objectives.map((objective) => ({
+  //       objective: objective.objective || "",
+  //       results: objective.results || [""],
+  //       activities: objective.activities || [],
+  //     })),
+  //   };
+  // }
+
+  // Update the state with the updatedFormData
+
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
   const [selectedMonths, setSelectedMonths] = useState([]);
@@ -76,7 +132,6 @@ export const ApproveCG = () => {
 
   const handleChange = (e, index, subIndex) => {
     const updatedData = { ...formData };
-
     if (e.target.name === "goal") {
       updatedData.logicalFramework.goal = e.target.value;
     } else if (e.target.name === "objective") {
@@ -92,58 +147,24 @@ export const ApproveCG = () => {
       updatedData.logicalFramework.objectives[index].activities[
         subIndex
       ].verification = e.target.value;
-    }else {
+    } else {
       updatedData[e.target.name] = e.target.value;
     }
 
     setFormData(updatedData);
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
 
-
-    const req = {
-      NameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
-      TitleOfProject: formData.TITLEOFTHEPROJECT,
-      address: formData.address,
-      OverallProjectPeriod: formData.overallProjectPeriod,
-      OverallProjectBudget: formData.overallProjectBudget,
-      NumberOfBeneficiaries: formData.directBeneficiaries,
-      ResidentialVillages: formData.indirectBeneficiaries,
-      SelectionCriteriaAndProfile: formData.projOfIntialProject,
-      DescriptionOfBeneficiary: formData.projOfIntialProject,
-      problemAnalysis: formData.problemAnalysis,
-      solutionAnalysis: formData.solutionAnalysis,
-      goal: formData.logicalFramework.goal,
-      objectives: formData.logicalFramework.objectives.map((objective) => ({
-        objective: objective.objective,
-        results: objective.results,
-        activities: objective.activities,
-      })),
-      sustainability: formData.sustainability,
-      monitoringProcess: formData.monitoringProcess,
-      evaluationMethodology: formData.evaluationMethodology,
-      projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
-
-    // Additional Fields
-    comment: "",
-      budgetData: budgetData.map((item) => ({
-        budget: item.budget,
-        cost: item.cost,
-      })),
-      
-    };
-    try{
+    try {
       setIsLoading((prevLoading) => !prevLoading);
-      const response =await authAxios.post("/projects/createCG",req)
+      const response = await authAxios.put("/projects/editapproverCG", {
+        projectID: projectData._id,
+        comment_box_project_coordinator: formData.comment,
+        project_coordinator_agree: formData.projectCoordinatorAgreement,
+      });
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {
@@ -156,45 +177,46 @@ export const ApproveCG = () => {
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
-          description: "Please login again session may have expired",
           duration: 5000,
         });
       }
     } catch (err) {
       setIsLoading(false);
+      showToast({
+        title: "Unsuccessful form submission",
+        status: "error",
+        duration: 5000,
+      });
       console.log(err);
     }
-
-
-
 
     setIsSubmitted(true);
   };
 
-
-
-
   const BudgetTable = () => {
-      const handleBudgetChange = (index, field, value) => {
+    const handleBudgetChange = (index, field, value) => {
       const newData = [...budgetData];
       newData[index][field] = value;
       setBudgetData(newData);
     };
-  
+
     const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: '', cost: '' }]);
+      setBudgetData([...budgetData, { budget: "", cost: "" }]);
     };
-  
+
     const calculateTotalAmount = () => {
-      return budgetData.reduce((total, row) => total + parseFloat(row.cost) || 0, 0);
+      return budgetData.reduce(
+        (total, row) => total + parseFloat(row.cost) || 0,
+        0
+      );
     };
-  
+
     return (
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6}>
           Budget Details
         </Heading>
-  
+
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -208,31 +230,32 @@ export const ApproveCG = () => {
                 <Td>
                   <Input
                     type="text"
+                    readOnly
                     value={row.budget}
-                    onChange={(e) => handleBudgetChange(index, 'budget', e.target.value)}
+                    onChange={(e) =>
+                      handleBudgetChange(index, "budget", e.target.value)
+                    }
                   />
                 </Td>
                 <Td>
                   <Input
                     type="number"
+                    readOnly
                     value={row.cost}
-                    onChange={(e) => handleBudgetChange(index, 'cost', e.target.value)}
+                    onChange={(e) =>
+                      handleBudgetChange(index, "cost", e.target.value)
+                    }
                   />
                 </Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
-  
-        <Button onClick={handleAddBudgetRow} mt={4}>
-          Add Row
-        </Button>
-
         <FormControl>
-            <FormLabel >Total Amount</FormLabel>
-            <Input type="text" value={calculateTotalAmount()} isReadOnly />
-          </FormControl>
-        </Box>
+          <FormLabel>Total Amount</FormLabel>
+          <Input type="text" value={calculateTotalAmount()} isReadOnly />
+        </FormControl>
+      </Box>
     );
   };
 
@@ -259,7 +282,7 @@ export const ApproveCG = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl >
+            <FormControl>
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
@@ -270,38 +293,35 @@ export const ApproveCG = () => {
               />
             </FormControl>
             {/* DATE OF SUBMISSION */}
-            <FormControl >
+            <FormControl>
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
                 name="dATEOFSUBMISSION"
                 onChange={handleChange}
                 value={formData.dATEOFSUBMISSION}
-
                 readOnly
               />
             </FormControl>
             {/* TITLE OF THE PROJECT */}
-            <FormControl >
+            <FormControl>
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
                 name="TITLEOFTHEPROJECT"
                 onChange={handleChange}
                 value={formData.TITLEOFTHEPROJECT}
-
                 readOnly
               />
             </FormControl>
             {/* ADDRESS*/}
-            <FormControl >
+            <FormControl>
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
                 name="address"
                 onChange={handleChange}
                 value={formData.address}
-
                 readOnly
               />
             </FormControl>
@@ -316,40 +336,6 @@ export const ApproveCG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorName}
-
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorCellNumber}
-
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorEmail}
-
-                      readOnly
-                    />
-                  </Td>
-                </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -359,7 +345,6 @@ export const ApproveCG = () => {
                       name="projectInChargeName"
                       onChange={handleChange}
                       value={formData.projectInChargeName}
-
                       readOnly
                     />
                   </Td>
@@ -369,7 +354,6 @@ export const ApproveCG = () => {
                       name="projectInChargeCellNumber"
                       onChange={handleChange}
                       value={formData.projectInChargeCellNumber}
-
                       readOnly
                     />
                   </Td>
@@ -379,7 +363,6 @@ export const ApproveCG = () => {
                       name="projectInChargeEmail"
                       onChange={handleChange}
                       value={formData.projectInChargeEmail}
-
                       readOnly
                     />
                   </Td>
@@ -399,39 +382,38 @@ export const ApproveCG = () => {
                 </Tr>
               </Tbody>
             </Table>
-           {/* Overall Project Period */}
-           <FormControl >
+            {/* Overall Project Period */}
+            <FormControl>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
                 name="overallProjectPeriod"
                 onChange={handleChange}
                 value={formData.overallProjectPeriod}
-
                 readOnly
               />
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
                 name="overallProjectBudget"
                 onChange={handleChange}
                 value={formData.overallProjectBudget}
-
                 readOnly
               />
             </FormControl>
             {/* Project Area */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Project Area</FormLabel>
-              <Textarea name="projectArea"
-               onChange={handleChange}
-               value={formData.projectArea}
-
-               readOnly />
+              <Textarea
+                name="projectArea"
+                onChange={handleChange}
+                value={formData.projectArea}
+                readOnly
+              />
             </FormControl>
 
             {/* Number of Beneficiaries */}
@@ -445,7 +427,6 @@ export const ApproveCG = () => {
                   name="directBeneficiaries"
                   onChange={handleChange}
                   value={formData.directBeneficiaries}
-
                   readOnly
                 />
               </FormControl>
@@ -457,32 +438,29 @@ export const ApproveCG = () => {
                   name="indirectBeneficiaries"
                   onChange={handleChange}
                   value={formData.indirectBeneficiaries}
-
                   readOnly
                 />
               </FormControl>
             </FormControl>
 
             {/* Analysis of the Problem */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Analysis of the Problem</FormLabel>
               <Textarea
                 name="problemAnalysis"
                 onChange={handleChange}
                 value={formData.problemAnalysis}
-
                 readOnly
               />
             </FormControl>
 
             {/* Solution Analysis */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="solutionAnalysis"
                 onChange={handleChange}
                 value={formData.solutionAnalysis}
-
                 readOnly
               />
             </FormControl>
@@ -498,12 +476,13 @@ export const ApproveCG = () => {
             >
               logical Framework
             </Heading>
-            <FormControl >
+            <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
                 onChange={(e) => handleChange(e)}
                 readOnly
+                value={formData.logicalFramework.goal}
               />
             </FormControl>
 
@@ -519,243 +498,230 @@ export const ApproveCG = () => {
               Objectives:-
             </Heading>
             {formData.logicalFramework.objectives.map((objective, index) => (
-                 <Box key={index} border="1px solid #ccc" borderRadius="lg" p={4} mb={8}>
-              <VStack key={index} align="start" spacing={4} mb={8}>
-                {/* Objective */}
-                <FormControl >
+              <Box
+                key={index}
+                border="1px solid #ccc"
+                borderRadius="lg"
+                p={4}
+                mb={8}
+              >
+                <VStack key={index} align="start" spacing={4} mb={8}>
+                  {/* Objective */}
+                  <FormControl>
                     <hr />
-                  <FormLabel>Objective {index + 1}</FormLabel>
-                  <Textarea
-                    name="objective"
-                    value={objective.objective}
-                    onChange={(e) => handleChange(e, index)}
-                    readOnly
-                  />
-                </FormControl>
+                    <FormLabel>Objective {index + 1}</FormLabel>
+                    <Textarea
+                      name="objective"
+                      value={objective.objective}
+                      onChange={(e) => handleChange(e, index)}
+                      readOnly
+                    />
+                  </FormControl>
 
-                {/* Results */}
-                <FormControl >
-                  <FormLabel>Results</FormLabel>
-                  {objective.results.map((result, subIndex) => (
-                    <VStack key={subIndex} align="start" spacing={4} mb={8}>
-                      <Textarea
-                        name="result"
-                        value={result}
-                        onChange={(e) => handleChange(e, index, subIndex)}
-                        readOnly
-                      />
-                     
-                    </VStack>
-                  ))}
-                </FormControl>
+                  {/* Results */}
+                  <FormControl>
+                    <FormLabel>Results</FormLabel>
+                    {objective.results.map((result, subIndex) => (
+                      <VStack key={subIndex} align="start" spacing={4} mb={8}>
+                        <Textarea
+                          name="result"
+                          value={result}
+                          onChange={(e) => handleChange(e, index, subIndex)}
+                          readOnly
+                        />
+                      </VStack>
+                    ))}
+                  </FormControl>
 
-                {/* Activities and Means of Verification */}
-                <FormControl >
-                  <FormLabel>Activities and Means of Verification</FormLabel>
-                  <Table variant="simple">
-                    <Thead>
-                      <Tr>
-                        <Th>Activity</Th>
-                        <Th>Means of Verification</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {objective.activities.map((activity, subIndex) => (
-                        <Tr key={subIndex}>
-                          <Td>
-                            <Textarea
-                              name="activity"
-                              value={activity.activity}
-                              onChange={(e) => handleChange(e, index, subIndex)}
-                              readOnly
-                            />
-                          </Td>
-                          <Td>
-                            <Textarea
-                              name="verification"
-                              value={activity.verification}
-                              onChange={(e) => handleChange(e, index, subIndex)}
-                              readOnly
-                            />
-                          </Td>
-                          <Td>
-                            {/* Timeframe */}
-                            <FormControl isRequired>
-                              <FormLabel>Timeframe</FormLabel>
-                              {activity.timeframe.map((value, monthIndex) => (
-                                <Checkbox
-                                  key={monthIndex}
-                                  isChecked={value}
-                                  onChange={() => {
-                                    setSelectedMonths([]);
-                                    activity.timeframe[monthIndex] =
-                                      !activity.timeframe[monthIndex];
-                                    console.log(activity.timeframe);
-                                  }}readOnly
-                                >
-                                  {new Date(2024, monthIndex).toLocaleString(
-                                    "default",
-                                    { month: "long" }
-                                  )}
-                                </Checkbox>
-                              ))}
-                            </FormControl>
-                          </Td>
+                  {/* Activities and Means of Verification */}
+                  <FormControl>
+                    <FormLabel>Activities and Means of Verification</FormLabel>
+                    <Table variant="simple">
+                      <Thead>
+                        <Tr>
+                          <Th>Activity</Th>
+                          <Th>Means of Verification</Th>
                         </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-
-                  
-                </FormControl>
-
-            
-                
-              </VStack>
-             
+                      </Thead>
+                      <Tbody>
+                        {objective.activities.map((activity, subIndex) => (
+                          <Tr key={subIndex}>
+                            <Td>
+                              <Textarea
+                                name="activity"
+                                value={activity.activity}
+                                onChange={(e) =>
+                                  handleChange(e, index, subIndex)
+                                }
+                                readOnly
+                              />
+                            </Td>
+                            <Td>
+                              <Textarea
+                                name="verification"
+                                value={activity.verification}
+                                onChange={(e) =>
+                                  handleChange(e, index, subIndex)
+                                }
+                                readOnly
+                              />
+                            </Td>
+                            <Td>
+                              {/* Timeframe */}
+                              <FormControl isRequired>
+                                <FormLabel>Timeframe</FormLabel>
+                                {activity.timeframe.map((value, monthIndex) => (
+                                  <Checkbox
+                                    key={monthIndex}
+                                    isChecked={value}
+                                    onChange={() => {
+                                      setSelectedMonths([]);
+                                      activity.timeframe[monthIndex] =
+                                        !activity.timeframe[monthIndex];
+                                      console.log(activity.timeframe);
+                                    }}
+                                    readOnly
+                                  >
+                                    {new Date(2024, monthIndex).toLocaleString(
+                                      "default",
+                                      { month: "long" }
+                                    )}
+                                  </Checkbox>
+                                ))}
+                              </FormControl>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </FormControl>
+                </VStack>
               </Box>
-              
             ))}
-             
 
+            {/* Sustainability of the Project */}
+            <FormControl>
+              <FormLabel>Sustainability of the Project</FormLabel>
+              <Textarea
+                name="sustainability"
+                value={formData.sustainability}
+                onChange={(e) => handleChange(e)}
+                readOnly
+              />
+            </FormControl>
 
-                {/* Sustainability of the Project */}
-        <FormControl >
-          <FormLabel>Sustainability of the Project</FormLabel>
-          <Textarea
-            name="sustainability"
-            value={formData.sustainability}
-            onChange={(e) => handleChange(e)}
-            readOnly
-          />
-        </FormControl>
+            {/* Explain the Monitoring Process of the Project */}
+            <FormControl>
+              <FormLabel>
+                Explain the Monitoring Process of the Project
+              </FormLabel>
+              <Textarea
+                name="monitoringProcess"
+                value={formData.monitoringProcess}
+                onChange={(e) => handleChange(e)}
+                readOnly
+              />
+            </FormControl>
 
-        {/* Explain the Monitoring Process of the Project */}
-        <FormControl >
-          <FormLabel>Explain the Monitoring Process of the Project</FormLabel>
-          <Textarea
-            name="monitoringProcess"
-            value={formData.monitoringProcess}
-            onChange={(e) => handleChange(e)}
-            readOnly
-          />
-        </FormControl>
+            {/* Methodology of Evaluation */}
+            <FormControl>
+              <FormLabel>Methodology of Evaluation</FormLabel>
+              <Textarea
+                name="evaluationMethodology"
+                value={formData.evaluationMethodology}
+                onChange={(e) => handleChange(e)}
+                readOnly
+              />
+            </FormControl>
 
-        {/* Methodology of Evaluation */}
-        <FormControl >
-          <FormLabel>Methodology of Evaluation</FormLabel>
-          <Textarea
-            name="evaluationMethodology"
-            value={formData.evaluationMethodology}
-            onChange={(e) => handleChange(e)}
-            readOnly
-          />
-        </FormControl>
+            {BudgetTable()}
 
-{BudgetTable()}
-
-<Heading as="h1" size="xl" mb={6}>
+            <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl >
+            <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
-                value={formData.projectInChargeAgreement}
+                isChecked={formData.projectInChargeAgreement}
                 readOnly
                 size="lg"
               >
                 The Project-In-Charge agree
               </Checkbox>
               <Input
-                type="date"               
-                 value={formData.projectInChargeAgreementDate}
-                    
+                type="date"
+                value={formData.projectInChargeAgreementDate}
                 name="projectInChargeAgreementDate"
-                onChange={handleChange}
                 readOnly
               />
             </FormControl>
 
-              {/* Provincial Superior agreement */}
-              <FormControl >
+            {/* Provincial Superior agreement */}
+            <FormControl isReadOnly>
               <Checkbox
                 name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
+                isChecked={formData.provincialSuperiorAgreement}
                 readOnly
+                size="lg"
               >
                 The Provincial Superior agree
               </Checkbox>
-            </FormControl>
-          </VStack>
-
-
-          <VStack align="start" spacing={4} mb={8}>
-           {/* Project Coordinator agreement */}
-           <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
-              </Checkbox>
               <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
+              type="date"
+              value={formData.provincialSuperiorAgreementDate}
               />
             </FormControl>
           </VStack>
-
           <VStack align="start" spacing={4} mb={8}>
-            {/* Comment for reviewer */}
-            <FormControl>
+            {/* Comment */}
+            <FormControl isRequired>
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
                 name="commentReviewer"
-                onChange={handleChange}
-                value={formData.commentReviewer || ""}
+                value={formData.commentReviewer}
                 readOnly
               />
             </FormControl>
-
-            {/* Comment for approver */}
             <FormControl isRequired>
               <FormLabel>Comment(For Approver)</FormLabel>
               <Input
                 type="text"
-                name="commentApprover"
+                name="comment"
+                value={formData.comment}
                 onChange={handleChange}
                 required
               />
-            </FormControl>
-
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <FormLabel>Amount Approved</FormLabel>
               <Input
                 type="number"
-                name="amountApprovedByProjectCoordinator"
+                name="amountApproved"
+                value={formData.amountApproved}
                 onChange={handleChange}
                 required
               />
             </FormControl>
-
-
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" mx={3} type="submit">
-            Submit
+          <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = true)}
+          >
+            Accept
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
+          <Button
+            colorScheme="red"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = false)}
+          >
+            REvert
           </Button>
         </form>
       </Box>

@@ -692,7 +692,7 @@ export const ReviewCG = () => {
             colorScheme="red"
             mx={3}
             type="submit"
-            onClick={() => (formData.provincialSuperiorAgreement = true)}
+            onClick={() => (formData.provincialSuperiorAgreement = false)}
           >
             REvert
           </Button>

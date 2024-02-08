@@ -85,6 +85,8 @@ import ViewHIV from "./components/ViewHIV";
 import ViewISG from "./components/ViewISG";
 import ViewWHCG from "./components/ViewWHCG";
 import ReviewSocialIndividual from "./components/ReviewSocialIndividual";
+import ApproveSocialIndividual from './components/ApproveSocialIndividual';
+import ApproveWelfareHomeForChildren from "./components/ApproveWelfareHealthForChildren";
 
 
 const PrivateRoute = ({ path, element }) => {
@@ -124,7 +126,7 @@ const App = () => {
           <Route path="/MonthlyReportDevelopment" element={<MonthlyReportDevelopmentProject />} />
           <Route path="/profileApplicant/:userDetails" element={<ProfilePageApplicant />} />
           <Route path="/profileReviewer" element={<ProfilePageReviewer />} />
-          <Route path="/profileApprover/profile" element={<ProfilePageApprover />} />
+          <Route path="/profileApprover/:profile" element={<ProfilePageApprover />} />
           <Route path="/registerApprover" element={<RegisterApproverPage />} />
           <Route path="/dashboardApplicant" element={<DashboardApplicant />} />
           <Route path="/dashboardReviewer" element={<DashboardReviewer />} />
@@ -142,7 +144,7 @@ const App = () => {
           <Route path="/QuaterlyReportDevelopment" element={<QuaterlyReportDevelopment />} />
           <Route path="/ReviewHOI/:project" element={<ReviewHIO />} />
           <Route path="/ReviewEOI/:project" element={<ReviewEIO/>} />
-          <Route path="/ReviewSI" element={<ReviewSocialIndividual/>} />
+          <Route path="/ApproveSI/:project" element={<ApproveSocialIndividual/>} />
           <Route path="/ApproveHOI/:project" element={<ApproveHIO />} />
           <Route path="/ApproveEOI/:project" element={<ApproveEIO />} />
           {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
@@ -164,22 +166,23 @@ const App = () => {
           <Route path='/ReviewWHFC/:project' element={<ReviewWelfareHomeForChildren/>} />
           <Route path="/ReviewSI/:project" element={<ReviewSocialIndividual/>}/>
           <Route path='/ReviewEI/:project' element={<ReviewEI/>} />          
-          <Route path='/ApproveEI' element={<ApproveEI/>} />          
+          <Route path='/ApproveEI/:project' element={<ApproveEI/>} />          
+          <Route path='/ApproveWHFC/:project' element={<ApproveWelfareHomeForChildren/>} />          
           <Route path='/ViewEI' element={<ViewEI/>} />          
           <Route path='/ReviewNPDP/:project' element={<ReviewNPDP/>} />          
-          <Route path='/ApproveNPDP' element={<ApproveNPDP/>} />          
+          <Route path='/ApproveNPDP/:project' element={<ApproveNPDP/>} />          
           <Route path='/viewNPDP' element={<ViewNPDP/>} />
           <Route path='/ReviewEGS/:project' element={<ReviewEduRUTG/>} />
-          <Route path='/ApproveEduRUTG' element={<ApproveEduRUTG/>} />
+          <Route path='/ApproveEGS/:project' element={<ApproveEduRUTG/>} />
           <Route path='/ViewEduRUTG' element={<ViewEduRUTG/>} />
           <Route path='/ReviewDPLG/:project' element={<ReviewDPLG/>} />
-          <Route path='/ApproveDPLG' element={<ApproveDPLG/>} />
+          <Route path='/ApproveDPLG/:project' element={<ApproveDPLG/>} />
           <Route path='/ReviewCG/:project' element={<ReviewCG/>} />
-          <Route path='/ApproveCG' element={<ApproveCG/>} />
+          <Route path='/ApproveCG/:project' element={<ApproveCG/>} />
           <Route path='/ApproveEG' element={<ApproveEG/>} />
           <Route path='/ReviewEG/:project' element={<ReviewEG/>} />
           <Route path='/ReviewISG/:project' element={<ReviewISG/>} />
-          <Route path='/ApproveISG' element={<ApproveISG/>} />
+          <Route path='/ApproveISG/:project' element={<ApproveISG/>} />
           <Route path='/ReviewHIV/:project' element={<ReviewHIV/>} />
           <Route path='/ApproveHIV/:project' element={<ApproveHIV/>} />
 

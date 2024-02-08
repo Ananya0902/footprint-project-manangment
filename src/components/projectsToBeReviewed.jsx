@@ -135,7 +135,7 @@ const ReviewProjects = () => {
             )
             .map((project) => {
               return {
-                id: project.project_number,
+                id: project._id,
                 project: project,
               };
             }),
