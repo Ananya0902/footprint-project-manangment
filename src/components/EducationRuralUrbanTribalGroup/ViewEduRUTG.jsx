@@ -28,9 +28,9 @@ const ReviewEduRUTG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
   const [formData, setFormData] = useState({
-    commentReviewer : projectData.general_information.provincial_superior.comment , 
-    amountApproved: 0 , 
-    projectCoordinatorAgree: false , 
+    commentReviewer:
+      projectData.general_information.provincial_superior.comment,
+    amountApproved: projectData.project_summary.amount_approved,
     projectTitle: projectData.project_title || "",
     projectInchargeName:
       projectData.general_information.project_incharge.ref.name,
@@ -40,8 +40,10 @@ const ReviewEduRUTG = () => {
       projectData.general_information.project_incharge.agree,
     projectInchargeAgreementDate:
       projectData.general_information.project_incharge.date,
-    provincialSuperiorName: projectData.general_information.provincial_superior.ref.name,
-    provincialSuperiorEmail: projectData.general_information.provincial_superior.ref.email,
+    provincialSuperiorName:
+      projectData.general_information.provincial_superior.ref.name,
+    provincialSuperiorEmail:
+      projectData.general_information.provincial_superior.ref.email,
     presentProjectYear: projectData.present_project_year ?? "",
     projectNumber: projectData.project_number,
     address: projectData.general_information?.full_address ?? "",
@@ -63,7 +65,8 @@ const ReviewEduRUTG = () => {
         contributionFromFamily: beneficiary.contribution_from_family || "",
       })
     ),
-    projectRegion: projectData.general_information.provincial_superior.ref.nameOfProvince ,
+    projectRegion:
+      projectData.general_information.provincial_superior.ref.nameOfProvince,
     logicalFramework: {
       goal:
         projectData.project_summary?.solution_analysis_logical_framework
@@ -87,7 +90,7 @@ const ReviewEduRUTG = () => {
                       false,
                       false,
                       false,
-                      
+
                       false,
                       false,
                       false,
@@ -124,49 +127,21 @@ const ReviewEduRUTG = () => {
         })) || [],
       total: projectData.project_summary?.budget?.total || 0,
     },
-    provincialSuperiorAgreement: projectData.general_information.provincial_superior.agree,
-    provincialSuperiorAgreementDate: projectData.general_information.provincial_superior.date,
-    comment: null,
+    provincialSuperiorAgreement:
+      projectData.general_information.provincial_superior.agree,
+    provincialSuperiorAgreementDate:
+      projectData.general_information.provincial_superior.date,
+    projectCoordinators: projectData.general_information.project_coordinators,
   });
+
+  console.log(formData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   // Populate formData from req
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-    try {
-      const req = {
-        project_number: projectData.project_number,
-        comment: formData.comment,
-        agree: formData.projectCoordinatorAgree,
-        amount_approved: formData.amountApproved
-      };
-      const res = await authAxios.put("/projects/editEGSApprover/", req);
-      console.log(res);
-      if (res.data.success) {
-        showToast({
-          title: "Submitted",
-          status: "success",
-          duration: 5000,
-        });
-        setIsSubmitted(true);
-      } else {
-        showToast({
-          title: "Error submitting the reviewed doc",
-          status: "error",
-          duration: 5000,
-        });
-        console.log(res.data);
-      }
-    } catch (e) {
-      console.log(e);
-      showToast({
-        title: "Error submitting the reviewed doc",
-        description: e,
-        status: "error",
-        duration: 5000,
-      });
-    }
+   window.print();
   };
 
   const handleChange = (e) => {
@@ -847,7 +822,7 @@ const ReviewEduRUTG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* {formData.budget.map((row, index) => (
+                {formData.budget.expenses.map((row, index) => (
                   <Tr key={index}>
                     <Td>
                       <Input
@@ -866,7 +841,7 @@ const ReviewEduRUTG = () => {
                       />
                     </Td>
                   </Tr>
-                ))} */}
+                ))}
               </Tbody>
             </Table>
 
@@ -907,7 +882,10 @@ const ReviewEduRUTG = () => {
               </Checkbox>
               <Input
                 type="date"
-                value={formData.provincialSuperiorAgreementDate.substring(0, 10)}
+                value={formData.provincialSuperiorAgreementDate.substring(
+                  0,
+                  10
+                )}
                 name="provincialSuperiorAgreementDate"
                 readOnly
               />
@@ -926,45 +904,58 @@ const ReviewEduRUTG = () => {
             </FormControl>
             {/*Comment(Approver) */}
             <FormControl isRequired>
-              <FormLabel>Comment(Approver)</FormLabel>
-              <Textarea
-                name="comment"
-                value={formData.comment}
-                onChange={(e) => handleChange(e)}
-                required
-              />
+              {formData.projectCoordinators.map((projectCoordinator , index) => (
+                <Box borderWidth={1} p={4} mt={4}>
+
+                  <FormLabel>{`Project Coordinator - ${index + 1}`}</FormLabel>
+                  <Input
+                    name="projectCoordinatorName"
+                    type="text"
+                    value={projectCoordinator.ref.name}
+                    readOnly
+                  />
+                  <FormLabel>{`Email`}</FormLabel>
+                  <Input
+                    name="projectCoordinatorEmail"
+                    type="text"
+                    value={projectCoordinator.ref.email}
+                    readOnly
+                  />
+                  <FormLabel>{`Comment`}</FormLabel>
+                  <Input
+                    name="projectCoordinatorComment"
+                    type="text"
+                    value={projectCoordinator.comment}
+                    readOnly
+                  />
+                  <FormLabel>{`Agree`}</FormLabel>
+                  <Checkbox
+                    name="projectCoordinatorAgree"
+                    type="text"
+                    isChecked={projectCoordinator.agree}
+                    readOnly
+                  />
+                  <Input
+                    name="prjectCoordinatorDate"
+                    type="date"
+                    value={projectCoordinator.date.substring(0,10)}
+                    readOnly
+                  />
+                </Box>
+              ))}
             </FormControl>
             <FormControl isRequired mb={4}>
               <FormLabel>Amount Approved</FormLabel>
               <Input
                 name="amountApproved"
                 type="text"
+                readOnly
                 value={formData.amountApproved}
                 onChange={(e) => handleChange(e)}
                 required
               />
             </FormControl>
-            <Button
-              colorScheme="blue"
-              mx={3}
-              type="submit"
-              onClick={() => {
-                formData.projectCoordinatorAgree = true;
-              }}
-            >
-              Accept
-            </Button>
-            {/* decline  Button */}
-            <Button
-              colorScheme="red"
-              mx={3}
-              type="submit"
-              onClick={() => {
-                formData.projectCoordinatorAgree = false;
-              }}
-            >
-              Decline
-            </Button>
+            <Button type="submit" colorScheme='blue'>Print</Button>
           </form>
         </VStack>
         {/* Submit Button */}

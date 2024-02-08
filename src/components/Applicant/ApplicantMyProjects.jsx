@@ -101,7 +101,7 @@ const MyProjects = () => {
         const getAllCGApplicantData = await fetchDataForApplicantRoute(
           "/getallCGapplicant"
         );
-        const getAllCGApplicant = getAllISGApplicantData ?? [];
+        const getAllCGApplicant = getAllCGApplicantData ?? [];
 
         const newProjectList = {
           HOI: getAllHOI.map((project) => {
@@ -141,12 +141,6 @@ const MyProjects = () => {
             };
           }),
           WHFC: getAllWHFCApplicant.map((project) => {
-            return {
-              id: project.project_number,
-              project: project,
-            };
-          }),
-          EGS: getAllEGSApplicant.map((project) => {
             return {
               id: project.project_number,
               project: project,

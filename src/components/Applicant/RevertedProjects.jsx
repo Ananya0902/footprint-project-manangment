@@ -1,6 +1,5 @@
 // projectsToBeReviewed.jsx
 
-
 import React, { useEffect, useReducer, useState } from "react";
 import {
   ChakraProvider,
@@ -27,9 +26,13 @@ const MyProjects = () => {
     }
   );
 
-  // const individualFilter = (value) => {
-  //   value.project_coordinator_
-  // }
+  const individualFilter = (value) =>
+    (!value.project_coordinator_agree.agree &&
+      value.comment_box_project_coordinator) ||
+    (!value.provincial_superior_agree.agree &&
+      value.comment_box_provincial_superior);
+
+  const groupFilterApprover = (approver) => !approver.agree && approver.comment;
 
   useEffect(() => {
     const getAllProject = async () => {
@@ -37,11 +40,11 @@ const MyProjects = () => {
       async function fetchDataForApplicantRoute(route) {
         try {
           const response = await authAxios.get(`projects/${route}`);
-          console.log(route , response);
+          console.log(route, response);
           const data = response.data.data ?? [];
           return data;
         } catch (error) {
-          console.log(route , error) ; 
+          console.log(route, error);
           return [];
         }
       }
@@ -108,25 +111,34 @@ const MyProjects = () => {
         const getAllCGApplicant = getAllISGApplicantData ?? [];
 
         const newProjectList = {
-          HOI: getAllHOI.map((project) => {
+          HOI: getAllHOI.filter(individualFilter).map((project) => {
             return {
               id: project.project_code,
               project: project,
             };
           }),
-          EGS: getAllEGS.map((project) => {
+          EGS: getAllEGS
+            .filter(
+              (value) =>
+                (!value.general_information.provincial_superior.agree &&
+                  value.general_information.provincial_superior.comment) ||
+                value.general_information.project_coordinators.filter(
+                  groupFilterApprover
+                )
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          EI: getAllEIApplicant.filter(individualFilter).filter(individualFilter).map((project) => {
             return {
               id: project.project_code,
               project: project,
             };
           }),
-          EI: getAllEIApplicant.map((project) => {
-            return {
-              id: project.project_code,
-              project: project,
-            };
-          }),
-          SI: getAllSIApplicant.map((project) => {
+          SI: getAllSIApplicant.filter(individualFilter).map((project) => {
             return {
               id: project.project_code,
               project: project,

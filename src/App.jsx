@@ -180,7 +180,7 @@ const App = () => {
           <Route path='/ApproveDPLG/:project' element={<ApproveDPLG/>} />
           <Route path='/ReviewCG/:project' element={<ReviewCG/>} />
           <Route path='/ApproveCG/:project' element={<ApproveCG/>} />
-          <Route path='/ApproveEG' element={<ApproveEG/>} />
+          <Route path='/ApproveEG/:project' element={<ApproveEG/>} />
           <Route path='/ReviewEG/:project' element={<ReviewEG/>} />
           <Route path='/ReviewISG/:project' element={<ReviewISG/>} />
           <Route path='/ApproveISG/:project' element={<ApproveISG/>} />
