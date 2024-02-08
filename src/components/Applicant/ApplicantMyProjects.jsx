@@ -33,10 +33,11 @@ const MyProjects = () => {
       async function fetchDataForApplicantRoute(route) {
         try {
           const response = await authAxios.get(`projects/${route}`);
-          console.log(response);
+          console.log(route , response);
           const data = response.data.data ?? [];
           return data;
         } catch (error) {
+          console.log(route , error) ; 
           return [];
         }
       }

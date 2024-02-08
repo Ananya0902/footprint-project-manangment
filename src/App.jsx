@@ -203,7 +203,7 @@ const App = () => {
           <Route path='/ViewEI' element={<ViewEI/>} />          
           <Route path='/ViewEG' element={<ViewEG/>} />          
           <Route path='/ViewDPLG' element={<ViewDPLG/>} />          
-          <Route path='/ViewHIV' element={<ViewHIV/>} />          
+          <Route path='/ViewHIV/:project' element={<ViewHIV/>} />          
           <Route path='/ViewISG' element={<ViewISG/>} />          
           <Route path='/ViewWHCG' element={<ViewWHCG/>} />          
                   
