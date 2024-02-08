@@ -7,7 +7,6 @@ import {
   FormLabel,
   Input,
   Textarea,
-  Select,
   Checkbox,
   Button,
   VStack,
@@ -228,9 +227,8 @@ const ViewHIV = () => {
         projectData.key_information.economic_background_of_parents[4].number ||
         0,
     },
-    challengesFacedByTheBenificiary:
-      projectData.challenges_faced_by_the_benificiary || "",
-    focusAreasInPresentYear: projectData.focus_areas_in_present_year || "",
+    challengesFaced: projectData.challenges_faced_by_the_benificiary || "",
+    focusAreasDescription: projectData.focus_areas_in_present_year || "",
     monitoringAndEvaluation: projectData.monitoring_and_evaluation || "",
     sustainability: projectData.sustainability || "",
     mailingList: {
@@ -435,7 +433,6 @@ const ViewHIV = () => {
     setFormData(updatedData);
   };
 
- 
   return (
     <ChakraProvider>
       <Box p={4}>
@@ -443,8 +440,7 @@ const ViewHIV = () => {
           HIV Affect Outreach Application Form
         </Heading>
 
-        
-        <form onSubmit={()=>{}}>
+        <form onSubmit={() => {}}>
           {/* Project Information */}
 
           <FormControl mb={4}>
@@ -1480,12 +1476,6 @@ const ViewHIV = () => {
                         }
                         readOnly
                       />
-                      {/* <Button
-                        onClick={() => handleAddResult(index)}
-                        colorScheme="teal"
-                      >
-                        Add Result
-                      </Button> */}
                     </VStack>
                   ))}
                 </FormControl>
@@ -1701,10 +1691,20 @@ const ViewHIV = () => {
             />
           </FormControl>
 
+          <FormControl>
+            <FormLabel>Comment(For Reviewer)</FormLabel>
+            <Input
+              type="text"
+              name="commentReviewer"
+              value={formData.commentReviewer}
+              onChange={handleChange}
+              readOnly
+            />
+          </FormControl>
 
           {/* project coordinator agreement */}
-          <FormControl >
-          <FormLabel>Project coordinator</FormLabel>
+          <FormControl>
+            <FormLabel>Project coordinator</FormLabel>
             {formData.project_coordinators.map((a) => (
               <VStack key={a.id}>
                 <FormControl>
@@ -1715,6 +1715,7 @@ const ViewHIV = () => {
                     value={a.ref.name}
                     readOnly
                   />
+                  <FormLabel>comment by project coordinator</FormLabel>
 
                   <Input
                     type="text"
@@ -1731,7 +1732,7 @@ const ViewHIV = () => {
                     readOnly
                     size="lg"
                   >
-                    The Provincial Superior agrees
+                    The project coordinator agrees
                   </Checkbox>
                   <Input
                     type="date"
@@ -1743,17 +1744,6 @@ const ViewHIV = () => {
                 </FormControl>
               </VStack>
             ))}
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Comment(For Reviewer)</FormLabel>
-            <Input
-              type="text"
-              name="commentReviewer"
-              value={formData.commentReviewer}
-              onChange={handleChange}
-              readOnly
-            />
           </FormControl>
 
           {/* <FormControl>
@@ -1779,12 +1769,12 @@ const ViewHIV = () => {
 
           {/* Print Button */}
           <Button
-              onClick={() => window.print()}
-              colorScheme="blue"
-              type="submit"
-            >
-              Print
-            </Button>
+            onClick={() => window.print()}
+            colorScheme="blue"
+            type="submit"
+          >
+            Print
+          </Button>
         </form>
       </Box>
     </ChakraProvider>

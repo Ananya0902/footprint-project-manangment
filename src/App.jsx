@@ -82,7 +82,7 @@ import ViewEG from "./components/EducationGroup/ViewEG";
 import ViewDPLG from "./components/DPLG/ViewDPLG";
 import ViewHIV from "./components/HIV/ViewHIV";
 import ViewISG from "./components/InstiutionalSkillGroup/ViewISG";
-import ViewWHCG from "./components/WelfareHealthForChildren/ViewWHCG";
+import ViewWHFC from "./components/WelfareHealthForChildren/ViewWHFC";
 import ReviewSocialIndividual from "./components/SocialIndividual/ReviewSocialIndividual";
 import ApproveSocialIndividual from './components/SocialIndividual/ApproveSocialIndividual';
 import ApproveWelfareHomeForChildren from "./components/WelfareHealthForChildren/ApproveWelfareHealthForChildren";
@@ -164,6 +164,7 @@ const App = () => {
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
 
           <Route path='/ReviewWHFC/:project' element={<ReviewWelfareHomeForChildren/>} />
+          <Route path='/ViewWHFC/:project' element={<ViewWHFC/>} />
           <Route path="/ReviewSI/:project" element={<ReviewSocialIndividual/>}/>
           <Route path='/ReviewEI/:project' element={<ReviewEI/>} />          
           <Route path='/ApproveEI/:project' element={<ApproveEI/>} />          
@@ -205,7 +206,7 @@ const App = () => {
           <Route path='/ViewDPLG' element={<ViewDPLG/>} />          
           <Route path='/ViewHIV/:project' element={<ViewHIV/>} />          
           <Route path='/ViewISG' element={<ViewISG/>} />          
-          <Route path='/ViewWHCG' element={<ViewWHCG/>} />          
+          <Route path='/ViewWHCG' element={<ViewWHFC/>} />          
                   
        
                  
