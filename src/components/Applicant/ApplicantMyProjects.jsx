@@ -102,11 +102,6 @@ const MyProjects = () => {
         );
         const getAllCGApplicant = getAllISGApplicantData ?? [];
 
-        console.log(getAllEGSApplicant)
-        console.log(getAllISGApplicant)
-        console.log(getAllHIVApplicant)
-        console.log(getAllNPDPApplicant)
-
         const newProjectList = {
           HOI: getAllHOI.map((project) => {
             return {
@@ -214,18 +209,6 @@ const MyProjects = () => {
               <Heading size="md" mb={2} color="blue.500">
                 {project.id}
               </Heading>
-
-              <Button
-                colorScheme="blue"
-                as={Link}
-                to={`/ReviewHIO/${encodeURIComponent(
-                  JSON.stringify(project.project)
-                )}`} // Update this route as needed
-                mb={2}
-                borderRadius="full"
-              >
-                Review
-              </Button>
             </Box>
           ))}
           {Object.keys(projectList).map((key) => (
@@ -252,7 +235,7 @@ const MyProjects = () => {
                     mb={2}
                     borderRadius="full"
                   >
-                    Review
+                    View
                   </Button>
                 </Box>
               ))}

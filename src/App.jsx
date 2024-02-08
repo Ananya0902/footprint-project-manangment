@@ -198,7 +198,7 @@ const App = () => {
 
           <Route path="/viewHOIProject/:project" element={<ViewProject/>} /> 
           <Route path='/ViewCG' element={<ViewCG/>} />
-          <Route path='/ViewEGS' element={<ViewEduRUTG/>} />
+          <Route path='/ViewEGS/:project' element={<ViewEduRUTG/>} />
           <Route path='/viewNPDP' element={<ViewNPDP/>} />
           <Route path='/ViewEI' element={<ViewEI/>} />          
           <Route path='/ViewEG' element={<ViewEG/>} />          
