@@ -253,7 +253,7 @@ const RevertedProjects = () => {
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
-          Projects to Be Reviewed
+          Reverted Projects
         </Heading>
 
         <VStack spacing={6} align="stretch">

@@ -28,6 +28,16 @@ const ViewProject = () => {
   const projectInchargeData = projectData.applicant;
 
   const formData = {
+    provincialSuperiorName: projectData.reviewer.name , 
+    provincialSuperiorEmail: projectData.reviewer.email , 
+    provincialSuperiorContact: projectData.reviewer.mobile , 
+    projectCoordinatorName: projectData.approver?.name , 
+    projectCoordinatorEmail: projectData.approver?.email , 
+    projectCoordinatorContact: projectData.approver?.mobile , 
+    projectCoordinatorAgreementDate: projectData.project_coordinator_agree.date.substring(0,10),
+    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date.substring(0,10),
+    projectInChargeAgreementDate: projectData.project_in_charge_agree.date.substring(0,10),
+    beneficiaryAgreementDate: projectData.benificary_agree.date.substring(0,10),
     natureOfIllness: projectData.illness_nature,
     photographFile: projectData.photograph_benificary,
     beneficiaryName: projectData.name,
@@ -158,6 +168,74 @@ const ViewProject = () => {
             </FormControl>
           </VStack>
 
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Name of Project Incharge */}
+            <FormControl>
+              <FormLabel>Name of Project Coordinator</FormLabel>
+              <Input
+                type="text"
+                name="projectCoordinatorName"
+                value={formData.projectCoordinatorName || ""}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Contact of Project Incharge */}
+            <FormControl>
+              <FormLabel>Contact of Project Coordinator</FormLabel>
+              <Input
+                type="text"
+                name="projectCoordinatorContact"
+                value={formData.projectCoordinatorContact || ""}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Email of Project Incharge */}
+            <FormControl>
+              <FormLabel>Email of Project Coordinator</FormLabel>
+              <Input
+                type="email"
+                name="projectCoordinatorEmail"
+                value={formData.projectCoordinatorEmail || ""}
+                readOnly
+              />
+            </FormControl>
+          </VStack>
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Name of Project Incharge */}
+            <FormControl>
+              <FormLabel>Name of President Of the Society</FormLabel>
+              <Input
+                type="text"
+                name="provincialSuperiorName"
+                value={formData.provincialSuperiorName || ""}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Contact of Project Incharge */}
+            <FormControl>
+              <FormLabel>Contact of President Of the Society</FormLabel>
+              <Input
+                type="text"
+                name="provincialSuperiorContact"
+                value={formData.provincialSuperiorContact || ""}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Email of Project Incharge */}
+            <FormControl>
+              <FormLabel>Email of President Of the Society</FormLabel>
+              <Input
+                type="email"
+                name="provincialSuperiorEmail"
+                value={formData.provincialSuperiorEmail || ""}
+                readOnly
+              />
+            </FormControl>
+          </VStack>
           <VStack align="start" spacing={4} mb={8}>
             {/* Name of Project Incharge */}
             <FormControl>
@@ -567,13 +645,12 @@ const ViewProject = () => {
               >
                 The Beneficiary / Family member agree
               </Checkbox>
-              {/* <Input
+              <Input
                 type="date"
-                name="beneficiaryAgreementDate"
-                onChange={handleChange}
+                name="benificiaryAgreement"
                 value={formData.beneficiaryAgreementDate || ""}
                 readOnly
-              /> */}
+              />
             </FormControl>
 
             {/* Project-In-Charge agreement */}
@@ -586,13 +663,12 @@ const ViewProject = () => {
               >
                 The Project-In-Charge agree
               </Checkbox>
-              {/* <Input
+              <Input
                 type="date"
                 name="projectInChargeAgreementDate"
-                onChange={handleChange}
                 value={formData.projectInChargeAgreementDate || ""}
                 readOnly
-              /> */}
+              />
             </FormControl>
 
             {/* Provincial Superior agreement */}
@@ -605,12 +681,12 @@ const ViewProject = () => {
               >
                 The Provincial Superior agree
               </Checkbox>
-              {/* <Input
+              <Input
                 type="date"
-                name="provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                required
-              /> */}
+                name="provinciaLSuperiorAgreementDate"
+                value={formData.provincialSuperiorAgreementDate || ""}
+                readOnly
+              />
             </FormControl>
             <FormControl>
               <Checkbox
@@ -621,12 +697,12 @@ const ViewProject = () => {
               >
                 The Project coordinator agree
               </Checkbox>
-              {/* <Input
+              <Input
                 type="date"
-                name="provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                required
-              /> */}
+                name="projectCoordinatorAgreementDate"
+                value={formData.projectCoordinatorAgreementDate || ""}
+                readOnly
+              />
             </FormControl>
           </VStack>
 
@@ -655,13 +731,13 @@ const ViewProject = () => {
           </VStack>
 
           {/* Print Button */}
-            <Button
-              onClick={() => window.print()}
-              colorScheme="blue"
-              type="submit"
-            >
-              Print
-            </Button>
+          <Button
+            onClick={() => window.print()}
+            colorScheme="blue"
+            type="submit"
+          >
+            Print
+          </Button>
         </form>
       </Box>
     </ChakraProvider>

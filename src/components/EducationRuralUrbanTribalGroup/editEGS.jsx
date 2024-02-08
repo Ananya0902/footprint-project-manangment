@@ -18,147 +18,147 @@ import {
   Th,
   Td,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import authAxios from "../../AuthAxios";
 
-const EditEGS = () => {
+const ReviewEduRUTG = () => {
+  const showToast = useToast();
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
   const [formData, setFormData] = useState({
-    presentProjectYear: "",
-    projectTitle: "",
-    projectRegion: "",
-    projectNumber: 0,
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    address: "",
-    provincialSuperiorName: "",
-    provincialSuperiorEmail: "",
-    projectInchargeName: "",
-    projectInchargeEmail: "",
-    projectSummary: {
-      projectLocation: "",
-      workOfSisters: "",
-      socioEconomicConditions: "",
-      identifiedProblems: "",
-      needOfProject: "",
-      beneficiarySelection: "",
-    },
-    targetGroup: [
-      {
-        sn: 1,
-        name: "",
-        caste: "",
-        occupationOfParents: "",
-        familyBackgroundAndNeedOfSupport: "",
-        classOfStudyOrInstitution: "",
-        eligibilityOfScholarshipAndExpectedAmount: "",
-        contributionFromFamily: "",
-      },
-    ],
+    projectTitle: projectData.project_title || "",
+    projectInchargeName:
+      projectData.general_information.project_incharge.ref.name,
+    projectInchargeEmail:
+      projectData.general_information.project_incharge.ref.name,
+    projectInchargeAgreement:
+      projectData.general_information.project_incharge.agree,
+    projectInchargeAgreementDate:
+      projectData.general_information.project_incharge.date,
+    presentProjectYear: projectData.present_project_year ?? "",
+    projectNumber: projectData.project_number,
+    address: projectData.general_information?.full_address ?? "",
+    overallProjectPeriod:
+      projectData.general_information?.overall_project_period || "",
+    overallProjectBudget:
+      projectData.general_information?.overall_project_budget || "",
+    targetGroup: projectData.project_summary.target_group.map(
+      (beneficiary) => ({
+        name: beneficiary.name || "",
+        caste: beneficiary.caste || "",
+        occupationOfParents: beneficiary.occupation_of_parents || "",
+        familyBackgroundAndNeedOfSupport:
+          beneficiary.family_background_and_need_of_support || "",
+        classOfStudyOrInstitution:
+          beneficiary.class_of_study_or_name_of_institution || "",
+        eligibilityOfScholarshipAndExpectedAmount:
+          beneficiary.eligibility_of_scholarship_and_expected_amount || "",
+        contributionFromFamily: beneficiary.contribution_from_family || "",
+      })
+    ),
     logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
-    },
-    evaluation: "",
-    monitoringprocess: "",
-    sustainability: "",
-    budget: [
-      {
-        description: "",
-        costs: 0,
-      },
-    ],
-    projectInChargeAgreement: "",
-    projectInChargeAgreementDate: "",
-  });
-  const [selectedMonths, setSelectedMonths] = useState([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleSubmit = (e) => {
-    const req = {
-      project_title: formData.projectTitle,
-      general_information: {
-        full_address: formData.address,
-        overall_project_period: formData.overallProjectPeriod,
-        overall_project_budget: parseInt(formData.overallProjectBudget), // Assuming it's a number
-      },
-      beneficiaries: formData.targetGroup.map((target) => ({
-        name: target.name,
-        caste: target.caste,
-        occupation_of_parents: target.occupationOfParents,
-        family_background_and_need_of_support:
-          target.familyBackgroundAndNeedOfSupport,
-        class_of_study_or_name_of_institution: target.classOfStudyOrInstitution,
-        eligibility_of_scholarship_and_expected_amount:
-          target.eligibilityOfScholarshipAndExpectedAmount,
-        contribution_from_family: target.contributionFromFamily,
-      })),
-      objectives: formData.logicalFramework.objectives.map((objective) => ({
-        objective: objective.objective,
-        results_and_outcomes: objective.results,
-        activities: objective.activities.map((activity) => ({
-          activity: activity.activity,
-          months: activity.months,
-          means_of_verification: activity.means_of_verification,
-        })),
-      })),
-      project_summary: {
-        project_location_geographical_area:
-          formData.projectSummary.projectLocation,
-        work_of_sisters_of_st_anns_in_the_project_area:
-          formData.projectSummary.workOfSisters,
-        general_socio_economic_conditions_of_the_beneficiaries:
-          formData.projectSummary.socioEconomicConditions,
-        problems_identified_and_consequences:
-          formData.projectSummary.identifiedProblems,
-        need_of_the_project: formData.projectSummary.needOfProject,
-        identification_of_the_beneficiaries: formData.targetGroup.map(
-          (target) => ({
-            name: target.name,
-            caste: target.caste,
-            occupation_of_parents: target.occupationOfParents,
-            family_background_and_need_of_support:
-              target.familyBackgroundAndNeedOfSupport,
-            class_of_study_or_name_of_institution:
-              target.classOfStudyOrInstitution,
-            eligibility_of_scholarship_and_expected_amount:
-              target.eligibilityOfScholarshipAndExpectedAmount,
-            contribution_from_family: target.contributionFromFamily,
-          })
-        ),
-        solution_analysis_logical_framework: {
-          goal: formData.logicalFramework.goal,
-          objectives: formData.logicalFramework.objectives.map((objective) => ({
-            objective: objective.objective,
-            results_and_outcomes: objective.results.join(","), // Assuming it's a string
+      goal:
+        projectData.project_summary?.solution_analysis_logical_framework
+          ?.goal || "",
+      objectives:
+        projectData.project_summary?.solution_analysis_logical_framework?.objectives.map(
+          (objective) => ({
+            objective: objective.objective || "",
+            results: [objective.results_and_outcomes], // Assuming it's a string
             activities: objective.activities.map((activity) => ({
-              activity: activity.activity,
-              months: activity.months,
-              means_of_verification: activity.means_of_verification,
+              activity: activity.activity || "",
+              months:
+                activity.months.length < 12
+                  ? [
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                      false,
+                    ]
+                  : activity.months,
+              verification: activity.means_of_verification || "",
             })),
-          })),
-        },
-        sustainability: formData.sustainability,
-        monitoring_process_of_the_project: formData.monitoringprocess,
-        mode_of_evaluation: formData.evaluation,
-        budget: {
-          expenses: formData.budget.map((item) => ({
-            description: item.description,
-            costs: parseInt(item.costs), // Assuming it's a number
-          })),
-          total: parseInt(calculateTotalCosts('cost')) ?? 0, // Should be calculated
-        },
-      },
-    };
+          })
+        ) || [],
+    },
+    projectSummary: {
+      projectLocation:
+        projectData.project_summary?.project_location_geographical_area || "",
+      workOfSisters:
+        projectData.project_summary
+          ?.work_of_sisters_of_st_anns_in_the_project_area || "",
+      socioEconomicConditions:
+        projectData.project_summary
+          ?.general_socio_economic_conditions_of_the_beneficiaries || "",
+      identifiedProblems:
+        projectData.project_summary?.problems_identified_and_consequences || "",
+      needOfProject: projectData.project_summary?.need_of_the_project || "",
 
-    // Send requestBody to the backend
+      sustainability: projectData.project_summary?.sustainability || "",
+      monitoringProcess:
+        projectData.project_summary?.monitoring_process_of_the_project || "",
+      evaluation: projectData.project_summary?.mode_of_evaluation || "",
+    },
+    budget: {
+      expenses:
+        projectData.project_summary?.budget?.expenses.map((expense) => ({
+          description: expense.description || "",
+          costs: expense.costs || 0,
+        })) || [],
+      total: projectData.project_summary?.budget?.total || 0,
+    },
+    provincialSuperiorAgreement: false,
+    comment: null,
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  console.log(formData);
+  // Populate formData from req
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted with data:", formData);
+    // Add your form submission logic here
+    try {
+      const req = {
+        project_number: projectData.project_number,
+        comment: formData.comment,
+        agree: formData.provincialSuperiorAgreement,
+      };
+      const res = await authAxios.put("/projects/editEGSReviewer/", req);
+      console.log(res);
+      if (res.data.success) {
+        showToast({
+          title: "Submitted",
+          status: "success",
+          duration: 5000,
+        });
+        setIsSubmitted(true);
+      } else {
+        showToast({
+          title: "Error submitting the reviewed doc",
+          status: "error",
+          duration: 5000,
+        });
+        console.log(res.data);
+      }
+    } catch (e) {
+      console.log(e);
+      showToast({
+        title: "Error submitting the reviewed doc",
+        description: e,
+        status: "error",
+        duration: 5000,
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -287,15 +287,6 @@ const EditEGS = () => {
         <VStack spacing={4} align="start" p={4}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             {/* Project Information */}
-            <FormControl mb={4}>
-              <FormLabel>Present Project Year</FormLabel>
-              <Input
-                type="text"
-                name="presentProjectYear"
-                onChange={handleChange}
-                value={formData.presentProjectYear || ""}
-              />
-            </FormControl>
 
             <FormControl mb={4}>
               <FormLabel>Project Title</FormLabel>
@@ -304,16 +295,7 @@ const EditEGS = () => {
                 name="projectTitle"
                 onChange={handleChange}
                 value={formData.projectTitle || ""}
-              />
-            </FormControl>
-
-            <FormControl mb={4}>
-              <FormLabel>Project Number</FormLabel>
-              <Input
-                type="text"
-                name="projectNumber"
-                onChange={handleChange}
-                value={formData.projectNumber || ""}
+                required
               />
             </FormControl>
 
@@ -324,6 +306,7 @@ const EditEGS = () => {
                 name="projectRegion"
                 onChange={handleChange}
                 value={formData.projectRegion || ""}
+                required
               />
             </FormControl>
 
@@ -339,6 +322,7 @@ const EditEGS = () => {
                 name="overallProjectPeriod"
                 onChange={handleChange}
                 value={formData.overallProjectPeriod || ""}
+                required
               />
             </FormControl>
 
@@ -349,6 +333,7 @@ const EditEGS = () => {
                 name="overallProjectBudget"
                 onChange={handleChange}
                 value={formData.overallProjectBudget || ""}
+                required
               />
             </FormControl>
 
@@ -359,6 +344,7 @@ const EditEGS = () => {
                 name="address"
                 onChange={handleChange}
                 value={formData.address || ""}
+                required
               />
             </FormControl>
 
@@ -372,25 +358,6 @@ const EditEGS = () => {
               </Thead>
               <Tbody>
                 {/* Row 1*/}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorName || ""}
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorEmail || ""}
-                    />
-                  </Td>
-                </Tr>
 
                 {/* Row 2 */}
                 <Tr>
@@ -401,6 +368,7 @@ const EditEGS = () => {
                       name="projectInchargeName"
                       onChange={handleChange}
                       value={formData.projectInchargeName || ""}
+                      required
                     />
                   </Td>
                   <Td>
@@ -409,6 +377,7 @@ const EditEGS = () => {
                       name="projectInchargeEmail"
                       onChange={handleChange}
                       value={formData.projectInchargeEmail || ""}
+                      required
                     />
                   </Td>
                 </Tr>
@@ -440,6 +409,7 @@ const EditEGS = () => {
                 name="projectLocation"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.projectLocation || ""}
+                isrequired
               />
             </FormControl>
 
@@ -451,6 +421,7 @@ const EditEGS = () => {
                 name="workOfSisters"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.workOfSisters || ""}
+                isrequired
               />
             </FormControl>
 
@@ -462,6 +433,7 @@ const EditEGS = () => {
                 name="socioEconomicConditions"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.socioEconomicConditions || ""}
+                isrequired
               />
             </FormControl>
 
@@ -471,6 +443,7 @@ const EditEGS = () => {
                 name="identifiedProblems"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.identifiedProblems || ""}
+                isrequired
               />
             </FormControl>
 
@@ -480,10 +453,11 @@ const EditEGS = () => {
                 name="needOfProject"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.needOfProject || ""}
+                isrequired
               />
             </FormControl>
 
-            <FormControl mb={4}>
+            {/* <FormControl mb={4}>
               <FormLabel>
                 Identification of the Beneficiaries (how are the beneficiaries
                 selected)
@@ -492,8 +466,9 @@ const EditEGS = () => {
                 name="beneficiarySelection"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.beneficiarySelection || ""}
+                isrequired
               />
-            </FormControl>
+            </FormControl> */}
 
             {/* Target Group Table */}
             <Heading as="h2" size="lg" mt={6} mb={4}>
@@ -525,6 +500,7 @@ const EditEGS = () => {
                           handleTargetGroupChange(index, "name", e.target.value)
                         }
                         value={row.name}
+                        required
                       />
                     </Td>
                     <Td>
@@ -539,6 +515,7 @@ const EditEGS = () => {
                           )
                         }
                         value={row.caste}
+                        required
                       />
                     </Td>
                     <Td>
@@ -553,6 +530,7 @@ const EditEGS = () => {
                           )
                         }
                         value={row.occupationOfParents}
+                        required
                       />
                     </Td>
                     <Td>
@@ -567,6 +545,7 @@ const EditEGS = () => {
                           )
                         }
                         value={row.familyBackgroundAndNeedOfSupport}
+                        required
                       />
                     </Td>
                     <Td>
@@ -581,6 +560,7 @@ const EditEGS = () => {
                           )
                         }
                         value={row.classOfStudyOrInstitution}
+                        required
                       />
                     </Td>
                     <Td>
@@ -595,6 +575,7 @@ const EditEGS = () => {
                           )
                         }
                         value={row.eligibilityOfScholarshipAndExpectedAmount}
+                        required
                       />
                     </Td>
                     <Td>
@@ -609,6 +590,7 @@ const EditEGS = () => {
                           )
                         }
                         value={row.contributionFromFamily}
+                        required
                       />
                     </Td>
                   </Tr>
@@ -617,9 +599,9 @@ const EditEGS = () => {
             </Table>
 
             {/* Add Row Button */}
-            <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
+            {/* <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
               Add Row
-            </Button>
+            </Button> */}
 
             {/* Logical Framework */}
 
@@ -632,11 +614,11 @@ const EditEGS = () => {
             >
               logical Framework
             </Heading>
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
-                onChange={(e) => handleChangeObjective(e)}
+                value={formData.logicalFramework.goal}
                 required
               />
             </FormControl>
@@ -662,7 +644,7 @@ const EditEGS = () => {
               >
                 <VStack key={index} align="start" spacing={4} mb={8}>
                   {/* Objective */}
-                  <FormControl isRequired>
+                  <FormControl>
                     <hr />
                     <FormLabel>Objective {index + 1}</FormLabel>
                     <Textarea
@@ -674,7 +656,7 @@ const EditEGS = () => {
                   </FormControl>
 
                   {/* Results */}
-                  <FormControl isRequired>
+                  <FormControl>
                     <FormLabel>Results</FormLabel>
                     {objective.results.map((result, subIndex) => (
                       <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -686,18 +668,18 @@ const EditEGS = () => {
                           }
                           required
                         />
-                        <Button
+                        {/* <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
-                        </Button>
+                        </Button> */}
                       </VStack>
                     ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
-                  <FormControl isRequired>
+                  <FormControl>
                     <FormLabel>Activities and Means of Verification</FormLabel>
                     <Table variant="simple">
                       <Thead>
@@ -731,19 +713,10 @@ const EditEGS = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl isRequired>
+                              <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
-                                {activity.timeframe.map((value, monthIndex) => (
-                                  <Checkbox
-                                    key={monthIndex}
-                                    isChecked={value}
-                                    onChange={() => {
-                                      setSelectedMonths([]);
-                                      activity.timeframe[monthIndex] =
-                                        !activity.timeframe[monthIndex];
-                                      console.log(activity.timeframe);
-                                    }}
-                                  >
+                                {activity.months.map((value, monthIndex) => (
+                                  <Checkbox key={monthIndex} isChecked={value}>
                                     {new Date(2024, monthIndex).toLocaleString(
                                       "default",
                                       { month: "long" }
@@ -757,55 +730,55 @@ const EditEGS = () => {
                       </Tbody>
                     </Table>
 
-                    <Button
+                    {/* <Button
                       onClick={() => handleAddActivity(index)}
                       colorScheme="teal"
                     >
                       Add Activity
-                    </Button>
+                    </Button> */}
                   </FormControl>
 
-                  <Button
+                  {/* <Button
                     onClick={handleAddObjective}
                     colorScheme="purple"
                     ml="auto"
                   >
                     Add Objective
-                  </Button>
+                  </Button> */}
                 </VStack>
               </Box>
             ))}
 
             {/* Sustainability of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
-                value={formData.sustainability}
+                value={formData.projectSummary.sustainability}
                 onChange={(e) => handleChange(e)}
                 required
               />
             </FormControl>
 
             {/* Explain the Monitoring Process of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Explain the Monitoring Process of the Project
               </FormLabel>
               <Textarea
                 name="monitoringProcess"
-                value={formData.monitoringProcess}
+                value={formData.projectSummary.monitoringProcess}
                 onChange={(e) => handleChange(e)}
                 required
               />
             </FormControl>
 
             {/* Mode of Evaluation */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Mode of Evaluation</FormLabel>
               <Textarea
                 name="evaluation"
-                value={formData.evaluation}
+                value={formData.projectSummary.evaluation}
                 onChange={(e) => handleChange(e)}
                 required
               />
@@ -824,30 +797,22 @@ const EditEGS = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {formData.budget.map((row, index) => (
+                {formData.budget.expenses.map((row, index) => (
                   <Tr key={index}>
                     <Td>
                       <Input
                         type="text"
                         name={`budget[${index}].description`}
-                        onChange={(e) =>
-                          handleBudgetChange(
-                            index,
-                            "description",
-                            e.target.value
-                          )
-                        }
                         value={row.description}
+                        required
                       />
                     </Td>
                     <Td>
                       <Input
                         type="number"
                         name={`budget[${index}].costs`}
-                        onChange={(e) =>
-                          handleBudgetChange(index, "costs", e.target.value)
-                        }
                         value={row.costs}
+                        required
                       />
                     </Td>
                   </Tr>
@@ -856,40 +821,69 @@ const EditEGS = () => {
             </Table>
 
             {/* Add Row Button */}
-            <Button onClick={handleAddBudgetRow} colorScheme="teal">
+            {/* <Button onClick={handleAddBudgetRow} colorScheme="teal">
               Add Expense
-            </Button>
+            </Button> */}
 
             {/* Calculate Total Cost */}
-            <Heading as="h3" size="md" mb={5}>
+            {/* <Heading as="h3" size="md" mb={5}>
               Total Cost: {calculateTotalCosts("costs")}
-            </Heading>
+            </Heading> */}
 
             {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
+            <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
-                onChange={handleChange}
+                isChecked={formData.projectInchargeAgreement}
                 size="lg"
               >
                 The Project-In-Charge agree
               </Checkbox>
               <Input
                 type="date"
+                value={formData.projectInchargeAgreementDate.substring(0, 10)}
                 name="projectInChargeAgreementDate"
-                onChange={handleChange}
                 required
               />
             </FormControl>
+
+            {/*Comment(Reviewer) */}
+            <FormControl isRequired>
+              <FormLabel>Comment(Reviewer)</FormLabel>
+              <Textarea
+                name="comment"
+                value={formData.comment}
+                onChange={(e) => handleChange(e)}
+                required
+              />
+            </FormControl>
+            <Button
+              colorScheme="blue"
+              mx={3}
+              type="submit"
+              onClick={() => {
+                formData.provincialSuperiorAgreement = true;
+              }}
+            >
+              Accept
+            </Button>
+            {/* decline  Button */}
+            <Button
+              colorScheme="red"
+              mx={3}
+              type="submit"
+              onClick={() => {
+                formData.provincialSuperiorAgreement = false;
+              }}
+            >
+              Decline
+            </Button>
           </form>
         </VStack>
         {/* Submit Button */}
-        <Button colorScheme="blue" type="submit">
-          Submit
-        </Button>
       </Box>
     </ChakraProvider>
   );
 };
 
-export default EditEGS;
+export default ReviewEduRUTG;

@@ -197,11 +197,11 @@ const App = () => {
           <Route path='/EditWHCG' element={<EditWHCG/>} />
           <Route path='/EditISG' element={<EditISG/>} />
           <Route path='/EditDPLG' element={<EditDPLG/>} />
-          <Route path='/EditEGS' element={<EditEGS/>} />
+          <Route path='/EditEGS/:project' element={<EditEGS/>} />
           <Route path='/EditEG' element={<EditEG/>} />
 
 
-          <Route path="/viewHOIProject/:project" element={<ViewProject/>} /> 
+          <Route path="/ViewHOI/:project" element={<ViewProject/>} /> 
           <Route path='/ViewCG/:project' element={<ViewCG/>} />
           <Route path='/ViewEGS/:project' element={<ViewEduRUTG/>} />
           <Route path='/viewNPDP/:project' element={<ViewNPDP/>} />

@@ -233,6 +233,17 @@ const MyProjects = () => {
                   >
                     View
                   </Button>
+                  <Button
+                        colorScheme="red"
+                        as={Link}
+                        to={`/Edit${key}/${encodeURIComponent(
+                          JSON.stringify(project.project)
+                        )}`} // Update this route as needed
+                        mb={2}
+                        borderRadius="10"
+                      >
+                        Edit
+                      </Button>
                 </Box>
               ))}
             </React.Fragment>
