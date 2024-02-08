@@ -960,4 +960,4 @@ const ViewEduRUTG = () => {
   );
 };
 
-export default ReviewEduRUTG;
+export default ViewEduRUTG;
