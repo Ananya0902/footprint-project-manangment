@@ -87,6 +87,7 @@ import ReviewSocialIndividual from "./components/SocialIndividual/ReviewSocialIn
 import ApproveSocialIndividual from './components/SocialIndividual/ApproveSocialIndividual';
 import ApproveWelfareHomeForChildren from "./components/WelfareHealthForChildren/ApproveWelfareHealthForChildren";
 import AnnualRepHealthIndividual from './components/Reports/AnnualRepHealthIndividual'
+import RevertedProjects from "./components/Applicant/RevertedProjects";
 
 
 const PrivateRoute = ({ path, element }) => {
@@ -106,6 +107,7 @@ const App = () => {
     <ChakraProvider>
       <Router>
         <Routes>
+
           <Route path="/" element={<Home />} />
           <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
@@ -117,6 +119,7 @@ const App = () => {
         
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/educationIndividual" element={<EducationIndividual />} />
+          <Route path="/revertedProjects" element={<RevertedProjects />} />
           
           <Route path="/socialIndividual" element={<SocialIndividual />} />
           <Route path="/educationGroup" element={<EducationGroup />} />

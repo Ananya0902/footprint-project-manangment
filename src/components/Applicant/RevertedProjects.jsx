@@ -9,11 +9,12 @@ import {
   Button,
   VStack,
   useToast,
+  HStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
-const MyProjects = () => {
+const RevertedProjects = () => {
   const showToast = useToast();
   const [projectList, setProjectList] = useReducer(
     (prev, next) => {
@@ -108,7 +109,7 @@ const MyProjects = () => {
         const getAllCGApplicantData = await fetchDataForApplicantRoute(
           "/getallCGapplicant"
         );
-        const getAllCGApplicant = getAllISGApplicantData ?? [];
+        const getAllCGApplicant = getAllCGApplicantData ?? [];
 
         const newProjectList = {
           HOI: getAllHOI.filter(individualFilter).map((project) => {
@@ -132,7 +133,7 @@ const MyProjects = () => {
                 project: project,
               };
             }),
-          EI: getAllEIApplicant.filter(individualFilter).filter(individualFilter).map((project) => {
+          EI: getAllEIApplicant.filter(individualFilter).map((project) => {
             return {
               id: project.project_code,
               project: project,
@@ -144,54 +145,96 @@ const MyProjects = () => {
               project: project,
             };
           }),
-          DPLG: getAllDPLGApplicant.map((project) => {
+          DPLG: getAllDPLGApplicant
+            .filter(
+              (value) =>
+                (!value.provincial_superior_agree.agree &&
+                  value.comment_box_provincial_superior) ||
+                value.project_coordinators.filter(groupFilterApprover)
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          HIV: getAllHIVApplicant
+            .filter(
+              (value) =>
+                (!value.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.provincial_superior.comment) ||
+                value.mailing_list.project_coordinators.filter(
+                  groupFilterApprover
+                )
+            )
+            .map((project) => {
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          WHFC: getAllWHFCApplicant
+            .filter(
+              (value) =>
+                (!value.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.provincial_superior.comment) ||
+                value.mailing_list.project_coordinators.filter(
+                  groupFilterApprover
+                )
+            )
+            .map((project) => {
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          NPDP: getAllNPDPApplicant
+            .filter(
+              (value) =>
+                (!value.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.provincial_superior.comment) ||
+                value.mailing_list.project_coordinators.filter(
+                  groupFilterApprover
+                )
+            )
+            .map((project) => {
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          EOI: getAllEOIApplicant.filter(individualFilter).map((project) => {
             return {
               id: project.project_code,
               project: project,
             };
           }),
-          HIV: getAllHIVApplicant.map((project) => {
-            return {
-              id: project.project_number,
-              project: project,
-            };
-          }),
-          WHFC: getAllWHFCApplicant.map((project) => {
-            return {
-              id: project.project_number,
-              project: project,
-            };
-          }),
-          EGS: getAllEGSApplicant.map((project) => {
-            return {
-              id: project.project_number,
-              project: project,
-            };
-          }),
-          NPDP: getAllNPDPApplicant.map((project) => {
-            return {
-              id: project.project_number,
-              project: project,
-            };
-          }),
-          EOI: getAllEOIApplicant.map((project) => {
-            return {
-              id: project.project_code,
-              project: project,
-            };
-          }),
-          SG: getAllISGApplicant.map((project) => {
-            return {
-              id: project.project_code,
-              project: project,
-            };
-          }),
-          CG: getAllCGApplicant.map((project) => {
-            return {
-              id: project.project_code,
-              project: project,
-            };
-          }),
+          SG: getAllISGApplicant
+            .filter(
+              (value) =>
+                (!value.provincial_superior_agree.agree &&
+                  value.comment_box_provincial_superior) ||
+                value.project_coordinators.filter(groupFilterApprover)
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          CG: getAllCGApplicant
+            .filter(
+              (value) =>
+                (!value.provincial_superior_agree.agree &&
+                  value.comment_box_provincial_superior) ||
+                value.project_coordinators.filter(groupFilterApprover)
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
         };
 
         setProjectList(newProjectList);
@@ -239,21 +282,37 @@ const MyProjects = () => {
                   boxShadow="md"
                   width="100%"
                 >
-                  <Heading size="md" mb={2} color="blue.500">
-                    {project.id}
-                  </Heading>
-
-                  <Button
-                    colorScheme="blue"
-                    as={Link}
-                    to={`/View${key}/${encodeURIComponent(
-                      JSON.stringify(project.project)
-                    )}`} // Update this route as needed
-                    mb={2}
-                    borderRadius="full"
-                  >
-                    View
-                  </Button>
+                  <VStack>
+                    <Heading size="md" mb={2} color="blue.500">
+                      {project.id}
+                    </Heading>
+                    Please view the comments from view section before proceding
+                    to edit the form
+                    <HStack>
+                      <Button
+                        colorScheme="blue"
+                        as={Link}
+                        to={`/View${key}/${encodeURIComponent(
+                          JSON.stringify(project.project)
+                        )}`} // Update this route as needed
+                        mb={2}
+                        borderRadius="10"
+                      >
+                        View
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        as={Link}
+                        to={`/Edit${key}/${encodeURIComponent(
+                          JSON.stringify(project.project)
+                        )}`} // Update this route as needed
+                        mb={2}
+                        borderRadius="10"
+                      >
+                        Edit
+                      </Button>
+                    </HStack>
+                  </VStack>
                 </Box>
               ))}
             </React.Fragment>
@@ -264,4 +323,4 @@ const MyProjects = () => {
   );
 };
 
-export default MyProjects;
+export default RevertedProjects;
