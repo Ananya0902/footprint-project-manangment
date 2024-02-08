@@ -33,10 +33,12 @@ const MyProjects = () => {
       async function fetchDataForApplicantRoute(route) {
         try {
           const response = await authAxios.get(`projects/${route}`);
-          console.log(response);
+          console.log(route, response);
           const data = response.data.data ?? [];
           return data;
         } catch (error) {
+          console.log(route, error);
+
           return [];
         }
       }
@@ -100,7 +102,7 @@ const MyProjects = () => {
         const getAllCGApplicantData = await fetchDataForApplicantRoute(
           "/getallCGapplicant"
         );
-        const getAllCGApplicant = getAllISGApplicantData ?? [];
+        const getAllCGApplicant = getAllCGApplicantData ?? [];
 
         console.log(getAllEGSApplicant)
         console.log(getAllISGApplicant)
@@ -116,7 +118,7 @@ const MyProjects = () => {
           }),
           EGS: getAllEGS.map((project) => {
             return {
-              id: project.project_code,
+              id: project.project_number,
               project: project,
             };
           }),
@@ -198,7 +200,7 @@ const MyProjects = () => {
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
-          Projects to Be Reviewed
+        My Projects
         </Heading>
 
         <VStack spacing={6} align="stretch">
@@ -252,7 +254,7 @@ const MyProjects = () => {
                     mb={2}
                     borderRadius="full"
                   >
-                    Review
+                    view
                   </Button>
                 </Box>
               ))}

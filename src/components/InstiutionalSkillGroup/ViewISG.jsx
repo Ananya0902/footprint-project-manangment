@@ -21,65 +21,81 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useParams } from "react-router-dom";
 
 export const ViewISG = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
-  const [formData, setFormData] = useState({
-    basicInformation: {
-      NAMEOFTHESOCIETY: "",
-      dATEOFSUBMISSION: "",
-      TITLEOFTHEPROJECT: "",
-      address: "",
-      provincialSuperior: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
-      projectInCharge: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
-      overallProjectPeriod: "",
-      overallProjectBudget: "",
-      numberOfBeneficiaries: "",
-      residentialVillages: "",
-      selectionCriteriaAndProfile: "",
-      descriptionOfBeneficiary: "",
-      problemAnalysis: "",
-      solutionAnalysis: "",
-    },
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
-    },
-    sustainability: "",
-    monitoringProcess: "",
-    evaluationMethodology: "",
-    budgetDetails: [{ budget: "", cost: "" }],
-    signatures: {
-      projectCoordinatorAgreement: false,
-      projectCoordinatorAgreementDate: "",
-      projectInChargeAgreement: false,
-      projectInChargeAgreementDate: "",
-      provincialSuperiorAgreement: false,
-      provincialSuperiorAgreementDate: "",
-    },
 
-    commentReviewer: "",
-    commentApprover: "",
-    amountApprovedByProjectCoordinator: "",
-  });
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  console.log(projectData);
+  const formDataCopy = {}; // Create a copy of formData to avoid direct mutation
+
+  // Map basicInformation fields
+  formDataCopy.basicInformation = {
+    ...formDataCopy.basicInformation,
+    projectInCharge: projectData.applicant,
+    NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
+    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+    TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+    address: projectData.address || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
+    numberOfBeneficiaries: projectData.NumberOfBeneficiaries || "",
+    residentialVillages: projectData.ResidentialVillages || "",
+    selectionCriteriaAndProfile: projectData.SelectionCriteriaAndProfile || "",
+    DescriptionOfBeneficiary: projectData.DescriptionOfBeneficiary || "",
+    problemAnalysis: projectData.problemAnalysis || "",
+    solutionAnalysis: projectData.solutionAnalysis || "",
+  };
+  // Map logicalFramework fields
+  formDataCopy.logicalFramework = {
+    ...formDataCopy.logicalFramework,
+    goal: projectData.goal || "",
+    objectives: projectData.objectives.map((objective) => ({
+      objective: objective.objective || "",
+      results: objective.results || [""],
+      activities: objective.activities.map((activity) => ({
+        activity: activity.activity || "",
+        timeframe: activity.timeframe || [false],
+        verification: activity.verification || "",
+      })),
+    })),
+  };
+
+  // Map sustainability, monitoringProcess, evaluationMethodology fields
+  formDataCopy.sustainability = projectData.sustainability || "";
+  formDataCopy.monitoringProcess = projectData.monitoringProcess || "";
+  formDataCopy.evaluationMethodology = projectData.evaluationMethodology || "";
+  formDataCopy.comment = "";
+  formDataCopy.commentReviewer = projectData.comment_box_provincial_superior;
+  formDataCopy.amountApproved = 0;
+  formDataCopy.project_coordinators=projectData.project_coordinators;
+  formDataCopy.signatures = {
+   
+    provincialSuperiorAgreement: projectData.provincial_superior_agree.agree,
+    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date,
+    projectInCharge: projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date || "",
+  };
+
+
+  const [formData, setFormData] = useState(formDataCopy);
+  console.log(formData);
+  // Map budgetDetails fields
+  const [budgetData, setBudgetData] = useState(
+    projectData.budgetData.map((item) => ({
+      budget: item.budget || "",
+      cost: item.cost || "",
+    }))
+  );
+
+  // Additional Fields
+
+  // Update the state with the modified formDataCopy
 
   const handleChange = (e, index, subIndex) => {
     const { name, value } = e.target;
@@ -144,99 +160,40 @@ export const ViewISG = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const req = {
-      basicInformation: {
-        NameOfSociety: formData.basicInformation.NAMEOFTHESOCIETY,
-        DateOfSubmission: formData.basicInformation.dATEOFSUBMISSION,
-        TitleOfProject: formData.basicInformation.TITLEOFTHEPROJECT,
-        address: formData.basicInformation.address,
-        provincialSuperior: {
-          name: formData.basicInformation.provincialSuperior.name,
-          cellNumber: formData.basicInformation.provincialSuperior.cellNumber,
-          email: formData.basicInformation.provincialSuperior.email,
-        },
-        projectInCharge: {
-          name: formData.basicInformation.projectInCharge.name,
-          cellNumber: formData.basicInformation.projectInCharge.cellNumber,
-          email: formData.basicInformation.projectInCharge.email,
-        },
-        overallProjectPeriod: formData.basicInformation.overallProjectPeriod,
-        overallProjectBudget: formData.basicInformation.overallProjectBudget,
-        numberOfBeneficiaries: formData.basicInformation.numberOfBeneficiaries,
-        residentialVillages: formData.basicInformation.residentialVillages,
-        selectionCriteriaAndProfile:
-          formData.basicInformation.selectionCriteriaAndProfile,
-        descriptionOfBeneficiary:
-          formData.basicInformation.descriptionOfBeneficiary,
-        problemAnalysis: formData.basicInformation.problemAnalysis,
-        solutionAnalysis: formData.basicInformation.solutionAnalysis,
-      },
-      logicalFramework: {
-        goal: formData.logicalFramework.goal,
-        objectives: formData.logicalFramework.objectives.map((objective) => ({
-          objective: objective.objective,
-          results: objective.results,
-          activities: objective.activities.map((activity) => ({
-            activity: activity.activity,
-            timeframe: activity.timeframe,
-            verification: activity.verification,
-          })),
-        })),
-      },
-      sustainability: formData.sustainability,
-      monitoringProcess: formData.monitoringProcess,
-      evaluationMethodology: formData.evaluationMethodology,
-      budgetDetails: budgetData.map((item) => ({
-        budget: item.budget,
-        cost: item.cost,
-      })),
-      signatures: {
-        projectCoordinatorAgreement:
-          formData.signatures.projectCoordinatorAgreement,
-        projectCoordinatorAgreementDate:
-          formData.signatures.projectCoordinatorAgreementDate,
-        projectInChargeAgreement: formData.signatures.projectInChargeAgreement,
-        projectInChargeAgreementDate:
-          formData.signatures.projectInChargeAgreementDate,
-        provincialSuperiorAgreement:
-          formData.signatures.provincialSuperiorAgreement,
-        provincialSuperiorAgreementDate:
-          formData.signatures.provincialSuperiorAgreementDate,
-      },
-    };
+    // Add your form submission logic here
     try {
-      setIsLoading(true);
-      const res = await authAxios.post("/projects/createISG");
-      setIsLoading(false);
+      const req = {
+        projectID: projectData._id,
+        comment_box_project_coordinator: formData.comment,
+        project_coordinator_agree: formData.signatures.projectCoordinatorAgree,
+        amount_approved: formData.amountApproved,
+      };
+      const res = await authAxios.put("/projects/editapproverISG/", req);
       if (res.data.success) {
-        setIsSubmitted(true);
         showToast({
-          title: "Submitted the form succeesfully",
+          title: " submitted the reviewed doc",
           status: "success",
           duration: 5000,
         });
+        setIsSubmitted(true);
       } else {
         showToast({
-          title: "Unsuccessful submission",
+          title: "Error submitting the reviewed doc",
           status: "error",
           duration: 5000,
         });
-        showToast({
-          title: "Unsuccessful submission",
-          status: "error",
-          duration: 5000,
-        });
+        console.log(res.data);
       }
-    } catch (error) {
-      setIsLoading(false);
+    } catch (e) {
+      console.log(e);
       showToast({
-        title: "Unsuccessful submission",
+        title: "Error submitting the reviewed doc",
+        description: e,
         status: "error",
         duration: 5000,
       });
     }
   };
-
   const BudgetTable = () => {
     // Function to handle changes in budget data
     const handleBudgetChange = (index, field, value) => {
@@ -333,6 +290,7 @@ export const ViewISG = () => {
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.NAMEOFTHESOCIETY}
                 name="basicInformation.NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 readOnly
@@ -343,6 +301,7 @@ export const ViewISG = () => {
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
+                value={formData.basicInformation.dATEOFSUBMISSION}
                 name="basicInformation.dATEOFSUBMISSION"
                 onChange={handleChange}
                 readOnly
@@ -353,6 +312,7 @@ export const ViewISG = () => {
               <FormLabel>TITLE OF THE PROJECT</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.TITLEOFTHEPROJECT}
                 name="basicInformation.TITLEOFTHEPROJECT"
                 onChange={handleChange}
                 readOnly
@@ -363,42 +323,19 @@ export const ViewISG = () => {
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.address}
                 name="basicInformation.address"
                 onChange={handleChange}
                 readOnly
               />
             </FormControl>
             {/* Provincial Superior */}
-            <FormControl>
-              <FormLabel>Provincial Superior Name</FormLabel>
-              <Input
-                type="text"
-                name="basicInformation.provincialSuperior.name"
-                onChange={handleChange}
-                readOnly
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Provincial Superior Cell Number</FormLabel>
-              <Input
-                type="tel"
-                name="basicInformation.provincialSuperior.cellNumber"
-                onChange={handleChange}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Provincial Superior Email</FormLabel>
-              <Input
-                type="email"
-                name="basicInformation.provincialSuperior.email"
-                onChange={handleChange}
-              />
-            </FormControl>
             {/* Project In-Charge */}
             <FormControl>
               <FormLabel>Project In-Charge Name</FormLabel>
               <Input
                 type="text"
+                value={formData.basicInformation.projectInCharge.name}
                 name="basicInformation.projectInCharge.name"
                 onChange={handleChange}
                 readOnly
@@ -408,6 +345,7 @@ export const ViewISG = () => {
               <FormLabel>Project In-Charge Cell Number</FormLabel>
               <Input
                 type="tel"
+                value={formData.basicInformation.projectInCharge.mobile}
                 name="basicInformation.projectInCharge.cellNumber"
                 onChange={handleChange}
                 readOnly
@@ -417,6 +355,7 @@ export const ViewISG = () => {
               <FormLabel>Project In-Charge Email</FormLabel>
               <Input
                 type="email"
+                value={formData.basicInformation.projectInCharge.email}
                 name="basicInformation.projectInCharge.email"
                 onChange={handleChange}
                 readOnly
@@ -427,6 +366,7 @@ export const ViewISG = () => {
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
+                value={formData.basicInformation.overallProjectPeriod}
                 name="basicInformation.overallProjectPeriod"
                 onChange={handleChange}
                 readOnly
@@ -437,6 +377,7 @@ export const ViewISG = () => {
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
+                value={formData.basicInformation.overallProjectBudget}
                 name="basicInformation.overallProjectBudget"
                 onChange={handleChange}
                 readOnly
@@ -448,6 +389,7 @@ export const ViewISG = () => {
               <FormLabel>Number of Beneficiaries</FormLabel>
               <Input
                 type="number"
+                value={formData.basicInformation.numberOfBeneficiaries}
                 name="basicInformation.numberOfBeneficiaries"
                 onChange={handleChange}
                 readOnly
@@ -458,6 +400,7 @@ export const ViewISG = () => {
               <FormLabel>Residential Villages of the Beneficiaries</FormLabel>
               <Textarea
                 name="basicInformation.residentialVillages"
+                value={formData.basicInformation.residentialVillages}
                 onChange={handleChange}
                 readOnly
               />
@@ -469,6 +412,7 @@ export const ViewISG = () => {
               </FormLabel>
               <Textarea
                 name="basicInformation.selectionCriteriaAndProfile"
+                value={formData.basicInformation.selectionCriteriaAndProfile}
                 onChange={handleChange}
                 readOnly
               />
@@ -482,6 +426,7 @@ export const ViewISG = () => {
               </FormLabel>
               <Textarea
                 name="basicInformation.descriptionOfBeneficiary"
+                value={formData.basicInformation.DescriptionOfBeneficiary}
                 onChange={handleChange}
                 readOnly
               />
@@ -493,6 +438,7 @@ export const ViewISG = () => {
               </FormLabel>
               <Textarea
                 name="basicInformation.problemAnalysis"
+                value={formData.basicInformation.problemAnalysis}
                 onChange={handleChange}
                 readOnly
               />
@@ -502,6 +448,7 @@ export const ViewISG = () => {
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="basicInformation.solutionAnalysis"
+                value={formData.basicInformation.solutionAnalysis}
                 onChange={handleChange}
                 readOnly
               />
@@ -515,6 +462,7 @@ export const ViewISG = () => {
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="logicalFramework.goal"
+                value={formData.logicalFramework.goal}
                 onChange={handleChange}
                 readOnly
               />
@@ -641,6 +589,7 @@ export const ViewISG = () => {
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
+                value={formData.sustainability}
                 onChange={handleChange}
                 readOnly
               />
@@ -652,6 +601,7 @@ export const ViewISG = () => {
               </FormLabel>
               <Textarea
                 name="monitoringProcess"
+                value={formData.monitoringProcess}
                 onChange={handleChange}
                 readOnly
               />
@@ -661,23 +611,27 @@ export const ViewISG = () => {
               <FormLabel>Methodology of Evaluation</FormLabel>
               <Textarea
                 name="evaluationMethodology"
+                value={formData.evaluationMethodology}
                 onChange={handleChange}
                 readOnly
               />
             </FormControl>
             {/* Budget Table */}
             <BudgetTable />
+
+
             {/* Signatures */}
             <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
 
-            {/* Project-In-Charge agreement */}
+
+            Project-In-Charge agreement
             <FormControl>
               <Checkbox
                 name="signatures.projectInChargeAgreement"
                 onChange={handleChange}
-                value={formData.signatures.projectInChargeAgreement}
+                isChecked={formData.signatures.projectInCharge}
                 readOnly
                 size="lg"
               >
@@ -685,77 +639,133 @@ export const ViewISG = () => {
               </Checkbox>
               <Input
                 type="date"
-                value={formData.projectInChargeAgreementDate}
+                value={formData.signatures.projectInChargeAgreementDate.substring(
+                  0,
+                  10
+                )}
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
                 readOnly
               />
             </FormControl>
 
-            {/* Provincial Superior agreement */}
+
+           
+          </VStack>
+
+
+          <VStack align="start" spacing={4} mb={8}>
+            {/* project coordinator agreement */}
+          <FormControl >
+          <FormLabel>Project coordinator</FormLabel>
+            {formData.project_coordinators.map((a) => (
+              <VStack key={a.id}>
+                <FormControl>
+                  <Input
+                    type="text"
+                    name="projectCoordinatorName"
+                    onChange={handleChange}
+                    value={a.ref.name}
+                    readOnly
+                  />
+          <FormLabel>Comment by Project Coordinator</FormLabel>
+
+                  <Input
+                    type="text"
+                    name="comment"
+                    onChange={handleChange}
+                    value={a.comment}
+                    readOnly
+                  />
+
+                  <Checkbox
+                    name="agreement"
+                    onChange={handleChange}
+                    isChecked={a.agree}
+                    readOnly
+                    size="lg"
+                  >
+                    The project coordinator agrees
+                  </Checkbox>
+                  <Input
+                    type="date"
+                    name="date"
+                    onChange={handleChange}
+                    value={a.date?.substring(0, 10)}
+                    readOnly
+                  />
+                </FormControl>
+              </VStack>
+            ))}
+          </FormControl>
+
+
+          {/* Provincial Superior agreement */}
+
+          Presindent Of the Society agreement
             <FormControl>
               <Checkbox
                 name="signatures.provincialSuperiorAgreement"
                 onChange={handleChange}
+                isChecked={formData.signatures.provincialSuperiorAgreement}
                 readOnly
                 size="lg"
               >
-                The Provincial Superior agree
-              </Checkbox>
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Project Coordinator agreement */}
-            <FormControl >
-              <Checkbox
-                name="signatures.projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
+                The President of society agree
               </Checkbox>
               <Input
                 type="date"
-                name="signaturesprojectCoordinatorAgreementDate"
+                value={formData.signatures.provincialSuperiorAgreementDate.substring(
+                  0,
+                  10
+                )}
+                name="provincialSuperiorAgreementDate"
                 onChange={handleChange}
                 readOnly
               />
             </FormControl>
-            {/* Comment for reviewer */}
-            <FormControl>
+            
+
+
+            {/* Comment */}
+            <FormControl >
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
                 name="commentReviewer"
-                onChange={handleChange}
-                value={formData.commentReviewer || ""}
+                value={formData.commentReviewer}
                 readOnly
+                
               />
-            </FormControl>
 
-            {/* Comment for approver */}
-            <FormControl >
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
-                onChange={handleChange}
-                readOnly
-              />
-            </FormControl>
 
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl >
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <FormLabel> Amount Approved by Project Coordinator</FormLabel>
+              
               <Input
                 type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
+                name="amountApproved"
+                value={formData.amountApproved}
+                onChange={(e) => {
+                  setFormData((prevData) => {
+                    return {
+                      ...prevData,
+                      amountApproved: e.target.value,
+                    };
+                  });
+                }}
                 readOnly
               />
             </FormControl>
           </VStack>
-         
+
+          {/* Print Button */}
+          <Button
+              onClick={() => window.print()}
+              colorScheme="blue"
+              type="submit"
+            >
+              Print
+            </Button>
         </form>
       </Box>
     </ChakraProvider>

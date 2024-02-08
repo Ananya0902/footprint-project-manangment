@@ -7,7 +7,7 @@ import {
   FormLabel,
   Input,
   Textarea,
-  Select,
+  
   Checkbox,
   Button,
   VStack,
@@ -228,9 +228,9 @@ const ViewHIV = () => {
         projectData.key_information.economic_background_of_parents[4].number ||
         0,
     },
-    challengesFacedByTheBenificiary:
+    challengesFaced:
       projectData.challenges_faced_by_the_benificiary || "",
-    focusAreasInPresentYear: projectData.focus_areas_in_present_year || "",
+    focusAreasDescription: projectData.focus_areas_in_present_year || "",
     monitoringAndEvaluation: projectData.monitoring_and_evaluation || "",
     sustainability: projectData.sustainability || "",
     mailingList: {
@@ -1480,12 +1480,6 @@ const ViewHIV = () => {
                         }
                         readOnly
                       />
-                      {/* <Button
-                        onClick={() => handleAddResult(index)}
-                        colorScheme="teal"
-                      >
-                        Add Result
-                      </Button> */}
                     </VStack>
                   ))}
                 </FormControl>
@@ -1701,6 +1695,17 @@ const ViewHIV = () => {
             />
           </FormControl>
 
+          <FormControl>
+            <FormLabel>Comment(For Reviewer)</FormLabel>
+            <Input
+              type="text"
+              name="commentReviewer"
+              value={formData.commentReviewer}
+              onChange={handleChange}
+              readOnly
+            />
+          </FormControl>
+
 
           {/* project coordinator agreement */}
           <FormControl >
@@ -1715,6 +1720,7 @@ const ViewHIV = () => {
                     value={a.ref.name}
                     readOnly
                   />
+          <FormLabel>Comment by Project Coordinator</FormLabel>
 
                   <Input
                     type="text"
@@ -1731,7 +1737,7 @@ const ViewHIV = () => {
                     readOnly
                     size="lg"
                   >
-                    The Provincial Superior agrees
+                    The project coordinator agrees
                   </Checkbox>
                   <Input
                     type="date"
@@ -1745,35 +1751,15 @@ const ViewHIV = () => {
             ))}
           </FormControl>
 
-          <FormControl>
-            <FormLabel>Comment(For Reviewer)</FormLabel>
-            <Input
-              type="text"
-              name="commentReviewer"
-              value={formData.commentReviewer}
-              onChange={handleChange}
-              readOnly
-            />
-          </FormControl>
 
-          {/* <FormControl>
-            <FormLabel>Comment(For Approver)</FormLabel>
-            <Input
-              type="text"
-              name="commentApprover"
-              value={formData.commentApprover}
-              onChange={handleChange}
-            />
-          </FormControl> */}
-
-          <FormControl isRequired>
+          <FormControl >
             <FormLabel>Amount Approved by Coordinator</FormLabel>
             <Input
               type="number"
               name="amountApproved"
               value={formData.amountApproved}
               onChange={handleChange}
-              required
+              readOnly
             />
           </FormControl>
 

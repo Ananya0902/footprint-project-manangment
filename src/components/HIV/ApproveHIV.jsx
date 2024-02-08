@@ -1425,7 +1425,7 @@ const ApproveHIV = () => {
               Challenges Faced By The Benificiary
             </Heading>
             <Textarea
-              name="challengesFacedByTheBenificiary"
+              name="challengesFaced"
               value={formData.challengesFaced}
               onChange={handleChange}
               placeholder="Enter text..."
