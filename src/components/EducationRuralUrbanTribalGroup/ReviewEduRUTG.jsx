@@ -839,7 +839,7 @@ const ReviewEduRUTG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* {formData.budget.map((row, index) => (
+                {formData.budget.expenses.map((row, index) => (
                   <Tr key={index}>
                     <Td>
                       <Input
@@ -858,7 +858,7 @@ const ReviewEduRUTG = () => {
                       />
                     </Td>
                   </Tr>
-                ))} */}
+                ))}
               </Tbody>
             </Table>
 

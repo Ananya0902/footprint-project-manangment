@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChakraProvider,
   Box,
@@ -21,7 +21,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
-import {useParams} from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 const ViewEG = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -111,7 +111,8 @@ const ViewEG = () => {
 
         // Contacts Table
         provincialSuperiorName: projectData.provincialSuperiorName || "",
-        provincialSuperiorCellNumber: projectData.provincialSuperiorCellNumber || "",
+        provincialSuperiorCellNumber:
+          projectData.provincialSuperiorCellNumber || "",
         provincialSuperiorEmail: projectData.provincialSuperiorEmail || "",
         projectInChargeName: projectData.projectInChargeName || "",
         projectInChargeCellNumber: projectData.projectInChargeCellNumber || "",
@@ -138,26 +139,29 @@ const ViewEG = () => {
         conclusion: projectData.conclusion || "",
 
         // Signatures
-      projectCoordinatorAgreement: projectData.project_in_charge_agree?.agree || false,
-      projectCoordinatorAgreementDate: projectData.project_in_charge_agree?.date || "",
-      projectInChargeAgreement: projectData.project_in_charge_agree?.agree || false,
-      projectInChargeAgreementDate: projectData.project_in_charge_agree?.date || "",
-      provincialSuperiorAgreement: projectData.provincial_superior_agree?.agree || false,
-      provincialSuperiorAgreementDate: projectData.provincial_superior_agree?.date || "",
-      commentReviewer: projectData.commentReviewer || "",
-      commentApprover: projectData.commentApprover || "",
-      amountApprovedByProjectCoordinator: projectData.amountApprovedByProjectCoordinator || "",
-      
-    });
+        projectCoordinatorAgreement:
+          projectData.project_in_charge_agree?.agree || false,
+        projectCoordinatorAgreementDate:
+          projectData.project_in_charge_agree?.date || "",
+        projectInChargeAgreement:
+          projectData.project_in_charge_agree?.agree || false,
+        projectInChargeAgreementDate:
+          projectData.project_in_charge_agree?.date || "",
+        provincialSuperiorAgreement:
+          projectData.provincial_superior_agree?.agree || false,
+        provincialSuperiorAgreementDate:
+          projectData.provincial_superior_agree?.date || "",
+        commentReviewer: projectData.commentReviewer || "",
+        amountApprovedByProjectCoordinator:
+          projectData.amountApprovedByProjectCoordinator || "",
+        projectCoordinators: projectData.project_coordinators,
+      });
       // Assuming projectData has the same structure as studiesTableData and informationTableData
       setStudiesTableData(projectData.targetGroupStudies || []);
       setInformationTableData(projectData.targetGroupInformation || []);
       setTableData(projectData.peopleDetails || []);
     }
   }, [projectData]);
-
- 
-
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -878,15 +882,45 @@ const ViewEG = () => {
               />
             </FormControl>
 
-            {/* Comment for approver */}
-            <FormControl>
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
-                onChange={handleChange}
-                readOnly
-              />
+            <FormControl isRequired>
+              {formData.projectCoordinators.map((projectCoordinator, index) => (
+                <Box borderWidth={1} p={4} mt={4}>
+                  <FormLabel>{`Project Coordinator - ${index + 1}`}</FormLabel>
+                  <Input
+                    name="projectCoordinatorName"
+                    type="text"
+                    value={projectCoordinator.ref.name}
+                    readOnly
+                  />
+                  <FormLabel>{`Email`}</FormLabel>
+                  <Input
+                    name="projectCoordinatorEmail"
+                    type="text"
+                    value={projectCoordinator.ref.email}
+                    readOnly
+                  />
+                  <FormLabel>{`Comment`}</FormLabel>
+                  <Input
+                    name="projectCoordinatorComment"
+                    type="text"
+                    value={projectCoordinator.comment}
+                    readOnly
+                  />
+                  <FormLabel>{`Agree`}</FormLabel>
+                  <Checkbox
+                    name="projectCoordinatorAgree"
+                    type="text"
+                    isChecked={projectCoordinator.agree}
+                    readOnly
+                  />
+                  <Input
+                    name="prjectCoordinatorDate"
+                    type="date"
+                    value={projectCoordinator.date.substring(0, 10)}
+                    readOnly
+                  />
+                </Box>
+              ))}
             </FormControl>
 
             {/* Amount Approved by Project Coordinator */}
@@ -895,11 +929,19 @@ const ViewEG = () => {
               <Input
                 type="number"
                 name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
-                readOnly
+                value={formData.amountApprovedByProjectCoordinator}
               />
             </FormControl>
           </VStack>
+          <Button
+            type="submit"
+            colorScheme="blue"
+            onClick={() => {
+              window.print();
+            }}
+          >
+            Print
+          </Button>
         </form>
       </Box>
     </ChakraProvider>

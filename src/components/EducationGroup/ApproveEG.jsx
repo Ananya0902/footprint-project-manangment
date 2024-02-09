@@ -21,83 +21,75 @@ import {
   Td,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useParams } from "react-router-dom";
 
 const ApproveEG = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+
   const [isLoading, setIsLoading] = useState(false);
-  const showToast = useToast;
+  const showToast = useToast();
+
+  // Populate formData from req
   const [formData, setFormData] = useState({
-    NAMEOFTHESOCIETY: "", // Name of the Society
-    dATEOFSUBMISSION: "", // Date of Submission
-    TITLEOFTHEPROJECT: "", // Title of the Project
-    address: "", // Address
-
-    // Contacts Table
-    provincialSuperiorName: "",
-    provincialSuperiorCellNumber: "",
-    provincialSuperiorEmail: "",
-    projectInChargeName: "",
-    projectInChargeCellNumber: "",
-    projectInChargeEmail: "",
-
-    // Overall Project Information
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    beneficiariesSupported: "",
-    outcomeImpact: "",
-    projectGoal: "",
-    objectives: [""], // Initial empty objective
-
-    // Target Group Information Table is there
-
-    // Target Group Studies Table is there already
-
-    // Other Proposed Activities
-    otherActivities: "",
-
-    // Monitoring Methods
-    monitoringMethods: "",
-
-    // Evaluation Process and Responsible Person
-    evaluationProcess: "",
-
-    // Conclusion
-    conclusion: "",
-
-    // Signatures
-    projectCoordinatorAgreement: false,
-    projectCoordinatorAgreementDate: "",
-    projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-    provincialSuperiorAgreement: false,
-    provincialSuperiorAgreementDate: "",
-    commentReviewer: "",
-  commentApprover:"",
-  amountApprovedByProjectCoordinator:"",
+    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date,
+    provincialSuperiorAgreement: projectData.provincial_superior_agree.agree,
+    commentReviewer: projectData.comment_box_provincial_superior,
+    NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
+    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+    TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+    address: projectData.address || "",
+    projectInChargeName: projectData.applicant.name || "",
+    projectInChargeCellNumber: projectData.applicant.mobile || "",
+    projectInChargeEmail: projectData.applicant.email || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
+    beneficiariesSupported: projectData.beneficiariesSupported || "",
+    outcomeImpact: projectData.outcomeImpact || "",
+    projectGoal: projectData.goal || "",
+    objectives: projectData.objectives || [""],
+    otherActivities: projectData.otherActivities || "",
+    monitoringMethods: projectData.monitoringMethods || "",
+    evaluationProcess: projectData.evaluationProcess || "",
+    conclusion: projectData.conclusion || "",
+    projectInChargeAgreement:
+      projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date || "",
   });
-  const [studiesTableData, setStudiesTableData] = useState([
-    {
-      serialNo: "",
-      name: "",
-      studyProposed: "",
-      totalExpense: "",
-      contribution: "",
-      scholarshipEligibility: "",
-      expectedAmount: "",
-    },
-  ]);
 
-  const [informationTableData, setInformationTableData] = useState([
-    {
-      serialNo: "",
-      name: "",
-      casteAddress: "",
-      recommendedBy: "",
-      familyBackground: "",
-    },
-  ]);
-  const [tableData, setTableData] = useState([
-    { class: "", totalFemale: "", totalMale: "", total: 0 },
-  ]);
+  // Populate studiesTableData from req
+  const [studiesTableData, setStudiesTableData] = useState(
+    projectData.targetGroupStudies.map((row) => ({
+      serialNo: row.serialNo || "",
+      name: row.name || "",
+      studyProposed: row.studyProposed || "",
+      totalExpense: row.totalExpense || "",
+      contribution: row.contribution || "",
+      scholarshipEligibility: row.scholarshipEligibility || "",
+      expectedAmount: row.expectedAmount || "",
+    }))
+  );
+
+  // Populate informationTableData from req
+  const [informationTableData, setInformationTableData] = useState(
+    projectData.targetGroupInformation.map((row) => ({
+      serialNo: row.serialNo || "",
+      name: row.name || "",
+      casteAddress: row.casteAddress || "",
+      recommendedBy: row.recommendedBy || "",
+      familyBackground: row.familyBackground || "",
+    }))
+  );
+
+  // Populate tableData from req
+  const [tableData, setTableData] = useState(
+    projectData.peopleDetails.map((row) => ({
+      class: row.class || "",
+      totalFemale: row.totalFemale || "",
+      totalMale: row.totalMale || "",
+      total: row.total || 0,
+    }))
+  );
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -126,56 +118,19 @@ const ApproveEG = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     // Add your form submission logic here
-    const req = {
-      NameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
-      TitleOfProject: formData.TITLEOFTHEPROJECT,
-      address: formData.address,
-      OverallProjectPeriod: formData.overallProjectPeriod,
-      OverallProjectBudget: formData.overallProjectBudget,
-      beneficiariesSupported: formData.beneficiariesSupported,
-      outcomeImpact: formData.outcomeImpact,
-      goal: formData.projectGoal,
-      objectives: formData.objectives,
-      peopleDetails: tableData.map((row) => ({
-        class: row.class,
-        totalFemale: row.totalFemale,
-        totalMale: row.totalMale,
-        total: row.total,
-      })),
-      targetGroupInformation: informationTableData.map((row) => ({
-        serialNo: row.serialNo,
-        name: row.name,
-        casteAddress: row.casteAddress,
-        recommendedBy: row.recommendedBy,
-        familyBackground: row.familyBackground,
-      })),
-      targetGroupStudies: studiesTableData.map((row) => ({
-        serialNo: row.serialNo,
-        name: row.name,
-        studyProposed: row.studyProposed,
-        totalExpense: row.totalExpense,
-        contribution: row.contribution,
-        scholarshipEligibility: row.scholarshipEligibility,
-        expectedAmount: row.expectedAmount,
-      })),
-      otherActivities: formData.otherActivities,
-      monitoringMethods: formData.monitoringMethods,
-      evaluationProcess: formData.evaluationProcess,
-      conclusion: formData.conclusion,
-      project_in_charge_agree: {
-        agree: formData.projectCoordinatorAgreement,
-        date: formData.projectCoordinatorAgreementDate,
-      },
-    };
 
     try {
-      const res = authAxios.post("/createEG", req);
+      const res = await authAxios.put("projects/editEGApprover", {
+        projectID: projectData._id,
+        comment_box_project_coordinator: formData.comment,
+        project_coordinator_agree: formData.projectCoordinatorAgreement,
+        amount_approved: formData.amountApproved,
+      });
       setIsLoading(false);
       if (res.data.success) {
         showToast({
@@ -612,37 +567,6 @@ const ApproveEG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      value={formData.provincialSuperiorName}
-                      onChange={handleChange}
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      value={formData.provincialSuperiorCellNumber}
-                      onChange={handleChange}
-                      readOnly
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      value={formData.provincialSuperiorEmail}
-                      onChange={handleChange}
-                      readOnly
-                    />
-                  </Td>
-                </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -857,68 +781,55 @@ const ApproveEG = () => {
                 type="date"
                 name="projectInChargeAgreementDate"
                 onChange={handleChange}
-                value={formData.projectInChargeAgreementDate}
+                value={formData.projectInChargeAgreementDate.substring(0, 10)}
                 readOnly
               />
             </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl isRequired>
+            {/*Provincial Superior Agree*/}
+            <FormControl>
               <Checkbox
                 name="provincialSuperiorAgreement"
                 onChange={handleChange}
                 size="lg"
+                defaultChecked={formData.provincialSuperiorAgreement}
                 readOnly
               >
-                The Provincial Superior agree
-              </Checkbox>
-            </FormControl>
-
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
+                The President Of the Society agree
               </Checkbox>
               <Input
                 type="date"
-                name="projectCoordinatorAgreementDate"
+                name="provincialSuperiorAgreementDate"
                 onChange={handleChange}
-                required
+                value={formData.provincialSuperiorAgreementDate.substring(
+                  0,
+                  10
+                )}
+                readOnly
               />
             </FormControl>
-            {/* Comment for reviewer */}
-            <FormControl>
+
+            {/* Comment */}
+            <FormControl isRequired>
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
                 name="commentReviewer"
-                onChange={handleChange}
-                value={formData.commentReviewer || ""}
                 readOnly
-              />
-            </FormControl>
-
-            {/* Comment for approver */}
-            <FormControl isRequired>
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
+                value={formData.commentReviewer}
                 onChange={handleChange}
                 required
               />
-            </FormControl>
-
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
+              <FormLabel>Comment(For Approver)</FormLabel>
+              <Input
+                type="text"
+                name="comment"
+                onChange={handleChange}
+                required
+              />
+              <FormLabel>Amount Approved</FormLabel>
               <Input
                 type="number"
-                name="amountApprovedByProjectCoordinator"
+                name="amountApproved"
                 onChange={handleChange}
                 required
               />
@@ -926,12 +837,22 @@ const ApproveEG = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" mx={3} type="submit">
-            Submit
+          <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = true)}
+          >
+            Accept
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
+          <Button
+            colorScheme="red"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = false)}
+          >
+            Revert
           </Button>
         </form>
       </Box>

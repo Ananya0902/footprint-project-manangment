@@ -354,9 +354,7 @@ const ApproveWelfareHomeForChildren = () => {
       projectData.mailing_list.provincial_superior.date.substring(0, 10),
     provincialSuperiorComment:
       projectData.mailing_list.provincial_superior.comment,
-
-    project_coordinators: projectData.mailing_list.project_coordinators,
-
+    projectCoordinators: projectData.mailing_list.project_coordinators,
     amountApproved: projectData.amount_approved,
     logicalFramework: {
       goal: projectData.solution_analysis_logical_framework.goal || "",
@@ -402,36 +400,10 @@ const ApproveWelfareHomeForChildren = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("submit");
     try {
-      const res = await authAxios.put("/projects/editWHFCApprover", {
-        comment: formData.comment,
-        agree: formData.projectCoordinatorAgreement,
-        project_number: projectData.project_number,
-        amount_approved: formData.amountApproved,
-      });
-      console.log(res.data);
-      if (res.data.success) {
-        showToast({
-          title: "Approval succesful",
-          duration: 5000,
-          status: "success",
-        });
-      } else {
-        showToast({
-          title: "Approval unsuccesful",
-          duration: 5000,
-          status: "error",
-        });
-      }
-    } catch (e) {
-      console.log(e.response);
-      showToast({
-        title: "Approval unsuccesful",
-        duration: 5000,
-        status: "error",
-      });
+      window.print();
+    } catch {
+      console.log("Please try again");
     }
   };
 
@@ -2009,69 +1981,68 @@ const ApproveWelfareHomeForChildren = () => {
                 value={formData.provincialSuperiorComment}
                 readOnly
               />
-
+              <FormControl isRequired>
+                {formData.projectCoordinators.map(
+                  (projectCoordinator, index) => (
+                    <Box borderWidth={1} p={4} mt={4}>
+                      <FormLabel>{`Project Coordinator - ${
+                        index + 1
+                      }`}</FormLabel>
+                      <Input
+                        name="projectCoordinatorName"
+                        type="text"
+                        value={projectCoordinator.ref.name}
+                        readOnly
+                      />
+                      <FormLabel>{`Email`}</FormLabel>
+                      <Input
+                        name="projectCoordinatorEmail"
+                        type="text"
+                        value={projectCoordinator.ref.email}
+                        readOnly
+                      />
+                      <FormLabel>{`Comment`}</FormLabel>
+                      <Input
+                        name="projectCoordinatorComment"
+                        type="text"
+                        value={projectCoordinator.comment}
+                        readOnly
+                      />
+                      <FormLabel>{`Agree`}</FormLabel>
+                      <Checkbox
+                        name="projectCoordinatorAgree"
+                        type="text"
+                        isChecked={projectCoordinator.agree}
+                        readOnly
+                      />
+                      <Input
+                        name="projectCoordinatorDate"
+                        type="date"
+                        value={projectCoordinator.date.substring(0, 10)}
+                        readOnly
+                      />
+                    </Box>
+                  )
+                )}
+              </FormControl>
               <FormLabel>Amount Approved</FormLabel>
               <Input
                 type="number"
                 name="amountApproved"
                 value={formData.amountApproved}
+                readOnly
                 onChange={(e) => {
                   setFormData((prevData) => {
                     prevData.amountApproved = e.target.value;
                     return { ...prevData };
                   });
                 }}
-                readOnly
               />
-            </FormControl>
-
-            {/* project coordinator agreement */}
-            <FormControl>
-              <FormLabel>Project coordinator</FormLabel>
-              {formData.project_coordinators.map((a) => (
-                <VStack key={a.id}>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      name="projectCoordinatorName"
-                      value={a.ref.name}
-                      readOnly
-                    />
-                    <FormLabel>Comment by Project Coordinator</FormLabel>
-
-                    <Input
-                      type="text"
-                      name="comment"
-                      value={a.comment}
-                      readOnly
-                    />
-
-                    <Checkbox
-                      name="agreement"
-                      isChecked={a.agree}
-                      readOnly
-                      size="lg"
-                    >
-                      The project coordinator agrees
-                    </Checkbox>
-                    <Input
-                      type="date"
-                      name="date"
-                      value={a.date?.substring(0, 10)}
-                      readOnly
-                    />
-                  </FormControl>
-                </VStack>
-              ))}
             </FormControl>
           </VStack>
 
-          {/* Print Button */}
-          <Button
-            onClick={() => window.print()}
-            colorScheme="blue"
-            type="submit"
-          >
+          {/* Submit Button */}
+          <Button colorScheme="blue" type="submit" mx="3">
             Print
           </Button>
         </form>

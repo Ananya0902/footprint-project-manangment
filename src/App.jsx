@@ -82,11 +82,12 @@ import ViewEG from "./components/EducationGroup/ViewEG";
 import ViewDPLG from "./components/DPLG/ViewDPLG";
 import ViewHIV from "./components/HIV/ViewHIV";
 import ViewISG from "./components/InstiutionalSkillGroup/ViewISG";
-import ViewWHCG from "./components/WelfareHealthForChildren/ViewWHCG";
+import ViewWHFC from "./components/WelfareHealthForChildren/ViewWHFC";
 import ReviewSocialIndividual from "./components/SocialIndividual/ReviewSocialIndividual";
 import ApproveSocialIndividual from './components/SocialIndividual/ApproveSocialIndividual';
 import ApproveWelfareHomeForChildren from "./components/WelfareHealthForChildren/ApproveWelfareHealthForChildren";
 import AnnualRepHealthIndividual from './components/Reports/AnnualRepHealthIndividual'
+import RevertedProjects from "./components/Applicant/RevertedProjects";
 import ViewSI from "./components/SocialIndividual/viewSI";
 
 
@@ -107,6 +108,7 @@ const App = () => {
     <ChakraProvider>
       <Router>
         <Routes>
+
           <Route path="/" element={<Home />} />
           <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
@@ -118,6 +120,7 @@ const App = () => {
         
           <Route path="/educationIndividualOngoing" element={<EducationIndividualOngoing />} />
           <Route path="/educationIndividual" element={<EducationIndividual />} />
+          <Route path="/revertedProjects" element={<RevertedProjects />} />
           
           <Route path="/socialIndividual" element={<SocialIndividual />} />
           <Route path="/educationGroup" element={<EducationGroup />} />
@@ -165,6 +168,7 @@ const App = () => {
           <Route path="/AnnualEducationInstitutionReport" element={<AnnualEducationInstitutionReport/>} />
 
           <Route path='/ReviewWHFC/:project' element={<ReviewWelfareHomeForChildren/>} />
+          <Route path='/ViewWHFC/:project' element={<ViewWHFC/>} />
           <Route path="/ReviewSI/:project" element={<ReviewSocialIndividual/>}/>
           <Route path='/ReviewEI/:project' element={<ReviewEI/>} />          
           <Route path='/ApproveEI/:project' element={<ApproveEI/>} />          
@@ -180,7 +184,7 @@ const App = () => {
           <Route path='/ApproveDPLG/:project' element={<ApproveDPLG/>} />
           <Route path='/ReviewCG/:project' element={<ReviewCG/>} />
           <Route path='/ApproveCG/:project' element={<ApproveCG/>} />
-          <Route path='/ApproveEG' element={<ApproveEG/>} />
+          <Route path='/ApproveEG/:project' element={<ApproveEG/>} />
           <Route path='/ReviewEG/:project' element={<ReviewEG/>} />
           <Route path='/ReviewISG/:project' element={<ReviewISG/>} />
           <Route path='/ApproveISG/:project' element={<ApproveISG/>} />
@@ -193,11 +197,11 @@ const App = () => {
           <Route path='/EditWHCG' element={<EditWHCG/>} />
           <Route path='/EditISG' element={<EditISG/>} />
           <Route path='/EditDPLG' element={<EditDPLG/>} />
-          <Route path='/EditEGS' element={<EditEGS/>} />
+          <Route path='/EditEGS/:project' element={<EditEGS/>} />
           <Route path='/EditEG' element={<EditEG/>} />
 
 
-          <Route path="/viewHOIProject/:project" element={<ViewProject/>} /> 
+          <Route path="/ViewHOI/:project" element={<ViewProject/>} /> 
           <Route path='/ViewCG/:project' element={<ViewCG/>} />
           <Route path='/ViewEGS/:project' element={<ViewEduRUTG/>} />
           <Route path='/viewNPDP/:project' element={<ViewNPDP/>} />
@@ -206,7 +210,7 @@ const App = () => {
           <Route path='/ViewDPLG/:project' element={<ViewDPLG/>} />          
           <Route path='/ViewHIV/:project' element={<ViewHIV/>} />          
           <Route path='/ViewSG/:project' element={<ViewISG/>} />          
-          <Route path='/ViewWHFC/:project' element={<ViewWHCG/>} />   
+          <Route path='/ViewWHFC/:project' element={<ViewWHFC/>} />   
           <Route path='/ViewSI/:project' element={<ViewSI/>} />   
 
 

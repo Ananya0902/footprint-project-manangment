@@ -21,62 +21,75 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useParams } from "react-router-dom";
 
 export const EditDPLG = () => {
-  const [formData, setFormData] = useState({
-    NAMEOFTHESOCIETY: "",
-    dATEOFSUBMISSION: "",
-    TITLEOFTHEPROJECT: "",
-    address: "",
-    provincialSuperiorName: "",
-    provincialSuperiorCellNumber: "",
-    provincialSuperiorEmail: "",
-    projectInChargeName: "",
-    projectInChargeCellNumber: "",
-    projectInChargeEmail: "",
-    projOfIntialProject: "",
-    overallProjectPeriod: "",
-    overallProjectBudget: "",
-    problemAnalysis: "",
-    solutionAnalysis: "",
-    sustainability: "",
-    monitoringProcess: "",
-    
-    projectInChargeAgreement: false,
-    projectInChargeAgreementDate: "",
-   
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [
-            {
-              activity: "",
-              verification: "",
-              timeframe: Array.from({ length: 12 }).fill(false),
-            },
-          ],
-        },
-      ],
-    },
-  });
-  const [studiesTableData, setStudiesTableData] = useState([
-    {
-      serialNo: "",
-      name: "",
-      familySituation: "",
-      natureOfLivelihood: "",
-      requestedAmount: "",
-    },
-  ]);
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  console.log(projectData);
+  const [studiesTableData, setStudiesTableData] = useState(
+    projectData.studies_table_data.map((item) => ({
+      serialNo: item.serialNo || "",
+      name: item.name || "",
+      familySituation: item.family_situation || "",
+      natureOfLivelihood: item.nature_livlihood || "",
+      requestedAmount: item.requested_amount || "",
+    }))
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
-
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  // Populate formData
+  const [formData, setFormData] = useState({
+    NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
+    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+    TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+    address: projectData.address || "",
+    projectInChargeName: projectData.applicant.name || "",
+    projectInChargeCellNumber: projectData.applicant.mobile || "",
+    projectInChargeEmail: projectData.applicant.email || "",
+    projOfIntialProject: projectData.ProjectOfInitialProject || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
+    problemAnalysis: projectData.problemAnalysis || "",
+    solutionAnalysis: projectData.solutionAnalysis || "",
+    sustainability: projectData.sustainability || "",
+    monitoringProcess: projectData.monitoringProcess || "",
+    projectInChargeAgreement:
+      projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date.substring(0, 10) || "",
+    provincialSuperiorAgreement: projectData.provincialSuperiorAgree || false,
+    provincialSuperiorAgreementDate:
+      projectData.provincialSuperiorAgreementDate || "",
+    comment: projectData.comment || "",
+    logicalFramework: {
+      goal: projectData.goal || "",
+      objectives: projectData.objectives.map((objective) => ({
+        objective: objective.objective || "",
+        results: objective.results || [""],
+        activities: objective.activities.map((activity) => ({
+          activity: activity.activity || "",
+          verification: activity.verification || "",
+          timeframe:
+            activity.timeframe || Array.from({ length: 12 }).fill(false),
+        })),
+      })),
+    },
+  });
+  const [budgetData, setBudgetData] = useState(
+    projectData.budget_cost_table.map((item) => ({
+      budget: item.budget || "",
+      cost: item.cost || "",
+    }))
+  );
+
+  console.log(budgetData);
+  console.log(formData);
+  console.log(studiesTableData);
+
+  // Set the state
 
   const handleChange = (e, index, subIndex) => {
     const updatedData = { ...formData };
@@ -96,121 +109,53 @@ export const EditDPLG = () => {
       updatedData.logicalFramework.objectives[index].activities[
         subIndex
       ].verification = e.target.value;
-    }
-    else {
+    } else {
       updatedData[e.target.name] = e.target.value;
     }
 
     setFormData(updatedData);
   };
 
-  const handleAddObjective = () => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives.push({
-      objective: "",
-      results: [""],
-      activities: [],
-    });
-    setFormData(updatedData);
-  };
-
-  const handleAddResult = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].results.push("");
-    setFormData(updatedData);
-  };
-
-  const handleAddActivity = (index) => {
-    const updatedData = { ...formData };
-    updatedData.logicalFramework.objectives[index].activities.push({
-      activity: "",
-      verification: "",
-      timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
-    });
-    setFormData(updatedData);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-
-    
-      const req= {
-        NameOfSociety: formData.NAMEOFTHESOCIETY,
-        DateOfSubmission: formData.dATEOFSUBMISSION,
-        TitleOfProject: formData.TITLEOFTHEPROJECT,
-        address: formData.address,
-        overallProjectPeriod: formData.overallProjectPeriod,
-        overallProjectBudget: formData.overallProjectBudget,
-        ProjectOfInitialProject: formData.projOfIntialProject,
-        problemAnalysis: formData.problemAnalysis,
-        solutionAnalysis: formData.solutionAnalysis,
-        goal: formData.logicalFramework.goal,
-        objectives: formData.logicalFramework.objectives.map(objective => ({
-          objective: objective.objective,
-          results: objective.results,
-          activities: objective.activities.map(activity => ({
-            activity: activity.activity,
-            verification: activity.verification,
-            timeframe: activity.timeframe
-          }))
-        })),
-        sustainability: formData.sustainability,
-        monitoringProcess: formData.monitoringProcess,
-        budget_cost_table: budgetData.map(item => ({
-          budget: item.budget,
-          cost: item.cost
-        })),
-        studies_table_data: studiesTableData.map(item => ({
-          serialNo: item.serialNo,
-          name: item.name,
-          family_situation: item.familySituation,
-          nature_livlihood: item.natureOfLivelihood,
-          requested_amount: item.requestedAmount
-        })),
-        project_in_charge_agree: {
-          agree: formData.projectInChargeAgreement,
-          date: formData.projectInChargeAgreementDate
-        }
+    try {
+      const req = {
+        projectID: projectData._id,
+        comment_box_provincial_superior: formData.comment,
+        provincial_superior_agree: {
+          agree: formData.provincialSuperiorAgreement,
+        },
       };
-    
-    try{
-      setIsLoading((prevLoading) => !prevLoading);
-      const response =await authAxios.post("/projects/createDPLG",req)
-      setIsLoading((prevLoading) => !prevLoading);
-      console.log(response.data);
-      if (response.data.success) {
+      const res = await authAxios.put(
+        "/projects/editreviewerDPLG/",
+        req,
+      );
+      console.log(res);
+      if (res.data.success) setIsSubmitted(true);
+      else {
         showToast({
-          title: "Successfull form submission",
-          status: "success",
-          duration: 5000,
-        });
-      } else {
-        showToast({
-          title: "Unsuccessful form submission",
+          title: "Error submitting the reviewed doc",
           status: "error",
-          description: "Please login again session may have expired",
           duration: 5000,
         });
+        console.log(res.data);
       }
-    } catch (err) {
-      setIsLoading(false);
-      console.log(err);
+    } catch (e) {
+      console.log(e);
+      showToast({
+      title: "Error submitting the reviewed doc",
+        description: e,
+        status: "error",
+        duration: 5000,
+      });
     }
-
-
-    setIsSubmitted(true);
   };
-
   const BudgetTable = () => {
     const handleBudgetChange = (index, field, value) => {
       const newData = [...budgetData];
       newData[index][field] = value;
       setBudgetData(newData);
-    };
-
-    const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: "", cost: "" }]);
     };
 
     const calculateTotalAmount = () => {
@@ -243,6 +188,7 @@ export const EditDPLG = () => {
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -252,6 +198,7 @@ export const EditDPLG = () => {
                     onChange={(e) =>
                       handleBudgetChange(index, "cost", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
               </Tr>
@@ -259,9 +206,9 @@ export const EditDPLG = () => {
           </Tbody>
         </Table>
 
-        <Button onClick={handleAddBudgetRow} mt={4}>
+        {/* <Button onClick={handleAddBudgetRow} mt={4}>
           Add Row
-        </Button>
+        </Button> */}
 
         <FormControl>
           <FormLabel>Total Amount</FormLabel>
@@ -321,6 +268,7 @@ export const EditDPLG = () => {
                         e.target.value
                       )
                     }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -330,6 +278,7 @@ export const EditDPLG = () => {
                     onChange={(e) =>
                       handleStudiesInputChange(index, "name", e.target.value)
                     }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -343,6 +292,7 @@ export const EditDPLG = () => {
                         e.target.value
                       )
                     }
+                    readOnly
                   />
                 </Td>
                 <Td>
@@ -376,7 +326,7 @@ export const EditDPLG = () => {
           </Tbody>
         </Table>
 
-        <Button onClick={handleAddStudiesRow}>Add Row</Button>
+        {/* <Button onClick={handleAddStudiesRow}>Add Row</Button> */}
       </Box>
     );
   };
@@ -404,50 +354,47 @@ export const EditDPLG = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* NAME OF THE SOCIETY */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>NAME OF THE SOCIETY</FormLabel>
               <Input
                 type="text"
                 name="NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 value={formData.NAMEOFTHESOCIETY}
-                required
+                readOnly
               />
             </FormControl>
             {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>DATE OF SUBMISSION</FormLabel>
               <Input
                 type="date"
                 name="dATEOFSUBMISSION"
                 onChange={handleChange}
                 value={formData.dATEOFSUBMISSION}
-
-                required
+                readOnly
               />
             </FormControl>
             {/* TITLE OF THE PROJECT */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>TITLE OF THE PROJECT </FormLabel>
               <Input
                 type="text"
                 name="TITLEOFTHEPROJECT"
                 onChange={handleChange}
                 value={formData.TITLEOFTHEPROJECT}
-
-                required
+                readOnly
               />
             </FormControl>
             {/* ADDRESS*/}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>ADDRESS</FormLabel>
               <Input
                 type="text"
                 name="address"
                 onChange={handleChange}
                 value={formData.address}
-
-                required
+                readOnly
               />
             </FormControl>
             {/* Contacts Table */}
@@ -462,39 +409,6 @@ export const EditDPLG = () => {
               </Thead>
               <Tbody>
                 {/* Provincial Superior */}
-                <Tr>
-                  <Td>Provincial Superior</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="provincialSuperiorName"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorName}
-
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="tel"
-                      name="provincialSuperiorCellNumber"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorCellNumber}
-
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="provincialSuperiorEmail"
-                      onChange={handleChange}
-                      value={formData.provincialSuperiorEmail}
-
-                      required
-                    />
-                  </Td>
-                </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -504,8 +418,7 @@ export const EditDPLG = () => {
                       name="projectInChargeName"
                       onChange={handleChange}
                       value={formData.projectInChargeName}
-
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -514,8 +427,7 @@ export const EditDPLG = () => {
                       name="projectInChargeCellNumber"
                       onChange={handleChange}
                       value={formData.projectInChargeCellNumber}
-
-                      required
+                      readOnly
                     />
                   </Td>
                   <Td>
@@ -524,8 +436,7 @@ export const EditDPLG = () => {
                       name="projectInChargeEmail"
                       onChange={handleChange}
                       value={formData.projectInChargeEmail}
-
-                      required
+                      readOnly
                     />
                   </Td>
                 </Tr>
@@ -545,32 +456,30 @@ export const EditDPLG = () => {
               </Tbody>
             </Table>
             {/* Overall Project Period */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Overall Project Period (in months)</FormLabel>
               <Input
                 type="number"
                 name="overallProjectPeriod"
                 onChange={handleChange}
                 value={formData.overallProjectPeriod}
-
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Overall Project Budget */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Overall Project Budget</FormLabel>
               <Input
                 type="number"
                 name="overallProjectBudget"
                 onChange={handleChange}
                 value={formData.overallProjectBudget}
-
-                required
+                readOnly
               />
             </FormControl>
             {/*Mention the progress of the initial project and its success*/}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Mention the progress of the initial project and its success
               </FormLabel>
@@ -578,15 +487,14 @@ export const EditDPLG = () => {
                 name="projOfIntialProject"
                 onChange={handleChange}
                 value={formData.projOfIntialProject}
-
-                required
+                readOnly
               />
             </FormControl>
 
             {TargetGroup()}
 
             {/* Analysis of how the Problems will  be resolved by the Project : */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Analysis of how the Problems will be resolved by the Project :{" "}
               </FormLabel>
@@ -594,20 +502,18 @@ export const EditDPLG = () => {
                 name="problemAnalysis"
                 onChange={handleChange}
                 value={formData.problemAnalysis}
-
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Solution Analysis */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Solution Analysis</FormLabel>
               <Textarea
                 name="solutionAnalysis"
                 onChange={handleChange}
                 value={formData.solutionAnalysis}
-
-                required
+                readOnly
               />
             </FormControl>
 
@@ -622,12 +528,13 @@ export const EditDPLG = () => {
             >
               logical Framework
             </Heading>
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
+                value={formData.logicalFramework.goal}
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
@@ -652,19 +559,19 @@ export const EditDPLG = () => {
               >
                 <VStack key={index} align="start" spacing={4} mb={8}>
                   {/* Objective */}
-                  <FormControl isRequired>
+                  <FormControl>
                     <hr />
                     <FormLabel>Objective {index + 1}</FormLabel>
                     <Textarea
                       name="objective"
                       value={objective.objective}
                       onChange={(e) => handleChange(e, index)}
-                      required
+                      readOnly
                     />
                   </FormControl>
 
                   {/* Results */}
-                  <FormControl isRequired>
+                  <FormControl>
                     <FormLabel>Results</FormLabel>
                     {objective.results.map((result, subIndex) => (
                       <VStack key={subIndex} align="start" spacing={4} mb={8}>
@@ -672,20 +579,20 @@ export const EditDPLG = () => {
                           name="result"
                           value={result}
                           onChange={(e) => handleChange(e, index, subIndex)}
-                          required
+                          readOnly
                         />
-                        <Button
+                        {/* <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
-                        </Button>
+                        </Button> */}
                       </VStack>
                     ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
-                  <FormControl isRequired>
+                  <FormControl>
                     <FormLabel>Activities and Means of Verification</FormLabel>
                     <Table variant="simple">
                       <Thead>
@@ -704,7 +611,7 @@ export const EditDPLG = () => {
                                 onChange={(e) =>
                                   handleChange(e, index, subIndex)
                                 }
-                                required
+                                readOnly
                               />
                             </Td>
                             <Td>
@@ -714,7 +621,7 @@ export const EditDPLG = () => {
                                 onChange={(e) =>
                                   handleChange(e, index, subIndex)
                                 }
-                                required
+                                readOnly
                               />
                             </Td>
                             <Td>
@@ -731,6 +638,7 @@ export const EditDPLG = () => {
                                         !activity.timeframe[monthIndex];
                                       console.log(activity.timeframe);
                                     }}
+                                    readOnly
                                   >
                                     {new Date(2024, monthIndex).toLocaleString(
                                       "default",
@@ -745,38 +653,38 @@ export const EditDPLG = () => {
                       </Tbody>
                     </Table>
 
-                    <Button
+                    {/* <Button
                       onClick={() => handleAddActivity(index)}
                       colorScheme="teal"
                     >
                       Add Activity
-                    </Button>
+                    </Button> */}
                   </FormControl>
 
-                  <Button
+                  {/* <Button
                     onClick={handleAddObjective}
                     colorScheme="purple"
                     ml="auto"
                   >
                     Add Objective
-                  </Button>
+                  </Button> */}
                   <hr />
                 </VStack>
               </Box>
             ))}
             {/* Sustainability of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Sustainability of the Project</FormLabel>
               <Textarea
                 name="sustainability"
                 value={formData.sustainability}
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
             {/* Explain the Monitoring Process of the Project */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Explain the Monitoring Process of the Project
               </FormLabel>
@@ -784,41 +692,76 @@ export const EditDPLG = () => {
                 name="monitoringProcess"
                 value={formData.monitoringProcess}
                 onChange={(e) => handleChange(e)}
-                required
+                readOnly
               />
             </FormControl>
 
-          {BudgetTable()}
+            {BudgetTable()}
 
-          <Heading as="h1" size="xl" mb={6}>
+            <Heading as="h1" size="xl" mb={6}>
               Signatures
             </Heading>
 
             {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
+            <FormControl>
               <Checkbox
                 name="projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreement}
-
+                isChecked={formData.projectInChargeAgreement}
+                readOnly
                 size="lg"
               >
                 The Project-In-Charge agree
               </Checkbox>
               <Input
-                type="date"               
-                 value={formData.projectInChargeAgreementDate}
-
+                type="date"
+                value={formData.projectInChargeAgreementDate}
                 name="projectInChargeAgreementDate"
+                onChange={handleChange}
+                readOnly
+              />
+            </FormControl>
+
+            {/* Provincial Superior agreement */}
+            <FormControl isRequired>
+              <Checkbox
+                name="provincialSuperiorAgreement"
+                onChange={handleChange}
+                size="lg"
+              >
+                The Provincial Superior agree
+              </Checkbox>
+            </FormControl>
+          </VStack>
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Comment */}
+            <FormControl isRequired>
+              <FormLabel>Comment(For Reviewer)</FormLabel>
+              <Input
+                type="text"
+                name="comment"
                 onChange={handleChange}
                 required
               />
             </FormControl>
-
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => {
+              formData.provincialSuperiorAgreement = true;
+            }}
+          >
             Submit
+          </Button>
+          {/* decline Button */}
+          <Button colorScheme="red" mx={3} type="submit"
+          onClick={() => {
+            formData.provincialSuperiorAgreement = false;
+          }}
+          >
+            Decline
           </Button>
         </form>
       </Box>

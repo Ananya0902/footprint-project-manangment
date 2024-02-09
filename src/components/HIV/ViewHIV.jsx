@@ -435,7 +435,6 @@ const ViewHIV = () => {
     setFormData(updatedData);
   };
 
- 
   return (
     <ChakraProvider>
       <Box p={4}>
@@ -443,8 +442,7 @@ const ViewHIV = () => {
           HIV Affect Outreach Application Form
         </Heading>
 
-        
-        <form onSubmit={()=>{}}>
+        <form onSubmit={() => {}}>
           {/* Project Information */}
 
           <FormControl mb={4}>
@@ -1708,8 +1706,8 @@ const ViewHIV = () => {
 
 
           {/* project coordinator agreement */}
-          <FormControl >
-          <FormLabel>Project coordinator</FormLabel>
+          <FormControl>
+            <FormLabel>Project coordinator</FormLabel>
             {formData.project_coordinators.map((a) => (
               <VStack key={a.id}>
                 <FormControl>
@@ -1765,12 +1763,12 @@ const ViewHIV = () => {
 
           {/* Print Button */}
           <Button
-              onClick={() => window.print()}
-              colorScheme="blue"
-              type="submit"
-            >
-              Print
-            </Button>
+            onClick={() => window.print()}
+            colorScheme="blue"
+            type="submit"
+          >
+            Print
+          </Button>
         </form>
       </Box>
     </ChakraProvider>

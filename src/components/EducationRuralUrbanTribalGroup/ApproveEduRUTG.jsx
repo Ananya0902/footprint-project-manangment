@@ -23,14 +23,13 @@ import {
 import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
-const ReviewEduRUTG = () => {
+const ApproveEduRUTG = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
   const [formData, setFormData] = useState({
     commentReviewer : projectData.general_information.provincial_superior.comment , 
-    amountApproved: 0 , 
-    projectCoordinatorAgree: false , 
+    amountApproved: projectData.amount_approved , 
     projectTitle: projectData.project_title || "",
     projectInchargeName:
       projectData.general_information.project_incharge.ref.name,
@@ -128,6 +127,8 @@ const ReviewEduRUTG = () => {
     provincialSuperiorAgreementDate: projectData.general_information.provincial_superior.date,
     comment: null,
   });
+
+  console.log(formData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   // Populate formData from req
 
@@ -847,7 +848,7 @@ const ReviewEduRUTG = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {/* {formData.budget.map((row, index) => (
+                {formData.budget.expenses.map((row, index) => (
                   <Tr key={index}>
                     <Td>
                       <Input
@@ -866,7 +867,7 @@ const ReviewEduRUTG = () => {
                       />
                     </Td>
                   </Tr>
-                ))} */}
+                ))}
               </Tbody>
             </Table>
 
@@ -973,4 +974,4 @@ const ReviewEduRUTG = () => {
   );
 };
 
-export default ReviewEduRUTG;
+export default ApproveEduRUTG;

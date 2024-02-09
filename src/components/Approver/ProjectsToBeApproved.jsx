@@ -204,12 +204,13 @@ const ApproveProjects = () => {
               };
             }),
           WHFC: getAllWHFCApprover
-            .filter((value) =>
-              value.mailing_list.project_coordinators.find(approved)
+            .filter((value) =>{
+              console.log(approverProfile._id , value.mailing_list.project_coordinators) ;
+              return value.mailing_list.project_coordinators.find(approved)
                 ? false
                 : true &&
                   value?.mailing_list.provincial_superior.agree &&
-                  value.mailing_list.project_coordinators.length < 2
+                  value.mailing_list.project_coordinators.length < 2}
             )
             .map((project) => {
               return {
@@ -266,13 +267,13 @@ const ApproveProjects = () => {
               };
             }),
           EG: getAllEGApprover
-            .filter((value) =>
-              value.project_coordinators.find(approved)
-                ? false
-                : true &&
-                  value?.provincial_superior_agree.agree &&
-                  value.project_coordinators.length < 2
-            )
+            // .filter((value) =>
+            //   value.project_coordinators.find(approved)
+            //     ? false
+            //     : true &&
+            //       value?.provincial_superior_agree.agree &&
+            //       value.project_coordinators.length < 2
+            // )
             .map((project) => {
               return {
                 id: project.project_code,

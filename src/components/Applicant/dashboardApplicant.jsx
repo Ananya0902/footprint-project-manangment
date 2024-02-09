@@ -169,6 +169,34 @@ const DashboardApplicant = () => {
               Go to Profile
             </Button>
           </Box>
+          {/* Comment for approver */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="lg"
+            boxShadow="md"
+            width="100%"
+            textAlign="center"
+          >
+            <Heading size="md" mb={4} color="red.500">
+              Reverted Projects
+            </Heading>
+            <Text fontSize="md" color="gray.600">
+              Update your personal information.
+            </Text>
+            <Button
+              as={Link}
+              to={`/revertedProjects`}
+              colorScheme="red"
+              mt={4}
+              borderRadius="full"
+              onTouchMoveCapture={()=>{
+                console.log(userDetails);
+              }}
+            >
+              RevertedProjects
+            </Button>
+          </Box>
         </VStack>
 
         <Text mt={8} textAlign="center" color="gray.600">
