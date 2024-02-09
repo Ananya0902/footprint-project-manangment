@@ -19,7 +19,7 @@ import {
 import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
-const ApproveEIO = () => {
+const ViewEIO = () => {
   const showToast = useToast();
 
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
@@ -1138,4 +1138,4 @@ const ApproveEIO = () => {
     </ChakraProvider>
   );
 };
-export default ApproveEIO;
+export default ViewEIO;
