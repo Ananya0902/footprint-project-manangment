@@ -25,6 +25,8 @@ import { useParams } from "react-router-dom";
 
 const EditCG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  // project Data is the document 
+
   console.log(projectData);
 
   // Assuming projectData contains the fetched data from the backend
@@ -144,7 +146,7 @@ const EditCG = () => {
 
     try {
       setIsLoading((prevLoading) => !prevLoading);
-      const response = await authAxios.post("/projects/editCG", req);
+      const response = await authAxios.put("/projects/editCG", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {

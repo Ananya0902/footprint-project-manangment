@@ -415,7 +415,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="beneficiaryAgreementDate"
-                  value={formData.benificiaryAgreeDate.substring(0, 10)}
+                  value={formData.benificiaryAgreeDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -431,7 +431,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="projectInChargeAgree"
-                  value={formData.projectInChargeAgreementDate.substring(0, 10)}
+                  value={formData.projectInChargeAgreementDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -446,7 +446,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="provincialSuperiorAgrementDate"
-                  value={formData.provincialSuperiorAgreeDate.substring(0, 10)}
+                  value={formData.provincialSuperiorAgreeDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -486,7 +486,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="projectCoordinatorAgrementDate"
-                  value={formData.projectCoordinatorAgreeDate.substring(0, 10)}
+                  value={formData.projectCoordinatorAgreeDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>

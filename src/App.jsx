@@ -114,7 +114,7 @@ const App = () => {
 
           <Route
             path="/registerApprover"
-            element={<PrivateRoute element={<RegisterApproverPage />} />}
+            element={<RegisterApproverPage/>}
           />
 
           <Route
