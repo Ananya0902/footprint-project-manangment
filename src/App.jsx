@@ -14,7 +14,7 @@ import RegisterPage from "./components/Auth/register";
 import HealthIndividualOngoing from "./components/HealthIndivualOngoing/healthIndividiualOngoing";
 import EducationIndividualOngoing from "./components/EducationIndividualOngoing/educationIndividualOngoing";
 
-import EducationIndividual from "./components/EducationIndividual/EducationIndividual";
+import EducationIndividual from "./components/EducationIndividual/EducationIndividual.jsx";
 import SocialIndividual from "./components/SocialIndividual/socialIndividual";
 import EducationGroup from "./components/EducationGroup/educationGroup";
 import Common from "./components/CommonGroup/common";
@@ -97,9 +97,9 @@ import ViewSI from "./components/SocialIndividual/viewSI";
 import ViewEIO from "./components/EducationIndividualOngoing/ViewEIO";
 import EditEducationIndividual from "./components/EducationIndividual/EditEducationIndividual";
 
-const PrivateRoute = ({ path, element }) => {
-  return AuthService.isAuthenticated() ? element : <Navigate to="/login" />;
-};
+// const PrivateRoute = ({ path, element }) => {
+//   return AuthService.isAuthenticated() ? element : <Navigate to="/login" />;
+// };
 
 // App component
 const App = () => {
