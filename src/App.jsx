@@ -1,20 +1,14 @@
 // Import necessary libraries and components
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import AuthService from "./AuthService";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+// import AuthService from "./AuthService";
 import Home from "./components/Auth/home";
 import LoginPage from "./components/Auth/login";
 import RegisterPage from "./components/Auth/register";
 import HealthIndividualOngoing from "./components/HealthIndivualOngoing/healthIndividiualOngoing";
 import EducationIndividualOngoing from "./components/EducationIndividualOngoing/educationIndividualOngoing";
 
-import EducationIndividual from "./components/EducationIndividual/EducationIndividual.jsx";
 import SocialIndividual from "./components/SocialIndividual/socialIndividual";
 import EducationGroup from "./components/EducationGroup/educationGroup";
 import Common from "./components/CommonGroup/common";
@@ -96,6 +90,7 @@ import RevertedProjects from "./components/Applicant/RevertedProjects";
 import ViewSI from "./components/SocialIndividual/viewSI";
 import ViewEIO from "./components/EducationIndividualOngoing/ViewEIO";
 import EditEducationIndividual from "./components/EducationIndividual/EditEducationIndividual";
+import EducationIndividual from "./components/EducationIndividual/EducationIndividual";
 
 // const PrivateRoute = ({ path, element }) => {
 //   return AuthService.isAuthenticated() ? element : <Navigate to="/login" />;
