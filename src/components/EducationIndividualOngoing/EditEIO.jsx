@@ -137,6 +137,13 @@ const ApproveEIO = () => {
     }
   };
 
+  // Group projects 
+  // mailing_list 
+  // project_coordinator : []
+  // Revert comment reviewer 
+  // Comment = specialCharacter + Comment  
+  // comment fields <-- special character + comment 
+
   return (
     <ChakraProvider>
       <Box p={4}>

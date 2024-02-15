@@ -112,10 +112,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          <Route
-            path="/registerApprover"
-            element={<RegisterApproverPage/>}
-          />
+          <Route path="/registerApprover" element={<RegisterApproverPage />} />
 
           <Route
             path="/healthIndividualOngoing"
@@ -283,7 +280,10 @@ const App = () => {
           <Route path="/EditISG" element={<EditISG />} />
           <Route path="/EditDPLG" element={<EditDPLG />} />
           <Route path="/EditEGS/:project" element={<EditEGS />} />
-          <Route path="/EditEI/:project" element={<EditEducationIndividual />} />
+          <Route
+            path="/EditEI/:project"
+            element={<EditEducationIndividual />}
+          />
 
           <Route path="/EditEG" element={<EditEG />} />
 
