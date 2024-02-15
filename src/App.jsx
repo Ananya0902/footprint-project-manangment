@@ -90,7 +90,6 @@ import RevertedProjects from "./components/Applicant/RevertedProjects";
 import ViewSI from "./components/SocialIndividual/viewSI";
 import ViewEIO from "./components/EducationIndividualOngoing/ViewEIO";
 import EditEducationIndividual from "./components/EducationIndividual/EditEducationIndividual";
-import EducationIndividual from "./components/EducationIndividual/EducationIndividual";
 
 // const PrivateRoute = ({ path, element }) => {
 //   return AuthService.isAuthenticated() ? element : <Navigate to="/login" />;
@@ -118,10 +117,10 @@ const App = () => {
             path="/educationIndividualOngoing"
             element={<EducationIndividualOngoing />}
           />
-          <Route
+          {/* <Route
             path="/educationIndividual"
             element={<EducationIndividual />}
-          />
+          /> */}
           <Route path="/revertedProjects" element={<RevertedProjects />} />
 
           <Route path="/socialIndividual" element={<SocialIndividual />} />
