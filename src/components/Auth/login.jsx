@@ -226,7 +226,7 @@ const LoginPage = () => {
         </form>
       </Box>
       {/* Forgot password link */}
-      <Link mt={2} color="blue.500" fontSize="sm">
+      <Link to="/forgetpassword" mt={2} color="blue.500" fontSize="sm">
         Forgot password?
       </Link>
       {/* Registration link */}

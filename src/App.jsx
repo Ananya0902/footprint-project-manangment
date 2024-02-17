@@ -89,7 +89,8 @@ import ApproveWelfareHomeForChildren from "./components/WelfareHealthForChildren
 import AnnualRepHealthIndividual from './components/Reports/AnnualRepHealthIndividual'
 import RevertedProjects from "./components/Applicant/RevertedProjects";
 import ViewSI from "./components/SocialIndividual/viewSI";
-
+import EmailOtp from "./components/Auth/EmailOtp";
+import ForgetPassword from "./components/Auth/ForgetPassword";
 
 const PrivateRoute = ({ path, element }) => {
   return AuthService.isAuthenticated() ? (
@@ -113,7 +114,8 @@ const App = () => {
           <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-
+          <Route path="/emailotp" element={<EmailOtp></EmailOtp>}></Route>
+          <Route path="/forgetpassword" element={<ForgetPassword></ForgetPassword>}></Route>
           <Route path="/registerApprover" element={<PrivateRoute element={<RegisterApproverPage />} />} />
 
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
