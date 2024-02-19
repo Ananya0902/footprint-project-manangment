@@ -267,7 +267,7 @@ const App = () => {
           <Route path="/ReviewHIV/:project" element={<ReviewHIV />} />
           <Route path="/ApproveHIV/:project" element={<ApproveHIV />} />
 
-          <Route path="/EditHIV" element={<EditHIV />} />
+          <Route path="/EditHIV/:project" element={<EditHIV />} />
           <Route path="/EditCG" element={<EditCG />} />
           <Route path="/EditNPDP" element={<EditNPDP />} />
           <Route path="/EditWHCG" element={<EditWHCG />} />

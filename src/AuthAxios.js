@@ -5,6 +5,10 @@ const authAxios = axios.create({
 })
 
 export const setAuthToken = (token) => {
+  // token 
+  // there is a token already associated , if the token null authaxios headers token null 
+  // generally you set the token into the axios instance 
+  // for signing and authorization into backend 
   if (token) {
     authAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
