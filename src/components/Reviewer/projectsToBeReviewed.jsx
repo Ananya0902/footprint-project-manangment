@@ -165,7 +165,8 @@ const ReviewProjects = () => {
             }),
           HIV: getAllHIVReviewer
             .filter(
-              (value) => value.mailing_list.provincial_superior.comment === false
+              (value) =>
+                value.mailing_list.provincial_superior.comment === false
             )
             .map((project) => {
               return {
@@ -225,7 +226,6 @@ const ReviewProjects = () => {
                 project: project,
               };
             }),
-            
         };
 
         setProjectList(newProjectList);
@@ -292,9 +292,9 @@ const ReviewProjects = () => {
                   <Button
                     colorScheme="blue"
                     as={Link}
-                    to={`/Review${key}/${
-                      (encodeURIComponent(JSON.stringify(project.project)))
-                    }`} // Update this route as needed
+                    to={`/Review${key}/${encodeURIComponent(
+                      JSON.stringify(project.project)
+                    )}`} // Update this route as needed
                     mb={2}
                     borderRadius="full"
                   >

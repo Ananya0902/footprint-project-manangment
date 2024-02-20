@@ -26,7 +26,7 @@ import authAxios from "../../AuthAxios";
 const ReviewEduRUTG = () => {
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  const projectData = JSON.parse(decodeURIComponent(useParams().project)); // Document 
   console.log(projectData);
   const [formData, setFormData] = useState({
     projectRegion:

@@ -16,7 +16,7 @@ import {
 import { FaCheck, FaTimes } from "react-icons/fa";
 import axios from "../../AuthAxios.js";
 
-const VerifyApplicant = ({ loggedInReviewerId }) => {
+const AllApplicantsReviewer = ({ loggedInReviewerId }) => {
   const [applicants, setApplicants] = useState([]);
   const showToast = useToast();
 
@@ -30,7 +30,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
         console.log(response.data);
         setApplicants(
           response.data.data
-            .filter((applicant) => applicant.isVarified === false)
+            .filter((applicant) => applicant.isVarified === true)
             .map((applicant) => {
               return {
                 id: applicant._id,
@@ -51,46 +51,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
       );
   }, [showToast]);
 
-  const handleVerify = (applicantId) => {
-    // Update the status of the applicant to "Verified"
-    axios
-      .put("/users/applicantvarify", {
-        applicant: applicantId,
-      })
-      .then((res) => {
-        console.log(res);
-        setApplicants((prevApplicants) =>
-          prevApplicants.filter((applicant) => applicant.id !== applicantId)
-        );
-      })
-      .catch((error) => {
-        showToast({
-          title: "Error verifying user",
-          status: "error",
-          duration: 500,
-        });
-      });
-  };
   // Create a function for addition
-  const handleDecline = (applicantId) => {
-    // Update the status of the applicant to "Declined"
-    axios
-      .delete("/users/applicantunvarify", {
-        applicant: applicantId,
-      })
-      .then(() =>
-        setApplicants((prevApplicants) =>
-          prevApplicants.filter((applicant) => applicant.id !== applicantId)
-        )
-      )
-      .catch((_) =>
-        showToast({
-          title: "Error unvarifying applicant",
-          duration: 5000,
-          status: "error",
-        })
-      );
-  };
 
   return (
     <ChakraProvider>
@@ -115,9 +76,6 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
                     {applicant.name}
                   </Heading>
                   <Text fontSize="md" color="gray.600">
-                    Status: {applicant.status}
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
                     Email: {applicant.email}
                   </Text>
                   <Text fontSize="md" color="gray.600">
@@ -132,14 +90,12 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
                   <Button
                     leftIcon={<ListIcon as={FaCheck} />}
                     colorScheme="green"
-                    onClick={() => handleVerify(applicant.id)}
                   >
                     Verify
                   </Button>
                   <Button
                     leftIcon={<ListIcon as={FaTimes} />}
                     colorScheme="red"
-                    onClick={() => handleDecline(applicant.id)}
                   >
                     Decline
                   </Button>
@@ -157,4 +113,4 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
   );
 };
 
-export default VerifyApplicant;
+export default AllApplicantsReviewer;

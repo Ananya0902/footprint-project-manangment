@@ -90,12 +90,26 @@ import RevertedProjects from "./components/Applicant/RevertedProjects";
 import ViewSI from "./components/SocialIndividual/viewSI";
 import ViewEIO from "./components/EducationIndividualOngoing/ViewEIO";
 import EditEducationIndividual from "./components/EducationIndividual/EditEducationIndividual";
-import EducationIndividual from './components/EducationIndividual/educationIndividual'
+import EducationIndividual from "./components/EducationIndividual/educationIndividual";
+import AllApplicantsReviewer from "./components/Reviewer/AllApplicantsReviewer";
 // const PrivateRoute = ({ path, element }) => {
 //   return AuthService.isAuthenticated() ? element : <Navigate to="/login" />;
 // };
 
-// App component
+// App component\
+
+// Token checking in protected
+// Token expiry - 1 hour
+// Login - Timer - 1 ghante - logout
+// Local Storage uda diya , reload , UseEffect , LocalStorage Token
+
+// Navbar to be displayed when you are viewing forms , editing forms or creating forms
+// Home = Dashboard , Profile
+
+// If approver , reviewer , applicant
+// Home Route ,
+// Profile Route
+
 const App = () => {
   return (
     <ChakraProvider>
@@ -220,6 +234,10 @@ const App = () => {
           <Route
             path="/BiAnnualLivelihoodIndividualReport"
             element={<BiAnnualLivelihoodIndividual />}
+          />
+          <Route
+            path="/allApplicantsReviewer"
+            element={<AllApplicantsReviewer />}
           />
           <Route
             path="/BiAnnualEducationIndividualReport"

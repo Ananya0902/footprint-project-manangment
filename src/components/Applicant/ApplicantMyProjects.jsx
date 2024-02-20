@@ -14,8 +14,11 @@ import {
 import { Link } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
+
 const MyProjects = () => {
   const showToast = useToast();
+
+  // project list
   const [projectList, setProjectList] = useReducer(
     (prev, next) => {
       const newProjectList = { ...prev, ...next };
@@ -26,10 +29,11 @@ const MyProjects = () => {
       getAllEOI: [],
     }
   );
-
+  
+  // From the api call try and get all the projects 
   useEffect(() => {
     const getAllProject = async () => {
-      // get all the three types of projects
+      // get projects of a particular type 
       async function fetchDataForApplicantRoute(route) {
         try {
           const response = await authAxios.get(`projects/${route}`);
@@ -38,7 +42,6 @@ const MyProjects = () => {
           return data;
         } catch (error) {
           console.log(route, error);
-
           return [];
         }
       }
@@ -79,6 +82,8 @@ const MyProjects = () => {
         );
         const getAllWHFCApplicant = getAllWHFCApplicantData ?? [];
 
+
+        /// Error mark 
         const getAllEGSApplicantData = await fetchDataForApplicantRoute(
           "getAllEGSApplicant"
         );
@@ -104,6 +109,18 @@ const MyProjects = () => {
         );
         const getAllCGApplicant = getAllCGApplicantData ?? [];
 
+        // Object 
+        /*
+        {
+          HOI: [
+            {
+              name: Your name , 
+              contact_number : 7085772856
+            }
+          ] , 
+          EOI , DPLG , HIV
+        }
+        */ 
         const newProjectList = {
           HOI: getAllHOI.map((project) => {
             return {
@@ -187,6 +204,7 @@ const MyProjects = () => {
   console.log(projectList);
   return (
     <ChakraProvider>
+      
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
         My Projects
@@ -207,6 +225,9 @@ const MyProjects = () => {
               </Heading>
             </Box>
           ))}
+          {/* To display each of the form what we did 
+          We take all the keys from the projectList - EOI , HOI , DPLG 
+          */}
           {Object.keys(projectList).map((key) => (
             <React.Fragment key={key}>
               {projectList[key].map((project) => (
@@ -219,9 +240,17 @@ const MyProjects = () => {
                   width="100%"
                 >
                   <Heading size="md" mb={2} color="blue.500">
-                    {project.id}
+                    {
+                      /* HIV20241 */
+                    }
+                    {project.id} 
                   </Heading>
 
+                  {/*ViewEOI
+                  Object --- use Params - object 
+                  Object --> String 
+                  String - encodedURIComponent 
+                  */}
                   <Button
                     colorScheme="blue"
                     as={Link}
