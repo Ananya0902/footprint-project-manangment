@@ -97,6 +97,8 @@ import AllApplicantsReviewer from "./components/Reviewer/AllApplicantsReviewer";
 // };
 
 // App component\
+import EmailOtp from "./components/Auth/EmailOtp";
+import ForgetPassword from "./components/Auth/ForgetPassword";
 
 // Token checking in protected
 // Token expiry - 1 hour
@@ -119,8 +121,14 @@ const App = () => {
           <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-
-          <Route path="/registerApprover" element={<RegisterApproverPage />} />
+          <Route path="/emailotp" element={<EmailOtp></EmailOtp>}></Route>
+          <Route
+            path="/forgetpassword"
+            element={<ForgetPassword></ForgetPassword>}
+          ></Route>
+          <Route path="/registerApprover" element={<RegisterApproverPage />}>
+            {" "}
+          </Route>
 
           <Route
             path="/healthIndividualOngoing"
