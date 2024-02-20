@@ -114,7 +114,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/registerApprover" element={<PrivateRoute element={<RegisterApproverPage />} />} />
+          <Route path="/registerApprover" element= {<RegisterApproverPage />} />
 
           <Route path="/healthIndividualOngoing" element={<HealthIndividualOngoing />} />
         
