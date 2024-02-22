@@ -44,6 +44,8 @@ const ReviewSocialIndividual = () => {
     aadharCardNo: projectData.aadhar_no,
     gender: projectData.gender,
     dob: projectData.DOB,
+    amountRequested: projectData.amount_requested,
+    beneficiaryContribution: projectData.beneficiary_contribution,
     projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
     projectInChargeAgreement: projectData.project_in_charge_agree.agree,
     benificiaryAgree: projectData.benificary_agree.agree,
@@ -326,6 +328,7 @@ const ReviewSocialIndividual = () => {
           <Heading as="h1" size="xl" mb={6}>
             Budget Details
           </Heading>
+
           <Box p={4}>
             <Table variant="simple">
               <Thead>
@@ -348,6 +351,20 @@ const ReviewSocialIndividual = () => {
               </Tbody>
             </Table>
           </Box>
+
+          <FormControl>
+            <FormLabel>Beneficiary Contribution</FormLabel>
+            <Input
+              type="text"
+              value={formData.beneficiaryContribution}
+              readOnly
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Amount Requested</FormLabel>
+            <Input type="text" value={formData.amountRequested} readOnly />
+          </FormControl>
+
           {/* Document Upload */}
           <Heading as="h1" size="xl" mb={6}>
             Uploaded Documents
@@ -389,7 +406,7 @@ const ReviewSocialIndividual = () => {
                 <Input
                   type="date"
                   name="beneficiaryAgreementDate"
-                  value={formData.benificiaryAgreeDate.substring(0,10)}
+                  value={formData.benificiaryAgreeDate.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -401,14 +418,14 @@ const ReviewSocialIndividual = () => {
                 <Input
                   type="date"
                   name="projectInChargeAgreementDate"
-                  value={formData.projectInChargeAgreementDate.substring(0,10)}
+                  value={formData.projectInChargeAgreementDate.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
               <FormControl isRequired>
                 Provincial Superior Comment
                 <Textarea
-                required
+                  required
                   type="text"
                   onChange={(e) => {
                     setFormData((prevData) => {

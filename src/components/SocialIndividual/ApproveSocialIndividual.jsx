@@ -32,7 +32,7 @@ const ReviewSocialIndividual = () => {
   console.log(projectData);
   // Define formData object
   const [formData, setFormData] = useState({
-    projectCoordinatorAgree : false , 
+    projectCoordinatorAgree: false,
     photographFile: projectData.photograph_benificary,
     nameOfSelfEmployment: projectData.nameOfSelfEmployment,
     projectInchargeName: projectData.applicant.name,
@@ -42,6 +42,8 @@ const ReviewSocialIndividual = () => {
     provincialSuperiorContact: projectData.reviewer.mobile,
     provincialSuperiorEmail: projectData.reviewer.email,
     beneficiaryName: projectData.name,
+    beneficiaryContribution: projectData.beneficiary_contribution,
+    amountRequested: projectData.amount_requested,
     beneficiaryContact: projectData.mobile,
     beneficiaryEmail: projectData.email,
     beneficiaryAddress: projectData.address,
@@ -105,7 +107,7 @@ const ReviewSocialIndividual = () => {
         amount_approved: formData.amountApproved,
         projectID: projectData._id,
         comment_box_project_coordinator: formData.comment,
-        project_coordinator_agree : formData.projectCoordinatorAgree,
+        project_coordinator_agree: formData.projectCoordinatorAgree,
       });
       if (res.data.success) {
         showToast({
@@ -359,6 +361,19 @@ const ReviewSocialIndividual = () => {
             </Tbody>
           </Table>
 
+          <FormControl>
+            <FormLabel>Beneficiary Contribution</FormLabel>
+            <Input
+              type="text"
+              value={formData.beneficiaryContribution}
+              readOnly
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Amount Requested</FormLabel>
+            <Input type="text" value={formData.amountRequested} readOnly />
+          </FormControl>
+
           {/* Budget Table */}
           <Heading as="h1" size="xl" mb={6}>
             Budget Details
@@ -384,6 +399,7 @@ const ReviewSocialIndividual = () => {
                 ))}
               </Tbody>
             </Table>
+            FormControl
           </Box>
           {/* Document Upload */}
           <Heading as="h1" size="xl" mb={6}>
@@ -480,7 +496,6 @@ const ReviewSocialIndividual = () => {
                     setFormData((prevData) => {
                       prevData.amountApproved = e.target.value;
                       return { ...prevData };
-                      
                     });
                   }}
                   name="amountApproved"

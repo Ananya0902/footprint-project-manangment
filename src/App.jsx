@@ -99,6 +99,7 @@ import AllApplicantsReviewer from "./components/Reviewer/AllApplicantsReviewer";
 // App component\
 import EmailOtp from "./components/Auth/EmailOtp";
 import ForgetPassword from "./components/Auth/ForgetPassword";
+import EditSocialIndividual from "./components/SocialIndividual/editSocialIndividual";
 
 // Token checking in protected
 // Token expiry - 1 hour
@@ -294,12 +295,13 @@ const App = () => {
           <Route path="/ApproveHIV/:project" element={<ApproveHIV />} />
 
           <Route path="/EditHIV/:project" element={<EditHIV />} />
-          <Route path="/EditCG" element={<EditCG />} />
+          <Route path="/EditCG/:project" element={<EditCG />} />
           <Route path="/EditNPDP" element={<EditNPDP />} />
           <Route path="/EditWHCG" element={<EditWHCG />} />
           <Route path="/EditISG" element={<EditISG />} />
           <Route path="/EditDPLG" element={<EditDPLG />} />
           <Route path="/EditEGS/:project" element={<EditEGS />} />
+          <Route path="/EditSI/:project" element={<EditSocialIndividual />} />
           <Route
             path="/EditEI/:project"
             element={<EditEducationIndividual />}

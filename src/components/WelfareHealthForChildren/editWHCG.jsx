@@ -25,6 +25,9 @@ import {
 import authAxios from "../../AuthAxios";
 import { useParams } from "react-router-dom";
 
+/**
+ * EditWHCG component.
+ */
 const EditWHCG = () => {
   const projectData = JSON.parse(
     decodeURIComponent(useParams().project || "{}")
@@ -361,6 +364,7 @@ const EditWHCG = () => {
         ),
     },
   });
+  
   const [isSubmitted, setIsSubmitted] = useState(false);
   const showToast = useToast();
   // Populating budgetRows

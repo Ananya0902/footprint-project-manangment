@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 import {
   ChakraProvider,
   Box,
@@ -130,7 +129,7 @@ export const Common = () => {
 
     const req = {
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
+      DateOfSubmission: Date.now(),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,
@@ -196,10 +195,11 @@ export const Common = () => {
     };
 
     const calculateTotalAmount = () => {
-      return budgetData.reduce(
+      formData.overallProjectBudget =  budgetData.reduce(
         (total, row) => total + parseFloat(row.cost) || 0,
         0
       );
+      return formData.overallProjectBudget;
     };
 
     return (
@@ -236,10 +236,22 @@ export const Common = () => {
                     }
                   />
                 </Td>
+                {/* Overall Project Budget */}
               </Tr>
             ))}
           </Tbody>
         </Table>
+        <FormControl isRequired>
+          <FormLabel>Overall Project Budget</FormLabel>
+          <Input
+            type="number"
+            name="overallProjectBudget"
+            readOnly
+            onChange={handleChange}
+            value={calculateTotalAmount()}
+            required
+          />
+        </FormControl>
 
         <Button onClick={handleAddBudgetRow} mt={4}>
           Add Row
@@ -283,17 +295,6 @@ export const Common = () => {
                 name="NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 value={formData.NAMEOFTHESOCIETY}
-                required
-              />
-            </FormControl>
-            {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
-              <FormLabel>DATE OF SUBMISSION</FormLabel>
-              <Input
-                type="date"
-                name="dATEOFSUBMISSION"
-                onChange={handleChange}
-                value={formData.dATEOFSUBMISSION}
                 required
               />
             </FormControl>
@@ -357,17 +358,6 @@ export const Common = () => {
               />
             </FormControl>
 
-            {/* Overall Project Budget */}
-            <FormControl isRequired>
-              <FormLabel>Overall Project Budget</FormLabel>
-              <Input
-                type="number"
-                name="overallProjectBudget"
-                onChange={handleChange}
-                value={formData.overallProjectBudget}
-                required
-              />
-            </FormControl>
             {/* Project Area */}
             <FormControl isRequired>
               <FormLabel>Project Area</FormLabel>
@@ -536,7 +526,7 @@ export const Common = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl >
+                              <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
@@ -612,29 +602,6 @@ export const Common = () => {
             </FormControl>
 
             {BudgetTable()}
-
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreementDate}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreementDate}
-                required
-              />
-            </FormControl>
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit">

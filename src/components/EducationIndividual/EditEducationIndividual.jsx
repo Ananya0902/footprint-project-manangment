@@ -21,7 +21,15 @@ import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 import cloudAxios from "../../CloudAxios";
 
-const ReviewEI = () => {
+/**
+ * EditEI component for editing education individual data.
+ */
+/**
+ * EditEI component for editing education individual data.
+ *
+ * @returns {JSX.Element} The EditEI component.
+ */
+const EditEI = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
@@ -41,8 +49,6 @@ const ReviewEI = () => {
 
   const [formData, setFormData] = useState({
     ...imageMappings,
-    provincialSuperiorName: "", // Assuming not present in req
-    provincialSuperiorContact: "", // Assuming not present in req
     projectInchargeName: projectData.applicant.name,
     projectInchargeContact: projectData.applicant.mobile, // Assuming not present in req
     projectInchargeEmail: projectData.applicant.email, // Assuming not present in req
@@ -138,6 +144,14 @@ const ReviewEI = () => {
       }
     };
 
+    // Comment and all logic for the form submission
+    formData.projectInChargeAgreement = true;
+    formData.projectInChargeAgreementDate = new Date();
+    formData.commentBoxProvincialSuperior = `*Reverted: ${projectData.comment_box_provincial_superior}*`;
+    formData.provincialSuperiorAgreement = false;
+    formData.commentBoxProjectCooredinator = `*Reverted: ${projectData.comment_box_project_coordinator}*`;
+    formData.projectCoordinatorAgreement = false;
+
     const convertImagesToUrls = async (e) => {
       const image = {};
 
@@ -149,11 +163,9 @@ const ReviewEI = () => {
         image.aadhar_img =
           (await handleImageUpload(e.target.aadharCardCopy.files[0])) ??
           imageMappings.aadharCardCopy;
-        console.log("image1");
         image.fee_quotation_from_the_institution_img =
           (await handleImageUpload(e.target.feeQuotationOriginal.files[0])) ??
           imageMappings.feeQuotationOriginal;
-        console.log("image2");
         image.proof_of_scholarship_received_from_government_img = e.target
           .proof_of_scholarship_recieved_from_government_img
           ? await handleImageUpload(e.target.scholarshipProof.files[0])
@@ -164,25 +176,25 @@ const ReviewEI = () => {
               e.target.medicalConfirmationOriginal.files[0]
             )
           : imageMappings.medicalConfirmationOriginal;
-        console.log("image4");
-        image.caste_certificate_img = await handleImageUpload(
-          e.target.casteCertificateCopy.files[0]
-        );
+        image.caste_certificate_img = e.target.casteCertificateCopy.files[0]
+          ? await handleImageUpload(e.target.casteCertificateCopy.files[0])
+          : imageMappings.casteCertificateCopy;
         console.log("image5");
         image.affidavit_proof_img = e.target.affidavitProofOriginal.files[0]
           ? await handleImageUpload(e.target.affidavitProofOriginal.files[0])
           : "";
-        image.request_letter_img = await handleImageUpload(
-          e.target.requestLetterOriginal.files[0]
-        );
+        image.request_letter_img = e.target.requestLetterOriginal.files[0]
+          ? await handleImageUpload(e.target.requestLetterOriginal.files[0])
+          : imageMappings.requestLetterOriginal;
         console.log("image6");
         image.death_certificate_img = e.target.deathCertificateCopy.files[0]
           ? await handleImageUpload(e.target.deathCertificateCopy.files[0])
           : "";
         console.log("image7");
-        image.mark_list_of_previous_year = await handleImageUpload(
-          e.target.markListPreviousYear.files[0]
-        );
+        image.mark_list_of_previous_year = e.target.markListPreviousYear
+          .files[0]
+          ? await handleImageUpload(e.target.markListPreviousYear.files[0])
+          : imageMappings.markListPreviousYear;
         console.log("image8");
 
         // At this point, the image object contains URLs for all the images
@@ -277,6 +289,10 @@ const ReviewEI = () => {
           agree: true,
         },
         ...image,
+        comment_box_project_coordinator: formData.commentBoxProjectCooredinator,
+        comment_box_provincial_superior: formData.commentBoxProvincialSuperior,
+        project_coordinator_agree : false , 
+        provincial_superior_agree: false , 
       };
 
       console.log(req);
@@ -332,44 +348,6 @@ const ReviewEI = () => {
 
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeName"
-                onChange={handleChange}
-                value={formData.projectInchargeName}
-                required
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeContact"
-                onChange={handleChange}
-                value={formData.projectInchargeContact}
-                required
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of Project Incharge</FormLabel>
-              <Input
-                type="email"
-                name="projectInchargeEmail"
-                onChange={handleChange}
-                value={formData.projectInchargeEmail}
-                required
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
             {/*Personal Information of the Beneficiary */}
             <Heading as="h1" size="xl" mb={6}>
               Personal Information of the Beneficiary
@@ -386,10 +364,22 @@ const ReviewEI = () => {
                 )}
                 <Image
                   boxSize="40%"
-                  src={formData.photographUrl}
+                  src={
+                    formData.photographUrl instanceof File
+                      ? URL.createObjectURL(formData.photographUrl.files[0])
+                      : formData.photographUrl
+                  }
                   alt="Beneficiary Image"
                   mx="auto"
                   fit="contain"
+                />
+                {/* component to upload image */}
+                <Input
+                  type="file"
+                  name="photographUrl"
+                  onChange={handleChange}
+                  accept="image/*"
+                  required
                 />
               </Box>
             </FormControl>
@@ -1051,8 +1041,19 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.aadharCardCopy}
-                alt="Dan Abramov"
+                src={
+                  formData.aadharCardCopy instanceof File
+                    ? URL.createObjectURL(formData.aadharCardCopy.files[0])
+                    : formData.aadharCardCopy
+                }
+                alt="Aadhar Card"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="aadharCardCopy"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1065,8 +1066,21 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.feeQuotationOriginal}
-                alt="Dan Abramov"
+                src={
+                  formData.feeQuotationOriginal instanceof File
+                    ? URL.createObjectURL(
+                        formData.feeQuotationOriginal.files[0]
+                      )
+                    : formData.feeQuotationOriginal
+                }
+                alt="Fee Quotation from the Institution"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="feeQuotationOriginal"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1079,8 +1093,19 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.scholarshipProof}
-                alt="Dan Abramov"
+                src={
+                  formData.scholarshipProof instanceof File
+                    ? URL.createObjectURL(formData.scholarshipProof.files[0])
+                    : formData.scholarshipProof
+                }
+                alt="Scholarship Proof"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="scholarshipProof"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1094,8 +1119,21 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.medicalConfirmationOriginal}
-                alt="Dan Abramov"
+                src={
+                  formData.medicalConfirmationOriginal instanceof File
+                    ? URL.createObjectURL(
+                        formData.medicalConfirmationOriginal.files[0]
+                      )
+                    : formData.medicalConfirmationOriginal
+                }
+                alt="Medical Confirmation"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="medicalConfirmationOriginal"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1106,8 +1144,21 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.casteCertificateCopy}
-                alt="Dan Abramov"
+                src={
+                  formData.casteCertificateCopy instanceof File
+                    ? URL.createObjectURL(
+                        formData.casteCertificateCopy.files[0]
+                      )
+                    : formData.casteCertificateCopy
+                }
+                alt="Caste Certificate"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="casteCertificateCopy"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1120,8 +1171,19 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.affidavitProofUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.affidavitProofUrl instanceof File
+                    ? URL.createObjectURL(formData.affidavitProofUrl.files[0])
+                    : formData.affidavitProofUrl
+                }
+                alt="Affidavit Proof"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="affidavitProofOriginal"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1132,8 +1194,21 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.requestLetterOriginal}
-                alt="Dan Abramov"
+                src={
+                  formData.requestLetterOriginal instanceof File
+                    ? URL.createObjectURL(
+                        formData.requestLetterOriginal.files[0]
+                      )
+                    : formData.requestLetterOriginal
+                }
+                alt="Request Letter"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="requestLetterOriginal"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1146,8 +1221,21 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.deathCertificateCopy}
-                alt="Dan Abramov"
+                src={
+                  formData.deathCertificateCopy instanceof File
+                    ? URL.createObjectURL(
+                        formData.deathCertificateCopy.files[0]
+                      )
+                    : formData.deathCertificateCopy
+                }
+                alt="Death Certificate"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="deathCertificateCopy"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1159,7 +1247,14 @@ const ReviewEI = () => {
                 boxSize="50%"
                 objectFit="contain"
                 src={formData.markListPreviousYear}
-                alt="Dan Abramov"
+                alt="Mark List of Previous Year"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                name="markListPreviousYear"
+                onChange={handleChange}
+                accept="image/*"
               />
             </FormControl>
           </VStack>
@@ -1225,29 +1320,12 @@ const ReviewEI = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button
-            mx="3"
-            colorScheme="blue"
-            type="submit"
-            onClick={() => {
-              formData.provincialSuperiorAgreement = true;
-            }}
-          >
-            Accept
-          </Button>
-          <Button
-            colorScheme="red"
-            type="submit"
-            mx={3}
-            onClick={() => {
-              formData.provincialSuperiorAgreement = false;
-            }}
-          >
-            Revert
+          <Button mx="3" colorScheme="blue" type="submit">
+            Submit
           </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ReviewEI;
+export default EditEI;

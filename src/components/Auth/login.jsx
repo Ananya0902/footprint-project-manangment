@@ -1,9 +1,9 @@
 // Import necessary libraries and components
-// done with integration 
+// done with integration
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
-import authAxios , {setAuthToken} from '../../AuthAxios.js' ; 
+import authAxios, { setAuthToken } from "../../AuthAxios.js";
 
 import {
   Box,
@@ -28,7 +28,23 @@ import * as Yup from "yup";
 
 const LoginPage = () => {
   const showToast = useToast();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  // Function to log out user on token expiry
+  const logOutOnTokenExpiry = () => {
+    // set timeout to log out user
+    setTimeout(() => {
+      showToast({
+        title: "Session Expired",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      // set time out from token expiry time
+      localStorage.removeItem("userToken");
+      navigate("/login");
+      // token expires after one hour
+    }, 3600000);
+  };
   // Use Formik for form management
   const formik = useFormik({
     // Initial values and form validation schema using Yup
@@ -58,17 +74,18 @@ const LoginPage = () => {
         };
         let response;
         if (values.userType === "applicant") {
-          response = await authAxios.post("users/applicantlogin",req);
+          response = await authAxios.post("users/applicantlogin", req);
           if (response.data.isVarified !== true) {
             await showToast({
               title: "Await verification by the reviewer",
-              description : "Your account is waiting to be verified by the reviewer",
+              description:
+                "Your account is waiting to be verified by the reviewer",
               status: "loading",
               duration: 5000,
               isClosable: true,
             });
           } else {
-            navigate(`/dashboardApplicant`); 
+            navigate(`/dashboardApplicant`);
           }
         } else if (values.userType === "reviewer") {
           response = await authAxios.post("/users/reviewerlogin", req);
@@ -88,7 +105,7 @@ const LoginPage = () => {
               duration: 5000,
               isClosable: true,
             });
-            navigate(`/dashboardReviewer`); 
+            navigate(`/dashboardReviewer`);
           }
         } else if (values.userType === "approver") {
           response = await authAxios.post("/users/approverlogin", req);
@@ -99,7 +116,7 @@ const LoginPage = () => {
               duration: 5000,
               isClosable: true,
             });
-            navigate("/dashboardApprover"); 
+            navigate("/dashboardApprover");
           }
         } else {
           showToast({
@@ -113,6 +130,12 @@ const LoginPage = () => {
         console.log(response.data);
         setAuthToken(response.data.token);
         localStorage.setItem("userToken", response.data.token);
+        // call logout on token expiry
+        logOutOnTokenExpiry();
+        // set token expiry time
+
+        // log out on token expiry
+
         // axios.default.header
         // console.log(axios.defaults.headers.common['Authorization']);
       } catch (error) {
@@ -147,7 +170,7 @@ const LoginPage = () => {
     formik.setFieldValue("showPassword", !formik.values.showPassword);
   };
 
-  // Function to handle any change in zone and correspondingly get reviewers 
+  // Function to handle any change in zone and correspondingly get reviewers
 
   return (
     <VStack spacing={8} p={8} align="center" justify="center">

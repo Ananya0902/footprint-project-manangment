@@ -31,6 +31,7 @@ import {
 
 // RegisterPage component
 const RegisterPage = () => {
+
   const showToast = useToast();
   const navigate = useNavigate();
 
@@ -91,7 +92,7 @@ const RegisterPage = () => {
         email: values.email,
         password: values.password,
         mobile: values.mobileNumber,
-        nameOfProvince: values.province,
+        nameOfProvince: values.province, 
       };
 
       try {
@@ -167,7 +168,6 @@ const RegisterPage = () => {
   const getReviewerByZone = async (zone) => {
     // zone = north east central
     try {
-
       const response = await authAxios.get(`/users/allreviewer/${zone}`);
       const simplifiedReviewers = response.data.reviewers.map((reviewer) => ({
         id: reviewer._id,
@@ -176,7 +176,7 @@ const RegisterPage = () => {
       console.log(response.data);
       console.log("data:", response.data.reviewers);
       formik.setFieldValue("reviewer", "");
-      console.log('reviewers'  , simplifiedReviewers);
+      console.log("reviewers", simplifiedReviewers);
       formik.setFieldValue("reviewerList", simplifiedReviewers);
     } catch (error) {
       formik.setFieldValue("reviewerList", []);
@@ -320,7 +320,6 @@ const RegisterPage = () => {
               <option value="eastAfrica">East Africa</option>
               <option value="indonesia">Indonesia</option>
               <option value="eastTimor">East Timor</option>
-
             </Select>
             <FormErrorMessage>{formik.errors.province}</FormErrorMessage>
           </FormControl>
