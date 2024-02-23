@@ -4,7 +4,6 @@ import {
   Box,
   Image,
   Heading,
-  HStack,
   FormControl,
   FormLabel,
   Input,
@@ -20,8 +19,9 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
+import cloudAxios from "../../CloudAxios";
 
-const ViewEI = () => {
+const ReviewEI = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
@@ -41,11 +41,8 @@ const ViewEI = () => {
 
   const [formData, setFormData] = useState({
     ...imageMappings,
-
-    amountApproved:projectData.amount_approved,
-    provincialSuperiorName: projectData.reviewer.name, // Assuming not present in req
-    provincialSuperiorEmail: projectData.reviewer.email ,// Assuming not present in req
-    provincialSuperiorContact: projectData.reviewer.mobile, // Assuming not present in req
+    provincialSuperiorName: "", // Assuming not present in req
+    provincialSuperiorContact: "", // Assuming not present in req
     projectInchargeName: projectData.applicant.name,
     projectInchargeContact: projectData.applicant.mobile, // Assuming not present in req
     projectInchargeEmail: projectData.applicant.email, // Assuming not present in req
@@ -84,8 +81,8 @@ const ViewEI = () => {
     previousMarksPercentage: projectData.previousMarksPercentage || 0, // Assuming 0 as the default value
     presentEducationDetails: projectData.presentEducationDetails || "",
     presentInstitutionDetails: projectData.presentInstitutionDetails || "",
-    educationalAspiration: projectData.educationalAspiration || "", // not present 
-    sustainabilityDetails: projectData.sustainabilityDetails || "", // sustainability 
+    educationalAspiration: projectData.educationalAspiration || "", // not present
+    sustainabilityDetails: projectData.sustainabilityDetails || "", // sustainability
     eligibleForScholarship: projectData.eligibleForScholarship || "",
     expectedScholarshipAmount: projectData.expectedScholarshipAmount || 0, // Assuming 0 as the default value
     familyFinancialContribution: projectData.familyFinancialContribution || 0, // Assuming 0 as the default value
@@ -104,12 +101,9 @@ const ViewEI = () => {
       projectData.project_in_charge_agree.agree || false,
     projectInChargeAgreementDate:
       projectData.project_in_charge_agree.date || "",
-    provincialSuperiorAgreement: projectData.provincial_superior_agree.agree, // Assuming not present in req
-    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date, // Assuming not present in req
-    reviewerComment : projectData.comment_box_provincial_superior,
-    comment: projectData.comment_box_project_coordinator,
-    projectCoordinatorAgreement: projectData.project_coordinator_agree,
-    projectCoordinatorAgreementDate:projectData.project_coordinator_agree.date,
+    provincialSuperiorAgreement: "", // Assuming not present in req
+    provincialSuperiorAgreementDate: "", // Assuming not present in req
+    comment: "", // Assuming not present in req
   });
   console.log(formData);
   // Populate formData from req
@@ -123,46 +117,197 @@ const ViewEI = () => {
     });
   };
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("submit");
-    // Add your form submission logic here
-    try {
-      const req = {
-        projectID: projectData._id,
-        comment_box_project_coordinator: formData.comment,
-        project_coordinator_agree: {
-          agree: formData.projectCoordinatorAgree,
-        },
-        amount_approved: formData.amountApproved,
-      };
-      const res = await authAxios.put("/projects/editapproverEI/", req);
-      console.log(res);
-      if (res.data.success) {
-        showToast(
-          {
-            title: 'Successfully submitted the document' , 
-            duration: '5000'
-          }
-        )
-        setIsSubmitted(true)}
-      else {
+    const handleImageUpload = async (file) => {
+      try {
+        console.log("try");
+        const form = new FormData();
+        form.append("file", file);
+        form.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+        const response = await cloudAxios.post("/", form);
+        const imgData = response.data;
+        return imgData.secure_url;
+      } catch (error) {
         showToast({
-          title: "Error submitting the approved doc",
+          title: "Error uploading image to cloudinary",
           status: "error",
           duration: 5000,
         });
-        console.log(res.data);
       }
-    } catch (e) {
-      console.log(e);
+    };
+
+    const convertImagesToUrls = async (e) => {
+      const image = {};
+
+      try {
+        image.photograph_benificary =
+          (await handleImageUpload(e.target.photographUrl.files[0])) ??
+          imageMappings.photographUrl;
+
+        image.aadhar_img =
+          (await handleImageUpload(e.target.aadharCardCopy.files[0])) ??
+          imageMappings.aadharCardCopy;
+        console.log("image1");
+        image.fee_quotation_from_the_institution_img =
+          (await handleImageUpload(e.target.feeQuotationOriginal.files[0])) ??
+          imageMappings.feeQuotationOriginal;
+        console.log("image2");
+        image.proof_of_scholarship_received_from_government_img = e.target
+          .proof_of_scholarship_recieved_from_government_img
+          ? await handleImageUpload(e.target.scholarshipProof.files[0])
+          : imageMappings.scholarshipProof;
+        image.medical_confirmation_img = e.target.medicalConfirmationOriginal
+          .files[0]
+          ? await handleImageUpload(
+              e.target.medicalConfirmationOriginal.files[0]
+            )
+          : imageMappings.medicalConfirmationOriginal;
+        console.log("image4");
+        image.caste_certificate_img = await handleImageUpload(
+          e.target.casteCertificateCopy.files[0]
+        );
+        console.log("image5");
+        image.affidavit_proof_img = e.target.affidavitProofOriginal.files[0]
+          ? await handleImageUpload(e.target.affidavitProofOriginal.files[0])
+          : "";
+        image.request_letter_img = await handleImageUpload(
+          e.target.requestLetterOriginal.files[0]
+        );
+        console.log("image6");
+        image.death_certificate_img = e.target.deathCertificateCopy.files[0]
+          ? await handleImageUpload(e.target.deathCertificateCopy.files[0])
+          : "";
+        console.log("image7");
+        image.mark_list_of_previous_year = await handleImageUpload(
+          e.target.markListPreviousYear.files[0]
+        );
+        console.log("image8");
+
+        // At this point, the image object contains URLs for all the images
+        return image;
+      } catch (error) {
+        console.log(error);
+        showToast({
+          title: "Error uploading image to cloudinary",
+          description: "error",
+          duration: 5000,
+        });
+        return {}; // Or handle the error as needed in your application
+      }
+    };
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    try {
+      const image = await convertImagesToUrls(e);
+      console.log(image);
+
+      const req = {
+        name: e.target.beneficiaryName.value,
+        mobile: e.target.beneficiaryContact.value,
+        email: e.target.beneficiaryEmail.value,
+        address: e.target.beneficiaryAddress.value,
+        aadhar_no: parseInt(e.target.aadharCardNo.value),
+        gender: e.target.gender.value,
+        DOB: e.target.dob.value,
+        father: e.target.fatherName.value,
+        mother: e.target.motherName.value,
+        mother_tongue: e.target.motherTongue.value,
+        religion: e.target.religion.value,
+        caste: e.target.casteTribe.value,
+        occupation_of_father: e.target.fatherOccupation.value,
+        monthly_income_of_father: parseInt(e.target.fatherMonthlyIncome.value),
+        monthly_income_of_mother: parseInt(e.target.motherMonthlyIncome.value),
+        occupation_of_mother: e.target.motherOccupation.value,
+        motherIs: e.target.motherStatus.value,
+        fatherIs: e.target.fatherStatus.value,
+        grandmother_support: e.target.grandmotherSupport.value,
+        grandfather_support: e.target.grandfatherSupport.value,
+        health_status_of_father: e.target.fatherHealthStatus.value,
+        health_status_of_father_others: e.target.fatherHealthStatusOthers
+          ? e.target.fatherHealthStatusOthers.value
+          : "",
+        health_status_of_mother: e.target.motherHealthStatus.value,
+        health_status_of_mother_others: e.target.motherHealthStatusOthers
+          ? e.target.motherHealthStatusOthers.value
+          : "",
+        residential_status: e.target.residentialStatus?.value ?? "",
+        residential_status_others: e.target.residentialStatusOthers
+          ? e.target.residentialStatusOthers.value
+          : "",
+        family_situation_of_the_beneficiary:
+          e.target.familySituationDetails.value,
+        financialSupportDetails: e.target.financialSupportDetails.value,
+        familyEmploymentDetails: e.target.familyEmploymentDetails.value,
+        previousEducationDetails: e.target.previousEducationDetails.value,
+        previousInstitutionDetails: e.target.previousInstitutionDetails.value,
+        previousMarksPercentage: parseInt(
+          e.target.previousMarksPercentage.value
+        ),
+        presentEducationDetails: e.target.presentEducationDetails.value,
+        presentInstitutionDetails: e.target.presentInstitutionDetails.value,
+        educationalAspiration: e.target.educationalAspiration.value,
+        sustainabilityDetails: e.target.sustainabilityDetails.value,
+        eligibleForScholarship: e.target.eligibleForScholarship.value,
+        expectedScholarshipAmount: parseInt(
+          e.target.expectedScholarshipAmount.value
+        ),
+        familyFinancialContribution: parseInt(
+          e.target.familyFinancialContribution.value
+        ),
+        noFamilySupportReasons: e.target.noFamilySupportReasons.value,
+        presentStudy: e.target.presentStudy.value,
+        budgetDetails: e.target.budgetDetails.value,
+        totalCostOfStudy: parseInt(e.target.totalCostOfStudy.value),
+        scholarshipExpected: parseInt(e.target.scholarshipExpected.value),
+        beneficiaryContribution: parseInt(
+          e.target.beneficiaryContribution.value
+        ),
+        totalScholarshipAndContribution: parseInt(
+          e.target.totalScholarshipAndContribution.value
+        ),
+        balanceAmountRequested: parseInt(e.target.balanceAmountRequested.value),
+        benificary_agree: {
+          agree: true,
+        },
+        project_in_charge_agree: {
+          agree: true,
+        },
+        ...image,
+      };
+
+      console.log(req);
+
+      const res = await authAxios.post("projects/createEI", req);
+      console.log(res.data);
+      setIsLoading(false);
+      if (res.data.success) {
+        showToast({
+          title: "Successfull form submission",
+          duration: 5000,
+          status: "success",
+        });
+      } else {
+        showToast({
+          title: "Unsuccessful form submission",
+          duration: 5000,
+          status: "error",
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
       showToast({
-        title: "Error submitting the approved doc",
-        description: e,
-        status: "error",
+        title: "Unsuccessful form submission",
         duration: 5000,
+        status: "error",
       });
     }
+    // Add your form submission logic here
+    setIsSubmitted(true);
   };
 
   return (
@@ -195,7 +340,7 @@ const ViewEI = () => {
                 name="projectInchargeName"
                 onChange={handleChange}
                 value={formData.projectInchargeName}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -207,7 +352,7 @@ const ViewEI = () => {
                 name="projectInchargeContact"
                 onChange={handleChange}
                 value={formData.projectInchargeContact}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -219,44 +364,7 @@ const ViewEI = () => {
                 name="projectInchargeEmail"
                 onChange={handleChange}
                 value={formData.projectInchargeEmail}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                onChange={handleChange}
-                value={formData.provincialSuperiorName}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                onChange={handleChange}
-                value={formData.provincialSuperiorContact}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorEmail"
-                onChange={handleChange}
-                value={formData.provincialSuperiorEmail}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -294,7 +402,7 @@ const ViewEI = () => {
                 name="beneficiaryName"
                 onChange={handleChange}
                 value={formData.beneficiaryName}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -306,7 +414,7 @@ const ViewEI = () => {
                 name="beneficiaryContact"
                 onChange={handleChange}
                 value={formData.beneficiaryContact}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -318,7 +426,7 @@ const ViewEI = () => {
                 name="beneficiaryEmail"
                 onChange={handleChange}
                 value={formData.beneficiaryEmail}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -329,7 +437,7 @@ const ViewEI = () => {
                 name="beneficiaryAddress"
                 onChange={handleChange}
                 value={formData.beneficiaryAddress}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -341,7 +449,7 @@ const ViewEI = () => {
                 name="aadharCardNo"
                 onChange={handleChange}
                 value={formData.aadharCardNo}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -352,7 +460,7 @@ const ViewEI = () => {
                 name="gender"
                 onChange={handleChange}
                 value={formData.gender}
-                readOnly
+                required
               >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -368,7 +476,7 @@ const ViewEI = () => {
                 name="dob"
                 onChange={handleChange}
                 value={formData.dob}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -380,7 +488,7 @@ const ViewEI = () => {
                 name="fatherName"
                 onChange={handleChange}
                 value={formData.fatherName}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -392,7 +500,7 @@ const ViewEI = () => {
                 name="motherName"
                 onChange={handleChange}
                 value={formData.motherName}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -404,7 +512,7 @@ const ViewEI = () => {
                 name="motherTongue"
                 onChange={handleChange}
                 value={formData.motherTongue}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -416,7 +524,7 @@ const ViewEI = () => {
                 name="religion"
                 onChange={handleChange}
                 value={formData.religion}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -428,7 +536,7 @@ const ViewEI = () => {
                 name="casteTribe"
                 onChange={handleChange}
                 value={formData.casteTribe}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -447,7 +555,7 @@ const ViewEI = () => {
                 name="fatherOccupation"
                 onChange={handleChange}
                 value={formData.fatherOccupation}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -459,7 +567,7 @@ const ViewEI = () => {
                 name="fatherMonthlyIncome"
                 onChange={handleChange}
                 value={formData.fatherMonthlyIncome}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -471,7 +579,7 @@ const ViewEI = () => {
                 name="motherOccupation"
                 onChange={handleChange}
                 value={formData.motherOccupation}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -483,7 +591,7 @@ const ViewEI = () => {
                 name="motherMonthlyIncome"
                 onChange={handleChange}
                 value={formData.motherMonthlyIncome}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -500,7 +608,7 @@ const ViewEI = () => {
                 name="motherStatus"
                 onChange={handleChange}
                 value={formData.motherStatus}
-                readOnly
+                required
               >
                 <option value="healthy">Healthy</option>
                 <option value="sick">Sick</option>
@@ -515,7 +623,7 @@ const ViewEI = () => {
                 name="fatherStatus"
                 onChange={handleChange}
                 value={formData.fatherStatus}
-                readOnly
+                required
               >
                 <option value="healthy">Healthy</option>
                 <option value="sick">Sick</option>
@@ -531,7 +639,7 @@ const ViewEI = () => {
                 name="grandmotherSupport"
                 onChange={handleChange}
                 value={formData.grandmotherSupport}
-                readOnly
+                required
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -546,7 +654,7 @@ const ViewEI = () => {
                 name="grandfatherSupport"
                 onChange={handleChange}
                 value={formData.grandfatherSupport}
-                readOnly
+                required
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -561,7 +669,7 @@ const ViewEI = () => {
                 name="fatherHealthStatus"
                 onChange={handleChange}
                 value={formData.fatherHealthStatus}
-                readOnly
+                required
               >
                 <option value="chronicallySick">Chronically Sick</option>
                 <option value="hivPositive">HIV/AIDS positive</option>
@@ -577,7 +685,7 @@ const ViewEI = () => {
                   onChange={handleChange}
                   placeholder="Specify other health status"
                   value={formData.fatherHealthStatusOthers}
-                  readOnly
+                  required
                 />
               )}
             </FormControl>
@@ -589,7 +697,7 @@ const ViewEI = () => {
                 name="motherHealthStatus"
                 onChange={handleChange}
                 value={formData.motherHealthStatus}
-                readOnly
+                required
               >
                 <option value="chronicallySick">Chronically Sick</option>
                 <option value="hivPositive">HIV/AIDS positive</option>
@@ -605,7 +713,7 @@ const ViewEI = () => {
                   onChange={handleChange}
                   placeholder="Specify other health status"
                   value={formData.motherHealthStatusOthers}
-                  readOnly
+                  required
                 />
               )}
             </FormControl>
@@ -617,7 +725,7 @@ const ViewEI = () => {
                 name="residentialStatus"
                 onChange={handleChange}
                 value={formData.residentialStatus}
-                readOnly
+                required
               >
                 <option value="houseOwner">House Owner</option>
                 <option value="landOwner">Land Owner</option>
@@ -632,7 +740,7 @@ const ViewEI = () => {
                   onChange={handleChange}
                   placeholder="Specify other residential status"
                   value={formData.residentialStatusOthers}
-                  readOnly
+                  required
                 />
               )}
             </FormControl>
@@ -652,7 +760,7 @@ const ViewEI = () => {
                 name="familySituationDetails"
                 onChange={handleChange}
                 value={formData.familySituationDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -666,7 +774,7 @@ const ViewEI = () => {
                 name="financialSupportDetails"
                 onChange={handleChange}
                 value={formData.financialSupportDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -680,7 +788,7 @@ const ViewEI = () => {
                 name="familyEmploymentDetails"
                 onChange={handleChange}
                 value={formData.familyEmploymentDetails}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -696,7 +804,7 @@ const ViewEI = () => {
                 name="previousEducationDetails"
                 onChange={handleChange}
                 value={formData.previousEducationDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -709,7 +817,7 @@ const ViewEI = () => {
                 name="previousInstitutionDetails"
                 onChange={handleChange}
                 value={formData.previousInstitutionDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -721,7 +829,7 @@ const ViewEI = () => {
                 name="previousMarksPercentage"
                 onChange={handleChange}
                 value={formData.previousMarksPercentage}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -732,7 +840,7 @@ const ViewEI = () => {
                 name="presentEducationDetails"
                 onChange={handleChange}
                 value={formData.presentEducationDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -745,7 +853,7 @@ const ViewEI = () => {
                 name="presentInstitutionDetails"
                 onChange={handleChange}
                 value={formData.presentInstitutionDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -757,9 +865,8 @@ const ViewEI = () => {
               </FormLabel>
               <Textarea
                 name="educationalAspiration"
-                readOnly
-                value={formData.educationalAspiration}
                 required
+                value={formData.educationalAspiration}
               />
             </FormControl>
 
@@ -773,7 +880,7 @@ const ViewEI = () => {
                 name="sustainabilityDetails"
                 onChange={handleChange}
                 value={formData.sustainabilityDetails}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -792,7 +899,7 @@ const ViewEI = () => {
                 name="eligibleForScholarship"
                 onChange={handleChange}
                 value={formData.eligibleForScholarship}
-                readOnly
+                required
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -807,7 +914,7 @@ const ViewEI = () => {
                 name="expectedScholarshipAmount"
                 onChange={handleChange}
                 value={formData.expectedScholarshipAmount}
-                readOnly
+                required
                 // required={formData.eligibleForScholarship === "yes"}
                 // disabled={formData.eligibleForScholarship === "no"}
               />
@@ -821,7 +928,7 @@ const ViewEI = () => {
                 name="familyFinancialContribution"
                 onChange={handleChange}
                 value={formData.familyFinancialContribution}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -834,7 +941,7 @@ const ViewEI = () => {
                 name="noFamilySupportReasons"
                 onChange={handleChange}
                 value={formData.noFamilySupportReasons}
-                readOnly
+                required
                 // required={formData.familyFinancialContribution === 0}
                 // disabled={formData.familyFinancialContribution > 0}
               />
@@ -853,7 +960,7 @@ const ViewEI = () => {
                 name="presentStudy"
                 onChange={handleChange}
                 value={formData.presentStudy}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -864,7 +971,7 @@ const ViewEI = () => {
                 name="budgetDetails"
                 onChange={handleChange}
                 value={formData.budgetDetails}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -876,7 +983,7 @@ const ViewEI = () => {
                 name="totalCostOfStudy"
                 onChange={handleChange}
                 value={formData.totalCostOfStudy}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -890,7 +997,7 @@ const ViewEI = () => {
                 name="scholarshipExpected"
                 onChange={handleChange}
                 value={formData.scholarshipExpected}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -902,7 +1009,7 @@ const ViewEI = () => {
                 name="beneficiaryContribution"
                 onChange={handleChange}
                 value={formData.beneficiaryContribution}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -914,7 +1021,7 @@ const ViewEI = () => {
                 name="totalScholarshipAndContribution"
                 onChange={handleChange}
                 value={formData.totalScholarshipAndContribution}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -926,7 +1033,7 @@ const ViewEI = () => {
                 name="balanceAmountRequested"
                 onChange={handleChange}
                 value={formData.balanceAmountRequested}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -1068,7 +1175,7 @@ const ViewEI = () => {
                 name="beneficiaryAgreement"
                 onChange={handleChange}
                 isChecked={formData.beneficiaryAgreement}
-                readOnly
+                required
                 size="lg"
               >
                 The Beneficiary / Family member agree
@@ -1078,7 +1185,7 @@ const ViewEI = () => {
                 name="beneficiaryAgreementDate"
                 onChange={handleChange}
                 value={formData.beneficiaryAgreementDate.substring(0, 10) || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -1089,7 +1196,7 @@ const ViewEI = () => {
                 onChange={handleChange}
                 size="lg"
                 isChecked={formData.projectInChargeAgreement}
-                readOnly
+                required
               >
                 The Project-In-Charge agree
               </Checkbox>
@@ -1100,48 +1207,7 @@ const ViewEI = () => {
                 value={
                   formData.projectInChargeAgreementDate.substring(0, 10) || ""
                 }
-                readOnly
-              />
-            </FormControl>
-            <FormControl>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-                isChecked={formData.provincialSuperiorAgreement}
-                readOnly
-              >
-                The Provincial Superior Agreement
-              </Checkbox>
-              <Input
-                type="date"
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                value={
-                  formData.provincialSuperiorAgreementDate.substring(0, 10) || ""
-                }
-                readOnly
-              />
-            </FormControl>
-
-            <FormControl>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-                isChecked={formData.projectCoordinatorAgreement}
-                readOnly
-              >
-                The Project Coordinator Agreement
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                value={
-                  formData.projectCoordinatorAgreementDate.substring(0, 10) || ""
-                }
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -1151,79 +1217,37 @@ const ViewEI = () => {
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
-                name="reviewerComment"
-                value={formData.reviewerComment}
-                readOnly
-              />
-            </FormControl>
-            <FormControl >
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
                 name="comment"
                 onChange={handleChange}
-                value={formData.comment}
-                readOnly
-              />
-            </FormControl>
-            <FormControl readOnly>
-              <FormLabel>Amount Approved</FormLabel>
-              <Input
-                type="text"
-                name="amountApproved"
-                value={formData.amountApproved}
-                onChange={handleChange}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
-          <Heading as="h2" size="lg" mb={4} textAlign="center">
-                Manual Signatures
-              </Heading>
-          <HStack align="start" spacing={8} mb={8}>            
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h5" size="sm" mb={7} textAlign="center" color="grey">
-                Project Executor
-              </Heading>
-            </Box>
 
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-               Project Applicant
-              </Heading>             
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-                President of Society
-              </Heading>
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-                Sanctioning Authority
-              </Heading>
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4}borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-               Project Co-ordinator
-              </Heading>
-            </Box>
-
-          </HStack>
-          
-          {/* Print Button */}
+          {/* Submit Button */}
           <Button
-              onClick={() => window.print()}
-              colorScheme="blue"
-              type="submit"
-            >
-              Print
-            </Button>
+            mx="3"
+            colorScheme="blue"
+            type="submit"
+            onClick={() => {
+              formData.provincialSuperiorAgreement = true;
+            }}
+          >
+            Accept
+          </Button>
+          <Button
+            colorScheme="red"
+            type="submit"
+            mx={3}
+            onClick={() => {
+              formData.provincialSuperiorAgreement = false;
+            }}
+          >
+            Revert
+          </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ViewEI;
+export default ReviewEI;

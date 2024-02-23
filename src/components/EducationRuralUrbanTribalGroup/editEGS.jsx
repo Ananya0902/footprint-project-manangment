@@ -25,18 +25,18 @@ import authAxios from "../../AuthAxios";
 
 const ReviewEduRUTG = () => {
   const showToast = useToast();
-  const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  const [isLoading, setIsLoading] = useState(true);
+  const projectData = JSON.parse(decodeURIComponent(useParams().project)); // Document 
   console.log(projectData);
   const [formData, setFormData] = useState({
+    projectRegion:
+      projectData.general_information.provincial_superior.ref.nameOfProvince,
     projectTitle: projectData.project_title || "",
     projectInchargeName:
       projectData.general_information.project_incharge.ref.name,
     projectInchargeEmail:
       projectData.general_information.project_incharge.ref.name,
-    projectInchargeAgreement:
-      projectData.general_information.project_incharge.agree,
-    projectInchargeAgreementDate:
-      projectData.general_information.project_incharge.date,
+    projectInchargeAgreement: true,
     presentProjectYear: projectData.present_project_year ?? "",
     projectNumber: projectData.project_number,
     address: projectData.general_information?.full_address ?? "",
@@ -117,48 +117,104 @@ const ReviewEduRUTG = () => {
         })) || [],
       total: projectData.project_summary?.budget?.total || 0,
     },
-    provincialSuperiorAgreement: false,
-    comment: null,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   console.log(formData);
   // Populate formData from req
 
   const handleSubmit = async (e) => {
+    // Send requestBody to the backend
     e.preventDefault();
-    // Add your form submission logic here
+    console.log("inside handle submit");
+
+    const req = {
+      project_title: formData.projectTitle,
+      project_number: formData.projectNumber,
+      general_information: {
+        full_address: formData.address,
+        overall_project_period: formData.overallProjectPeriod,
+        overall_project_budget: parseInt(formData.overallProjectBudget), // Assuming it's a number
+      },
+
+      project_summary: {
+        project_location_geographical_area:
+          formData.projectSummary.projectLocation,
+        work_of_sisters_of_st_anns_in_the_project_area:
+          formData.projectSummary.workOfSisters,
+        general_socio_economic_conditions_of_the_beneficiaries:
+          formData.projectSummary.socioEconomicConditions,
+        problems_identified_and_consequences:
+          formData.projectSummary.identifiedProblems,
+        need_of_the_project: formData.projectSummary.needOfProject,
+
+        target_group: formData.targetGroup.map((target) => ({
+          name: target.name,
+          caste: target.caste,
+          occupation_of_parents: target.occupationOfParents,
+          family_background_and_need_of_support:
+            target.familyBackgroundAndNeedOfSupport,
+          class_of_study_or_name_of_institution:
+            target.classOfStudyOrInstitution,
+          eligibility_of_scholarship_and_expected_amount:
+            target.eligibilityOfScholarshipAndExpectedAmount,
+          contribution_from_family: target.contributionFromFamily,
+        })),
+        solution_analysis_logical_framework: {
+          goal: formData.logicalFramework.goal,
+          objectives: formData.logicalFramework.objectives.map((objective) => ({
+            objective: objective.objective,
+            results_and_outcomes: objective.results.join(","), // Assuming it's a string
+            activities: objective.activities.map((activity) => ({
+              activity: activity.activity,
+              months: activity.months,
+              means_of_verification: activity.verification,
+            })),
+          })),
+        },
+        sustainability: formData.sustainability,
+        monitoring_process_of_the_project: formData.monitoringProcess,
+        mode_of_evaluation: formData.evaluation,
+        budget: {
+          expenses: formData.budget.expenses.map((item) => ({
+            description: item.description,
+            costs: parseInt(item.costs), // Assuming it's a number
+          })),
+          total: parseInt(calculateTotalCosts("cost")) ?? 0, // Should be calculated
+        },
+      },
+    };
+
     try {
-      const req = {
-        project_number: projectData.project_number,
-        comment: formData.comment,
-        agree: formData.provincialSuperiorAgreement,
-      };
-      const res = await authAxios.put("/projects/editEGSReviewer/", req);
-      console.log(res);
+      const res = await authAxios.put("/projects/editEGSApplicant", req);
+      setIsLoading(false);
       if (res.data.success) {
         showToast({
-          title: "Submitted",
-          status: "success",
+          title: "Successful submission",
           duration: 5000,
+          status: "success",
         });
         setIsSubmitted(true);
       } else {
         showToast({
-          title: "Error submitting the reviewed doc",
-          status: "error",
+          title: "Unsuccessful submission",
           duration: 5000,
+          status: "error",
         });
-        console.log(res.data);
       }
+      console.log(res);
     } catch (e) {
       console.log(e);
+
+      setIsLoading(false);
       showToast({
-        title: "Error submitting the reviewed doc",
-        description: e,
-        status: "error",
+        title: "Unsuccessful submission",
         duration: 5000,
+        status: "error",
       });
     }
+
+    // Handle form submission logic here
+    console.log("Form submitted with data:", formData);
   };
 
   const handleChange = (e) => {
@@ -250,22 +306,31 @@ const ReviewEduRUTG = () => {
     setFormData(updatedData);
   };
   const handleBudgetChange = (index, field, value) => {
-    const updatedBudget = [...formData.budget];
-    updatedBudget[index][field] = value;
-    setFormData((prevData) => ({ ...prevData, budget: updatedBudget }));
+    console.log(field, value);
+    const updatedBudgetExpenses = [...formData.budget.expenses];
+
+    updatedBudgetExpenses[index][field] = value;
+    console.log(formData.budget.expenses);
+    setFormData((prevData) => ({
+      ...prevData,
+      budget: { expenses: updatedBudgetExpenses },
+    }));
   };
 
   const handleAddBudgetRow = () => {
-    const updatedBudget = [...formData.budget];
-    updatedBudget.push({
+    const updatedBudgetExpenses = [...formData.budget.expenses];
+    updatedBudgetExpenses.push({
       description: "",
       costs: 0,
     });
-    setFormData((prevData) => ({ ...prevData, budget: updatedBudget }));
+    setFormData((prevData) => ({
+      ...prevData,
+      budget: { expenses: updatedBudgetExpenses },
+    }));
   };
 
   const calculateTotalCosts = (field) => {
-    return formData.budget
+    return formData.budget.expenses
       .reduce((total, row) => total + parseFloat(row[field] || 0), 0)
       .toFixed(2);
   };
@@ -359,41 +424,18 @@ const ReviewEduRUTG = () => {
               <Tbody>
                 {/* Row 1*/}
 
-                {/* Row 2 */}
-                <Tr>
-                  <Td>Project Incharge</Td>
-                  <Td>
-                    <Input
-                      type="text"
-                      name="projectInchargeName"
-                      onChange={handleChange}
-                      value={formData.projectInchargeName || ""}
-                      required
-                    />
-                  </Td>
-                  <Td>
-                    <Input
-                      type="email"
-                      name="projectInchargeEmail"
-                      onChange={handleChange}
-                      value={formData.projectInchargeEmail || ""}
-                      required
-                    />
-                  </Td>
-                </Tr>
-
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
 
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
 
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -599,9 +641,9 @@ const ReviewEduRUTG = () => {
             </Table>
 
             {/* Add Row Button */}
-            {/* <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
+            <Button onClick={handleAddTargetGroupRow} colorScheme="teal">
               Add Row
-            </Button> */}
+            </Button>
 
             {/* Logical Framework */}
 
@@ -612,7 +654,7 @@ const ReviewEduRUTG = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
@@ -716,7 +758,22 @@ const ReviewEduRUTG = () => {
                               <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.months.map((value, monthIndex) => (
-                                  <Checkbox key={monthIndex} isChecked={value}>
+                                  <Checkbox
+                                    key={monthIndex}
+                                    isChecked={value}
+                                    onChange={(e) => {
+                                      setFormData((prevData) => {
+                                        prevData.logicalFramework.objectives[
+                                          index
+                                        ].activities[subIndex].months[
+                                          monthIndex
+                                        ] = !activity.months[monthIndex];
+                                        return {
+                                          ...prevData,
+                                        };
+                                      });
+                                    }}
+                                  >
                                     {new Date(2024, monthIndex).toLocaleString(
                                       "default",
                                       { month: "long" }
@@ -730,21 +787,21 @@ const ReviewEduRUTG = () => {
                       </Tbody>
                     </Table>
 
-                    {/* <Button
+                    <Button
                       onClick={() => handleAddActivity(index)}
                       colorScheme="teal"
                     >
                       Add Activity
-                    </Button> */}
+                    </Button>
                   </FormControl>
 
-                  {/* <Button
+                  <Button
                     onClick={handleAddObjective}
                     colorScheme="purple"
                     ml="auto"
                   >
                     Add Objective
-                  </Button> */}
+                  </Button>
                 </VStack>
               </Box>
             ))}
@@ -802,15 +859,29 @@ const ReviewEduRUTG = () => {
                     <Td>
                       <Input
                         type="text"
-                        name={`budget[${index}].description`}
+                        onChange={(e) =>
+                          handleBudgetChange(
+                            index,
+                            e.target.name,
+                            e.target.value
+                          )
+                        }
+                        name={`description`}
                         value={row.description}
                         required
                       />
                     </Td>
                     <Td>
                       <Input
+                        onChange={(e) =>
+                          handleBudgetChange(
+                            index,
+                            e.target.name,
+                            e.target.value
+                          )
+                        }
                         type="number"
-                        name={`budget[${index}].costs`}
+                        name={`costs`}
                         value={row.costs}
                         required
                       />
@@ -821,62 +892,24 @@ const ReviewEduRUTG = () => {
             </Table>
 
             {/* Add Row Button */}
-            {/* <Button onClick={handleAddBudgetRow} colorScheme="teal">
+            <Button onClick={handleAddBudgetRow} colorScheme="teal">
               Add Expense
-            </Button> */}
+            </Button>
 
             {/* Calculate Total Cost */}
-            {/* <Heading as="h3" size="md" mb={5}>
+            <Heading as="h3" size="md" mb={5}>
               Total Cost: {calculateTotalCosts("costs")}
-            </Heading> */}
+            </Heading>
 
-            {/* Project-In-Charge agreement */}
-            <FormControl>
-              <Checkbox
-                name="projectInChargeAgreement"
-                isChecked={formData.projectInchargeAgreement}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                value={formData.projectInchargeAgreementDate.substring(0, 10)}
-                name="projectInChargeAgreementDate"
-                required
-              />
-            </FormControl>
-
-            {/*Comment(Reviewer) */}
-            <FormControl isRequired>
-              <FormLabel>Comment(Reviewer)</FormLabel>
-              <Textarea
-                name="comment"
-                value={formData.comment}
-                onChange={(e) => handleChange(e)}
-                required
-              />
-            </FormControl>
             <Button
               colorScheme="blue"
               mx={3}
               type="submit"
               onClick={() => {
-                formData.provincialSuperiorAgreement = true;
+                formData.projectInchargeAgreement = true;
               }}
             >
-              Accept
-            </Button>
-            {/* decline  Button */}
-            <Button
-              colorScheme="red"
-              mx={3}
-              type="submit"
-              onClick={() => {
-                formData.provincialSuperiorAgreement = false;
-              }}
-            >
-              Decline
+              Confirm Edit
             </Button>
           </form>
         </VStack>

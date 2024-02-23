@@ -25,6 +25,8 @@ import { useParams } from "react-router-dom";
 
 const EditCG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  // project Data is the document 
+
   console.log(projectData);
 
   // Assuming projectData contains the fetched data from the backend
@@ -144,7 +146,7 @@ const EditCG = () => {
 
     try {
       setIsLoading((prevLoading) => !prevLoading);
-      const response = await authAxios.post("/projects/editCG", req);
+      const response = await authAxios.put("/projects/editCG", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {
@@ -345,16 +347,16 @@ const EditCG = () => {
                 </Tr>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>

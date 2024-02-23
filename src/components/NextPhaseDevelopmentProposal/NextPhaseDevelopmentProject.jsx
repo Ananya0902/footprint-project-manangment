@@ -221,9 +221,9 @@ const NextPhaseForm = () => {
             </Box>
 
             <Heading size="md" mb={6} justifyContent="center" pt="8">
-              Objectives Section
+              Goal and Objective
             </Heading>
-
+          
             <FormControl
               id="goal_and_objectives.project_goal"
               isRequired

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   ChakraProvider,
   Box,
+  HStack,
   Heading,
   FormControl,
   FormLabel,
@@ -729,6 +730,41 @@ const ViewProject = () => {
               />
             </FormControl>
           </VStack>
+          <Heading as="h2" size="lg" mb={4} textAlign="center">
+                Manual Signatures
+              </Heading>
+          <HStack align="start" spacing={8} mb={8}>            
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h5" size="sm" mb={7} textAlign="center" color="grey">
+                Project Executor
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Applicant
+              </Heading>             
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                President of Society
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                Sanctioning Authority
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4}borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Co-ordinator
+              </Heading>
+            </Box>
+
+          </HStack>
 
           {/* Print Button */}
           <Button

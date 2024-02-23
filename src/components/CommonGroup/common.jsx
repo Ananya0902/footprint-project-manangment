@@ -127,7 +127,7 @@ export const Common = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-
+     formData.projectInChargeAgreement=true
     const req = {
       nameOfSociety: formData.NAMEOFTHESOCIETY,
       DateOfSubmission: formData.dATEOFSUBMISSION,
@@ -332,16 +332,16 @@ export const Common = () => {
               <Tbody>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -437,7 +437,7 @@ export const Common = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl isRequired>
               <FormLabel>Goal of the Project</FormLabel>
@@ -619,14 +619,7 @@ export const Common = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreementDate}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
+
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -637,7 +630,8 @@ export const Common = () => {
             </FormControl>
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit"
+          >
             Submit
           </Button>
         </form>

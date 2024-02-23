@@ -27,13 +27,23 @@ const RevertedProjects = () => {
     }
   );
 
+
+  // Individual Projects , Group Projects
+
+  // If the projectCoordinator has not agreed and the comment box is filled 
+  // provincial Superior has not agreed and comment box is filled 
+  // In both of these cases the project shall be counted as reverted 
   const individualFilter = (value) =>
     (!value.project_coordinator_agree.agree &&
       value.comment_box_project_coordinator) ||
     (!value.provincial_superior_agree.agree &&
       value.comment_box_provincial_superior);
 
+
+  // group fiter appr=
   const groupFilterApprover = (approver) => !approver.agree && approver.comment;
+
+
 
   useEffect(() => {
     const getAllProject = async () => {
@@ -118,18 +128,23 @@ const RevertedProjects = () => {
               project: project,
             };
           }),
+          // Get call 
+          // Mongo DB document 
+          // doc.general_information.provincial_superiors
           EGS: getAllEGS
             .filter(
+              // models 
               (value) =>
                 (!value.general_information.provincial_superior.agree &&
                   value.general_information.provincial_superior.comment) ||
+                  // That should not be an empty array -- false 
                 value.general_information.project_coordinators.filter(
                   groupFilterApprover
-                )
+                ) 
             )
             .map((project) => {
               return {
-                id: project.project_code,
+                id: project.project_number,
                 project: project,
               };
             }),

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   ChakraProvider,
   Box,
+  HStack,
   Heading,
   FormControl,
   FormLabel,
@@ -370,16 +371,16 @@ export const ApproveCG = () => {
                 </Tr>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -475,7 +476,7 @@ export const ApproveCG = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
@@ -703,6 +704,7 @@ export const ApproveCG = () => {
                     value={a.ref.name}
                     readOnly
                   />
+                  
           <FormLabel>Comment by Project Coordinator</FormLabel>
 
                   <Input
@@ -744,7 +746,45 @@ export const ApproveCG = () => {
                 readOnly
               />
             </FormControl>
+
+
           </VStack>
+
+          <Heading as="h2" size="lg" mb={4} textAlign="center">
+                Manual Signatures
+              </Heading>
+          <HStack align="start" spacing={8} mb={8}>            
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h5" size="sm" mb={7} textAlign="center" color="grey">
+                Project Executor
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Applicant
+              </Heading>             
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                President of Society
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                Sanctioning Authority
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4}borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Co-ordinator
+              </Heading>
+            </Box>
+
+          </HStack>
            {/* Print Button */}
            <Button
               onClick={() => window.print()}

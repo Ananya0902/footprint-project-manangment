@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  HStack,
   Textarea,
   Select,
   Checkbox,
@@ -415,7 +416,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="beneficiaryAgreementDate"
-                  value={formData.benificiaryAgreeDate.substring(0, 10)}
+                  value={formData.benificiaryAgreeDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -431,7 +432,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="projectInChargeAgree"
-                  value={formData.projectInChargeAgreementDate.substring(0, 10)}
+                  value={formData.projectInChargeAgreementDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -446,7 +447,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="provincialSuperiorAgrementDate"
-                  value={formData.provincialSuperiorAgreeDate.substring(0, 10)}
+                  value={formData.provincialSuperiorAgreeDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -486,7 +487,7 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="projectCoordinatorAgrementDate"
-                  value={formData.projectCoordinatorAgreeDate.substring(0, 10)}
+                  value={formData.projectCoordinatorAgreeDate?.substring(0, 10)}
                   readOnly
                 />
               </FormControl>
@@ -525,6 +526,41 @@ const ViewSI = () => {
               </FormControl>
             </VStack>
           </VStack>
+          <Heading as="h2" size="lg" mb={4} textAlign="center">
+                Manual Signatures
+              </Heading>
+          <HStack align="start" spacing={8} mb={8}>            
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h5" size="sm" mb={7} textAlign="center" color="grey">
+                Project Executor
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Applicant
+              </Heading>             
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                President of Society
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                Sanctioning Authority
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4}borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Co-ordinator
+              </Heading>
+            </Box>
+
+          </HStack>
 
            {/* Print Button */}
            <Button

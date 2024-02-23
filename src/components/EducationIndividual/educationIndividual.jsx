@@ -24,8 +24,11 @@ import {
 } from "@chakra-ui/react";
 import cloudAxios from "../../CloudAxios";
 import authAxios from "../../AuthAxios";
+import {useParams} from 'react-router-dom'; 
+
 
 const EducationIndividual = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();

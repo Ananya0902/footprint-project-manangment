@@ -167,7 +167,7 @@ const RegisterPage = () => {
   const getReviewerByZone = async (zone) => {
     // zone = north east central
     try {
-      console.log("Value : ", zone);
+
       const response = await authAxios.get(`/users/allreviewer/${zone}`);
       const simplifiedReviewers = response.data.reviewers.map((reviewer) => ({
         id: reviewer._id,
@@ -176,7 +176,7 @@ const RegisterPage = () => {
       console.log(response.data);
       console.log("data:", response.data.reviewers);
       formik.setFieldValue("reviewer", "");
-      console.log(simplifiedReviewers);
+      console.log('reviewers'  , simplifiedReviewers);
       formik.setFieldValue("reviewerList", simplifiedReviewers);
     } catch (error) {
       formik.setFieldValue("reviewerList", []);
@@ -313,7 +313,7 @@ const RegisterPage = () => {
               Province
             </FormLabel>
             <Select {...formik.getFieldProps("province")} placeholder="Select">
-              <option value="visakhapatanam">Visakhapatanam</option>
+              <option value="Visakhapatanam">Visakhapatanam</option>
               <option value="bangalore">Bangalore</option>
               <option value="vijaywada">Vijaywada</option>
               <option value="generalate">Generalate</option>

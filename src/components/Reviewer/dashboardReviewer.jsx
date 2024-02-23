@@ -83,10 +83,35 @@ const DashboardReviewer = () => {
             textAlign="center"
           >
             <Heading size="md" mb={4} color="blue.500">
-              Verify Applicant
+              All Applicants Under Me
             </Heading>
             <Text fontSize="md" color="gray.600">
-              Verify and approve applicant information.
+              Find All the appplicants in your province 
+            </Text>
+            <Button
+              as={Link}
+              to="/allApplicantsReviewer"
+              colorScheme="blue"
+              mt={4}
+              borderRadius="full"
+            >
+              All Applicants
+            </Button>
+          </Box>
+          {/* Verify Applicant Box */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="lg"
+            boxShadow="md"
+            width="100%"
+            textAlign="center"
+          >
+            <Heading size="md" mb={4} color="blue.500">
+              Verify Applicants
+            </Heading>
+            <Text fontSize="md" color="gray.600">
+              Verify All the applicants  
             </Text>
             <Button
               as={Link}

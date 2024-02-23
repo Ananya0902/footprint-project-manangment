@@ -53,7 +53,7 @@ const ApproveProjects = () => {
 
   const individualFilter = (value) =>
     value.comment_box_project_coordinator === null &&
-    value.provincial_superior_agree.agree;
+    value.provincial_superior_agree.agree && value.project_coordinator_agree;
 
   useEffect(() => {
     const getAllProject = async () => {

@@ -248,7 +248,7 @@ export const InstitutionalSkillTrainingForm = () => {
               <Tr key={index}>
                 <Td>
                   <Input
-                    type="number"
+                    type="text"
                     value={row.budget}
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
@@ -333,7 +333,7 @@ export const InstitutionalSkillTrainingForm = () => {
             </FormControl>
             {/* ADDRESS */}
             <FormControl isRequired>
-              <FormLabel>ADDRESS</FormLabel>
+              <FormLabel>Area of Operation</FormLabel>
               <Input
                 type="text"
                 name="basicInformation.address"
