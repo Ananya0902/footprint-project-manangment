@@ -23,7 +23,7 @@ import {
 import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
-const ReviewEduRUTG = () => {
+const EditEduRUTG = () => {
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const projectData = JSON.parse(decodeURIComponent(useParams().project)); // Document 
@@ -919,4 +919,4 @@ const ReviewEduRUTG = () => {
   );
 };
 
-export default ReviewEduRUTG;
+export default EditEduRUTG;

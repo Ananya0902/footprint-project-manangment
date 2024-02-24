@@ -18,21 +18,23 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
+import cloudAxios from "../../CloudAxios";
 
-const ApproveEIO = () => {
+const EditEIO = () => {
   const showToast = useToast();
 
+  const handleImageChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.files[0],
+    });
+  };
+
+
+
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
-  const projectInchargeData = projectData.applicant;
-  const provincialSuperiorData = projectData.reviewer;
   const [formData, setFormData] = useState({
     // Name and contact of Provincial Superior
-    provincialSuperiorName: provincialSuperiorData.name,
-    provincialSuperiorEmail: provincialSuperiorData.email,
-    provincialSuperiorContact: provincialSuperiorData.mobile,
-    projectInchargeName: projectInchargeData.name,
-    projectInchargeEmail: projectInchargeData.email,
-    projectInchargeContact: projectInchargeData.mobile,
     photographUrl: projectData.photograph_benificary,
     beneficiaryName: projectData.name,
     beneficiaryContact: projectData.mobile,
@@ -79,7 +81,7 @@ const ApproveEIO = () => {
     affidavitProofUrl: projectData.affidavit_proof_img,
     requestLetterUrl: projectData.request_letter_img,
     deathCertificateUrl: projectData.death_certificate_img,
-    markListPreviousYearUrl: projectData.mark_list_of_previous_year,
+    markListPreviousYear: projectData.mark_list_of_previous_year,
     casteCertificateUrl: projectData.caste_certificate_img,
     beneficiaryAgreement: projectData.benificary_agree.agree,
     beneficiaryAgreementDate: projectData.benificary_agree.date,
@@ -92,9 +94,6 @@ const ApproveEIO = () => {
     beneficiaryContribution: projectData.beneficiaries_contribution,
     totalScholarshipAndContribution: projectData.total_scholarship_contribution,
     balanceAmountRequested: projectData.balance_amount_requested,
-    provincialSuperiorAgreement: projectData.provincial_superior_agree.agree,
-    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date,
-    commentReviewer: projectData.comment_box_provincial_superior,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -106,16 +105,127 @@ const ApproveEIO = () => {
   };
 
   const handleSubmit = async (e) => {
+
+
+    const handleImageUpload = async (file) => {
+      try {
+        console.log("try");
+        const form = new FormData();
+        form.append("file", file);
+        form.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+        const response = await cloudAxios.post("/", form);
+        const imgData = response.data;
+        return imgData.secure_url;
+      } catch (error) {
+        showToast({
+          title: "Error uploading image to cloudinary",
+          status: "error",
+          duration: 5000,
+        });
+      }
+    };
+
+
+
     e.preventDefault();
     try {
+      const image = {}
+      image.photograph_benificary =
+      formData.photographUrl instanceof File
+        ? await handleImageUpload(formData.photographUrl)
+        : formData.photographUrl;
+    image.aadhar_img =
+      formData.aadharCardUrl instanceof File
+        ? await handleImageUpload(formData.aadharCardUrl)
+        : formData.aadharCardUrl;
+    image.fee_quotation_from_the_institution_img =
+
+      formData.feeQuotationUrl instanceof File
+        ? await handleImageUpload(formData.a)
+        : formData.feeQuotationUrl;
+    image.proof_of_scholarship_received_from_government_img =
+      formData.scholarshipProofUrl instanceof File
+        ? await handleImageUpload(formData.scholarshipProofUrl)
+        : formData.scholarshipProofUrl;
+    image.medical_confirmation_img =
+      formData.medicalConfirmationUrl instanceof File
+        ? await handleImageUpload(formData.medicalConfirmationUrl)
+        : formData.medicalConfirmationUrl;
+    image.caste_certificate_img =
+      formData.casteCertificateUrl instanceof File
+        ? await handleImageUpload(formData.casteCertificateUrl)
+        : formData.casteCertificateUrl;
+    image.affidavit_proof_img =
+      formData.affidavitProofUrl instanceof File
+        ? await handleImageUpload(formData.affidavitProofUrl)
+        : formData.affidavitProofUrl;
+    image.request_letter_img =
+      formData.requestLetterUrl instanceof File
+        ? await handleImageUpload(formData.requestLetterUrl)
+        : formData.requestLetterUrl;
+    image.death_certificate_img =
+      formData.deathCertificateUrl instanceof File
+        ? await handleImageUpload(formData.deathCertificateUrl)
+        : formData.deathCertificateUrl;
+    image.mark_list_of_previous_year =
+      formData.markListPreviousYear instanceof File
+        ? await handleImageUpload(formData.markListPreviousYear)
+        : formData.markListPreviousYear;
+
       const req = {
-        projectID: projectData._id,
-        comment_box_project_coordinator: e.target.commentApprover.value,
-        project_coordinator_agree: {
-          agree: e.target.projectCoordinatorAgreement.checked,
+        photograph_benificary: formData.photographUrl , 
+        name : formData.beneficiaryName,
+        mobile:formData.beneficiaryContact , 
+        address: formData.beneficiaryAddress , 
+        aadhar_no: formData.aadharCardNo,
+        gender: formData.gender , 
+        DOB : formData.dob , 
+        father: formData.fatherName , 
+        mother: formData.motherName, 
+        mother_tongue: formData.motherTongue, 
+        religion: formData.religion , 
+        caste: formData.casteTribe , 
+        occupation_of_father: formData.fatherOccupation, 
+        monthly_income_of_father : formData.fatherMonthlyIncome,
+        occupation_of_mother: formData.motherOccupation,
+        motherIs : formData.motherStatus , 
+        fatherIs: formData.fatherStatus,
+        grandmother_support: formData.grandmotherSupport , 
+        grandfather_support: formData.grandfatherSupport , 
+        health_status_of_father : formData.fatherHealthStatus, 
+        health_status_of_father_others : formData.fatherHealthStatusOthers, 
+        health_status_of_mother: formData.motherHealthStatus ,
+        health_status_of_mother_others: formData.motherHealthStatusOthers,
+        residential_status : formData.residentialStatus , 
+        residential_status_others : formData.residentialStatusOthers ,
+        family_situation_of_the_beneficiary: formData.familySituationPresent , 
+        extra_curricular_activities_participated: formData.extraCurricularActivities,
+        nature_of_personality_growth_visible: formData.personalityGrowth ,
+        Scholarship_received_from_government : formData.scholarshipAmount , 
+        expenses_from_family_of_the_beneficiary : formData.familyContribution , 
+        other_support_received_from_other_sources : formData.otherSupportReceived , 
+        total_amount : formData.totalAmount , 
+        amount_spent_from_project : formData.amountSpentFromProject ,
+        total_amount_already_spent_on_the_studies : formData.totalAmountSpentOnStudies , 
+        balance_amount_retained : formData.balanceAmountRetained , 
+        balance_amount_requested : formData.balanceAmountRequested , 
+        beneficiary_agree : {
+          agree: true , 
+          date : Date.now() 
+        } ,
+        project_in_charge_agree : {
+          agree : true , 
+          date : Date.now() , 
         },
-        amount_approved_project_coordinator:
-          e.target.amountApprovedByProjectCoordinator.value,
+        ...image , 
+        comment_box_project_coordinator : null , 
+        comment_box_provincial_superior :null , 
+        present_study : formData.presentStudy , 
+        details_of_budget : formData.detailsOfBudget , 
+        total_cost_of_study : formData.totalCostOfStudy , 
+        scholarship_expected : formData.scholarshipExpected , 
+        beneficiaries_contribution : formData.beneficiaryContribution , 
+        total_scholarship_contribution : formData.totalScholarshipAndContribution , 
       };
       const res = await authAxios.put("/projects/editapproverEOI/", req);
       if (res.data.success) setIsSubmitted(true);
@@ -165,79 +275,6 @@ const ApproveEIO = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Provincial Superior */}
-            <FormControl>
-              <FormLabel>Name of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                onChange={handleChange}
-                value={formData.provincialSuperiorName || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Provincial Superior */}
-            <FormControl>
-              <FormLabel>Contact of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                onChange={handleChange}
-                value={formData.provincialSuperiorContact || ""}
-                readOnly
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Email of Provincial Superior</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorEmail"
-                onChange={handleChange}
-                value={formData.provincialSuperiorEmail || ""}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeName"
-                onChange={handleChange}
-                value={formData.projectInchargeName || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeContact"
-                onChange={handleChange}
-                value={formData.projectInchargeContact || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of Project Incharge</FormLabel>
-              <Input
-                type="email"
-                name="projectInchargeEmail"
-                onChange={handleChange}
-                value={formData.projectInchargeEmail || ""}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
 
           <VStack align="start" spacing={4} mb={8}>
             {/*Personal Information of the Beneficiary */}
@@ -248,17 +285,33 @@ const ApproveEIO = () => {
             <FormControl>
               <FormLabel>Photograph</FormLabel>
               <Box>
-                {formData.photographFile && (
+                {formData.photographUrl && (
                   <Box>
                     <strong>Uploaded File:</strong>{" "}
-                    {formData.photographFile.name}
+                    {formData.photographUrl?.name ??
+                      formData.photographUrl.split("/")[
+                        formData.photographUrl.split("/").length - 1
+                      ]}
                   </Box>
                 )}
                 <Image
-                  fit="cover"
-                  alt="Photograph"
-                  src={formData.photographUrl}
                   boxSize="40%"
+                  src={
+                    // Determine if formData.photographUrl is a fake path or a URL and if a fake path convert into file
+                    formData.photographUrl instanceof File
+                      ? URL.createObjectURL(formData.photographUrl)
+                      : formData.photographUrl
+                  }
+                  alt="Beneficiary Image"
+                  mx="auto"
+                  fit="contain"
+                />
+                {/* component to upload image */}
+                <Input
+                  type="file"
+                  name="photographUrl"
+                  onChange={handleImageChange}
+                  accept="image/*"
                 />
               </Box>
             </FormControl>
@@ -271,7 +324,7 @@ const ApproveEIO = () => {
                 name="beneficiaryName"
                 onChange={handleChange}
                 value={formData.beneficiaryName || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -283,7 +336,7 @@ const ApproveEIO = () => {
                 name="beneficiaryContact"
                 onChange={handleChange}
                 value={formData.beneficiaryContact || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -295,7 +348,7 @@ const ApproveEIO = () => {
                 name="beneficiaryEmail"
                 onChange={handleChange}
                 value={formData.beneficiaryEmail || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -306,7 +359,7 @@ const ApproveEIO = () => {
                 name="beneficiaryAddress"
                 onChange={handleChange}
                 value={formData.beneficiaryAddress || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -318,7 +371,7 @@ const ApproveEIO = () => {
                 name="aadharCardNo"
                 onChange={handleChange}
                 value={formData.aadharCardNo || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -329,7 +382,7 @@ const ApproveEIO = () => {
                 name="gender"
                 onChange={handleChange}
                 value={formData.gender || ""}
-                readOnly
+                required
               >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -345,7 +398,7 @@ const ApproveEIO = () => {
                 name="dob"
                 onChange={handleChange}
                 value={formData.dob || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -357,7 +410,7 @@ const ApproveEIO = () => {
                 name="fatherName"
                 onChange={handleChange}
                 value={formData.fatherName || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -369,7 +422,7 @@ const ApproveEIO = () => {
                 name="motherName"
                 onChange={handleChange}
                 value={formData.motherName || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -381,7 +434,7 @@ const ApproveEIO = () => {
                 name="motherTongue"
                 onChange={handleChange}
                 value={formData.motherTongue || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -393,7 +446,7 @@ const ApproveEIO = () => {
                 name="religion"
                 onChange={handleChange}
                 value={formData.religion || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -405,7 +458,7 @@ const ApproveEIO = () => {
                 name="casteTribe"
                 onChange={handleChange}
                 value={formData.casteTribe || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -424,7 +477,7 @@ const ApproveEIO = () => {
                 name="fatherOccupation"
                 onChange={handleChange}
                 value={formData.fatherOccupation || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -436,7 +489,7 @@ const ApproveEIO = () => {
                 name="fatherMonthlyIncome"
                 onChange={handleChange}
                 value={formData.fatherMonthlyIncome || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -448,7 +501,7 @@ const ApproveEIO = () => {
                 name="motherOccupation"
                 onChange={handleChange}
                 value={formData.motherOccupation || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -460,7 +513,7 @@ const ApproveEIO = () => {
                 name="motherMonthlyIncome"
                 onChange={handleChange}
                 value={formData.motherMonthlyIncome || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -478,7 +531,7 @@ const ApproveEIO = () => {
                 name="motherStatus"
                 onChange={handleChange}
                 value={formData.motherStatus || ""}
-                readOnly
+                required
               >
                 <option value="healthy">Healthy</option>
                 <option value="sick">Sick</option>
@@ -493,7 +546,7 @@ const ApproveEIO = () => {
                 name="fatherStatus"
                 onChange={handleChange}
                 value={formData.fatherStatus || ""}
-                readOnly
+                required
               >
                 <option value="healthy">Healthy</option>
                 <option value="sick">Sick</option>
@@ -509,7 +562,7 @@ const ApproveEIO = () => {
                 name="grandmotherSupport"
                 onChange={handleChange}
                 value={formData.grandmotherSupport || ""}
-                readOnly
+                required
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -524,7 +577,7 @@ const ApproveEIO = () => {
                 name="grandfatherSupport"
                 onChange={handleChange}
                 value={formData.grandfatherSupport || ""}
-                readOnly
+                required
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -539,7 +592,7 @@ const ApproveEIO = () => {
                 name="fatherHealthStatus"
                 onChange={handleChange}
                 value={formData.fatherHealthStatus || ""}
-                readOnly
+                required
               >
                 <option value="chronicallySick">Chronically Sick</option>
                 <option value="hivPositive">HIV/AIDS positive</option>
@@ -555,7 +608,7 @@ const ApproveEIO = () => {
                   onChange={handleChange}
                   placeholder="Specify other health status"
                   value={formData.fatherHealthStatusOthers || ""}
-                  readOnly
+                  required
                 />
               )}
             </FormControl>
@@ -567,7 +620,7 @@ const ApproveEIO = () => {
                 name="motherHealthStatus"
                 onChange={handleChange}
                 value={formData.motherHealthStatus || ""}
-                readOnly
+                required
               >
                 <option value="chronicallySick">Chronically Sick</option>
                 <option value="hivPositive">HIV/AIDS positive</option>
@@ -583,7 +636,7 @@ const ApproveEIO = () => {
                   onChange={handleChange}
                   placeholder="Specify other health status"
                   value={formData.motherHealthStatusOthers || ""}
-                  readOnly
+                  required
                 />
               )}
             </FormControl>
@@ -595,7 +648,7 @@ const ApproveEIO = () => {
                 name="residentialStatus"
                 onChange={handleChange}
                 value={formData.residentialStatus || ""}
-                readOnly
+                required
               >
                 <option value="houseOwner">House Owner</option>
                 <option value="landOwner">Land Owner</option>
@@ -610,7 +663,7 @@ const ApproveEIO = () => {
                   onChange={handleChange}
                   placeholder="Specify other residential status"
                   value={formData.residentialStatusOthers || ""}
-                  readOnly
+                  required
                 />
               )}
             </FormControl>
@@ -623,7 +676,7 @@ const ApproveEIO = () => {
                 name="familySituationPresent"
                 onChange={handleChange}
                 value={formData.familySituationPresent || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -637,7 +690,7 @@ const ApproveEIO = () => {
                 name="previousYearMarks"
                 onChange={handleChange}
                 value={formData.previousYearMarks || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -647,7 +700,7 @@ const ApproveEIO = () => {
                 name="extraCurricularActivities"
                 onChange={handleChange}
                 value={formData.extraCurricularActivities || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -657,7 +710,7 @@ const ApproveEIO = () => {
                 name="personalityGrowth"
                 onChange={handleChange}
                 value={formData.personalityGrowth || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -679,7 +732,7 @@ const ApproveEIO = () => {
                 name="scholarshipAmount"
                 onChange={handleChange}
                 value={formData.scholarshipAmount || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -693,7 +746,7 @@ const ApproveEIO = () => {
                 name="familyContribution"
                 onChange={handleChange}
                 value={formData.familyContribution || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -706,7 +759,7 @@ const ApproveEIO = () => {
                 name="otherSupportReceived"
                 onChange={handleChange}
                 value={formData.otherSupportReceived || ""}
-                readOnly
+                required
               >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -721,7 +774,7 @@ const ApproveEIO = () => {
                 name="totalAmount"
                 onChange={handleChange}
                 value={formData.totalAmount || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -733,7 +786,7 @@ const ApproveEIO = () => {
                 name="amountSpentFromProject"
                 onChange={handleChange}
                 value={formData.amountSpentFromProject || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -745,7 +798,7 @@ const ApproveEIO = () => {
                 name="totalAmountSpentOnStudies"
                 onChange={handleChange}
                 value={formData.totalAmountSpentOnStudies || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -757,7 +810,7 @@ const ApproveEIO = () => {
                 name="balanceAmountRetained"
                 onChange={handleChange}
                 value={formData.balanceAmountRetained || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -775,7 +828,7 @@ const ApproveEIO = () => {
                 name="presentStudy"
                 onChange={handleChange}
                 value={formData.presentStudy || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -786,7 +839,7 @@ const ApproveEIO = () => {
                 name="budgetDetails"
                 onChange={handleChange}
                 value={formData.budgetDetails || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -798,7 +851,7 @@ const ApproveEIO = () => {
                 name="totalCostOfStudy"
                 onChange={handleChange}
                 value={formData.totalCostOfStudy || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -812,7 +865,7 @@ const ApproveEIO = () => {
                 name="scholarshipExpected"
                 onChange={handleChange}
                 value={formData.scholarshipExpected || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -824,7 +877,7 @@ const ApproveEIO = () => {
                 name="beneficiaryContribution"
                 onChange={handleChange}
                 value={formData.beneficiaryContribution || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -836,7 +889,7 @@ const ApproveEIO = () => {
                 name="totalScholarshipAndContribution"
                 onChange={handleChange}
                 value={formData.totalScholarshipAndContribution || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -848,7 +901,7 @@ const ApproveEIO = () => {
                 name="balanceAmountRequested"
                 onChange={handleChange}
                 value={formData.balanceAmountRequested || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -860,19 +913,31 @@ const ApproveEIO = () => {
             </Heading>
 
             {/* Aadhar Card (True Copy) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Aadhar Card (True Copy)</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.aadharCardUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.aadharCardUrl instanceof File
+                    ? URL.createObjectURL(formData.aadharCardUrl)
+                    : formData.aadharCardUrl
+                }
+                alt="Aadhar Card"
+              />
+              {/* component to upload image */}
+              <Input
+                required={false}
+                type="file"
+                name="aadharCardUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Fee Quotation from the Institution (Original) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Fee Quotation from the Institution (Original)
               </FormLabel>
@@ -880,13 +945,27 @@ const ApproveEIO = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.feeQuotationUrl}
-                alt="Dan Abramov"
+                src={
+                  // formData.feeQuotationUrl is not instance of file we get file after doing .files[0]
+
+                  formData.feeQuotationUrl instanceof File
+                    ? URL.createObjectURL(formData.feeQuotationUrl)
+                    : formData.feeQuotationUrl
+                }
+                alt="Fee Quotation from the Institution"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="feeQuotationUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Proof of Scholarship Received from Government */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Proof of Scholarship Received from Government
               </FormLabel>
@@ -894,8 +973,20 @@ const ApproveEIO = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.scholarshipProofUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.scholarshipProofUrl instanceof File
+                    ? URL.createObjectURL(formData.scholarshipProofUrl)
+                    : formData.scholarshipProofUrl
+                }
+                alt="Scholarship Proof"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="scholarshipProofUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -909,20 +1000,44 @@ const ApproveEIO = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.medicalConfirmationUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.medicalConfirmationUrl instanceof File
+                    ? URL.createObjectURL(formData.medicalConfirmationUrl)
+                    : formData.medicalConfirmationUrl
+                }
+                alt="Medical Confirmation"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="medicalConfirmationUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Caste Certificate (True Copy) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Caste Certificate (True Copy)</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.casteCertificateUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.casteCertificateUrl instanceof File
+                    ? URL.createObjectURL(formData.casteCertificateUrl)
+                    : formData.casteCertificateUrl
+                }
+                alt="Caste Certificate"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="casteCertificateUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -935,20 +1050,44 @@ const ApproveEIO = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.affidavitProofUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.affidavitProofUrl instanceof File
+                    ? URL.createObjectURL(formData.affidavitProofUrl)
+                    : formData.affidavitProofUrl
+                }
+                alt="Affidavit Proof"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="affidavitProofUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Request Letter (Original Copy) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Request Letter (Original Copy)</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.requestLetterUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.requestLetterUrl instanceof File
+                    ? URL.createObjectURL(formData.requestLetterUrl)
+                    : formData.requestLetterUrl
+                }
+                alt="Request Letter"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="requestLetterUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -961,152 +1100,44 @@ const ApproveEIO = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.deathCertificateUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.deathCertificateUrl instanceof File
+                    ? URL.createObjectURL(formData.deathCertificateUrl)
+                    : formData.deathCertificateUrl
+                }
+                alt="Death Certificate"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="deathCertificateUrl"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Mark List of Previous Year */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Mark List of Previous Year</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.markListPreviousYearUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.markListPreviousYear instanceof File
+                    ? URL.createObjectURL(formData.markListPreviousYear)
+                    : formData.markListPreviousYear
+                }
+                alt="Mark List of Previous Year"
               />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-            {/* Beneficiary / Family member agreement */}
-            <FormControl>
-              <Checkbox
-                name="beneficiaryAgreement"
-                onChange={handleChange}
-                isChecked={formData.beneficiaryAgreement}
-                readOnly
-                size="lg"
-              >
-                The Beneficiary / Family member agree
-              </Checkbox>
+              {/* component to upload image */}
               <Input
-                type="date"
-                name="beneficiaryAgreementDate"
-                onChange={handleChange}
-                value={formData.beneficiaryAgreementDate.substring(0, 10) || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-                value={formData.projectInChargeAgreement || ""}
-                readOnly
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-            </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-                isChecked={formData.projectInChargeAgreement}
-                readOnly
-              >
-                The Project Incharge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreementDate.substring(0, 10)}
-                readOnly
-              />
-            </FormControl>
-            <FormControl>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-                isChecked={formData.provincialSuperiorAgreement}
-                readOnly
-              >
-                The Provincial Superior agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                value={formData.provincialSuperiorAgreementDate.substring(
-                  0,
-                  10
-                )}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Comment for reviewer */}
-            <FormControl>
-              <FormLabel>Comment(For Reviewer)</FormLabel>
-              <Input
-                type="text"
-                name="commentReviewer"
-                onChange={handleChange}
-                value={formData.commentReviewer || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Comment for approver */}
-            <FormControl isRequired>
-              <FormLabel>Comment(For Approver)</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-
-            {/* Amount Approved by Project Coordinator */}
-            <FormControl isRequired>
-              <FormLabel>Amount Approved by Project Coordinator</FormLabel>
-              <Input
-                type="number"
-                name="amountApprovedByProjectCoordinator"
-                onChange={handleChange}
-                required
+                type="file"
+                required={false}
+                name="markListPreviousYear"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
           </VStack>
@@ -1120,4 +1151,4 @@ const ApproveEIO = () => {
     </ChakraProvider>
   );
 };
-export default ApproveEIO;
+export default EditEIO;

@@ -401,7 +401,312 @@ const EditWHCG = () => {
     e.preventDefault();
     console.log("submit");
     try {
-      const res = await authAxios.put("/projects/editWHFCReviewer", {
+      const req = {
+        project_title: formData.projectTitle,
+        general_information: {
+          project_region: formData.projectRegion,
+          institution_name: formData.institutionName,
+          overall_project_period: formData.overallProjectPeriod,
+          overall_project_budget: formData.overallProjectBudget,
+        },
+        mailing_list: {
+          president_of_the_society: {
+            name: formData.presidentOfSocietyName,
+            email: formData.presidentOfSocietyEmail,
+          },
+        },
+        key_information: {
+          goal_purpose_of_institution: {
+            goal_and_purpose: formData.goalOfInstitution,
+            rational: formData.rational,
+          },
+          statistics_of_passed_out_rehabilitated_children: [
+            {
+              description: "Total number of children in the institution",
+              previous_year: formData.totalChildren.previousYear,
+              present_year: formData.totalChildren.presentYear,
+            },
+            {
+              description:
+                "Children who are rehabilitated with their guardians/parents",
+              previous_year: formData.rehabilitatedWithGuardians.previousYear,
+              present_year: formData.rehabilitatedWithGuardians.presentYear,
+            },
+            {
+              description: "Children who are shifted to other NGOs / Govt",
+              previous_year: formData.shiftedToOtherNGOs.previousYear,
+              present_year: formData.shiftedToOtherNGOs.presentYear,
+            },
+            {
+              description: "Children who are pursuing higher studies outside",
+              previous_year: formData.pursuingHigherStudies.previousYear,
+              present_year: formData.pursuingHigherStudies.presentYear,
+            },
+            {
+              description:
+                "Children who completed the studies and settled down in life (i.e. married etc.)",
+              previous_year: formData.settledInLife.previousYear,
+              present_year: formData.settledInLife.presentYear,
+            },
+            {
+              description: "Children who are now settled and working",
+              previous_year: formData.settledAndWorking.previousYear,
+              present_year: formData.settledAndWorking.presentYear,
+            },
+            {
+              description: "Any other category kindly mention",
+              previous_year: formData.otherCategory.previousYear,
+              present_year: formData.otherCategory.presentYear,
+            },
+          ],
+          age_profile_of_children_and_youth: [
+            {
+              age_category: "Children below 5 years",
+              education: "Bridge education",
+              present_academic_year: formData.bridgeEducationPresentYear,
+              previous_year: formData.bridgeEducationPreviousYear,
+            },
+            {
+              age_category: "Children below 5 years",
+              education: "Kindergarten",
+              present_academic_year: formData.kindergartenPresentYear,
+              previous_year: formData.kindergartenPreviousYear,
+            },
+            {
+              age_category: "Children below 5 years",
+              education: "Other",
+              present_academic_year: formData.otherEducationPresentYear,
+              previous_year: formData.otherEducationPreviousYear,
+            },
+            {
+              age_category: "Children between 6 to 10 years",
+              education: "Bridge School",
+              present_academic_year: formData.bridgeSchoolPresentYear,
+              previous_year: formData.bridgeSchoolPreviousYear,
+            },
+            {
+              age_category: "Children between 6 to 10 years",
+              education: "Primary School",
+              present_academic_year: formData.primarySchoolPresentYear,
+              previous_year: formData.primarySchoolPreviousYear,
+            },
+            {
+              age_category: "Children between 6 to 10 years",
+              education: "Other",
+              present_academic_year: formData.otherEducation610PresentYear,
+              previous_year: formData.otherEducation610PreviousYear,
+            },
+            {
+              age_category: "Youth between 11 to 15 years old",
+              education: "Secondary School",
+              present_academic_year: formData.secondarySchoolPresentYear,
+              previous_year: formData.secondarySchoolPreviousYear,
+            },
+            {
+              age_category: "Youth between 11 to 15 years old",
+              education: "High School",
+              present_academic_year: formData.highSchoolPresentYear,
+              previous_year: formData.highSchoolPreviousYear,
+            },
+            {
+              age_category: "Youth between 11 to 15 years old",
+              education: "Other",
+              present_academic_year: formData.otherEducation1115PresentYear,
+              previous_year: formData.otherEducation1115PreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Undergraduate",
+              present_academic_year: formData.undergraduatePresentYear,
+              previous_year: formData.undergraduatePreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Technical/Vocational Education",
+              present_academic_year:
+                formData.technicalVocationalEducationPresentYear,
+              previous_year: formData.technicalVocationalEducationPreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Other",
+              present_academic_year: formData.otherEducation16AbovePresentYear,
+              previous_year: formData.otherEducation16AbovePreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Bridge School",
+              present_academic_year:
+                formData.youth16AndAbovebridgeSchoolPresentYear,
+              previous_year: formData.youth16AndAbovebridgeSchoolPreviousYear,
+            },
+          ],
+          personal_situation_of_children_youth: [
+            {
+              description: "Children/students with parents",
+              previous_year:
+                formData.personalSituation.childrenWithParentsPreviousYear,
+              present_academic_year:
+                formData.personalSituation.childrenWithParentsPresentYear,
+            },
+            {
+              description: "Semi-orphans (living with relatives)",
+              previous_year: formData.personalSituation.semiOrphansPreviousYear,
+              present_academic_year:
+                formData.personalSituation.semiOrphansPresentYear,
+            },
+            {
+              description: "Orphans",
+              previous_year: formData.personalSituation.orphansPreviousYear,
+              present_academic_year:
+                formData.personalSituation.orphansPresentYear,
+            },
+            {
+              description: "HIV-infected/affected",
+              previous_year:
+                formData.personalSituation.hivInfectedAffectedPreviousYear,
+              present_academic_year:
+                formData.personalSituation.hivInfectedAffectedPresentYear,
+            },
+            {
+              description: "Differently-abled children",
+              previous_year:
+                formData.personalSituation.differentlyAbledChildrenPreviousYear,
+              present_academic_year:
+                formData.personalSituation.differentlyAbledChildrenPresentYear,
+            },
+            {
+              description: "Parents in conflict",
+              previous_year:
+                formData.personalSituation.parentsInConflictPreviousYear,
+              present_academic_year:
+                formData.personalSituation.parentsInConflictPresentYear,
+            },
+            {
+              description: "Other aliments",
+              previous_year: formData.personalSituation.otherAlimentsPreviousYear,
+              present_academic_year:
+                formData.personalSituation.otherAlimentsPresentYear,
+            },
+          ],
+          economic_background_of_parents: [
+            {
+              description: "Agricultural Labour",
+              number: formData.economicBackground.agriculturalLabour,
+            },
+            {
+              description:
+                "Marginal farmers (Number of parents with less than two and half acres of land)",
+              number: formData.economicBackground.marginalFarmers,
+            },
+            {
+              description: "Parents self-employed",
+              number: formData.economicBackground.parentsSelfEmployed,
+            },
+            {
+              description: "Parents working in the informal sector",
+              number: formData.economicBackground.parentsInformalSector,
+            },
+            {
+              description: "Any other",
+              number: formData.economicBackground.anyOther,
+            },
+          ],
+          multiple_support_provided_for_integrated_development: [
+            {
+              form_of_support: "Fund/scholarships",
+              gender: "Girls",
+              number_previous_year:
+                formData.multipleSupport.fundScholarships.girls.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.fundScholarships.girls.presentYear,
+            },
+            {
+              form_of_support: "Fund/scholarships",
+              gender: "Boys",
+              number_previous_year:
+                formData.multipleSupport.fundScholarships.boys.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.fundScholarships.boys.presentYear,
+            },
+            {
+              form_of_support: "Tuition and clothing",
+              gender: "Girls",
+              number_previous_year:
+                formData.multipleSupport.tuitionClothing.girls.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.tuitionClothing.girls.presentYear,
+            },
+            {
+              form_of_support: "Tuition and clothing",
+              gender: "Boys",
+              number_previous_year:
+                formData.multipleSupport.tuitionClothing.boys.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.tuitionClothing.boys.presentYear,
+            },
+            {
+              form_of_support: "Nutrition",
+              gender: "Girls",
+              number_previous_year:
+                formData.multipleSupport.nutrition.girls.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.nutrition.girls.presentYear,
+            },
+            {
+              form_of_support: "Nutrition",
+              gender: "Boys",
+              number_previous_year:
+                formData.multipleSupport.nutrition.boys.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.nutrition.boys.presentYear,
+            },
+            {
+              form_of_support: "Free Residence",
+              gender: "Girls",
+              number_previous_year:
+                formData.multipleSupport.freeResidence.girls.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.freeResidence.girls.presentYear,
+            },
+            {
+              form_of_support: "Free Residence",
+              gender: "Boys",
+              number_previous_year:
+                formData.multipleSupport.freeResidence.boys.previousYear,
+              number_present_academic_year:
+                formData.multipleSupport.freeResidence.boys.presentYear,
+            },
+          ],
+          achievements_of_school_and_college_children: {
+            academic_achievements: achievements.academic,
+            sport_achievements: achievements.sport,
+            other_achievements: achievements.other,
+          },
+        },
+        present_situation_of_inmates: {
+          internal_challenges_and_present_difficulties:
+            formData.presentSituationexternalChallenges,
+          external_challenges_and_present_difficulties:
+            formData.presentSituationexternalChallenges,
+        },
+        focus_areas_in_present_year: formData.focusAreasDescription,
+        solution_analysis_logical_framework: formData.logicalFramework,
+        staff: formData.staff,
+        sustainability: formData.sustainability,
+        monitoring_and_evaluation: formData.monitoringProcess,
+        budget: {
+          budget_particular: budgetRows.map((budget) => {
+            return {
+              expense_description: budget.description,
+              costs_last_year: budget.costsLastYear,
+              budget_current_year: budget.budgetCurrentYear,
+            };
+          }),
+          total: calculateTotalCosts,
+        },
+      };
+      const res = await authAxios.put("/projects/editWHFCApplicant", {
         comment: formData.provincialSuperiorComment,
         agree: formData.provincialSuperiorAgreement,
         project_number: projectData.project_number,

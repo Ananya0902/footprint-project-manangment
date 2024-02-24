@@ -1,10 +1,8 @@
 // Import necessary libraries and components
 // done with integration
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 import authAxios, { setAuthToken } from "../../AuthAxios.js";
-
 import {
   Box,
   Button,
@@ -21,7 +19,7 @@ import {
   Text,
   Select,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -29,19 +27,30 @@ import * as Yup from "yup";
 const LoginPage = () => {
   const showToast = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // check if user is already logged in
+    if (localStorage.getItem("userToken")) {
+      // if there is a user token in the system just remove it
+      localStorage.removeItem("userToken");
+    }
+  }, []);
+
   // Function to log out user on token expiry
   const logOutOnTokenExpiry = () => {
     // set timeout to log out user
     setTimeout(() => {
-      showToast({
-        title: "Session Expired",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      // set time out from token expiry time
-      localStorage.removeItem("userToken");
-      navigate("/login");
+      if (localStorage.getItem("userToken") !== null) {
+        showToast({
+          title: "Session Expired",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        // set time out from token expiry time
+        localStorage.removeItem("userToken");
+        navigate("/login");
+      }
       // token expires after one hour
     }, 3600000);
   };
@@ -85,7 +94,8 @@ const LoginPage = () => {
               isClosable: true,
             });
           } else {
-            navigate(`/dashboardApplicant`);
+            // replace all other routes from navigate and naviagate to dashboardApplicant
+            navigate("/dashboardApplicant");
           }
         } else if (values.userType === "reviewer") {
           response = await authAxios.post("/users/reviewerlogin", req);
@@ -132,12 +142,6 @@ const LoginPage = () => {
         localStorage.setItem("userToken", response.data.token);
         // call logout on token expiry
         logOutOnTokenExpiry();
-        // set token expiry time
-
-        // log out on token expiry
-
-        // axios.default.header
-        // console.log(axios.defaults.headers.common['Authorization']);
       } catch (error) {
         try {
           if (error.response.status === 400) {
