@@ -131,7 +131,12 @@ export const ReviewDPLG = () => {
         req,
       );
       console.log(res);
-      if (res.data.success) setIsSubmitted(true);
+      if (res.data.success){
+        showToast({
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
+          duration: 5000,
+        });
+        setIsSubmitted(true);}
       else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -346,7 +351,7 @@ export const ReviewDPLG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 
@@ -441,16 +446,16 @@ export const ReviewDPLG = () => {
                 </Tr>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -525,7 +530,7 @@ export const ReviewDPLG = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
@@ -727,7 +732,7 @@ export const ReviewDPLG = () => {
                 onChange={handleChange}
                 size="lg"
               >
-                The Provincial Superior agree
+                The President of Society agree
               </Checkbox>
             </FormControl>
           </VStack>
@@ -752,7 +757,7 @@ export const ReviewDPLG = () => {
               formData.provincialSuperiorAgreement = true;
             }}
           >
-            Submit
+            Accept
           </Button>
           {/* decline Button */}
           <Button colorScheme="red" mx={3} type="submit"

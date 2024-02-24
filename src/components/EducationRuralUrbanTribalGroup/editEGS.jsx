@@ -435,7 +435,7 @@ const EditEduRUTG = () => {
                   <Td>Project Coordinator Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
 
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -654,7 +654,7 @@ const EditEduRUTG = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
