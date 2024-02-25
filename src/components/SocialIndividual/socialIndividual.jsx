@@ -134,6 +134,12 @@ const SocialIndividual = () => {
         project_in_charge_agree: {
           agree: true,
         },
+        estimated_income: {
+          currentYear : e.target.estimatedIncomeCurrentYear.value,
+          year1: e.target.estimatedIncomeYear1.value,
+          year2: e.target.estimatedIncomeYear2.value,
+          year3: e.target.estimatedIncomeYear3.value,
+        },
       };
 
       // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
@@ -295,16 +301,24 @@ const SocialIndividual = () => {
             <Tr>
               <Td>Estimated Income per Year</Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input type="number" name='estimatedIncomeCurrentYear' placeholder="Enter value" />
               </Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input type="number" 
+                name="estimatedIncomeYear1"
+                placeholder="Enter value" 
+                />
+                
               </Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input type="number" 
+                name="estimatedIncomeYear2"
+                placeholder="Enter value" />
               </Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input type="number" 
+                name="estimatedIncomeYear3"
+                placeholder="Enter value" />
               </Td>
             </Tr>
           </Tbody>
@@ -658,7 +672,7 @@ const SocialIndividual = () => {
             {/* educational status of children*/}
             <FormControl>
               <FormLabel>Educational status of children</FormLabel>
-              <Input type="text" name="eduStatus" onChange={handleChange} />
+              <Input type="text" name="eduStatus" onChange={handleChange} required/>
             </FormControl>
 
             {/* Religion */}

@@ -166,7 +166,7 @@ const ReviewProjects = () => {
           HIV: getAllHIVReviewer
             .filter(
               (value) =>
-                value.mailing_list.provincial_superior.comment === false
+                value.mailing_list.provincial_superior.comment === null
             )
             .map((project) => {
               return {

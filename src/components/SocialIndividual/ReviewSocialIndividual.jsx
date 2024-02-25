@@ -32,6 +32,13 @@ const ReviewSocialIndividual = () => {
   console.log(projectData);
   // Define formData object
   const [formData, setFormData] = useState({
+    estimatedIncome: projectData.estimated_income || {
+      currentYear: 0,
+      year1: 0,
+      year2: 0,
+      year3: 0,
+
+    },
     photographFile: projectData.photograph_benificary,
     nameOfSelfEmployment: projectData.nameOfSelfEmployment,
     projectInchargeName: projectData.applicant.name,
@@ -316,10 +323,10 @@ const ReviewSocialIndividual = () => {
               </Tr>
               <Tr>
                 <Td>Estimated Income per Year</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
+                <Td>{formData.estimatedIncome.currentYear}</Td>
+                <Td>{formData.estimatedIncome.year1}</Td>
+                <Td>{formData.estimatedIncome.year2}</Td>
+                <Td>{formData.estimatedIncome.year3}</Td>
               </Tr>
             </Tbody>
           </Table>

@@ -28,7 +28,7 @@ import {
   ChakraProvider,
   useToast,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 import cloudAxios from "../../CloudAxios";
 
@@ -43,9 +43,14 @@ import cloudAxios from "../../CloudAxios";
  * @returns {JSX.Element} EditSocialIndividual component
  */
 const EditSocialIndividual = () => {
+  const navigate = useNavigate();
+
   const projectData = JSON.parse(
     decodeURIComponent(useParams()?.project ?? "{}")
   );
+
+  console.log(projectData);
+
   const [formData, setFormData] = useState({
     photographFile: projectData.photograph_benificary,
     nameOfSelfEmployment: projectData.nameOfSelfEmployment,
@@ -82,9 +87,11 @@ const EditSocialIndividual = () => {
     businessSustainability: projectData.businessSustainability,
     expectedBenefits: projectData.expectedBenefits,
     // Revenue Goals
-    revenueData: projectData.revenueGoals,
+    revenueData: projectData.revenueGoals.map(({ _id, ...rest }) => rest),
     // Budget Details
-    budgetData: projectData.budget_cost_table,
+
+    // get budgetData to be projectData without the id field
+    budgetData: projectData.budget_cost_table.map(({ _id, ...rest }) => rest),
     // Document Upload
     documents: [
       { name: "aadhar_img", file: projectData.aadhar_img },
@@ -98,14 +105,18 @@ const EditSocialIndividual = () => {
         file: projectData.other_supporting_documents,
       },
     ],
-    provincialSuperiorAgree: false,
-    provincialSuperiorComment: null,
+
+    estimatedIncome: projectData.estimated_income ?? {
+      currentYear: 0,
+      year1: 0,
+      year2: 0,
+      year3: 0,
+    },
   });
 
   const [budgetData, setBudgetData] = useState(formData.budgetData);
   const [revenueData, setRevenueData] = useState(formData.revenueData);
   const [documents, setDocuments] = useState(formData.documents);
-
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
 
@@ -143,28 +154,34 @@ const EditSocialIndividual = () => {
     try {
       setIsLoading(true);
       console.log(documents);
-      const photographUrl = formData.photographFile.includes("localhost")
-        ? await handleImageUpload(formData.photographFile)
-        : formData.photographFile;
-      const aadharCardUrl = formData.documents[0].file.includes("localhost")
-        ? await handleImageUpload(formData.documents[0].file)
-        : formData.documents[0].file;
-      const requestLetterUrl = formData.documents[0].file.includes("localhost")
-        ? await handleImageUpload(formData.documents[0].file)
-        : formData.documents[1].file;
-      const quotationRegardingPurchase = formData.documents[0].file.includes(
-        "localhost"
-      )
-        ? await handleImageUpload(formData.documents[0].file)
-        : formData.documents[2].file;
-      const otherDocumentsUrl = formData.documents[0].file.includes("localhost")
-        ? await handleImageUpload(formData.documents[0].file)
-        : formData.documents[3].file;
+      const photographUrl =
+        formData.photographFile instanceof File
+          ? await handleImageUpload(formData.photographFile)
+          : formData.photographFile;
+      const aadharCardUrl =
+        formData.documents[0].file instanceof File
+          ? await handleImageUpload(formData.documents[0].file)
+          : formData.documents[0].file;
+      const requestLetterUrl =
+        formData.documents[1].file instanceof File
+          ? await handleImageUpload(formData.documents[1].file)
+          : formData.documents[1].file;
+      const quotationRegardingPurchase =
+        formData.documents[2].file instanceof File
+          ? await handleImageUpload(formData.documents[2].file)
+          : formData.documents[2].file;
+
+      const otherDocumentsUrl =
+        formData.documents[3].file instanceof File
+          ? await handleImageUpload(formData.documents[3].file)
+          : formData.documents[3].file;
 
       const req = {
-        beneficiary_contribution: formData.beneficiaryContribution,
-        amount_expected: formData.amountRequested,
-        revenueGoals: formData.revenueData,
+        estimated_income: formData.estimatedIncome,
+        projectID: projectData.project_code,
+        beneficiary_contribution: formData.beneficiaryContribution || 0,
+        amount_requested: formData.amountRequested,
+        revenueGoals: revenueData,
         nameOfSelfEmployment: e.target.nameOfSelfEmployment.value,
         photograph_benificary: photographUrl,
         name: e.target.beneficiaryName.value,
@@ -192,7 +209,7 @@ const EditSocialIndividual = () => {
         riskMitigationMeasures: e.target.riskMitigationMeasures.value,
         businessSustainability: e.target.businessSustainability.value,
         expectedBenefits: e.target.expectedBenefits.value,
-        budget_cost_table: formData.budgetData, // You need to handle this separately based on how the data is structured in your form
+        budget_cost_table: budgetData, // You need to handle this separately based on how the data is structured in your form
         aadhar_img: aadharCardUrl,
         request_letter_img: requestLetterUrl,
         quotations_regarding_the_purchase_img: quotationRegardingPurchase,
@@ -205,6 +222,8 @@ const EditSocialIndividual = () => {
         },
       };
 
+      console.log(req);
+
       // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
 
       const response = await authAxios.put("/projects/editSI", req);
@@ -216,6 +235,7 @@ const EditSocialIndividual = () => {
           status: "success",
           duration: 5000,
         });
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -239,7 +259,9 @@ const EditSocialIndividual = () => {
   // Revenue Table
   const RevenueGoalsTable = () => {
     const handleRevenueChange = (index, field, value) => {
+      console.log(index, field, value);
       const newData = [...revenueData];
+      console.log(newData[index]);
       newData[index][field] = value;
       setRevenueData(newData);
     };
@@ -361,16 +383,68 @@ const EditSocialIndividual = () => {
             <Tr>
               <Td>Estimated Income per Year</Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        currentYear: e.target.value,
+                      },
+                    })
+                  }
+                  value={formData.estimatedIncome.currentYear}
+                  placeholder="Enter value"
+                />
               </Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input
+                  type="number"
+                  value={formData.estimatedIncome.year1}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        year1: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Enter value"
+                />
               </Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        year2: e.target.value,
+                      },
+                    })
+                  }
+                  value={formData.estimatedIncome.year2}
+                  placeholder="Enter value"
+                />
               </Td>
               <Td>
-                <Input type="number" placeholder="Enter value" />
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        year3: e.target.value,
+                      },
+                    })
+                  }
+                  value={formData.estimatedIncome.year3}
+                  placeholder="Enter value"
+                />
               </Td>
             </Tr>
           </Tbody>
@@ -480,7 +554,11 @@ const EditSocialIndividual = () => {
             <Input
               type="number"
               name="amountRequested"
-              value={calculateTotalAmount() - formData.beneficiaryContribution}
+              value={
+                (formData.amountRequested =
+                  calculateTotalAmount() - formData.beneficiaryContribution ||
+                  0)
+              }
               readOnly
               required
             />
@@ -494,6 +572,11 @@ const EditSocialIndividual = () => {
     /*documents needed */
   }
 
+  /**
+   * Renders a component for uploading documents.
+   *
+   * @returns {JSX.Element} The DocumentUpload component.
+   */
   const DocumentUpload = () => {
     const handleFileChange = (index, file) => {
       const newDocuments = [...documents];
@@ -538,10 +621,6 @@ const EditSocialIndividual = () => {
             ))}
           </Tbody>
         </Table>
-
-        <Button mt={4} colorScheme="blue" type="submit">
-          Submit Documents
-        </Button>
       </Box>
     );
   };
@@ -605,7 +684,7 @@ const EditSocialIndividual = () => {
               Personal Information of the Beneficiary
             </Heading>
             {/* Photograph (URL) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Photograph</FormLabel>
               <InputGroup>
                 <Image
@@ -628,7 +707,6 @@ const EditSocialIndividual = () => {
                     });
                   }}
                   accept="image/*"
-                  required
                 />
                 {/* <InputRightElement width="4.5rem">
       <Button
@@ -772,7 +850,13 @@ const EditSocialIndividual = () => {
             {/* educational status of children*/}
             <FormControl>
               <FormLabel>Educational status of children</FormLabel>
-              <Input type="text" name="eduStatus" onChange={handleChange} />
+              <Input
+                type="text"
+                name="eduStatus"
+                value={formData.eduStatus}
+                onChange={handleChange}
+                required
+              />
             </FormControl>
 
             {/* Religion */}

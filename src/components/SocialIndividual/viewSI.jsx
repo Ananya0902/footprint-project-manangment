@@ -74,6 +74,7 @@ const ViewSI = () => {
     revenueData: projectData.revenueGoals,
     // Budget Details
     budgetData: projectData.budget_cost_table,
+    estimatedIncome : projectData.estimated_income , 
     // Document Upload
     documents: [
       { name: "aadhar_img", file: projectData.aadhar_img },
@@ -355,10 +356,10 @@ const ViewSI = () => {
               </Tr>
               <Tr>
                 <Td>Estimated Income per Year</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
+                <Td>{formData.estimatedIncome.currentYear}</Td>
+                <Td>{formData.estimatedIncome.year1}</Td>
+                <Td>{formData.estimatedIncome.year2}</Td>
+                <Td>{formData.estimatedIncome.year3}</Td>
               </Tr>
             </Tbody>
           </Table>
