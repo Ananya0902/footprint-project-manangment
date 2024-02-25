@@ -50,6 +50,9 @@ export const ReviewDPLG = () => {
     projectInChargeName: projectData.applicant.name || "",
     projectInChargeCellNumber: projectData.applicant.mobile || "",
     projectInChargeEmail: projectData.applicant.email || "",
+    provincialSuperiorName: projectData.reviewer.name || "",
+    provincialSuperiorCellNumber: projectData.reviewer.mobile || "",
+    provincialSuperiorEmail: projectData.reviewer.email || "",
     projOfIntialProject: projectData.ProjectOfInitialProject || "",
     overallProjectPeriod: projectData.OverallProjectPeriod || "",
     overallProjectBudget: projectData.OverallProjectBudget || "",
@@ -134,7 +137,7 @@ export const ReviewDPLG = () => {
       console.log(res);
       if (res.data.success) {
         showToast({
-          title: "Success",
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           duration: 5000,
         });
         setIsSubmitted(true);
@@ -352,7 +355,7 @@ export const ReviewDPLG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -414,6 +417,40 @@ export const ReviewDPLG = () => {
               </Thead>
               <Tbody>
                 {/* Provincial Superior */}
+                 {/* Provincial Superior */}
+                 <Tr>
+                  <Td>Provincial Superior</Td>
+                  <Td>
+                    <Input
+                      type="text"
+                      name="provincialSuperiorName"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorName}
+
+                      readOnly
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="tel"
+                      name="provincialSuperiorCellNumber"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorCellNumber}
+
+                      readOnly
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="email"
+                      name="provincialSuperiorEmail"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorEmail}
+
+                      readOnly
+                    />
+                  </Td>
+                  </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -447,16 +484,16 @@ export const ReviewDPLG = () => {
                 </Tr>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -531,7 +568,7 @@ export const ReviewDPLG = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
@@ -787,7 +824,7 @@ export const ReviewDPLG = () => {
               formData.projectCoordinatorAgreement = true;
             }}
           >
-            Submit
+            Accept
           </Button>
           {/* decline Button */}
           <Button

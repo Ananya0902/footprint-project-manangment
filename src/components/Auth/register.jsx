@@ -313,7 +313,7 @@ const RegisterPage = () => {
               Province
             </FormLabel>
             <Select {...formik.getFieldProps("province")} placeholder="Select">
-              <option value="visakhapatanam">Visakhapatanam</option>
+              <option value="Visakhapatanam">Visakhapatanam</option>
               <option value="bangalore">Bangalore</option>
               <option value="vijaywada">Vijaywada</option>
               <option value="generalate">Generalate</option>

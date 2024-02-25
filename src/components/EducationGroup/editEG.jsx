@@ -121,9 +121,8 @@ const EducationGroup = () => {
     setIsLoading(true);
 
     // Add your form submission logic here
+    // for Project Coordinator no logic can be written as of now
     const req = {
-      comment_box_provincial_superior: `
-      Previous Comment : ${projectData.comment_box_provincial_superior}`,
       NameOfSociety: formData.NAMEOFTHESOCIETY,
       DateOfSubmission: formData.dATEOFSUBMISSION,
       TitleOfProject: formData.TITLEOFTHEPROJECT,
@@ -599,16 +598,16 @@ const EducationGroup = () => {
               <Tbody>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>

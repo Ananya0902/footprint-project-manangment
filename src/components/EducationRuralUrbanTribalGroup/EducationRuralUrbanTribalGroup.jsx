@@ -45,6 +45,9 @@ const EducationRuralUrbanTribalGroup = () => {
       identifiedProblems: "",
       needOfProject: "",
       beneficiarySelection: "",
+      evaluation: "",
+      monitoringProcess: "",
+      sustainability: "",
     },
     targetGroup: [
       {
@@ -68,9 +71,7 @@ const EducationRuralUrbanTribalGroup = () => {
         },
       ],
     },
-    evaluation: "",
-    monitoringProcess: "",
-    sustainability: "",
+  
     budget: [
       {
         description: "",
@@ -132,10 +133,9 @@ const EducationRuralUrbanTribalGroup = () => {
               means_of_verification: activity.verification,
             })),
           })),
+          
         },
-        sustainability: formData.sustainability,
-        monitoring_process_of_the_project: formData.monitoringProcess,
-        mode_of_evaluation: formData.evaluation,
+        
         budget: {
           expenses: formData.budget.map((item) => ({
             description: item.description,
@@ -143,6 +143,9 @@ const EducationRuralUrbanTribalGroup = () => {
           })),
           total: parseInt(calculateTotalCosts("cost")) ?? 0, // Should be calculated
         },
+        sustainability: formData.sustainability,
+        monitoring_process_of_the_project: formData.monitoringProcess,
+        mode_of_evaluation: formData.evaluation,
       },
     };
 
@@ -435,16 +438,16 @@ const EducationRuralUrbanTribalGroup = () => {
 
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
 
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
 
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -650,7 +653,7 @@ const EducationRuralUrbanTribalGroup = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl isRequired>
               <FormLabel>Goal of the Project</FormLabel>

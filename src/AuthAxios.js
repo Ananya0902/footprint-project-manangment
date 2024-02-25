@@ -12,9 +12,14 @@ export const setAuthToken = (token) => {
   if (token) {
     authAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
+    console.log('authToken is null');
     delete authAxios.defaults.headers.common["Authorization"];
   }
 };
+
+// const requestInterceptor = () => {
+
+// }
 
 
 // Function to handle token expiration and removal

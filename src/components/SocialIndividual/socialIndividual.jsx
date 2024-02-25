@@ -31,7 +31,7 @@ import authAxios from "../../AuthAxios";
 
 const SocialIndividual = () => {
   const [formData, setFormData] = useState({});
-  const [budgetData, setBudgetData] = useState([{ budget: 0, cost: 0 }]);
+  const [budgetData, setBudgetData] = useState([{ budget: '', cost: 0 }]);
   const [revenueData, setRevenueData] = useState([
     { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
   ]);
@@ -47,7 +47,7 @@ const SocialIndividual = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value || 0,
     });
   };
 
@@ -70,12 +70,18 @@ const SocialIndividual = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  /**
+   * Handles the form submission.
+   * @param {Event} e - The form submit event.
+   * @returns {Promise<void>} - A promise that resolves when the form submission is complete.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
     try {
       setIsLoading(true);
 
+      // Images uploaded to cloudinary 
       const photographUrl = await handleImageUpload(
         e.target.photographFile.files[0]
       );
@@ -142,15 +148,23 @@ const SocialIndividual = () => {
           duration: 5000,
         });
       } else {
+        console.log('Error is here')
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
-          description: "Please login again session may have expired",
           duration: 5000,
+          description: response.data.msg,
         });
       }
     } catch (err) {
       setIsLoading(false);
+      showToast(
+        {
+          title: "Error submitting form",
+          status: "error",
+          duration: 5000,
+        }
+      )
       console.log(err);
     }
   };
@@ -449,10 +463,6 @@ const SocialIndividual = () => {
             ))}
           </Tbody>
         </Table>
-
-        <Button mt={4} colorScheme="blue" type="submit">
-          Submit Documents
-        </Button>
       </Box>
     );
   };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   ChakraProvider,
   Box,
+  HStack,
   Heading,
   FormControl,
   FormLabel,
@@ -50,6 +51,9 @@ export const ViewDPLG = () => {
     projectInChargeName: projectData.applicant.name || "",
     projectInChargeCellNumber: projectData.applicant.mobile || "",
     projectInChargeEmail: projectData.applicant.email || "",
+    provincialSuperiorName: projectData.reviewer.name || "",
+    provincialSuperiorCellNumber: projectData.reviewer.mobile || "",
+    provincialSuperiorEmail: projectData.reviewer.email || "",
     projOfIntialProject: projectData.ProjectOfInitialProject || "",
     overallProjectPeriod: projectData.OverallProjectPeriod || "",
     overallProjectBudget: projectData.OverallProjectBudget || "",
@@ -66,9 +70,8 @@ export const ViewDPLG = () => {
     provincialSuperiorAgreementDate:
       projectData.provincial_superior_agree.date.substring(0, 10),
 
-
-      project_coordinators: projectData.project_coordinators,
-      amountApproved: projectData.amount_approved,
+    project_coordinators: projectData.project_coordinators,
+    amountApproved: projectData.amount_approved,
 
     commentReviewer: projectData.comment_box_provincial_superior,
     logicalFramework: {
@@ -418,6 +421,36 @@ export const ViewDPLG = () => {
               </Thead>
               <Tbody>
                 {/* Provincial Superior */}
+                <Tr>
+                  <Td>President of the society</Td>
+                  <Td>
+                    <Input
+                      type="text"
+                      name="provincialSuperiorName"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorName}
+                      readOnly
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="tel"
+                      name="provincialSuperiorCellNumber"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorCellNumber}
+                      readOnly
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="email"
+                      name="provincialSuperiorEmail"
+                      onChange={handleChange}
+                      value={formData.provincialSuperiorEmail}
+                      readOnly
+                    />
+                  </Td>
+                </Tr>
                 {/* Project In-Charge */}
                 <Tr>
                   <Td>Project In-Charge</Td>
@@ -451,16 +484,16 @@ export const ViewDPLG = () => {
                 </Tr>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -535,7 +568,7 @@ export const ViewDPLG = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl>
               <FormLabel>Goal of the Project</FormLabel>
@@ -635,7 +668,7 @@ export const ViewDPLG = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl >
+                              <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
@@ -731,7 +764,7 @@ export const ViewDPLG = () => {
             </FormControl>
 
             {/* Provincial Superior agreement */}
-            <FormControl >
+            <FormControl>
               <Checkbox
                 name="provincialSuperiorAgreement"
                 onChange={handleChange}
@@ -739,7 +772,7 @@ export const ViewDPLG = () => {
                 isChecked={formData.provincialSuperiorAgreement}
                 size="lg"
               >
-                The Provincial Superior agree
+                The President of society agree
               </Checkbox>
               <Input
                 type="date"
@@ -750,57 +783,54 @@ export const ViewDPLG = () => {
               />
             </FormControl>
 
-
             {/* project coordinator agreement */}
-          <FormControl >
-          <FormLabel>Project coordinator</FormLabel>
-            {formData.project_coordinators.map((a) => (
-              <VStack key={a.id}>
-                <FormControl>
-                  <Input
-                    type="text"
-                    name="projectCoordinatorName"
-                    onChange={handleChange}
-                    value={a.ref.name}
-                    readOnly
-                  />
-          <FormLabel>Comment by Project Coordinator</FormLabel>
+            <FormControl>
+              <FormLabel>Project coordinator</FormLabel>
+              {formData.project_coordinators.map((a) => (
+                <VStack key={a.id}>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      name="projectCoordinatorName"
+                      onChange={handleChange}
+                      value={a.ref.name}
+                      readOnly
+                    />
+                    <FormLabel>Comment by Project Coordinator</FormLabel>
 
-                  <Input
-                    type="text"
-                    name="comment"
-                    onChange={handleChange}
-                    value={a.comment}
-                    readOnly
-                  />
+                    <Input
+                      type="text"
+                      name="comment"
+                      onChange={handleChange}
+                      value={a.comment}
+                      readOnly
+                    />
 
-                  <Checkbox
-                    name="agreement"
-                    onChange={handleChange}
-                    isChecked={a.agree}
-                    readOnly
-                    size="lg"
-                  >
-                    The project coordinator agrees
-                  </Checkbox>
-                  <Input
-                    type="date"
-                    name="date"
-                    onChange={handleChange}
-                    value={a.date?.substring(0, 10)}
-                    readOnly
-                  />
-                </FormControl>
-              </VStack>
-            ))}
-          </FormControl>
-
+                    <Checkbox
+                      name="agreement"
+                      onChange={handleChange}
+                      isChecked={a.agree}
+                      readOnly
+                      size="lg"
+                    >
+                      The project coordinator agrees
+                    </Checkbox>
+                    <Input
+                      type="date"
+                      name="date"
+                      onChange={handleChange}
+                      value={a.date?.substring(0, 10)}
+                      readOnly
+                    />
+                  </FormControl>
+                </VStack>
+              ))}
+            </FormControl>
           </VStack>
-
 
           <VStack align="start" spacing={4} mb={8}>
             {/* Comment */}
-            <FormControl >
+            <FormControl>
               <FormLabel>Comment(For Reviewer)</FormLabel>
               <Input
                 type="text"
@@ -810,8 +840,7 @@ export const ViewDPLG = () => {
                 readOnly
               />
             </FormControl>
-            
-           
+
             <FormControl>
               <FormLabel>Amount Approved</FormLabel>
               <Input
@@ -822,16 +851,52 @@ export const ViewDPLG = () => {
                 readOnly
               />
             </FormControl>
-
           </VStack>
+
+          <Heading as="h2" size="lg" mb={4} textAlign="center">
+                Manual Signatures
+              </Heading>
+          <HStack align="start" spacing={8} mb={8}>            
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h5" size="sm" mb={7} textAlign="center" color="grey">
+                Project Executor
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Applicant
+              </Heading>             
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                President of Society
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+                Sanctioning Authority
+              </Heading>
+            </Box>
+
+            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4}borderColor="black" borderStyle="solid">
+              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
+               Project Co-ordinator
+              </Heading>
+            </Box>
+
+          </HStack>
+
           {/* Print Button */}
           <Button
-              onClick={() => window.print()}
-              colorScheme="blue"
-              type="submit"
-            >
-              Print
-            </Button>
+            onClick={() => window.print()}
+            colorScheme="blue"
+            type="submit"
+          >
+            Print
+          </Button>
         </form>
       </Box>
     </ChakraProvider>

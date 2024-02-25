@@ -3,42 +3,41 @@ import { useParams } from "react-router-dom";
 import {
   ChakraProvider,
   Box,
-  HStack,
   Heading,
   FormControl,
   FormLabel,
   Input,
   Textarea,
   Select,
-  Checkbox,
   Button,
   VStack,
   Alert,
   AlertIcon,
   Table,
+  useDisclosure , 
+  ModalContent,
+  ModalOverlay,
+  Modal,
+  ModalBody,
+  CircularProgress,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
   Image,
+  useToast,
 } from "@chakra-ui/react";
+import authAxios from "../../AuthAxios";
+import cloudAxios from "../../CloudAxios";
 
-const ViewProject = () => {
+const EditHIO = () => {
+  const [open , onOpen , onClose] = useDisclosure(); 
+  const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const projectInchargeData = projectData.applicant;
-
-  const formData = {
-    provincialSuperiorName: projectData.reviewer.name , 
-    provincialSuperiorEmail: projectData.reviewer.email , 
-    provincialSuperiorContact: projectData.reviewer.mobile , 
-    projectCoordinatorName: projectData.approver?.name , 
-    projectCoordinatorEmail: projectData.approver?.email , 
-    projectCoordinatorContact: projectData.approver?.mobile , 
-    projectCoordinatorAgreementDate: projectData.project_coordinator_agree.date.substring(0,10),
-    provincialSuperiorAgreementDate: projectData.provincial_superior_agree.date.substring(0,10),
-    projectInChargeAgreementDate: projectData.project_in_charge_agree.date.substring(0,10),
-    beneficiaryAgreementDate: projectData.benificary_agree.date.substring(0,10),
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
     natureOfIllness: projectData.illness_nature,
     photographFile: projectData.photograph_benificary,
     beneficiaryName: projectData.name,
@@ -68,39 +67,168 @@ const ViewProject = () => {
     aadharCardFile: projectData.aadhar_img,
     requestLetterFile: projectData.request_letter_img,
     treatmentRecordFile: projectData.treatment_record_img,
-    beneficiaryAgreement: projectData.benificary_agree,
-    projectInChargeAgreement: projectData.project_in_charge_agree,
+    beneficiaryAgreement: projectData.benificary_agree.agree,
+    projectInChargeAgreement: projectData.project_in_charge_agree.agree,
     otherDocumentsFile: projectData.other_supporting_docs_img,
     projectInChargeName: projectInchargeData.name,
     projectInChargeContact: projectInchargeData.mobile,
     projectInChargeEmail: projectInchargeData.email,
     // benificiaryAgreement: pro
-    // beneficiaryAgreementDate: null,
-    // projectInChargeAgreementDate: null,
-    provincialSuperiorAgreement: projectData.provincial_superior_agree,
-    projectCoordinatorAgreement: projectData.project_coordinator_agree,
-    // provincialSuperiorAgreementDate: null,
-    commentBoxReviewer: projectData.comment_box_provincial_superior,
-    commentBoxApprover: projectData.comment_box_project_coordinator,
+    beneficiaryAgreementDate: projectData.benificary_agree.date,
+    projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
+    provincialSuperiorAgreement: false,
+    provincialSuperiorAgreementDate: null,
+    comment: "",
+  });
+  console.log(formData);
+  const [tableData, setTableData] = useState(
+    projectData.present_earning_member.map((member) => {
+      return {
+        familyMember: member.family_member,
+        natureOfWork: member.nature_of_work,
+        monthlyIncome: member.monthly_income,
+      };
+    })
+  );
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const tableData = projectData.present_earning_member.map((member) => {
-    return {
-      familyMember: member.family_member,
-      natureOfWork: member.nature_of_work,
-      monthlyIncome: member.monthly_income,
-    };
-  });
+  const handleImageChange = (e) =>
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.files[0],
+    }));
+
+  const handleImageUpload = async (file) => {
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
+      const response = await cloudAxios.post("/", form);
+      const imgData = response.data;
+      return imgData.secure_url;
+    } catch (error) {
+      showToast({
+        title: "Error uploading image to cloudinary",
+        description: error,
+        duration: 5000,
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      setIsLoading((prevLoading) => !prevLoading);
+      const photographUrl =
+        formData.photographFile instanceof File
+          ? await handleImageUpload(formData.photographFile)
+          : formData.photographFile;
+      const aadharCardUrl =
+        formData.aadharCardFile instanceof File
+          ? await handleImageUpload(formData.aadharCardFile)
+          : formData.aadharCardFile;
+      const requestLetterUrl = formData.requestLetterFile
+        ? await handleImageUpload(formData.requestLetterFile)
+        : formData.requestLetterFile;
+      const treatmentRecordUrl = formData.treatmentRecordFile
+        ? await handleImageUpload(formData.treatmentRecordFile)
+        : formData.treatmentRecordFile;
+      const otherDocumentsUrl = formData.otherDocumentsFile
+        ? await handleImageUpload(formData.otherDocumentsFile)
+        : formData.otherDocumentsFile;
+
+      const res = await authAxios.put("/projects/editHOI", {
+        illness_nature: formData.natureOfIllness,
+        photograph_benificary: photographUrl,
+        name: formData.beneficiaryName,
+        present_earning_member: tableData.map((tableEntry) => {
+          return {
+            family_member: tableEntry.familyMember,
+            nature_of_work: tableEntry.natureOfWork,
+            monthly_income: tableEntry.monthlyIncome,
+          };
+        }), // You need to add this field in your form
+        address: formData.beneficiaryAddress,
+        aadhar_no: formData.aadharCardNo,
+        gender: formData.gender,
+        email: formData.beneficiaryEmail,
+        DOB: formData.dob,
+        mobile: formData.beneficiaryContact,
+        father: formData.guardianName,
+        no_of_children: formData.numberOfChildren,
+        language: formData.language,
+        religion: formData.religion,
+        caste: formData.casteTribe,
+        nature_illness: formData.natureOfIllnessBeneficiary,
+        past_project_duration: formData.projectSupportDuration,
+        more_details_about_health: formData.healthSituationDetails,
+        present_situation_family: formData.familySituationDetails,
+        Govt_or_other_support: formData.accessToSupport,
+        nature_of_support: formData.amountAndNatureOfSupport,
+        previous_amount_received: formData.amountReceivedFromProject,
+        previous_total_amount: formData.totalAmountSpent,
+        present_health_total_expense: formData.totalExpense,
+        present_health_family_contribute: formData.familyContribution,
+        present_health_amount_requested: formData.totalAmountRequested,
+        aadhar_img: aadharCardUrl,
+        request_letter_img: requestLetterUrl,
+        treatment_record_img: treatmentRecordUrl,
+        benificary_agree: { agree: formData.beneficiaryAgreement.checked },
+        project_in_charge_agree: {
+          agree: formData.projectInChargeAgreement.checked,
+        },
+        other_supporting_docs_img: otherDocumentsUrl,
+      });
+      setIsLoading((prevLoading) => !prevLoading);
+      if (res.data.success) {
+        setIsSubmitted(true);
+        showToast({
+          title: "Successfully updated the document",
+          status: "success",
+          duration: 5000,
+        });
+      } else {
+        showToast({
+          title: "Unable to update the document",
+          description: res.data.message ?? "",
+          status: "error",
+          duration: 5000,
+        });
+        console.log(res.data);
+      }
+    } catch (e) {
+      console.log(e);
+      showToast({
+        title: "Error ",
+        status: "error",
+        duration: 5000,
+      });
+    }
+  };
 
   const DynamicTable = () => {
     // const [tableData, setTableData] = useState([
     //   { familyMember: '', natureOfWork: '', monthlyIncome: '' },
     // ]);
-    // const handleDeleteRow = (index) => {
-    //   const newData = [...tableData];
-    //   newData.splice(index, 1);
-    //   setTableData(newData);
-    // };
+
+    const handleDeleteRow = (index) => {
+      const newData = [...tableData];
+      newData.splice(index, 1);
+      setTableData(newData);
+    };
+
+    const handleAddRow = () => {
+      setTableData((prevData) => [
+        ...prevData,
+        { familyMember: "", natureOfWork: "", monthlyIncome: 0 },
+      ]);
+    };
 
     return (
       <Box p={4}>
@@ -120,21 +248,25 @@ const ViewProject = () => {
             {tableData.map((row, index) => (
               <Tr key={index}>
                 <Td>
-                  <Input type="text" value={row.familyMember} isReadOnly />
+                  <Input type="text" value={row.familyMember} isRequired />
                 </Td>
                 <Td>
-                  <Input type="text" value={row.natureOfWork} isReadOnly />
+                  <Input type="text" value={row.natureOfWork} isRequired />
                 </Td>
                 <Td>
-                  <Input type="number" value={row.monthlyIncome} isReadOnly />
+                  <Input type="number" value={row.monthlyIncome} isRequired />
                 </Td>
-                {/* <Td>
-                  <Button colorScheme="red" onClick={() => handleDeleteRow(index)}>
+                <Td>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => handleDeleteRow(index)}
+                  >
                     Delete
                   </Button>
-                </Td> */}
+                </Td>
               </Tr>
             ))}
+            <Button colorScheme="blue" onClick={handleAddRow}></Button>
           </Tbody>
         </Table>
       </Box>
@@ -143,6 +275,29 @@ const ViewProject = () => {
 
   return (
     <ChakraProvider>
+      {isLoading && (
+        <>
+          <Modal isOpen={true} onClose={onClose}>
+            <ModalOverlay />
+
+            <ModalContent>
+              <ModalBody
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {/* Use CircularProgress directly as the content */}
+                <CircularProgress
+                  isIndeterminate
+                  color="green.400"
+                  thickness="4px"
+                  size="60px"
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </>
+      )}
       <Box p={4}>
         <Heading
           as="h1"
@@ -154,7 +309,14 @@ const ViewProject = () => {
           Health individual Ongoing Project Application Form
         </Heading>
 
-        <form>
+        {isSubmitted && (
+          <Alert status="success" mb={4}>
+            <AlertIcon />
+            Form submitted successfully!
+          </Alert>
+        )}
+
+        <form onSubmit={handleSubmit}>
           {/* Part 1: Provincial Superior Details */}
           <VStack align="start" spacing={4} mb={8}>
             {/* Nature of Illness */}
@@ -163,111 +325,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="natureOfIllness"
+                onChange={handleChange}
                 value={formData.natureOfIllness || ""}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of Project Coordinator</FormLabel>
-              <Input
-                type="text"
-                name="projectCoordinatorName"
-                value={formData.projectCoordinatorName || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of Project Coordinator</FormLabel>
-              <Input
-                type="text"
-                name="projectCoordinatorContact"
-                value={formData.projectCoordinatorContact || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of Project Coordinator</FormLabel>
-              <Input
-                type="email"
-                name="projectCoordinatorEmail"
-                value={formData.projectCoordinatorEmail || ""}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of President Of the Society</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorName"
-                value={formData.provincialSuperiorName || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of President Of the Society</FormLabel>
-              <Input
-                type="text"
-                name="provincialSuperiorContact"
-                value={formData.provincialSuperiorContact || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of President Of the Society</FormLabel>
-              <Input
-                type="email"
-                name="provincialSuperiorEmail"
-                value={formData.provincialSuperiorEmail || ""}
-                readOnly
-              />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeName"
-                value={formData.projectInChargeName || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeContact"
-                value={formData.projectInChargeContact || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of Project Incharge</FormLabel>
-              <Input
-                type="email"
-                name="projectInchargeEmail"
-                value={formData.projectInChargeEmail || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -284,21 +344,28 @@ const ViewProject = () => {
                 {formData.photographFile && (
                   <Box>
                     <strong>Uploaded File:</strong>{" "}
-                    {formData.photographFile.name}
+                    {formData.photographFile?.name ??
+                      formData.photographFile.split("/")[
+                        formData.photographFile.split("/").length - 1
+                      ]}
                   </Box>
                 )}
-                {/* <Input
+                <Input
                   type="file"
                   name="photographFile"
-                  onChange={handleChange}
+                  onChange={handleImageChange}
                   accept="image/*"
-                /> */}
+                />
                 <Image
                   mx="auto"
                   boxSize="50%"
                   objectFit="contain"
-                  src={formData.photographFile}
-                  alt="Person photograph"
+                  src={
+                    formData.photographFile instanceof File
+                      ? URL.createObjectURL(formData.photographFile)
+                      : formData.photographFile
+                  }
+                  alt="Photograph File"
                 />
               </Box>
             </FormControl>
@@ -309,8 +376,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="beneficiaryName"
+                onChange={handleChange}
                 value={formData.beneficiaryName || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -320,8 +388,9 @@ const ViewProject = () => {
               <Input
                 type="tel"
                 name="beneficiaryContact"
+                onChange={handleChange}
                 value={formData.beneficiaryContact || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -331,8 +400,9 @@ const ViewProject = () => {
               <Input
                 type="email"
                 name="beneficiaryEmail"
+                onChange={handleChange}
                 value={formData.beneficiaryEmail || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -341,8 +411,9 @@ const ViewProject = () => {
               <FormLabel>Address</FormLabel>
               <Textarea
                 name="beneficiaryAddress"
+                onChange={handleChange}
                 value={formData.beneficiaryAddress || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -352,15 +423,21 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="aadharCardNo"
+                onChange={handleChange}
                 value={formData.aadharCardNo || ""}
-                readOnly
+                required
               />
             </FormControl>
 
             {/* Gender */}
             <FormControl>
               <FormLabel>Gender</FormLabel>
-              <Select name="gender" value={formData.gender || ""} readOnly>
+              <Select
+                name="gender"
+                onChange={handleChange}
+                value={formData.gender || ""}
+                required
+              >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -373,8 +450,9 @@ const ViewProject = () => {
               <Input
                 type="date"
                 name="dob"
+                onChange={handleChange}
                 value={formData.dob || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -384,8 +462,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="guardianName"
+                onChange={handleChange}
                 value={formData.guardianName || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -395,8 +474,9 @@ const ViewProject = () => {
               <Input
                 type="number"
                 name="numberOfChildren"
-                value={formData.numberOfChildren || ""}
-                readOnly
+                onChange={handleChange}
+                value={formData.numberOfChildren}
+                required
               />
             </FormControl>
 
@@ -406,8 +486,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="language"
+                onChange={handleChange}
                 value={formData.language || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -417,8 +498,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="religion"
+                onChange={handleChange}
                 value={formData.religion || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -428,8 +510,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="casteTribe"
+                onChange={handleChange}
                 value={formData.casteTribe || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -446,8 +529,9 @@ const ViewProject = () => {
               <FormLabel>Nature of Illness of the Beneficiary</FormLabel>
               <Textarea
                 name="natureOfIllness"
+                onChange={handleChange}
                 value={formData.natureOfIllnessBeneficiary || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -459,8 +543,9 @@ const ViewProject = () => {
               <Input
                 type="text"
                 name="projectSupportDuration"
+                onChange={handleChange}
                 value={formData.projectSupportDuration || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -472,8 +557,9 @@ const ViewProject = () => {
               </FormLabel>
               <Textarea
                 name="healthSituationDetails"
+                onChange={handleChange}
                 value={formData.healthSituationDetails || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -484,8 +570,9 @@ const ViewProject = () => {
               </FormLabel>
               <Textarea
                 name="familySituationDetails"
+                onChange={handleChange}
                 value={formData.familySituationDetails || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -497,7 +584,12 @@ const ViewProject = () => {
                 Does the beneficiary able to access Government or other support
                 in the previous year?
               </FormLabel>
-              <Select name="accessToSupport" readOnly>
+              <Select
+                name="accessToSupport"
+                onChange={handleChange}
+                value={formData.accessToSupport || ""}
+                required
+              >
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </Select>
@@ -508,8 +600,9 @@ const ViewProject = () => {
               <FormLabel>If yes, the amount and nature of support </FormLabel>
               <Textarea
                 name="amountAndNatureOfSupport"
+                onChange={handleChange}
                 value={formData.amountAndNatureOfSupport || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -519,8 +612,9 @@ const ViewProject = () => {
               <Input
                 type="number"
                 name="amountReceivedFromProject"
+                onChange={handleChange}
                 value={formData.amountReceivedFromProject || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -530,8 +624,9 @@ const ViewProject = () => {
               <Input
                 type="number"
                 name="totalAmountSpent"
+                onChange={handleChange}
                 value={formData.totalAmountSpent || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -548,8 +643,9 @@ const ViewProject = () => {
               <Input
                 type="number"
                 name="totalExpense"
+                onChange={handleChange}
                 value={formData.totalExpense || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -559,8 +655,9 @@ const ViewProject = () => {
               <Input
                 type="number"
                 name="familyContribution"
+                onChange={handleChange}
                 value={formData.familyContribution || ""}
-                readOnly
+                required
               />
             </FormControl>
 
@@ -570,8 +667,9 @@ const ViewProject = () => {
               <Input
                 type="number"
                 name="totalAmountRequested"
+                onChange={handleChange}
                 value={formData.totalAmountRequested || ""}
-                readOnly
+                required
               />
             </FormControl>
           </VStack>
@@ -587,8 +685,18 @@ const ViewProject = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.aadharCardFile}
+                src={
+                  formData.aadharCardFile instanceof File
+                    ? URL.createObjectURL(formData.aadharCardFile)
+                    : formData.aadharCardFile
+                }
                 alt="Aadhar Card File"
+              />
+              <Input
+                type="file"
+                name="aadharCardFile"
+                accept="image/*"
+                onChange={handleImageChange}
               />
             </FormControl>
 
@@ -599,8 +707,18 @@ const ViewProject = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.requestLetterFile}
+                src={
+                  formData.requestLetterFile instanceof File
+                    ? URL.createObjectURL(formData.requestLetterFile)
+                    : formData.requestLetterFile
+                }
                 alt="Request Letter"
+              />
+              <Input
+                type="file"
+                name="requestLetterFile"
+                accept="image/*"
+                onChange={handleImageChange}
               />
             </FormControl>
 
@@ -613,8 +731,18 @@ const ViewProject = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.treatmentRecordFile}
+                src={
+                  formData.treatmentRecordFile instanceof File
+                    ? URL.createObjectURL(formData.treatmentRecordFile)
+                    : formData.treatmentRecordFile
+                }
                 alt="Treatment Record"
+              />
+              <Input
+                type="file"
+                name="treatmentRecordFile"
+                accept="image/*"
+                onChange={handleImageChange}
               />
             </FormControl>
 
@@ -625,154 +753,32 @@ const ViewProject = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.otherDocumentsFile}
+                src={
+                  formData.otherDocumentsFile instanceof File
+                    ? URL.createObjectURL(formData.otherDocumentsFile)
+                    : formData.otherDocumentsFile
+                }
                 alt="Other supporting docs"
               />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Beneficiary / Family member agreement */}
-            <FormControl>
-              <Checkbox
-                name="beneficiaryAgreement"
-                isChecked={formData.beneficiaryAgreement || ""}
-                readOnly
-                size="lg"
-              >
-                The Beneficiary / Family member agree
-              </Checkbox>
               <Input
-                type="date"
-                name="benificiaryAgreement"
-                value={formData.beneficiaryAgreementDate || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl>
-              <Checkbox
-                name="projectInChargeAgreement"
-                size="lg"
-                isChecked={formData.projectInChargeAgreement}
-                readOnly
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                value={formData.projectInChargeAgreementDate || ""}
-                readOnly
-              />
-            </FormControl>
-
-            {/* Provincial Superior agreement */}
-            <FormControl>
-              <Checkbox
-                name="provincialSuperiorAgreement"
-                size="lg"
-                isChecked={formData.provincialSuperiorAgreement}
-                readOnly
-              >
-                The Provincial Superior agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="provinciaLSuperiorAgreementDate"
-                value={formData.provincialSuperiorAgreementDate || ""}
-                readOnly
-              />
-            </FormControl>
-            <FormControl>
-              <Checkbox
-                name="projectCoordinatorAgreement"
-                size="lg"
-                isChecked={formData.projectCoordinatorAgreement}
-                readOnly
-              >
-                The Project coordinator agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectCoordinatorAgreementDate"
-                value={formData.projectCoordinatorAgreementDate || ""}
-                readOnly
+                type="file"
+                name="otherDocumentsFile"
+                accept="image/*"
+                onChange={handleImageChange}
               />
             </FormControl>
           </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Comment */}
-            <FormControl isRequired>
-              <FormLabel>Comment(For Reviewer)</FormLabel>
-              <Input
-                type="text"
-                name="commentReviewer"
-                value={formData.commentBoxReviewer ?? ""}
-                readOnly
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Approvers Comment</FormLabel>
-              <Input
-                type="text"
-                name="commentApprover"
-                value={formData.commentBoxApprover ?? ""}
-                readOnly
-                required
-              />
-            </FormControl>
-          </VStack>
-          <Heading as="h2" size="lg" mb={4} textAlign="center">
-                Manual Signatures
-              </Heading>
-          <HStack align="start" spacing={8} mb={8}>            
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h5" size="sm" mb={7} textAlign="center" color="grey">
-                Project Executor
-              </Heading>
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-               Project Applicant
-              </Heading>             
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-                President of Society
-              </Heading>
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4} borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-                Sanctioning Authority
-              </Heading>
-            </Box>
-
-            <Box borderWidth="3px" p={8} borderRadius="lg" width="100%" mb={4}borderColor="black" borderStyle="solid">
-              <Heading as="h2" size="sm" mb={7} textAlign="center" color="grey">
-               Project Co-ordinator
-              </Heading>
-            </Box>
-
-          </HStack>
-
-          {/* Print Button */}
           <Button
-            onClick={() => window.print()}
-            colorScheme="blue"
+            colorScheme="red"
+            mx="3"
             type="submit"
+            flex={1}
+            onClick={() => {
+              formData.projectInChargeAgreement = true;
+              formData.beneficiaryAgreement = true;
+            }}
           >
-            Print
+            Revert
           </Button>
         </form>
       </Box>
@@ -780,4 +786,4 @@ const ViewProject = () => {
   );
 };
 
-export default ViewProject;
+export default EditHIO;

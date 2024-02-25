@@ -534,16 +534,16 @@ export const DevProjectLivlihoodGroup = () => {
                 </Tr>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -623,7 +623,7 @@ export const DevProjectLivlihoodGroup = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl isRequired>
               <FormLabel>Goal of the Project</FormLabel>
@@ -799,15 +799,9 @@ export const DevProjectLivlihoodGroup = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreement}
-
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
+            <FormLabel>
+                Project In-charge agrees
+              </FormLabel>
               <Input
                 type="date"               
                  value={formData.projectInChargeAgreementDate}
@@ -820,7 +814,7 @@ export const DevProjectLivlihoodGroup = () => {
 
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

@@ -22,8 +22,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import {useNavigate} from 'react-router-dom'
 
 export const Common = () => {
+  const navigate = useNavigate();
   const [formData, setformData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -126,10 +128,10 @@ export const Common = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
-
+     formData.projectInChargeAgreement=true
     const req = {
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: Date.now(),
+      DateOfSubmission: JSON.stringify(Date.now()).substring(0,10),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,
@@ -157,6 +159,7 @@ export const Common = () => {
     };
 
     try {
+      console.log('req' ,  req);
       setIsLoading((prevLoading) => !prevLoading);
       const response = await authAxios.post("/projects/createCG", req);
       setIsLoading((prevLoading) => !prevLoading);
@@ -167,11 +170,12 @@ export const Common = () => {
           status: "success",
           duration: 5000,
         });
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
-          description: "Please login again session may have expired",
+          description: response.data.msg,
           duration: 5000,
         });
       }
@@ -333,16 +337,16 @@ export const Common = () => {
               <Tbody>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -427,7 +431,7 @@ export const Common = () => {
               align="center"
               justifyContent="center"
             >
-              logical Framework
+              Logical Framework
             </Heading>
             <FormControl isRequired>
               <FormLabel>Goal of the Project</FormLabel>
@@ -481,14 +485,15 @@ export const Common = () => {
                           onChange={(e) => handleChange(e, index, subIndex)}
                           required
                         />
-                        <Button
+                       
+                      </VStack>
+                    ))}
+                     <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
                         </Button>
-                      </VStack>
-                    ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
@@ -604,7 +609,8 @@ export const Common = () => {
             {BudgetTable()}
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit"
+          >
             Submit
           </Button>
         </form>

@@ -22,17 +22,16 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
-import { useParams } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 
 export const EditCommon = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     projectInChargeName: projectData.applicant.name,
     projectInChargeEmail: projectData.applicant.email,
     projectInChargeCellNumber: projectData.applicant.mobile,
     NAMEOFTHESOCIETY: projectData.nameOfSociety || "",
-    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
     TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
     address: projectData.address || "",
     overallProjectPeriod: projectData.OverallProjectPeriod || "",
@@ -130,9 +129,9 @@ export const EditCommon = () => {
     // Add your form submission logic here
     formData.projectInChargeAgreement = true;
     const req = {
-      projectID: projectData._id,
+      projectID: projectData.project_code,
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
+      DateOfSubmission: JSON.stringify(Date.now()).substring(0,10),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,
@@ -164,7 +163,6 @@ export const EditCommon = () => {
         budget: row.budget,
         cost: row.cost,
       })),
-      comment_box_provincial_superior: `*Reverted: ${projectData.comment_box_provincial_superior}*`,
       // project_coordinators: projectData.project_coordinators.map(
       //   (coordinator) => ({
       //     ref: ,
@@ -185,6 +183,7 @@ export const EditCommon = () => {
           status: "success",
           duration: 5000,
         });
+        navigate('/dashboardApplicant');
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -362,16 +361,16 @@ export const EditCommon = () => {
               <Tbody>
                 {/* Project Coordinators */}
                 <Tr>
-                  <Td>Project Coordinator 1</Td>
+                  <Td>Project Coordinator India</Td>
                   <Td>Sr. Nirmala Mathew</Td>
                   <Td>Not Available</Td>
                   <Td>micostannsindia@gmail.com</Td>
                 </Tr>
                 <Tr>
-                  <Td>Project Coordinator 2</Td>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
                   <Td>Mr. Samuel Imbach</Td>
                   <Td>Not Available</Td>
-                  <Td>s.imbach@mission-stanna</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
                 </Tr>
               </Tbody>
             </Table>

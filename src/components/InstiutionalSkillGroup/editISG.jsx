@@ -21,65 +21,78 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useParams } from "react-router-dom";
 
-export const EditISG = () => {
+export const InstitutionalSkillTrainingForm = () => {
+  const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [budgetData, setBudgetData] = useState([{ budget: "", cost: "" }]);
-  const [formData, setFormData] = useState({
-    basicInformation: {
-      NAMEOFTHESOCIETY: "",
-      dATEOFSUBMISSION: "",
-      TITLEOFTHEPROJECT: "",
-      address: "",
-      provincialSuperior: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
-      projectInCharge: {
-        name: "",
-        cellNumber: "",
-        email: "",
-      },
-      overallProjectPeriod: "",
-      overallProjectBudget: "",
-      numberOfBeneficiaries: "",
-      residentialVillages: "",
-      selectionCriteriaAndProfile: "",
-      descriptionOfBeneficiary: "",
-      problemAnalysis: "",
-      solutionAnalysis: "",
-    },
-    logicalFramework: {
-      goal: "",
-      objectives: [
-        {
-          objective: "",
-          results: [""],
-          activities: [],
-        },
-      ],
-    },
-    sustainability: "",
-    monitoringProcess: "",
-    evaluationMethodology: "",
-    budgetDetails: [{ budget: "", cost: "" }],
-    signatures: {
-      projectCoordinatorAgreement: false,
-      projectCoordinatorAgreementDate: "",
-      projectInChargeAgreement: false,
-      projectInChargeAgreementDate: "",
-      provincialSuperiorAgreement: false,
-      provincialSuperiorAgreementDate: "",
-    },
-  });
+
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  console.log(projectData);
+  const formDataCopy = {}; // Create a copy of formData to avoid direct mutation
+
+  // Map basicInformation fields
+  formDataCopy.basicInformation = {
+    ...formDataCopy.basicInformation,
+    projectInCharge: projectData.applicant,
+    NAMEOFTHESOCIETY: projectData.NameOfSociety || "",
+    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
+    TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
+    address: projectData.address || "",
+    overallProjectPeriod: projectData.OverallProjectPeriod || "",
+    overallProjectBudget: projectData.OverallProjectBudget || "",
+    numberOfBeneficiaries: projectData.NumberOfBeneficiaries || "",
+    residentialVillages: projectData.ResidentialVillages || "",
+    selectionCriteriaAndProfile: projectData.SelectionCriteriaAndProfile || "",
+    DescriptionOfBeneficiary: projectData.DescriptionOfBeneficiary || "",
+    problemAnalysis: projectData.problemAnalysis || "",
+    solutionAnalysis: projectData.solutionAnalysis || "",
+  };
+  // Map logicalFramework fields
+  formDataCopy.logicalFramework = {
+    ...formDataCopy.logicalFramework,
+    goal: projectData.goal || "",
+    objectives: projectData.objectives.map((objective) => ({
+      objective: objective.objective || "",
+      results: objective.results || [""],
+      activities: objective.activities.map((activity) => ({
+        activity: activity.activity || "",
+        timeframe: activity.timeframe || [false],
+        verification: activity.verification || "",
+      })),
+    })),
+  };
+
+  // Map sustainability, monitoringProcess, evaluationMethodology fields
+  formDataCopy.sustainability = projectData.sustainability || "";
+  formDataCopy.monitoringProcess = projectData.monitoringProcess || "";
+  formDataCopy.evaluationMethodology = projectData.evaluationMethodology || "";
+  formDataCopy.comment = "";
+
+  formDataCopy.signatures = {
+    projectInCharge: projectData.project_in_charge_agree.agree || false,
+    projectInChargeAgreementDate:
+      projectData.project_in_charge_agree.date || "",
+    provincialSuperiorAgreement: false,
+  };
+
+  const [formData, setFormData] = useState(formDataCopy);
+  console.log(formData);
+  // Map budgetDetails fields
+  const [budgetData, setBudgetData] = useState(
+    projectData.budgetData.map((item) => ({
+      budget: item.budget || "",
+      cost: item.cost || "",
+    }))
+  );
 
   const handleChange = (e, index, subIndex) => {
     const { name, value } = e.target;
     const updatedData = { ...formData };
+    console.log(name, value);
+    console.log(formData);
     if (name.includes("signatures")) {
       updatedData.signatures[name.split(".")[1]] = value;
     } else if (
@@ -88,9 +101,6 @@ export const EditISG = () => {
     ) {
       const [field, role] = name.split(".");
       updatedData.basicInformation[role][field] = value;
-    } else if (name.includes("budgetDetails")) {
-      const [field, dataIndex] = name.split(".");
-      updatedData.budgetDetails[dataIndex][field] = value;
     } else if (name.includes("objective")) {
       updatedData.logicalFramework.objectives[index].objective = value;
     } else if (name.includes("result")) {
@@ -100,13 +110,16 @@ export const EditISG = () => {
       updatedData.logicalFramework.objectives[index].activities[subIndex][
         "activity"
       ] = value;
+    } else if (name.includes("logicalFramework")) {
+      updatedData.logicalFramework[name.split(".")[1]] = value;
     } else if (name.includes("verification")) {
-      console.log(e.target.name, e.target.value);
       updatedData.logicalFramework.objectives[index].activities[subIndex][
         "verification"
       ] = value;
+    } else if (name.includes("basicInformation")) {
+      updatedData.basicInformation[name.split(".")[1]] = value;
     } else {
-      updatedData.basicInformation[name] = value;
+      updatedData[name] = value;
     }
 
     setFormData(updatedData);
@@ -140,69 +153,51 @@ export const EditISG = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const req = {
-      basicInformation: {
+
+    try {
+      const req = {
+        project_number : projectData.project_number , 
         NameOfSociety: formData.basicInformation.NAMEOFTHESOCIETY,
         DateOfSubmission: formData.basicInformation.dATEOFSUBMISSION,
         TitleOfProject: formData.basicInformation.TITLEOFTHEPROJECT,
         address: formData.basicInformation.address,
-        provincialSuperior: {
-          name: formData.basicInformation.provincialSuperior.name,
-          cellNumber: formData.basicInformation.provincialSuperior.cellNumber,
-          email: formData.basicInformation.provincialSuperior.email,
-        },
-        projectInCharge: {
-          name: formData.basicInformation.projectInCharge.name,
-          cellNumber: formData.basicInformation.projectInCharge.cellNumber,
-          email: formData.basicInformation.projectInCharge.email,
-        },
-        overallProjectPeriod: formData.basicInformation.overallProjectPeriod,
-        overallProjectBudget: formData.basicInformation.overallProjectBudget,
-        numberOfBeneficiaries: formData.basicInformation.numberOfBeneficiaries,
-        residentialVillages: formData.basicInformation.residentialVillages,
-        selectionCriteriaAndProfile:
+        OverallProjectPeriod: parseInt(
+          formData.basicInformation.overallProjectPeriod
+        ),
+        OverallProjectBudget: parseInt(
+          formData.basicInformation.overallProjectBudget
+        ),
+        NumberOfBeneficiaries: parseInt(
+          formData.basicInformation.numberOfBeneficiaries
+        ),
+        ResidentialVillages: formData.basicInformation.residentialVillages,
+        SelectionCriteriaAndProfile:
           formData.basicInformation.selectionCriteriaAndProfile,
-        descriptionOfBeneficiary:
+        DescriptionOfBeneficiary:
           formData.basicInformation.descriptionOfBeneficiary,
         problemAnalysis: formData.basicInformation.problemAnalysis,
         solutionAnalysis: formData.basicInformation.solutionAnalysis,
-      },
-      logicalFramework: {
         goal: formData.logicalFramework.goal,
         objectives: formData.logicalFramework.objectives.map((objective) => ({
           objective: objective.objective,
           results: objective.results,
-          activities: objective.activities.map((activity) => ({
-            activity: activity.activity,
-            timeframe: activity.timeframe,
-            verification: activity.verification,
-          })),
+          activities: objective.activities,
         })),
-      },
-      sustainability: formData.sustainability,
-      monitoringProcess: formData.monitoringProcess,
-      evaluationMethodology: formData.evaluationMethodology,
-      budgetDetails: budgetData.map((item) => ({
-        budget: item.budget,
-        cost: item.cost,
-      })),
-      signatures: {
-        projectCoordinatorAgreement:
-          formData.signatures.projectCoordinatorAgreement,
-        projectCoordinatorAgreementDate:
-          formData.signatures.projectCoordinatorAgreementDate,
-        projectInChargeAgreement: formData.signatures.projectInChargeAgreement,
-        projectInChargeAgreementDate:
-          formData.signatures.projectInChargeAgreementDate,
-        provincialSuperiorAgreement:
-          formData.signatures.provincialSuperiorAgreement,
-        provincialSuperiorAgreementDate:
-          formData.signatures.provincialSuperiorAgreementDate,
-      },
-    };
-    try {
+        sustainability: formData.sustainability,
+        monitoringProcess: formData.monitoringProcess,
+        evaluationMethodology: formData.evaluationMethodology,
+        budgetData: budgetData.map((budgetDetail) => ({
+          budget: (budgetDetail.budget),
+          cost: parseInt(budgetDetail.cost),
+        })),
+        project_in_charge_agree: {
+          agree: true , 
+        },
+      };
+      // Now you can use this requestObject for validation or further processing
       setIsLoading(true);
-      const res = await authAxios.post("/projects/createISG");
+      const res = await authAxios.put("/projects/editISG", req);
+      console.log(res);
       setIsLoading(false);
       if (res.data.success) {
         setIsSubmitted(true);
@@ -224,6 +219,7 @@ export const EditISG = () => {
         });
       }
     } catch (error) {
+      console.log(error);
       setIsLoading(false);
       showToast({
         title: "Unsuccessful submission",
@@ -236,6 +232,7 @@ export const EditISG = () => {
   const BudgetTable = () => {
     // Function to handle changes in budget data
     const handleBudgetChange = (index, field, value) => {
+      console.log(budgetData);
       const newData = [...budgetData];
       newData[index][field] = value;
       setBudgetData(newData);
@@ -243,7 +240,7 @@ export const EditISG = () => {
 
     // Function to add a new row for budget details
     const handleAddBudgetRow = () => {
-      setBudgetData([...budgetData, { budget: "", cost: "" }]);
+      setBudgetData([...budgetData, { budget: 0, cost: 0 }]);
     };
 
     // Function to calculate the total amount
@@ -272,7 +269,7 @@ export const EditISG = () => {
               <Tr key={index}>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     value={row.budget}
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
@@ -329,6 +326,7 @@ export const EditISG = () => {
                 type="text"
                 name="basicInformation.NAMEOFTHESOCIETY"
                 onChange={handleChange}
+                value={formData.basicInformation.NAMEOFTHESOCIETY}
                 required
               />
             </FormControl>
@@ -339,6 +337,7 @@ export const EditISG = () => {
                 type="date"
                 name="basicInformation.dATEOFSUBMISSION"
                 onChange={handleChange}
+                value={formData.basicInformation.dATEOFSUBMISSION}
                 required
               />
             </FormControl>
@@ -349,6 +348,7 @@ export const EditISG = () => {
                 type="text"
                 name="basicInformation.TITLEOFTHEPROJECT"
                 onChange={handleChange}
+                value={formData.basicInformation.TITLEOFTHEPROJECT}
                 required
               />
             </FormControl>
@@ -359,65 +359,11 @@ export const EditISG = () => {
                 type="text"
                 name="basicInformation.address"
                 onChange={handleChange}
+                value={formData.basicInformation.address}
                 required
               />
             </FormControl>
-            {/* Provincial Superior */}
-            <FormControl isRequired>
-              <FormLabel>Provincial Superior Name</FormLabel>
-              <Input
-                type="text"
-                name="basicInformation.provincialSuperior.name"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Provincial Superior Cell Number</FormLabel>
-              <Input
-                type="tel"
-                name="basicInformation.provincialSuperior.cellNumber"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Provincial Superior Email</FormLabel>
-              <Input
-                type="email"
-                name="basicInformation.provincialSuperior.email"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* Project In-Charge */}
-            <FormControl isRequired>
-              <FormLabel>Project In-Charge Name</FormLabel>
-              <Input
-                type="text"
-                name="basicInformation.projectInCharge.name"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Project In-Charge Cell Number</FormLabel>
-              <Input
-                type="tel"
-                name="basicInformation.projectInCharge.cellNumber"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel>Project In-Charge Email</FormLabel>
-              <Input
-                type="email"
-                name="basicInformation.projectInCharge.email"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+
             {/* Overall Project Period */}
             <FormControl isRequired>
               <FormLabel>Overall Project Period (in months)</FormLabel>
@@ -425,6 +371,7 @@ export const EditISG = () => {
                 type="number"
                 name="basicInformation.overallProjectPeriod"
                 onChange={handleChange}
+                value={formData.basicInformation.overallProjectPeriod}
                 required
               />
             </FormControl>
@@ -435,6 +382,7 @@ export const EditISG = () => {
                 type="number"
                 name="basicInformation.overallProjectBudget"
                 onChange={handleChange}
+                value={formData.basicInformation.overallProjectBudget}
                 required
               />
             </FormControl>
@@ -446,6 +394,7 @@ export const EditISG = () => {
                 type="number"
                 name="basicInformation.numberOfBeneficiaries"
                 onChange={handleChange}
+                value={formData.basicInformation.numberOfBeneficiaries}
                 required
               />
             </FormControl>
@@ -455,6 +404,7 @@ export const EditISG = () => {
               <Textarea
                 name="basicInformation.residentialVillages"
                 onChange={handleChange}
+                value={formData.basicInformation.residentialVillages}
                 required
               />
             </FormControl>
@@ -466,6 +416,7 @@ export const EditISG = () => {
               <Textarea
                 name="basicInformation.selectionCriteriaAndProfile"
                 onChange={handleChange}
+                value={formData.basicInformation.selectionCriteriaAndProfile}
                 required
               />
             </FormControl>
@@ -479,6 +430,7 @@ export const EditISG = () => {
               <Textarea
                 name="basicInformation.descriptionOfBeneficiary"
                 onChange={handleChange}
+                value={formData.basicInformation.descriptionOfBeneficiary}
                 required
               />
             </FormControl>
@@ -490,6 +442,7 @@ export const EditISG = () => {
               <Textarea
                 name="basicInformation.problemAnalysis"
                 onChange={handleChange}
+                value={formData.basicInformation.problemAnalysis}
                 required
               />
             </FormControl>
@@ -499,6 +452,7 @@ export const EditISG = () => {
               <Textarea
                 name="basicInformation.solutionAnalysis"
                 onChange={handleChange}
+                value={formData.basicInformation.solutionAnalysis}
                 required
               />
             </FormControl>
@@ -588,7 +542,7 @@ export const EditISG = () => {
                           </Td>
                           <Td>
                             {/* Timeframe */}
-                            <FormControl isRequired>
+                            <FormControl>
                               <FormLabel>Timeframe</FormLabel>
                               {activity.timeframe.map((value, monthIndex) => (
                                 <Checkbox
@@ -637,6 +591,7 @@ export const EditISG = () => {
               <Textarea
                 name="sustainability"
                 onChange={handleChange}
+                value={formData.sustainability}
                 required
               />
             </FormControl>
@@ -648,6 +603,7 @@ export const EditISG = () => {
               <Textarea
                 name="monitoringProcess"
                 onChange={handleChange}
+                value={formData.monitoringProcess}
                 required
               />
             </FormControl>
@@ -657,65 +613,12 @@ export const EditISG = () => {
               <Textarea
                 name="evaluationMethodology"
                 onChange={handleChange}
+                value={formData.evaluationMethodology}
                 required
               />
             </FormControl>
             {/* Budget Table */}
-            <BudgetTable />
-            {/* Signatures */}
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-            {/* Project Coordinator agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="signatures.projectCoordinatorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project Coordinator agrees
-              </Checkbox>
-              <Input
-                type="date"
-                name="signatures.projectCoordinatorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="signatures.projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.signatures.projectInChargeAgreement}
-                size="lg"
-              >
-                The Project-In-Charge agrees
-              </Checkbox>
-              <Input
-                type="date"
-                name="signatures.projectInChargeAgreementDate"
-                onChange={handleChange}
-                value={formData.signatures.projectInChargeAgreementDate}
-                required
-              />
-            </FormControl>
-            {/* Provincial Superior agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="signatures.provincialSuperiorAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Provincial Superior agrees
-              </Checkbox>
-              <Input
-                type="date"
-                name="signatures.provincialSuperiorAgreementDate"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+            {BudgetTable()}
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit">
@@ -727,4 +630,4 @@ export const EditISG = () => {
   );
 };
 
-export default EditISG;
+export default InstitutionalSkillTrainingForm;
