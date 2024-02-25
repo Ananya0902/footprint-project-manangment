@@ -35,6 +35,9 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
               return {
                 id: applicant._id,
                 name: applicant.name,
+                email: applicant.email, 
+                contact: applicant.mobile,
+                apostolate: applicant.apostolate,
                 status: "pending",
               };
             })
@@ -114,6 +117,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
                   <Heading size="md" color="blue.500">
                     {applicant.name}
                   </Heading>
+                  <VStack align="flex-end" spacing={2}>
                   <Text fontSize="md" color="gray.600">
                     Status: {applicant.status}
                   </Text>
@@ -126,6 +130,7 @@ const VerifyApplicant = ({ loggedInReviewerId }) => {
                   <Text fontSize="md" color="gray.600">
                     Appostolate: {applicant.apostolate}
                   </Text>
+                  </VStack>
                 </Flex>
                 <Divider mt={4} mb={4} />
                 <VStack spacing={3}>

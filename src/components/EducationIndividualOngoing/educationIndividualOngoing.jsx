@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -24,6 +26,7 @@ import cloudAxios from "../../CloudAxios";
 import authAxios from "../../AuthAxios";
 
 const EducationIndividualOngoing = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
@@ -168,7 +171,7 @@ const EducationIndividualOngoing = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        });
+        });navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -180,6 +183,11 @@ const EducationIndividualOngoing = () => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
+      showToast({
+        title: "Unsuccessful form submission",
+        status: "error",
+        duration: 5000,
+      });
     }
   };
 
@@ -889,35 +897,9 @@ const EducationIndividualOngoing = () => {
             </FormControl>
           </VStack>
 
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Beneficiary / Family member agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="beneficiaryAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Beneficiary / Family member agree
-              </Checkbox>
-            </FormControl>
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-            </FormControl>
-          </VStack>
-
+          
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

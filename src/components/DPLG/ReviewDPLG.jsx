@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -36,6 +38,8 @@ export const ReviewDPLG = () => {
     }))
   );
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
   const showToast = useToast();
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -136,7 +140,9 @@ export const ReviewDPLG = () => {
           title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           duration: 5000,
         });
-        setIsSubmitted(true);}
+        setIsSubmitted(true);
+        navigate("/dashboardApplicant");  
+      }
       else {
         showToast({
           title: "Error submitting the reviewed doc",

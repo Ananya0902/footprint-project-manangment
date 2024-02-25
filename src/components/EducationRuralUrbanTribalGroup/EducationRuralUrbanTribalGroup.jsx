@@ -21,11 +21,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useNavigate } from "react-router-dom";
 
 const EducationRuralUrbanTribalGroup = () => {
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate= useNavigate();
   const [formData, setFormData] = useState({
     presentProjectYear: "",
     projectTitle: "",
@@ -162,6 +163,7 @@ const EducationRuralUrbanTribalGroup = () => {
           status: "success",
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful submission",
@@ -890,13 +892,9 @@ const EducationRuralUrbanTribalGroup = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
+              
                 The Project-In-Charge agree
-              </Checkbox>
+              
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -909,7 +907,7 @@ const EducationRuralUrbanTribalGroup = () => {
             <Button
               colorScheme="blue"
               type="submit"
-              onClick={() => console.log("click")}
+              onClick={() => (formData.projectInChargeAgreement = true)}
             >
               Submit
             </Button>

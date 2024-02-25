@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -22,6 +24,8 @@ import authAxios from "../../AuthAxios";
 
 const ReviewEI = () => {
   const showToast = useToast();
+  const navigate = useNavigate();
+
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
   const imageMappings = {
@@ -138,11 +142,13 @@ const ReviewEI = () => {
       if (res.data.success) {
         showToast(
           {
-            title: 'Successfully submitted the document' , 
+            title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully", 
             duration: '5000'
           }
         )
-        setIsSubmitted(true)}
+        setIsSubmitted(true);
+        navigate("/dashboardApplicant");  
+      }
       else {
         showToast({
           title: "Error submitting the approved doc",
@@ -178,7 +184,7 @@ const ReviewEI = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 

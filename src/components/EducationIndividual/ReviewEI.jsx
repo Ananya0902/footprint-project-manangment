@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -24,6 +26,8 @@ const ReviewEI = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const imageMappings = {
     photographUrl: projectData.photograph_benificary,
     aadharCardCopy: projectData.aadhar_img,
@@ -119,6 +123,8 @@ const ReviewEI = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("submit");
+    setIsLoading(true);
+
     // Add your form submission logic here
     try {
       const req = {
@@ -130,7 +136,18 @@ const ReviewEI = () => {
       };
       const res = await authAxios.put("/projects/editreviewerEI/", req);
       console.log(res);
-      if (res.data.success) setIsSubmitted(true);
+
+      setIsLoading(false);
+      if (res.data.success) {
+        showToast({
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
+          duration: 5000,
+          status: "success",
+        });
+        setIsSubmitted(true);
+        navigate("/dashboardApplicant");  
+
+      }
       else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -140,6 +157,7 @@ const ReviewEI = () => {
         console.log(res.data);
       }
     } catch (e) {
+      setIsLoading(false);
       console.log(e);
       showToast({
         title: "Error submitting the reviewed doc",
@@ -166,7 +184,7 @@ const ReviewEI = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 

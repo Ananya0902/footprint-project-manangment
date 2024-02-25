@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -119,6 +121,7 @@ export const ReviewCG = () => {
   // }
 
   // Update the state with the updatedFormData
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
@@ -164,10 +167,10 @@ export const ReviewCG = () => {
       console.log(response.data);
       if (response.data.success) {
         showToast({
-          title: "Successfull form submission",
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
-        });
+        });navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -270,7 +273,7 @@ export const ReviewCG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 
@@ -685,7 +688,7 @@ export const ReviewCG = () => {
             type="submit"
             onClick={() => (formData.provincialSuperiorAgreement = false)}
           >
-            REvert
+            Revert
           </Button>
         </form>
       </Box>

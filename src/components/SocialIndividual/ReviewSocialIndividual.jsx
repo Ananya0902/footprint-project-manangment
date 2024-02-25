@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   Box,
   Heading,
@@ -25,6 +27,7 @@ import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
 const ReviewSocialIndividual = () => {
+  const navigate=useNavigate();
   const showToast = useToast();
   const projectData = JSON.parse(
     decodeURIComponent(useParams()?.project ?? "{}")
@@ -112,10 +115,10 @@ const ReviewSocialIndividual = () => {
       });
       if (res.data.success) {
         showToast({
-          title: "Success",
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
-        });
+        });navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Error",

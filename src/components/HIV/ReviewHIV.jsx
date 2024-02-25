@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -25,6 +27,8 @@ import authAxios from "../../AuthAxios";
 import { useParams } from "react-router-dom";
 
 const ReviewHIV = () => {
+  const navigate = useNavigate();
+
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
   const showToast = useToast();
@@ -438,10 +442,10 @@ const ReviewHIV = () => {
       console.log(res);
       if (res.data.success) {
         showToast({
-          title: "Review succesful",
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully", 
           duration: 5000,
           status: "success",
-        });
+        });navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Review unsuccesful",
@@ -470,7 +474,7 @@ const ReviewHIV = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 
@@ -1431,7 +1435,7 @@ const ReviewHIV = () => {
             align="center"
             justifyContent="center"
           >
-            logical Framework
+            Logical Framework
           </Heading>
           <FormControl>
             <FormLabel>Goal of the Project</FormLabel>
@@ -1675,7 +1679,16 @@ const ReviewHIV = () => {
 
           {/* Project-In-Charge agreement */}
           <FormControl>
-            Project-In Charge Agree
+          
+              <Checkbox
+                name="projectInChargeAgreement"
+                onChange={handleChange}
+                isChecked={formData.projectInChargeAgreement}
+                readOnly
+                size="lg"
+              >
+                The Project-In-Charge agree
+              </Checkbox>
             <Input
               type="date"
               name="projectInChargeAgreementDate"
@@ -1725,7 +1738,8 @@ const ReviewHIV = () => {
             Submit
           </Button>
           {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
+          <Button colorScheme="red" mx={3} type="submit" 
+          onClick={() => (formData.provincialSuperiorAgreement = false)}>
             Decline
           </Button>
         </form>

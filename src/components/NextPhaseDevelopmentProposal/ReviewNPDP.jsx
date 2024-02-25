@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Formik, Form, Field, FieldArray } from "formik";
 import {
   Heading,
@@ -15,6 +17,8 @@ import { useParams } from "react-router-dom";
 
 const ReviewNPDP = () => {
   const showToast = useToast();
+  const navigate= useNavigate();
+
   const req = JSON.parse(decodeURIComponent(useParams().project));
   console.log(req);
 
@@ -35,10 +39,10 @@ const ReviewNPDP = () => {
           );
           if (res.data.success) {
             showToast({
-              title: "Submitting the reviewed documents",
+              title: e.provincialSuperiorAgree ? "Reviewed successfully" : "Reverted successfully",
               status: "success",
               duration: 5000,
-            });
+            });navigate("/dashboardApplicant");
           } else {
             showToast({
               title: "Error submitting the reviewed doc",

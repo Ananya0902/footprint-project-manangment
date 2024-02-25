@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Formik, Form, Field, FieldArray } from "formik";
 import {
   Heading,
@@ -9,10 +11,17 @@ import {
   Button,
   Box,
   useToast,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios.js";
 
 const NextPhaseForm = () => {
+  const navigate= useNavigate();
   const showToast = useToast();
   return (
     
@@ -72,7 +81,7 @@ const NextPhaseForm = () => {
               title: "Successful submission",
               duration: 5000,
               status: "success",
-            });
+            });navigate("/dashboardApplicant")
           } else {
             showToast({
               title: "Unsuccessful submission",
@@ -154,6 +163,32 @@ const NextPhaseForm = () => {
                 as={Input}
               />
             </FormControl>
+            {/* Contacts Table */}
+            <Table variant="simple" mb={4}>
+              <Thead>
+                <Tr>
+                  <Th>Role</Th>
+                  <Th>Name</Th>
+                  <Th>Cell Number</Th>
+                  <Th>Email</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {/* Project Coordinators */}
+                <Tr>
+                  <Td>Project Coordinator India</Td>
+                  <Td>Sr. Nirmala Mathew</Td>
+                  <Td>Not Available</Td>
+                  <Td>micostannsindia@gmail.com</Td>
+                </Tr>
+                <Tr>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
+                  <Td>Mr. Samuel Imbach</Td>
+                  <Td>Not Available</Td>
+                  <Td>s.imbach@mission-stanna.ch</Td>
+                </Tr>
+              </Tbody>
+            </Table>
             <Heading size="base" mb={6} justifyContent="center" pt={8}>
               Own Contribution
             </Heading>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -26,6 +28,7 @@ import {
 import authAxios from "../../AuthAxios";
 
 const ReviewHIO = () => {
+  const navigate =useNavigate();
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const projectInchargeData = projectData.applicant;
@@ -108,7 +111,15 @@ const ReviewHIO = () => {
         },
       };
       const res = await authAxios.put("/projects/editreviewerHOI/", req);
-      if (res.data.success) setIsSubmitted(true);
+      if (res.data.success) {
+        showToast({
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
+          status: "success",
+          duration: 5000,
+        });
+        setIsSubmitted(true);  
+        navigate("/dashboardApplicant");
+      } 
       else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -193,7 +204,7 @@ const ReviewHIO = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 

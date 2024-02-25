@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -25,6 +27,7 @@ import { useParams } from "react-router-dom";
 
 const ReviewEG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
@@ -130,11 +133,13 @@ const ReviewEG = () => {
       setIsLoading(false);
       if (res.data.success) {
         showToast({
-          title: "Successful submission",
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           duration: 5000,
           status: "success",
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant");  
+
       } else {
         showToast({
           title: "Unsuccessful submission",
@@ -499,7 +504,7 @@ const ReviewEG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 

@@ -610,6 +610,7 @@ export const Common = () => {
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit"
+           onClick={() => (formData.projectInChargeAgreement = true)}
           >
             Submit
           </Button>

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -30,6 +32,7 @@ import cloudAxios from "../../CloudAxios";
 import authAxios from "../../AuthAxios";
 
 const SocialIndividual = () => {
+  const navigate =useNavigate();
   const [formData, setFormData] = useState({});
   const [budgetData, setBudgetData] = useState([{ budget: '', cost: 0 }]);
   const [revenueData, setRevenueData] = useState([
@@ -152,7 +155,7 @@ const SocialIndividual = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        });
+        }); navigate("/dashboardApplicant");
       } else {
         console.log('Error is here')
         showToast({
@@ -843,7 +846,8 @@ const SocialIndividual = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" 
+           onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

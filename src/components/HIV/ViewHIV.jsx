@@ -1421,7 +1421,7 @@ const ViewHIV = () => {
             align="center"
             justifyContent="center"
           >
-            logical Framework
+            Logical Framework
           </Heading>
           <FormControl>
             <FormLabel>Goal of the Project</FormLabel>

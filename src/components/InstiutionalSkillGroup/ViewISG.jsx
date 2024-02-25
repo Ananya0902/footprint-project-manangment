@@ -321,7 +321,7 @@ export const ViewISG = () => {
             </FormControl>
             {/* ADDRESS */}
             <FormControl>
-              <FormLabel>ADDRESS</FormLabel>
+              <FormLabel>Area of Operation</FormLabel>
               <Input
                 type="text"
                 value={formData.basicInformation.address}

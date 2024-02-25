@@ -28,10 +28,12 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios.js";
 import cloudAxios from "../../CloudAxios.js";
+import { useNavigate } from "react-router-dom";
 
 const HealthIndividualOngoing = () => {
   console.log("health individual ongoing");
   const showToast = useToast();
+  const navigate = useNavigate();
   const presetName = process.env.REACT_APP_UPLOAD_PRESET;
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({}); // form data state is used throughtout 
@@ -134,7 +136,7 @@ const HealthIndividualOngoing = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        });
+        }); navigate("/dashboardApplicant")
       }
       else{
         setIsLoading(false);
@@ -147,6 +149,11 @@ const HealthIndividualOngoing = () => {
       }
     } catch (err) {
       setIsLoading(false);
+      showToast({
+        title: "Unsuccessful form submission",
+        status: "error",
+        duration: 5000,
+      });
       console.log(err);
     }
   };
@@ -726,13 +733,9 @@ const HealthIndividualOngoing = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
+              
                 The Project-In-Charge agree
-              </Checkbox>
+             
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -742,7 +745,7 @@ const HealthIndividualOngoing = () => {
             </FormControl>
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit"  onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

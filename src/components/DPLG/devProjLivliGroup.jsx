@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
   ChakraProvider,
   Box,
@@ -24,6 +24,7 @@ import {
 import authAxios from "../../AuthAxios";
 
 export const DevProjectLivlihoodGroup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -187,7 +188,7 @@ export const DevProjectLivlihoodGroup = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        });
+        }); navigate("/dashboardApplicant");  
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -199,6 +200,12 @@ export const DevProjectLivlihoodGroup = () => {
     } catch (err) {
       setIsLoading(false);
       console.log(err);
+      
+      showToast({
+        title: "Unsuccessful submission",
+        status: "error",
+        duration: 5000,
+      });
     }
 
 
@@ -241,7 +248,7 @@ export const DevProjectLivlihoodGroup = () => {
               <Tr key={index}>
                 <Td>
                   <Input
-                    type="number"
+                    type="text"
                     value={row.budget}
                     onChange={(e) =>
                       handleBudgetChange(index, "budget", e.target.value)
@@ -493,7 +500,6 @@ export const DevProjectLivlihoodGroup = () => {
                       name="provincialSuperiorEmail"
                       onChange={handleChange}
                       value={formData.provincialSuperiorEmail}
-
                       required
                     />
                   </Td>

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -25,6 +27,7 @@ import authAxios from "../../AuthAxios";
 import { useParams } from "react-router-dom";
 
 const ReviewWelfareHomeForChildren = () => {
+  const navigate =useNavigate();
   const projectData = JSON.parse(
     decodeURIComponent(useParams().project || "{}")
   );
@@ -405,10 +408,10 @@ const ReviewWelfareHomeForChildren = () => {
       console.log(res.data);
       if (res.data.success) {
         showToast({
-          title: "Review succesful",
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           duration: 5000,
           status: "success",
-        });
+        });navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Review unsuccesful",
@@ -437,7 +440,7 @@ const ReviewWelfareHomeForChildren = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 
