@@ -22,8 +22,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import {useNavigate} from 'react-router-dom'
 
 export const Common = () => {
+  const navigate = useNavigate();
   const [formData, setformData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -129,7 +131,7 @@ export const Common = () => {
      formData.projectInChargeAgreement=true
     const req = {
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: Date.now(),
+      DateOfSubmission: JSON.stringify(Date.now()).substring(0,8),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,
@@ -157,6 +159,7 @@ export const Common = () => {
     };
 
     try {
+      console.log('req' ,  req);
       setIsLoading((prevLoading) => !prevLoading);
       const response = await authAxios.post("/projects/createCG", req);
       setIsLoading((prevLoading) => !prevLoading);
@@ -167,11 +170,12 @@ export const Common = () => {
           status: "success",
           duration: 5000,
         });
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
-          description: "Please login again session may have expired",
+          description: response.data.msg,
           duration: 5000,
         });
       }
@@ -481,14 +485,15 @@ export const Common = () => {
                           onChange={(e) => handleChange(e, index, subIndex)}
                           required
                         />
-                        <Button
+                       
+                      </VStack>
+                    ))}
+                     <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
                         </Button>
-                      </VStack>
-                    ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}

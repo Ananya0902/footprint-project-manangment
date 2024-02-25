@@ -29,8 +29,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    console.log('LoginPage');
+    console.log("LoginPage");
     // check if user is already logged in
     if (localStorage.getItem("userToken")) {
       // if there is a user token in the system just remove it
@@ -42,18 +41,21 @@ const LoginPage = () => {
   // Function to log out user on token expiry
   const logOutOnTokenExpiry = () => {
     // set timeout to log out user
-    setTimeout(() => {
+    setTimeout(async () => {
       if (localStorage.getItem("userToken") !== null) {
+        // set time out from token expiry time
         showToast({
           title: "Session Expired",
           status: "error",
-          duration: 5000,
+          duration: 10000,
           isClosable: true,
         });
-        // set time out from token expiry time
+        console.log("Session Expired");
         localStorage.removeItem("userToken");
         setAuthToken();
-        navigate("/login");
+        await Promise.resolve(setTimeout(() => {}, 10000000));
+        console.log("Logging out");
+        navigate("/login" );
       }
       // token expires after one hour
     }, 3600000);
@@ -226,7 +228,7 @@ const LoginPage = () => {
           >
             <FormLabel>Password</FormLabel>
             <InputGroup>
-            {/**Password field with a button to make it visible while changing */}
+              {/**Password field with a button to make it visible while changing */}
 
               <Input
                 type={formik.values.showPassword ? "text" : "password"}
