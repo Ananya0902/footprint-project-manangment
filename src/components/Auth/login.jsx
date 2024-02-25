@@ -29,10 +29,13 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+
+    console.log('LoginPage');
     // check if user is already logged in
     if (localStorage.getItem("userToken")) {
       // if there is a user token in the system just remove it
       localStorage.removeItem("userToken");
+      setAuthToken();
     }
   }, []);
 
@@ -49,6 +52,7 @@ const LoginPage = () => {
         });
         // set time out from token expiry time
         localStorage.removeItem("userToken");
+        setAuthToken();
         navigate("/login");
       }
       // token expires after one hour
@@ -169,8 +173,6 @@ const LoginPage = () => {
 
   // Function to toggle password visibility
   const handleTogglePasswordVisibility = () => {
-    formik.setFieldValue("password", ""); // Reset password field when toggling visibility
-    formik.setFieldTouched("password", false); // Reset touched state
     formik.setFieldValue("showPassword", !formik.values.showPassword);
   };
 
@@ -224,6 +226,8 @@ const LoginPage = () => {
           >
             <FormLabel>Password</FormLabel>
             <InputGroup>
+            {/**Password field with a button to make it visible while changing */}
+
               <Input
                 type={formik.values.showPassword ? "text" : "password"}
                 placeholder="********"

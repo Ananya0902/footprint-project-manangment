@@ -35,7 +35,7 @@ import cloudAxios from "../../CloudAxios";
 // This is the main component for editing the Social Individual project application form
 /**
  * Submission has not been tested yet because backend is not ready
- * 
+ *
  * EditSocialIndividual component.
  * Renders a form for editing social individual project details.
  *
@@ -57,8 +57,8 @@ const EditSocialIndividual = () => {
     beneficiaryEmail: projectData.email,
     beneficiaryAddress: projectData.address,
     aadharCardNo: projectData.aadhar_no,
-    beneficiaryContribution : projectData.beneficiary_contribution , 
-    amountRequested : projectData.amount_requested,
+    beneficiaryContribution: projectData.beneficiary_contribution,
+    amountRequested: projectData.amount_requested,
     gender: projectData.gender,
     dob: projectData.DOB,
     projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
@@ -206,7 +206,7 @@ const EditSocialIndividual = () => {
       };
 
       // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
-      console.log(req);
+
       const response = await authAxios.put("/projects/editSI", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
@@ -220,12 +220,18 @@ const EditSocialIndividual = () => {
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
-          description: "Please login again session may have expired",
+          description: response.data.message,
           duration: 5000,
         });
       }
     } catch (err) {
       setIsLoading(false);
+      showToast({
+        title: "Unsuccessful form submission",
+        status: "error",
+        description: "Please try again",
+        duration: 5000,
+      });
       console.log(err);
     }
   };

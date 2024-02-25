@@ -22,11 +22,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
-import { useParams } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 
 export const EditCommon = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     projectInChargeName: projectData.applicant.name,
     projectInChargeEmail: projectData.applicant.email,
@@ -130,7 +130,7 @@ export const EditCommon = () => {
     // Add your form submission logic here
     formData.projectInChargeAgreement = true;
     const req = {
-      projectID: projectData._id,
+      projectID: projectData.project_code,
       nameOfSociety: formData.NAMEOFTHESOCIETY,
       DateOfSubmission: formData.dATEOFSUBMISSION,
       TitleOfProject: formData.TITLEOFTHEPROJECT,
@@ -164,7 +164,6 @@ export const EditCommon = () => {
         budget: row.budget,
         cost: row.cost,
       })),
-      comment_box_provincial_superior: `*Reverted: ${projectData.comment_box_provincial_superior}*`,
       // project_coordinators: projectData.project_coordinators.map(
       //   (coordinator) => ({
       //     ref: ,
@@ -185,6 +184,7 @@ export const EditCommon = () => {
           status: "success",
           duration: 5000,
         });
+        navigate('/dashboardApplicant');
       } else {
         showToast({
           title: "Unsuccessful form submission",
