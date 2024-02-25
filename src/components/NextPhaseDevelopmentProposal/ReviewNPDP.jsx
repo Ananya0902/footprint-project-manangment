@@ -42,7 +42,7 @@ const ReviewNPDP = () => {
               title: e.provincialSuperiorAgree ? "Reviewed successfully" : "Reverted successfully",
               status: "success",
               duration: 5000,
-            });navigate("/dashboardApplicant");
+            });navigate("/dashboardReviewer");
           } else {
             showToast({
               title: "Error submitting the reviewed doc",

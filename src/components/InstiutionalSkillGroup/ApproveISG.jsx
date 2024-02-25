@@ -178,7 +178,7 @@ export const ApproveISG = () => {
           duration: 5000,
         });
         setIsSubmitted(true);
-        navigate("/dashboardApplicant"); 
+        navigate("/dashboardApprover"); 
       } else {
         showToast({
           title: "Error submitting the reviewed doc",

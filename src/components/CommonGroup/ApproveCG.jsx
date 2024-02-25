@@ -177,7 +177,7 @@ export const ApproveCG = () => {
           status: "success",
           duration: 5000,
         });
-        navigate("/dashboardApplicant"); 
+        navigate("/dashboardApprover"); 
       }else {
         showToast({
           title: "Unsuccessful form submission",

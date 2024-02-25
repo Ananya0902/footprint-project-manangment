@@ -142,7 +142,7 @@ const ApproveEG = () => {
           status: "success",
         });
         setIsSubmitted(true);
-        navigate("/dashboardApplicant");  
+        navigate("/dashboardApprover");  
 
       } else {
         showToast({

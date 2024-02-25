@@ -46,7 +46,7 @@ const ApproveNPDP = () => {
               title:  e.projectCoordinatorAgree ? "Approved successfully" : "Reverted successfully",
               status: "success",
               duration: 5000,
-            });        navigate("/dashboardApplicant"); 
+            });        navigate("/dashboardApprover"); 
 
           } else {
             showToast({

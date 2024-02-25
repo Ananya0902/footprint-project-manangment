@@ -145,7 +145,7 @@ const ReviewEI = () => {
           status: "success",
         });
         setIsSubmitted(true);
-        navigate("/dashboardApplicant");  
+        navigate("/dashboardReviewer");  
 
       }
       else {

@@ -39,7 +39,7 @@ const VerifyReviewer = () => {
                 name: reviewer.name,
                 email: reviewer.email, 
                 contact: reviewer.mobile,
-                province:reviewer.province,
+                province:reviewer.nameOfProvince,
                 status: "pending",
               };
             })
@@ -72,28 +72,8 @@ const VerifyReviewer = () => {
         console.error("Error verifying reviewer:", error);
       });
   };
-  // const handleDecline = async (reviewerId) => {
-  //   // Update the status of the reviewer to "Declined" and remove from the list
-  //   try {
-  //     const response = await axios.post("/reviewerunvarify" , reviewerId);
-  //     setReviewers((prevReviewers) =>
-  //       prevReviewers
-  //         .map((reviewer) =>
-  //           reviewer.id === reviewerId
-  //             ? { ...reviewer, status: "Declined" }
-  //             : reviewer
-  //         )
-  //         .filter((reviewer) => reviewer.id !== reviewerId)
-  //     );
-  //   } catch (error) {
-  //     showToast({
-  //       title: error.response.data,
-  //       status: "error",
-  //       duration: 500,
-  //       isClosable: false,
-  //     });
-  //   }
-  // };
+  
+  
   const handleDecline = (reviewerId) => {
     console.log("decline");
     // Delete the reviewer on the server
@@ -132,9 +112,7 @@ const VerifyReviewer = () => {
                   <Heading size="md" color="blue.500">
                     {reviewer.name}
                   </Heading>
-                  <Text fontSize="md" color="gray.600">
-                    Status: {reviewer.status}
-                  </Text>
+                  
                   <VStack align="flex-end" spacing={2}>
                   <Text fontSize="md" color="gray.600">
                     Status: {reviewer.status}

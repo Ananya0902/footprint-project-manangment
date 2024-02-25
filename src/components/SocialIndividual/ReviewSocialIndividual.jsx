@@ -109,7 +109,7 @@ const ReviewSocialIndividual = () => {
           title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
-        });navigate("/dashboardApplicant");
+        });navigate("/dashboardReviewer");
       } else {
         showToast({
           title: "Error",

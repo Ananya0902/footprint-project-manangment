@@ -411,7 +411,7 @@ const ReviewWelfareHomeForChildren = () => {
           title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           duration: 5000,
           status: "success",
-        });navigate("/dashboardApplicant");
+        });navigate("/dashboardReviewer");
       } else {
         showToast({
           title: "Review unsuccesful",

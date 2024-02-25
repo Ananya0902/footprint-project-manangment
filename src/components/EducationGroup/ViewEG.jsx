@@ -140,10 +140,11 @@ const ViewEG = () => {
         conclusion: projectData.conclusion || "",
 
         // Signatures
-        projectCoordinatorAgreement:
-          projectData.project_in_charge_agree?.agree || false,
-        projectCoordinatorAgreementDate:
-          projectData.project_in_charge_agree?.date || "",
+       
+        //  projectCoordinatorAgreement:
+        //  projectData.project_in_charge_agree?.agree || false,
+        // projectCoordinatorAgreementDate:
+        //  projectData.project_in_charge_agree?.date || "",
         projectInChargeAgreement:
           projectData.project_in_charge_agree?.agree || false,
         projectInChargeAgreementDate:

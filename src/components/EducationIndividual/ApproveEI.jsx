@@ -147,7 +147,7 @@ const ReviewEI = () => {
           }
         )
         setIsSubmitted(true);
-        navigate("/dashboardApplicant");  
+        navigate("/dashboardApprover");  
       }
       else {
         showToast({

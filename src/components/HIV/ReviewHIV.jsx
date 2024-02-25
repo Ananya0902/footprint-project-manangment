@@ -263,6 +263,7 @@ const ReviewHIV = () => {
       ],
     },
     comment: "",
+
   });
 
   console.log(formData);
@@ -445,7 +446,7 @@ const ReviewHIV = () => {
           title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully", 
           duration: 5000,
           status: "success",
-        });navigate("/dashboardApplicant");
+        });navigate("/dashboardReviewer");
       } else {
         showToast({
           title: "Review unsuccesful",
@@ -1683,7 +1684,7 @@ const ReviewHIV = () => {
               <Checkbox
                 name="projectInChargeAgreement"
                 onChange={handleChange}
-                isChecked={formData.projectInChargeAgreement}
+                isChecked={formData.mailingList.projectInCharge.agree}
                 readOnly
                 size="lg"
               >

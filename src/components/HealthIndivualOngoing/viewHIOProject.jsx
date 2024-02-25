@@ -13,6 +13,7 @@ import {
   Checkbox,
   Button,
   VStack,
+  
   Alert,
   AlertIcon,
   Table,
@@ -270,6 +271,34 @@ const ViewProject = () => {
                 readOnly
               />
             </FormControl>
+             {/* Contacts Table */}
+             <Table variant="simple" mb={4}>
+              <Thead>
+                <Tr>
+                  <Th>Role</Th>
+                  <Th>Name</Th>
+                 
+                  <Th>Email</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+               
+               
+                {/* Project Coordinators */}
+                <Tr>
+                  <Td>Project Coordinator India</Td>
+                  <Td>Sr. Nirmala Mathew</Td>
+
+                  <Td>micostannsindia@gmail.com</Td>
+                </Tr>
+                <Tr>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
+                  <Td>Mr. Samuel Imbach</Td>
+                 
+                  <Td>s.imbach@mission-stanna.ch</Td>
+                </Tr>
+              </Tbody>
+            </Table>
           </VStack>
 
           <VStack align="start" spacing={4} mb={8}>

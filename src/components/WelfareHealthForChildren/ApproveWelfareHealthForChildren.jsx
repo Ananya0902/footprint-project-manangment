@@ -418,7 +418,7 @@ const ApproveWelfareHomeForChildren = () => {
           title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           duration: 5000,
           status: "success",
-        }); navigate("/dashboardApplicant"); 
+        }); navigate("/dashboardApprover"); 
       } else {
         showToast({
           title: "Approval unsuccesful",

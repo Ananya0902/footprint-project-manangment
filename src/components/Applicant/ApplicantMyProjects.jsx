@@ -57,6 +57,11 @@ const MyProjects = () => {
         );
         const getAllEGS = getAllEGSData ?? [];
 
+        const getAllEGData = await fetchDataForApplicantRoute(
+          "getAllEGApplicant"
+        );
+        const getAllEG = getAllEGData ?? [];
+
         const getAllEIApplicantData = await fetchDataForApplicantRoute(
           "getallEIapplicant"
         );
@@ -131,6 +136,12 @@ const MyProjects = () => {
           EGS: getAllEGS.map((project) => {
             return {
               id: project.project_number,
+              project: project,
+            };
+          }),
+          EG: getAllEG.map((project) => {
+            return {
+              id: project.project_code,
               project: project,
             };
           }),

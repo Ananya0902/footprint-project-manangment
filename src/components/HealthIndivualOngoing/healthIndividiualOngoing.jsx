@@ -16,6 +16,7 @@ import {
   Select,
   Checkbox,
   Button,
+  
   VStack,
   InputGroup,
   Table,
@@ -125,8 +126,8 @@ const HealthIndividualOngoing = () => {
         aadhar_img: aadharCardUrl,
         request_letter_img: requestLetterUrl,
         treatment_record_img: treatmentRecordUrl,
-        benificary_agree: {agree: e.target.beneficiaryAgreement.checked},
-        project_in_charge_agree: {agree: e.target.projectInChargeAgreement.checked},
+        // benificary_agree: {agree: e.target.beneficiaryAgreement.checked},
+        // project_in_charge_agree: {agree: e.target.projectInChargeAgreement.checked},
         other_supporting_docs_img: otherDocumentsUrl,
       });
       setIsLoading((prevLoading) => !prevLoading);
@@ -357,6 +358,35 @@ const HealthIndividualOngoing = () => {
                 required
               />
             </FormControl>
+
+            {/* Contacts Table */}
+            <Table variant="simple" mb={4}>
+              <Thead>
+                <Tr>
+                  <Th>Role</Th>
+                  <Th>Name</Th>
+                 
+                  <Th>Email</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+               
+               
+                {/* Project Coordinators */}
+                <Tr>
+                  <Td>Project Coordinator India</Td>
+                  <Td>Sr. Nirmala Mathew</Td>
+
+                  <Td>micostannsindia@gmail.com</Td>
+                </Tr>
+                <Tr>
+                  <Td>Project Coordinator Luzern, Switzerland</Td>
+                  <Td>Mr. Samuel Imbach</Td>
+                 
+                  <Td>s.imbach@mission-stanna.ch</Td>
+                </Tr>
+              </Tbody>
+            </Table>
           </VStack>
 
           <VStack align="start" spacing={4} mb={8}>

@@ -117,7 +117,7 @@ const ReviewSocialIndividual = () => {
           status: "success",
           duration: 5000,
         });
-        navigate("/dashboardApplicant"); 
+        navigate("/dashboardApprover"); 
 
       } else {
         showToast({

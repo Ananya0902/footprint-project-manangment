@@ -138,7 +138,7 @@ const ReviewEG = () => {
           status: "success",
         });
         setIsSubmitted(true);
-        navigate("/dashboardApplicant");  
+        navigate("/dashboardReviewer");  
 
       } else {
         showToast({
