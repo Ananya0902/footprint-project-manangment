@@ -23,8 +23,11 @@ import {
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const ApproveWelfareHomeForChildren = () => {
+  const navigate= useNavigate();
   const projectData = JSON.parse(
     decodeURIComponent(useParams().project || "{}")
   );
@@ -412,10 +415,10 @@ const ApproveWelfareHomeForChildren = () => {
       console.log(res.data);
       if (res.data.success) {
         showToast({
-          title: "Approval succesful",
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           duration: 5000,
           status: "success",
-        });
+        }); navigate("/dashboardApplicant"); 
       } else {
         showToast({
           title: "Approval unsuccesful",
@@ -444,7 +447,7 @@ const ApproveWelfareHomeForChildren = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 

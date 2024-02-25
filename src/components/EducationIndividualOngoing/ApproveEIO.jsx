@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -21,7 +23,7 @@ import authAxios from "../../AuthAxios";
 
 const ApproveEIO = () => {
   const showToast = useToast();
-
+   const navigate = useNavigate();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const projectInchargeData = projectData.applicant;
   const provincialSuperiorData = projectData.reviewer;
@@ -118,7 +120,14 @@ const ApproveEIO = () => {
           e.target.amountApprovedByProjectCoordinator.value,
       };
       const res = await authAxios.put("/projects/editapproverEOI/", req);
-      if (res.data.success) setIsSubmitted(true);
+      if (res.data.success) {
+        showToast({
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
+          status: "success",
+          duration: 5000,
+        });
+        navigate("/dashboardApplicant"); 
+      }
       else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -153,7 +162,7 @@ const ApproveEIO = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -1104,9 +1113,23 @@ const ApproveEIO = () => {
             </FormControl>
           </VStack>
 
-          {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+           {/* Submit Button */}
+           <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = true)}
+          >
+            Accept
+          </Button>
+          {/* decline Button */}
+          <Button
+            colorScheme="red"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = false)}
+          >
+            Revert
           </Button>
         </form>
       </Box>

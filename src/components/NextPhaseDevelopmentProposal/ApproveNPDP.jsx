@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Formik, Form, Field, FieldArray } from "formik";
 import {
   Heading,
@@ -15,6 +17,8 @@ import { useParams } from "react-router-dom";
 
 const ApproveNPDP = () => {
   const showToast = useToast();
+  const navigate= useNavigate();
+
   const req = JSON.parse(decodeURIComponent(useParams().project));
   req.mailing_list.project_in_charge.date =
     req.mailing_list.project_in_charge.date.substring(0, 10);
@@ -39,10 +43,11 @@ const ApproveNPDP = () => {
           );
           if (res.data.success) {
             showToast({
-              title: "Submitting the approved documents",
+              title:  e.projectCoordinatorAgree ? "Approved successfully" : "Reverted successfully",
               status: "success",
               duration: 5000,
-            });
+            });        navigate("/dashboardApplicant"); 
+
           } else {
             showToast({
               title: "Error submitting the approved doc",

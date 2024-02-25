@@ -37,6 +37,9 @@ const VerifyReviewer = () => {
               return {
                 id: reviewer._id,
                 name: reviewer.name,
+                email: reviewer.email, 
+                contact: reviewer.mobile,
+                province:reviewer.province,
                 status: "pending",
               };
             })
@@ -53,30 +56,7 @@ const VerifyReviewer = () => {
       );
   }, [showToast]);
 
-  // const handleVerify = async (reviewerId) => {
-  //   // Update the status of the reviewer to "Verified" and remove from the list
 
-  //   // removal from list
-  //   try {
-  //     const response = await axios.post("/reviewervarify" , reviewerId);
-  //     setReviewers((prevReviewers) =>
-  //       prevReviewers
-  //         .map((reviewer) =>
-  //           reviewer.id === reviewerId
-  //             ? { ...reviewer, status: "Verified" }
-  //             : reviewer
-  //         )
-  //         .filter((reviewer) => reviewer.id !== reviewerId)
-  //     );
-  //   } catch (error) {
-  //     showToast({
-  //       title: "Error verifying reviewer",
-  //       status: "error",
-  //       duration: 500,
-  //       isClosable: false,
-  //     });
-  //   }
-  // };
 
   const handleVerify = (reviewerId) => {
     // Update the status of the reviewer to "Verified" on the server
@@ -155,6 +135,20 @@ const VerifyReviewer = () => {
                   <Text fontSize="md" color="gray.600">
                     Status: {reviewer.status}
                   </Text>
+                  <VStack align="flex-end" spacing={2}>
+                  <Text fontSize="md" color="gray.600">
+                    Status: {reviewer.status}
+                  </Text>
+                  <Text fontSize="md" color="gray.600">
+                    Email: {reviewer.email}
+                  </Text>
+                  <Text fontSize="md" color="gray.600">
+                    Contact: {reviewer.contact}
+                  </Text>
+                  <Text fontSize="md" color="gray.600">
+                    province: {reviewer.province}
+                  </Text>
+                  </VStack>
                 </Flex>
                 <Divider mt={4} mb={4} />
                 <VStack spacing={3}>

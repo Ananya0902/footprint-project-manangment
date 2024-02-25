@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -26,6 +28,7 @@ import { useParams } from "react-router-dom";
 export const ApproveCG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
+ const navigate= useNavigate();
   // const [formData, setFormData] = useState({
   //   NAMEOFTHESOCIETY: "",
   //   dATEOFSUBMISSION: "",
@@ -170,11 +173,12 @@ export const ApproveCG = () => {
       console.log(response.data);
       if (response.data.success) {
         showToast({
-          title: "Successfull form submission",
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
         });
-      } else {
+        navigate("/dashboardApplicant"); 
+      }else {
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
@@ -276,7 +280,7 @@ export const ApproveCG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -722,7 +726,7 @@ export const ApproveCG = () => {
             type="submit"
             onClick={() => (formData.projectCoordinatorAgreement = false)}
           >
-            REvert
+            Revert
           </Button>
         </form>
       </Box>

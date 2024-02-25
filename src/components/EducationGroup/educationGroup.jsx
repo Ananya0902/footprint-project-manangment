@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -25,6 +27,7 @@ import authAxios from "../../AuthAxios";
 const EducationGroup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
+  const navigate = useNavigate();
 
 
 
@@ -185,6 +188,8 @@ const EducationGroup = () => {
           status: "success",
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant");  
+
       } else {
         showToast({
           title: "Unsuccessful submission",
@@ -796,14 +801,7 @@ const EducationGroup = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-                defaultChecked={formData.projectInChargeAgreement}
-              >
-                The Project-In-Charge agree
-              </Checkbox>
+            <FormLabel>Project In Charge Agrees</FormLabel>
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -833,7 +831,7 @@ const EducationGroup = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

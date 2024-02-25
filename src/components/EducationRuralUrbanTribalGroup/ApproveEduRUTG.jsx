@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -24,6 +26,7 @@ import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
 const ApproveEduRUTG = () => {
+  const navigate = useNavigate();
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
@@ -146,11 +149,12 @@ const ApproveEduRUTG = () => {
       console.log(res);
       if (res.data.success) {
         showToast({
-          title: "Submitted",
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant"); 
       } else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -289,7 +293,7 @@ const ApproveEduRUTG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -968,7 +972,7 @@ const ApproveEduRUTG = () => {
             </Button>
           </form>
         </VStack>
-        {/* Submit Button */}
+        
       </Box>
     </ChakraProvider>
   );

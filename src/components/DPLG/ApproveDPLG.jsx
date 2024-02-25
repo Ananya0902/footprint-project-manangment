@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChakraProvider,
   Box,
@@ -35,6 +36,7 @@ export const ReviewDPLG = () => {
       requestedAmount: item.requested_amount || "",
     }))
   );
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const showToast = useToast();
   const [selectedMonths, setSelectedMonths] = useState([]);
@@ -141,6 +143,7 @@ export const ReviewDPLG = () => {
           duration: 5000,
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Error submitting the reviewed doc",

@@ -19,10 +19,14 @@ import {
   Tr,
   Th,
   Td,
+  useToast
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useNavigate } from "react-router-dom";
 
 const WelfareHomeGroup = () => {
+  const navigate = useNavigate();
+  const showToast = useToast();
   const [formData, setFormData] = useState({
     projectTitle: "",
     projectRegion: "",
@@ -602,10 +606,26 @@ const WelfareHomeGroup = () => {
         '/projects/createWHFC/' , req
       );
       console.log(res);
-      
-    } catch (error) {
-      console.log(error)
+      if (res.data.success) {
+        showToast({
+          title: "Successfull form submission",
+          status: "success",
+          duration: 5000,
+        }); 
+        navigate("/dashboardApplicant");  
+
+      } else {
+        showToast({
+          title: "Unsuccessful form submission",
+          status: "error",
+          description: "Please login again session may have expired",
+          duration: 5000,
+        });
+      }
+    } catch (err) {
+      console.log(err);
     }
+
     setIsSubmitted(true);
   };
 
@@ -725,6 +745,7 @@ const WelfareHomeGroup = () => {
 
                 <Td>micostannsindia@gmail.com</Td>
               </Tr>
+
               <Tr>
                 <Td>Project Coordinator Luzern, Switzerland</Td>
                 <Td>Mr. Samuel Imbach</Td>
@@ -2158,7 +2179,7 @@ const WelfareHomeGroup = () => {
             align="center"
             justifyContent="center"
           >
-            logical Framework
+            Logical Framework
           </Heading>
           <FormControl isRequired>
             <FormLabel>Goal of the Project</FormLabel>
@@ -2449,13 +2470,9 @@ const WelfareHomeGroup = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
+              
                 The Project-In-Charge agree
-              </Checkbox>
+              
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -2466,7 +2483,7 @@ const WelfareHomeGroup = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

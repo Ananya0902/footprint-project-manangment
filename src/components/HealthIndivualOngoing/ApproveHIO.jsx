@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -26,6 +28,7 @@ import {
 import authAxios from "../../AuthAxios";
 
 const ApproveHIO = () => {
+  const navigate = useNavigate();
   const showToast = useToast();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
@@ -111,7 +114,15 @@ const ApproveHIO = () => {
       };
       const res = await authAxios.put("/projects/editapproverHOI/", req);
       console.log(res.data);
-      if (res.data.success) setIsSubmitted(true);
+      if (res.data.success) {
+        showToast({
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
+          status: "success",
+          duration: 5000,
+        }); 
+        setIsSubmitted(true);
+        navigate("/dashboardApplicant"); 
+      }
       else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -204,7 +215,7 @@ const ApproveHIO = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -790,8 +801,22 @@ const ApproveHIO = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
-            Submit
+          <Button
+            colorScheme="blue"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = true)}
+          >
+            Accept
+          </Button>
+          {/* decline Button */}
+          <Button
+            colorScheme="red"
+            mx={3}
+            type="submit"
+            onClick={() => (formData.projectCoordinatorAgreement = false)}
+          >
+            Revert
           </Button>
         </form>
       </Box>

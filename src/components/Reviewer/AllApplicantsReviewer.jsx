@@ -35,6 +35,9 @@ const AllApplicantsReviewer = ({ loggedInReviewerId }) => {
               return {
                 id: applicant._id,
                 name: applicant.name,
+                email: applicant.email, 
+                contact: applicant.mobile,
+                apostolate: applicant.apostolate,
                 status: "pending",
               };
             })
@@ -61,53 +64,42 @@ const AllApplicantsReviewer = ({ loggedInReviewerId }) => {
         </Heading>
 
         <List spacing={3} width="100%">
-          {applicants.length > 0 ? (
-            applicants.map((applicant) => (
-              <Box
-                key={applicant.id}
-                bg="white"
-                p={6}
-                borderRadius="lg"
-                boxShadow="md"
-                width="100%"
-              >
-                <Flex justify="space-between" align="center">
-                  <Heading size="md" color="blue.500">
-                    {applicant.name}
-                  </Heading>
-                  <Text fontSize="md" color="gray.600">
-                    Email: {applicant.email}
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    Contact: {applicant.contact}
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    Appostolate: {applicant.apostolate}
-                  </Text>
-                </Flex>
-                <Divider mt={4} mb={4} />
-                <VStack spacing={3}>
-                  <Button
-                    leftIcon={<ListIcon as={FaCheck} />}
-                    colorScheme="green"
-                  >
-                    Verify
-                  </Button>
-                  <Button
-                    leftIcon={<ListIcon as={FaTimes} />}
-                    colorScheme="red"
-                  >
-                    Decline
-                  </Button>
-                </VStack>
-              </Box>
-            ))
-          ) : (
-            <Text textAlign="center" color="gray.600">
-              No applicants for the logged-in reviewer.
+  {applicants.length > 0 ? (
+    applicants.map((applicant) => (
+      <Box
+        key={applicant.id}
+        bg="white"
+        p={6}
+        borderRadius="lg"
+        boxShadow="md"
+        width="100%"
+      >
+        <Flex justify="space-between" align="center">
+          <Heading size="md" color="blue.500">
+            {applicant.name}
+          </Heading>
+          <VStack align="flex-end" spacing={2}>
+            <Text fontSize="md" color="gray.600">
+              Email: {applicant.email}
             </Text>
-          )}
-        </List>
+            <Text fontSize="md" color="gray.600">
+              Contact: {applicant.contact}
+            </Text>
+            <Text fontSize="md" color="gray.600">
+              Appostolate: {applicant.apostolate}
+            </Text>
+          </VStack>
+        </Flex>
+        <Divider mt={4} mb={4} />
+      </Box>
+    ))
+  ) : (
+    <Text textAlign="center" color="gray.600">
+      No applicants for the logged-in reviewer.
+    </Text>
+  )}
+</List>
+
       </Box>
     </ChakraProvider>
   );

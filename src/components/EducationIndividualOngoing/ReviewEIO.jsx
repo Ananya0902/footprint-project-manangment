@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -21,6 +23,7 @@ import authAxios from "../../AuthAxios";
 import { useParams } from "react-router-dom";
 
 const ReviewEIO = () => {
+  const navigate = useNavigate();
   const showToast = useToast();
   const projectData = JSON.parse(decodeURI(useParams().project));
   const projectInchargeData = projectData.applicant;
@@ -115,7 +118,13 @@ const ReviewEIO = () => {
       };
       console.log(req);
       const res = await authAxios.put("/projects/editreviewerEOI/", req);
-      if (res.data.success) setIsSubmitted(true);
+      if (res.data.success) {
+        showToast({
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
+          status: "success",
+          duration: 5000,
+        });navigate("/dashboardApplicant");
+      }
       else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -151,7 +160,7 @@ const ReviewEIO = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 
@@ -1024,7 +1033,7 @@ const ReviewEIO = () => {
           >
             Accept
           </Button>
-          <Button colorScheme="red" mx="3" type="submit" flex={1}>
+          <Button colorScheme="red" mx="3" type="submit" flex={1} onClick={() => {(formData.provincialSuperiorAgreement = false)}}>
             Revert
           </Button>
         </form>

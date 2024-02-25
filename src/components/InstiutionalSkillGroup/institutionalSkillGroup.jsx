@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChakraProvider,
   Box,
@@ -24,6 +25,7 @@ import authAxios from "../../AuthAxios";
 
 export const InstitutionalSkillTrainingForm = () => {
   const showToast = useToast();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [budgetData, setBudgetData] = useState([{ budget: 0, cost: 0 }]);
   const [formData, setFormData] = useState({
@@ -166,7 +168,7 @@ export const InstitutionalSkillTrainingForm = () => {
         monitoringProcess: formData.monitoringProcess,
         evaluationMethodology: formData.evaluationMethodology,
         budgetData: budgetData.map((budgetDetail) => ({
-          budget: parseInt(budgetDetail.budget),
+          budget:budgetDetail.budget,
           cost: parseInt(budgetDetail.cost),
         })),
         project_in_charge_agree: {
@@ -185,17 +187,16 @@ export const InstitutionalSkillTrainingForm = () => {
           status: "success",
           duration: 5000,
         });
-      } else {
+        navigate("/dashboardApplicant");
+      } 
+      
+      else {
         showToast({
           title: "Unsuccessful submission",
           status: "error",
           duration: 5000,
         });
-        showToast({
-          title: "Unsuccessful submission",
-          status: "error",
-          duration: 5000,
-        });
+       
       }
     } catch (error) {
       console.log(error);
@@ -620,14 +621,7 @@ export const InstitutionalSkillTrainingForm = () => {
             </FormControl> */}
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="signatures.projectInChargeAgreement"
-                onChange={handleChange}
-                value={formData.signatures.projectInChargeAgreement}
-                size="lg"
-              >
-                The Project-In-Charge agrees
-              </Checkbox>
+            <FormLabel>Project In-Charge Agree</FormLabel>
               <Input
                 type="date"
                 name="signatures.projectInChargeAgreementDate"
@@ -654,7 +648,8 @@ export const InstitutionalSkillTrainingForm = () => {
             </FormControl> */}
           </VStack>
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" 
+          onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>
@@ -664,3 +659,6 @@ export const InstitutionalSkillTrainingForm = () => {
 };
 
 export default InstitutionalSkillTrainingForm;
+
+
+

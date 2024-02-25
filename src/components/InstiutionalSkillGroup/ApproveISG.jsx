@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChakraProvider,
   Box,
@@ -29,6 +30,8 @@ export const ApproveISG = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedMonths, setSelectedMonths] = useState([]);
+  const navigate = useNavigate();
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   console.log(projectData);
   const formDataCopy = {}; // Create a copy of formData to avoid direct mutation
@@ -170,11 +173,12 @@ export const ApproveISG = () => {
       const res = await authAxios.put("/projects/editapproverISG/", req);
       if (res.data.success) {
         showToast({
-          title: " submitted the reviewed doc",
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant"); 
       } else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -277,7 +281,7 @@ export const ApproveISG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -319,7 +323,7 @@ export const ApproveISG = () => {
             </FormControl>
             {/* ADDRESS */}
             <FormControl>
-              <FormLabel>ADDRESS</FormLabel>
+              <FormLabel>Area of Operation</FormLabel>
               <Input
                 type="text"
                 value={formData.basicInformation.address}

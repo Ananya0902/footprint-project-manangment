@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -25,6 +27,7 @@ import authAxios from "../../AuthAxios";
 import { useParams } from "react-router-dom";
 
 const ApproveHIV = () => {
+  const navigate = useNavigate();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   console.log(projectData);
   const showToast = useToast();
@@ -449,10 +452,11 @@ const ApproveHIV = () => {
       console.log(res);
       if (res.data.success) {
         showToast({
-          title: "Approval succesful",
+          title: formData.projectCoordinatorAgreement ? "Approved successfully" : "Reverted successfully",
           duration: 5000,
           status: "success",
-        });
+        });         navigate("/dashboardApplicant"); 
+
       } else {
         showToast({
           title: "Approval unsuccesful",
@@ -481,7 +485,7 @@ const ApproveHIV = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Approved successfully!
           </Alert>
         )}
 
@@ -1464,7 +1468,7 @@ const ApproveHIV = () => {
             align="center"
             justifyContent="center"
           >
-            logical Framework
+            Logical Framework
           </Heading>
           <FormControl>
             <FormLabel>Goal of the Project</FormLabel>

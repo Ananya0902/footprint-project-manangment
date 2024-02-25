@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -27,6 +29,7 @@ export const ReviewISG = () => {
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -167,11 +170,12 @@ export const ReviewISG = () => {
       const res = await authAxios.put("/projects/editreviewerISG/", req);
       if (res.data.success) {
         showToast({
-          title: " submitted the reviewed doc",
+          title: formData.provincialSuperiorAgreement ? "Reviewed successfully" : "Reverted successfully",
           status: "success",
           duration: 5000,
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant"); 
       } else {
         showToast({
           title: "Error submitting the reviewed doc",
@@ -274,7 +278,7 @@ export const ReviewISG = () => {
         {isSubmitted && (
           <Alert status="success" mb={4}>
             <AlertIcon />
-            Form submitted successfully!
+            Form Reviewed successfully!
           </Alert>
         )}
 
@@ -316,7 +320,7 @@ export const ReviewISG = () => {
             </FormControl>
             {/* ADDRESS */}
             <FormControl>
-              <FormLabel>ADDRESS</FormLabel>
+              <FormLabel>Area of operation</FormLabel>
               <Input
                 type="text"
                 value={formData.basicInformation.address}

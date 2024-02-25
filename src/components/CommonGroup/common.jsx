@@ -23,8 +23,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
+import { useNavigate } from "react-router-dom";
+
 
 export const Common = () => {
+  const navigate = useNavigate();
+
   const [formData, setformData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -167,7 +171,9 @@ export const Common = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        });
+        }); 
+        navigate("/dashboardApplicant");  
+
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -619,7 +625,7 @@ export const Common = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-
+            <FormLabel>Project In Charge Agrees</FormLabel>
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -631,6 +637,7 @@ export const Common = () => {
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit"
+           onClick={() => (formData.projectInChargeAgreement = true)}
           >
             Submit
           </Button>

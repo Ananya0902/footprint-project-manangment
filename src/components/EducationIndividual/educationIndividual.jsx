@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   Modal,
   ModalContent,
@@ -34,6 +36,8 @@ const EducationIndividual = () => {
   const showToast = useToast();
   const [formData, setFormData] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setFormData({
@@ -209,6 +213,8 @@ const EducationIndividual = () => {
           duration: 5000,
           status: "success",
         });
+        navigate("/dashboardApplicant");  
+
       } else {
         showToast({
           title: "Unsuccessful form submission",
@@ -1067,14 +1073,10 @@ const EducationIndividual = () => {
             </FormControl>
           </VStack>
 
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-          </VStack>
+         
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>

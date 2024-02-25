@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   ChakraProvider,
   Box,
@@ -25,6 +27,8 @@ import authAxios from "../../AuthAxios";
 
 const HIVAffectedOutreach = () => {
   const showToast = useToast();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     projectTitle: "",
     projectRegion: "",
@@ -460,6 +464,7 @@ const HIVAffectedOutreach = () => {
           status: "success",
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant"); 
       } else {
         showToast({
           title: "Failure",
@@ -1369,7 +1374,7 @@ const HIVAffectedOutreach = () => {
             align="center"
             justifyContent="center"
           >
-            logical Framework
+            Logical Framework
           </Heading>
           <FormControl isRequired>
             <FormLabel>Goal of the Project</FormLabel>
@@ -1641,13 +1646,7 @@ const HIVAffectedOutreach = () => {
 
             {/* Project-In-Charge agreement */}
             <FormControl isRequired>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-              >
-                The Project-In-Charge agree
-              </Checkbox>
+            <FormLabel> Project-In-Charge Agreement</FormLabel>
               <Input
                 type="date"
                 name="projectInChargeAgreementDate"
@@ -1658,7 +1657,8 @@ const HIVAffectedOutreach = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit">
+          <Button colorScheme="blue" type="submit" 
+           onClick={() => (formData.projectInChargeAgreement = true)}>
             Submit
           </Button>
         </form>
