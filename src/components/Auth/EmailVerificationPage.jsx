@@ -14,6 +14,7 @@ import {
 import { ChakraProvider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import authAxios from "../../AuthAxios";
 
 const EmailVerificationPage = () => {
   const [otpValue, setOtpValue] = useState("");
@@ -53,19 +54,7 @@ const EmailVerificationPage = () => {
     if (value.length === 6) {
       setOtpValue(value);
       if (user === "applicant") {
-        const response = await fetch(
-          "http://localhost:5000/api/user/verify_email",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: token,
-              otp: value,
-            }),
-          }
-        );
+        const response = await authAxios.post("users/verify_email" , JSON.stringify({token: token , otp: value}))
         const result = await response.json();
         // console.log(result);
         if (result.error === "Incorrect OTP") {

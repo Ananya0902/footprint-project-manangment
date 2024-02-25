@@ -99,6 +99,9 @@ import AllApplicantsReviewer from "./components/Reviewer/AllApplicantsReviewer";
 // App component\
 import EmailOtp from "./components/Auth/EmailOtp";
 import ForgetPassword from "./components/Auth/ForgetPassword";
+import EditSocialIndividual from "./components/SocialIndividual/editSocialIndividual";
+import AllApplicantsApprover from "./components/Approver/AllApplicantsApprover";
+import ReviewersUnderMe from "./components/Approver/AllReviewers";
 
 // Token checking in protected
 // Token expiry - 1 hour
@@ -117,8 +120,8 @@ const App = () => {
     <ChakraProvider>
       <Router>
         <Routes>
+          {/** Category 1 : Unprotected Routes  */}
           <Route path="/" element={<Home />} />
-          <Route path="/common" element={<Common />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/emailotp" element={<EmailOtp></EmailOtp>}></Route>
@@ -130,6 +133,10 @@ const App = () => {
             {" "}
           </Route>
 
+          {/** This first section is only accessible to the applciant */}
+
+          {/**Submit forms */}
+          <Route path="/common" element={<Common />} />
           <Route
             path="/healthIndividualOngoing"
             element={<HealthIndividualOngoing />}
@@ -143,7 +150,6 @@ const App = () => {
             path="/educationIndividual"
             element={<EducationIndividual />}
           />
-          <Route path="/revertedProjects" element={<RevertedProjects />} />
 
           <Route path="/socialIndividual" element={<SocialIndividual />} />
           <Route path="/educationGroup" element={<EducationGroup />} />
@@ -156,61 +162,6 @@ const App = () => {
             path="/institutionalSkillGroup"
             element={<InstitutionalSkillTrainingForm />}
           />
-          <Route
-            path="/MonthlyReportDevelopment"
-            element={<MonthlyReportDevelopmentProject />}
-          />
-          <Route
-            path="/profileApplicant/:userDetails"
-            element={<ProfilePageApplicant />}
-          />
-          <Route path="/profileReviewer" element={<ProfilePageReviewer />} />
-          <Route
-            path="/profileApprover/:profile"
-            element={<ProfilePageApprover />}
-          />
-          <Route path="/registerApprover" element={<RegisterApproverPage />} />
-          <Route path="/dashboardApplicant" element={<DashboardApplicant />} />
-          <Route path="/dashboardReviewer" element={<DashboardReviewer />} />
-          <Route path="/dashboardApprover" element={<DashboardApprover />} />
-          <Route path="/verifyReviewer" element={<VerifyReviewer />} />
-          <Route path="/verifyApplicant" element={<VerifyApplicant />} />
-          <Route
-            path="/individualProjects/:selectedAppostolate"
-            element={<IndividualProjects />}
-          />
-          <Route
-            path="/groupProjects/:selectedAppostolate"
-            element={<GroupProjects />}
-          />
-          <Route path="/myProjects" element={<MyProjects />} />
-          <Route
-            path="/projectsToBeReviewed"
-            element={<ProjectsToBeReviewed />}
-          />
-          <Route
-            path="/ProjectsToBeApproved/:profile"
-            element={<ProjectsToBeApproved />}
-          />
-          <Route path="/MyReviewedProject" element={<MyReviewedProject />} />
-          <Route path="/ApprovedProjects" element={<ApprovedProjects />} />
-          <Route
-            path="/ApprovedProjectsForReviewer"
-            element={<ApprovedProjectsForReviewer reviewerProvince="north" />}
-          />
-          <Route
-            path="/QuaterlyReportDevelopment"
-            element={<QuaterlyReportDevelopment />}
-          />
-          <Route path="/ReviewHOI/:project" element={<ReviewHIO />} />
-          <Route path="/ReviewEOI/:project" element={<ReviewEIO />} />
-          <Route
-            path="/ApproveSI/:project"
-            element={<ApproveSocialIndividual />}
-          />
-          <Route path="/ApproveHOI/:project" element={<ApproveHIO />} />
-          <Route path="/ApproveEOI/:project" element={<ApproveEIO />} />
-          {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
 
           <Route
             path="/nextPhaseDevelopmentProject"
@@ -227,39 +178,63 @@ const App = () => {
             path="/EducationRuralUrbanTribalGroup"
             element={<EducationRuralUrbanTribalGroup />}
           />
+
+          {/**View Forms */}
+          {/**Edit Forms */}
+
+          {/**Important - Dashboard of the applicant and related links*/}
+          <Route path="/dashboardApplicant" element={<DashboardApplicant />} />
+
+          <Route path="/revertedProjects" element={<RevertedProjects />} />
           <Route
-            path="/AnnualRepEducationIndividual"
-            element={<AnnualRepEducationIndividual />}
+            path="/profileApplicant/:userDetails"
+            element={<ProfilePageApplicant />}
           />
           <Route
-            path="/AnnualRepHealthIndividual"
-            element={<AnnualRepHealthIndividual />}
+            path="/individualProjects/:selectedAppostolate"
+            element={<IndividualProjects />}
           />
           <Route
-            path="/AnnualSelfEmploymentReport"
-            element={<AnnualSelfEmployment />}
+            path="/groupProjects/:selectedAppostolate"
+            element={<GroupProjects />}
+          />
+          <Route path="/myProjects" element={<MyProjects />} />
+
+          {/**This second section is only accessible to reviewer */}
+          <Route path="/profileReviewer" element={<ProfilePageReviewer />} />
+          <Route
+            path="/profileApprover/:profile"
+            element={<ProfilePageApprover />}
+          />
+          <Route path="/dashboardReviewer" element={<DashboardReviewer />} />
+          <Route path="/dashboardApprover" element={<DashboardApprover />} />
+          <Route path="/verifyReviewer" element={<VerifyReviewer />} />
+          <Route path="/verifyApplicant" element={<VerifyApplicant />} />
+
+          <Route
+            path="/projectsToBeReviewed"
+            element={<ProjectsToBeReviewed />}
           />
           <Route
-            path="/BiAnnualLivelihoodIndividualReport"
-            element={<BiAnnualLivelihoodIndividual />}
+            path="/ProjectsToBeApproved/:profile"
+            element={<ProjectsToBeApproved />}
           />
+          <Route path="/MyReviewedProject" element={<MyReviewedProject />} />
+          <Route path="/ApprovedProjects/:profile" element={<ApprovedProjects />} />
           <Route
-            path="/allApplicantsReviewer"
-            element={<AllApplicantsReviewer />}
-          />
-          <Route
-            path="/BiAnnualEducationIndividualReport"
-            element={<BiAnnualEducationIndividualReport />}
-          />
-          <Route
-            path="/BiAnnualHealthIndividualReport"
-            element={<BiAnnualHealthIndividualReport />}
-          />
-          <Route
-            path="/AnnualEducationInstitutionReport"
-            element={<AnnualEducationInstitutionReport />}
+            path="/ApprovedProjectsForReviewer"
+            element={<ApprovedProjectsForReviewer reviewerProvince="north" />}
           />
 
+          <Route path="/ReviewHOI/:project" element={<ReviewHIO />} />
+          <Route path="/ReviewEOI/:project" element={<ReviewEIO />} />
+          <Route
+            path="/ApproveSI/:project"
+            element={<ApproveSocialIndividual />}
+          />
+          <Route path="/ApproveHOI/:project" element={<ApproveHIO />} />
+          <Route path="/ApproveEOI/:project" element={<ApproveEIO />} />
+          {/* <Route path="/ApproveSIO" element={<ApproveSIO />} /> */}
           <Route
             path="/ReviewWHFC/:project"
             element={<ReviewWelfareHomeForChildren />}
@@ -294,12 +269,13 @@ const App = () => {
           <Route path="/ApproveHIV/:project" element={<ApproveHIV />} />
 
           <Route path="/EditHIV/:project" element={<EditHIV />} />
-          <Route path="/EditCG" element={<EditCG />} />
+          <Route path="/EditCG/:project" element={<EditCG />} />
           <Route path="/EditNPDP" element={<EditNPDP />} />
           <Route path="/EditWHCG" element={<EditWHCG />} />
           <Route path="/EditISG" element={<EditISG />} />
           <Route path="/EditDPLG" element={<EditDPLG />} />
           <Route path="/EditEGS/:project" element={<EditEGS />} />
+          <Route path="/EditSI/:project" element={<EditSocialIndividual />} />
           <Route
             path="/EditEI/:project"
             element={<EditEducationIndividual />}
@@ -319,6 +295,60 @@ const App = () => {
           <Route path="/ViewSG/:project" element={<ViewISG />} />
           <Route path="/ViewWHFC/:project" element={<ViewWHFC />} />
           <Route path="/ViewSI/:project" element={<ViewSI />} />
+
+          {/**Approver Special Section */}
+          <Route
+            path="/allApplicantsApprover"
+            element={<AllApplicantsApprover />}
+          />
+
+          <Route
+          path="/allReviewersApprover"
+          element={<ReviewersUnderMe />}
+        />
+
+
+          {/**Report routes */}
+          <Route
+            path="/MonthlyReportDevelopment"
+            element={<MonthlyReportDevelopmentProject />}
+          />
+          <Route
+            path="/QuaterlyReportDevelopment"
+            element={<QuaterlyReportDevelopment />}
+          />
+          <Route
+            path="/AnnualRepEducationIndividual"
+            element={<AnnualRepEducationIndividual />}
+          />
+          <Route
+            path="/AnnualRepHealthIndividual"
+            element={<AnnualRepHealthIndividual />}
+          />
+          <Route
+            path="/AnnualSelfEmploymentReport"
+            element={<AnnualSelfEmployment />}
+          />
+          <Route
+            path="/BiAnnualLivelihoodIndividualReport"
+            element={<BiAnnualLivelihoodIndividual />}
+          />
+          <Route
+            path="/allApplicantsReviewer"
+            element={<AllApplicantsReviewer />}
+          />
+          <Route
+            path="/BiAnnualEducationIndividualReport"
+            element={<BiAnnualEducationIndividualReport />}
+          />
+          <Route
+            path="/BiAnnualHealthIndividualReport"
+            element={<BiAnnualHealthIndividualReport />}
+          />
+          <Route
+            path="/AnnualEducationInstitutionReport"
+            element={<AnnualEducationInstitutionReport />}
+          />
         </Routes>
       </Router>
     </ChakraProvider>

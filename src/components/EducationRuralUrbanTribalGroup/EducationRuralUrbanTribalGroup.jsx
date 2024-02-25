@@ -46,6 +46,9 @@ const EducationRuralUrbanTribalGroup = () => {
       identifiedProblems: "",
       needOfProject: "",
       beneficiarySelection: "",
+      evaluation: "",
+      monitoringProcess: "",
+      sustainability: "",
     },
     targetGroup: [
       {
@@ -69,9 +72,7 @@ const EducationRuralUrbanTribalGroup = () => {
         },
       ],
     },
-    evaluation: "",
-    monitoringProcess: "",
-    sustainability: "",
+  
     budget: [
       {
         description: "",
@@ -133,10 +134,9 @@ const EducationRuralUrbanTribalGroup = () => {
               means_of_verification: activity.verification,
             })),
           })),
+          
         },
-        sustainability: formData.sustainability,
-        monitoring_process_of_the_project: formData.monitoringProcess,
-        mode_of_evaluation: formData.evaluation,
+        
         budget: {
           expenses: formData.budget.map((item) => ({
             description: item.description,
@@ -144,6 +144,9 @@ const EducationRuralUrbanTribalGroup = () => {
           })),
           total: parseInt(calculateTotalCosts("cost")) ?? 0, // Should be calculated
         },
+        sustainability: formData.sustainability,
+        monitoring_process_of_the_project: formData.monitoringProcess,
+        mode_of_evaluation: formData.evaluation,
       },
     };
 

@@ -1,10 +1,8 @@
 // Import necessary libraries and components
-// done with integration 
-import React from "react";
-import { useNavigate } from "react-router-dom";
+// done with integration
+import React, { useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
-import authAxios , {setAuthToken} from '../../AuthAxios.js' ; 
-
+import authAxios, { setAuthToken } from "../../AuthAxios.js";
 import {
   Box,
   Button,
@@ -21,14 +19,47 @@ import {
   Text,
   Select,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const LoginPage = () => {
   const showToast = useToast();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("LoginPage");
+    // check if user is already logged in
+    if (localStorage.getItem("userToken")) {
+      // if there is a user token in the system just remove it
+      localStorage.removeItem("userToken");
+      setAuthToken();
+    }
+  }, []);
+
+  // Function to log out user on token expiry
+  const logOutOnTokenExpiry = () => {
+    // set timeout to log out user
+    setTimeout(async () => {
+      if (localStorage.getItem("userToken") !== null) {
+        // set time out from token expiry time
+        showToast({
+          title: "Session Expired",
+          status: "error",
+          duration: 10000,
+          isClosable: true,
+        });
+        console.log("Session Expired");
+        localStorage.removeItem("userToken");
+        setAuthToken();
+        await Promise.resolve(setTimeout(() => {}, 10000000));
+        console.log("Logging out");
+        navigate("/login" );
+      }
+      // token expires after one hour
+    }, 3600000);
+  };
   // Use Formik for form management
   const formik = useFormik({
     // Initial values and form validation schema using Yup
@@ -58,17 +89,19 @@ const LoginPage = () => {
         };
         let response;
         if (values.userType === "applicant") {
-          response = await authAxios.post("users/applicantlogin",req);
+          response = await authAxios.post("users/applicantlogin", req);
           if (response.data.isVarified !== true) {
             await showToast({
               title: "Await verification by the reviewer",
-              description : "Your account is waiting to be verified by the reviewer",
+              description:
+                "Your account is waiting to be verified by the reviewer",
               status: "loading",
               duration: 5000,
               isClosable: true,
             });
           } else {
-            navigate(`/dashboardApplicant`); 
+            // replace all other routes from navigate and naviagate to dashboardApplicant
+            navigate("/dashboardApplicant");
           }
         } else if (values.userType === "reviewer") {
           response = await authAxios.post("/users/reviewerlogin", req);
@@ -88,7 +121,7 @@ const LoginPage = () => {
               duration: 5000,
               isClosable: true,
             });
-            navigate(`/dashboardReviewer`); 
+            navigate(`/dashboardReviewer`);
           }
         } else if (values.userType === "approver") {
           response = await authAxios.post("/users/approverlogin", req);
@@ -99,7 +132,7 @@ const LoginPage = () => {
               duration: 5000,
               isClosable: true,
             });
-            navigate("/dashboardApprover"); 
+            navigate("/dashboardApprover");
           }
         } else {
           showToast({
@@ -113,8 +146,8 @@ const LoginPage = () => {
         console.log(response.data);
         setAuthToken(response.data.token);
         localStorage.setItem("userToken", response.data.token);
-        // axios.default.header
-        // console.log(axios.defaults.headers.common['Authorization']);
+        // call logout on token expiry
+        logOutOnTokenExpiry();
       } catch (error) {
         try {
           if (error.response.status === 400) {
@@ -142,12 +175,10 @@ const LoginPage = () => {
 
   // Function to toggle password visibility
   const handleTogglePasswordVisibility = () => {
-    formik.setFieldValue("password", ""); // Reset password field when toggling visibility
-    formik.setFieldTouched("password", false); // Reset touched state
     formik.setFieldValue("showPassword", !formik.values.showPassword);
   };
 
-  // Function to handle any change in zone and correspondingly get reviewers 
+  // Function to handle any change in zone and correspondingly get reviewers
 
   return (
     <VStack spacing={8} p={8} align="center" justify="center">
@@ -197,6 +228,8 @@ const LoginPage = () => {
           >
             <FormLabel>Password</FormLabel>
             <InputGroup>
+              {/**Password field with a button to make it visible while changing */}
+
               <Input
                 type={formik.values.showPassword ? "text" : "password"}
                 placeholder="********"

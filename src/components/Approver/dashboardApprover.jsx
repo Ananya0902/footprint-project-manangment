@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 
 const DashboardApprover = () => {
-  const showToast = useToast() ; 
+  const showToast = useToast();
   const [userDetails, setUserDetails] = useState({});
 
   useEffect(() => {
@@ -23,7 +23,6 @@ const DashboardApprover = () => {
         if (approversData.data.success === false) return;
         setUserDetails(approversData.data.data);
         console.log("userDetails", approversData.data.data);
-        
       } catch (error) {
         showToast({
           title: "Error getting approvers data",
@@ -70,6 +69,58 @@ const DashboardApprover = () => {
               borderRadius="full"
             >
               Approve Projects
+            </Button>
+          </Box>
+
+          {/* Verify Applicant Box */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="lg"
+            boxShadow="md"
+            width="100%"
+            textAlign="center"
+          >
+            <Heading size="md" mb={4} color="green.500">
+              Project Applicants and Executors
+            </Heading>
+            <Text fontSize="md" color="gray.600">
+              All the registered applicants and executors.
+            </Text>
+            <Button
+              as={Link}
+              to="/allApplicantsApprover"
+              colorScheme="green"
+              mt={4}
+              borderRadius="full"
+            >
+              All Applicants
+            </Button>
+          </Box>
+
+          {/* Verify Applicant Box */}
+          <Box
+            bg="white"
+            p={6}
+            borderRadius="lg"
+            boxShadow="md"
+            width="100%"
+            textAlign="center"
+          >
+            <Heading size="md" mb={4} color="green.500">
+              Presidents Of Societies
+            </Heading>
+            <Text fontSize="md" color="gray.600">
+              All the registered presidents of societies.
+            </Text>
+            <Button
+              as={Link}
+              to="/allReviewersApprover"
+              colorScheme="green"
+              mt={4}
+              borderRadius="full"
+            >
+              All Reviewers
             </Button>
           </Box>
 
@@ -144,7 +195,9 @@ const DashboardApprover = () => {
             </Text>
             <Button
               as={Link}
-              to="/ApprovedProjects"
+              to={`/ApprovedProjects/${encodeURIComponent(
+                JSON.stringify(userDetails)
+              )}`}
               colorScheme="green"
               mt={4}
               borderRadius="full"

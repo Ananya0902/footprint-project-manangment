@@ -121,9 +121,8 @@ const EducationGroup = () => {
     setIsLoading(true);
 
     // Add your form submission logic here
+    // for Project Coordinator no logic can be written as of now
     const req = {
-      comment_box_provincial_superior: `
-      Previous Comment : ${projectData.comment_box_provincial_superior}`,
       NameOfSociety: formData.NAMEOFTHESOCIETY,
       DateOfSubmission: formData.dATEOFSUBMISSION,
       TitleOfProject: formData.TITLEOFTHEPROJECT,

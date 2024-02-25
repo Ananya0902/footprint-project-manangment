@@ -44,10 +44,6 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
   },[])
 
 
-
-
-
-
   const handleLogin =async () => {
     const regpassword =
     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
@@ -55,6 +51,7 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
     expirationDate.setDate(expirationDate.getDate() + 7);
 
     const newErrors = {};
+    
     if (email.trim() === "") {
       newErrors.email = "Enter Email";
     }

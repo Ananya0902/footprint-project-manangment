@@ -259,7 +259,6 @@ const EditHIV = () => {
         },
       ],
     },
-   
   });
 
   console.log(formData);
@@ -336,20 +335,6 @@ const EditHIV = () => {
     setFormData(updatedData);
   };
 
-  const handleAddAchievement = (category) => {
-    setAchievements((prevAchievements) => ({
-      ...prevAchievements,
-      [category]: [...prevAchievements[category], ""],
-    }));
-  };
-
-  const handleAchievementChange = (category, index, value) => {
-    setAchievements((prevAchievements) => {
-      const updatedAchievements = [...prevAchievements[category]];
-      updatedAchievements[index] = value;
-      return { ...prevAchievements, [category]: updatedAchievements };
-    });
-  };
   const handleChangePersonalSituation = (e, category, year) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -364,34 +349,6 @@ const EditHIV = () => {
     const updatedData = { ...formData };
     updatedData.economicBackground[field] = e.target.value;
     setFormData(updatedData);
-  };
-  const handleChangeMultipleSupport = (e, category, gender, year) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      multipleSupport: {
-        ...prevData.multipleSupport,
-        [category]: {
-          ...prevData.multipleSupport[category],
-          [gender]: {
-            ...prevData.multipleSupport[category][gender],
-            [year]: e.target.value,
-          },
-        },
-      },
-    }));
-  };
-
-  const handleChangeStatisticTable = (e, category) => {
-    const year = e.target.getAttribute("data-year");
-    const value = e.target.value;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [category]: {
-        ...prevData[category],
-        [year]: value,
-      },
-    }));
   };
 
   const handleChange = (e) => {
@@ -431,10 +388,200 @@ const EditHIV = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await authAxios.put("/projects/editHIVReviewer", {
-        comment: formData.comment,
-        agree: formData.provincialSuperiorAgreement,
+      const req = {
+        project_title: formData.projectTitle,
+        general_information: {
+          project_region: formData.projectRegion,
+          institution_name: formData.institutionName,
+          overall_project_period: formData.overallProjectPeriod,
+          overall_project_budget: formData.overallProjectBudget,
+        },
+        mailing_list: {
+          president_of_the_society: {
+            name: formData.presidentOfSocietyName,
+            email: formData.presidentOfSocietyEmail,
+          },
+        },
+        key_information: {
+          support_programmes_till_date: formData.supportProgrammesTillDate,
+          age_profile_of_children_and_youth: [
+            {
+              age_category: "Children below 5 years",
+              education: "Bridge education",
+              present_academic_year: formData.bridgeEducationPresentYear,
+              previous_year: formData.bridgeEducationPreviousYear,
+            },
+            {
+              age_category: "Children below 5 years",
+              education: "Kindergarten",
+              present_academic_year: formData.kindergartenPresentYear,
+              previous_year: formData.kindergartenPreviousYear,
+            },
+            {
+              age_category: "Children below 5 years",
+              education: "Other",
+              present_academic_year: formData.otherEducationPresentYear,
+              previous_year: formData.otherEducationPreviousYear,
+            },
+            {
+              age_category: "Children between 6 to 10 years",
+              education: "Bridge School",
+              present_academic_year: formData.bridgeSchoolPresentYear,
+              previous_year: formData.bridgeSchoolPreviousYear,
+            },
+            {
+              age_category: "Children between 6 to 10 years",
+              education: "Primary School",
+              present_academic_year: formData.primarySchoolPresentYear,
+              previous_year: formData.primarySchoolPreviousYear,
+            },
+            {
+              age_category: "Children between 6 to 10 years",
+              education: "Other",
+              present_academic_year: formData.otherEducation610PresentYear,
+              previous_year: formData.otherEducation610PreviousYear,
+            },
+            {
+              age_category: "Youth between 11 to 15 years old",
+              education: "Secondary School",
+              present_academic_year: formData.secondarySchoolPresentYear,
+              previous_year: formData.secondarySchoolPreviousYear,
+            },
+            {
+              age_category: "Youth between 11 to 15 years old",
+              education: "High School",
+              present_academic_year: formData.highSchoolPresentYear,
+              previous_year: formData.highSchoolPreviousYear,
+            },
+            {
+              age_category: "Youth between 11 to 15 years old",
+              education: "Other",
+              present_academic_year: formData.otherEducation1115PresentYear,
+              previous_year: formData.otherEducation1115PreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Undergraduate",
+              present_academic_year: formData.undergraduatePresentYear,
+              previous_year: formData.undergraduatePreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Technical/Vocational Education",
+              present_academic_year:
+                formData.technicalVocationalEducationPresentYear,
+              previous_year: formData.technicalVocationalEducationPreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Other",
+              present_academic_year: formData.otherEducation16AbovePresentYear,
+              previous_year: formData.otherEducation16AbovePreviousYear,
+            },
+            {
+              age_category: "Youth 16 and above",
+              education: "Bridge School",
+              present_academic_year:
+                formData.youth16AndAbovebridgeSchoolPresentYear,
+              previous_year: formData.youth16AndAbovebridgeSchoolPreviousYear,
+            },
+          ],
+          personal_situation_of_children_youth: [
+            {
+              description: "Children/students with parents",
+              previous_year:
+                formData.personalSituation.childrenWithParentsPreviousYear,
+              present_academic_year:
+                formData.personalSituation.childrenWithParentsPresentYear,
+            },
+            {
+              description: "Semi-orphans (living with relatives)",
+              previous_year: formData.personalSituation.semiOrphansPreviousYear,
+              present_academic_year:
+                formData.personalSituation.semiOrphansPresentYear,
+            },
+            {
+              description: "Orphans",
+              previous_year: formData.personalSituation.orphansPreviousYear,
+              present_academic_year:
+                formData.personalSituation.orphansPresentYear,
+            },
+            {
+              description: "HIV-infected/affected",
+              previous_year:
+                formData.personalSituation.hivInfectedAffectedPreviousYear,
+              present_academic_year:
+                formData.personalSituation.hivInfectedAffectedPresentYear,
+            },
+            {
+              description: "Differently-abled children",
+              previous_year:
+                formData.personalSituation.differentlyAbledChildrenPreviousYear,
+              present_academic_year:
+                formData.personalSituation.differentlyAbledChildrenPresentYear,
+            },
+            {
+              description: "Parents in conflict",
+              previous_year:
+                formData.personalSituation.parentsInConflictPreviousYear,
+              present_academic_year:
+                formData.personalSituation.parentsInConflictPresentYear,
+            },
+            {
+              description: "Other aliments",
+              previous_year:
+                formData.personalSituation.otherAlimentsPreviousYear,
+              present_academic_year:
+                formData.personalSituation.otherAlimentsPresentYear,
+            },
+          ],
+          economic_background_of_parents: [
+            {
+              description: "Agricultural Labour",
+              number: formData.economicBackground.agriculturalLabour,
+            },
+            {
+              description:
+                "Marginal farmers (Number of parents with less than two and half acres of land)",
+              number: formData.economicBackground.marginalFarmers,
+            },
+            {
+              description: "Parents self-employed",
+              number: formData.economicBackground.parentsSelfEmployed,
+            },
+            {
+              description: "Parents working in the informal sector",
+              number: formData.economicBackground.parentsInformalSector,
+            },
+            {
+              description: "Any other",
+              number: formData.economicBackground.anyOther,
+            },
+          ],
+        },
+        challenges_faced_by_the_benificiary: formData.challengesFaced,
+        focus_areas_in_present_year: formData.focusAreasDescription,
+        solution_analysis_logical_framework: formData.logicalFramework,
+        sustainability: formData.sustainability,
+        monitoring_and_evaluation: formData.monitoringProcess,
+        budget: {
+          budget_particular: budgetRows.map((budget) => {
+            return {
+              expense_description: budget.description,
+              costs_last_year: budget.costsLastYear,
+              budget_current_year: budget.budgetCurrentYear,
+            };
+          }),
+          total: {
+            costs_last_year: calculateTotalCosts("costsLastYear"),
+            budget_current_year: calculateTotalCosts("budgetCurrentYear"),
+          },
+        },
+      };
+
+      const res = await authAxios.put("/projects/editHIV", {
         project_number: projectData.project_number,
+        ...req,
       });
       console.log(res);
       if (res.data.success) {
@@ -446,6 +593,7 @@ const EditHIV = () => {
       } else {
         showToast({
           title: "Review unsuccesful",
+          description: res.data.message,
           duration: 5000,
           status: "error",
         });
@@ -461,7 +609,7 @@ const EditHIV = () => {
     }
   };
 
-  return (
+   return (
     <ChakraProvider>
       <Box p={4}>
         <Heading as="h1" size="xl" mb={6} align="center">
@@ -478,14 +626,13 @@ const EditHIV = () => {
         <form onSubmit={handleSubmit}>
           {/* Project Information */}
 
-          <FormControl isRequired mb={4}>
+          <FormControl mb={4}>
             <FormLabel>Project Title</FormLabel>
             <Input
               type="text"
               name="projectTitle"
               onChange={handleChange}
               value={formData.projectTitle || ""}
-              required
             />
           </FormControl>
 
@@ -494,47 +641,43 @@ const EditHIV = () => {
             General Information
           </Heading>
 
-          <FormControl isRequired mb={4}>
+          <FormControl mb={4}>
             <FormLabel>Project Region</FormLabel>
             <Input
               type="text"
               name="projectRegion"
               onChange={handleChange}
               value={formData.projectRegion || ""}
-              required
             />
           </FormControl>
 
-          <FormControl isRequired mb={4}>
+          <FormControl mb={4}>
             <FormLabel>Institution Name</FormLabel>
             <Input
               type="text"
               name="institutionName"
               onChange={handleChange}
               value={formData.institutionName || ""}
-              required
             />
           </FormControl>
 
-          <FormControl isRequired mb={4}>
+          <FormControl mb={4}>
             <FormLabel>Overall Project Period</FormLabel>
             <Input
               type="text"
               name="overallProjectPeriod"
               onChange={handleChange}
               value={formData.overallProjectPeriod || ""}
-              required
             />
           </FormControl>
 
-          <FormControl isRequired mb={4}>
+          <FormControl mb={4}>
             <FormLabel>Overall Project Budget</FormLabel>
             <Input
-              type="text"
+              type="number"
               name="overallProjectBudget"
               onChange={handleChange}
               value={formData.overallProjectBudget || ""}
-              required
             />
           </FormControl>
 
@@ -561,7 +704,6 @@ const EditHIV = () => {
                     name="presidentOfSocietyName"
                     onChange={handleChange}
                     value={formData.presidentOfSocietyName || ""}
-                    required
                   />
                 </Td>
                 <Td>
@@ -570,29 +712,6 @@ const EditHIV = () => {
                     name="presidentOfSocietyEmail"
                     onChange={handleChange}
                     value={formData.presidentOfSocietyEmail || ""}
-                    required
-                  />
-                </Td>
-                
-              </Tr>{/* Row 2 */}
-              <Tr>
-                <Td>Project Incharge</Td>
-                <Td>
-                  <Input
-                    type="text"
-                    name="mailingList.projectInCharge.name"
-                    onChange={handleChange}
-                    value={formData.mailingList.projectInCharge.name || ""}
-                    required
-                  />
-                </Td>
-                <Td>
-                  <Input
-                    type="email"
-                    name="mailingList.projectInCharge.email"
-                    onChange={handleChange}
-                    value={formData.mailingList.projectInCharge.email || ""}
-                    required
                   />
                 </Td>
               </Tr>
@@ -617,13 +736,12 @@ const EditHIV = () => {
             Key Information
           </Heading>
 
-          <FormControl isRequired mb={4}>
+          <FormControl mb={4}>
             <FormLabel>Support Programmes Till Date</FormLabel>
             <Textarea
-              name="Support Programmes Till Date"
+              name="supportProgrammesTillDate"
               onChange={handleChange}
               value={formData.supportProgrammesTillDate || ""}
-              required
             />
           </FormControl>
 
@@ -651,20 +769,18 @@ const EditHIV = () => {
                 <Td>Bridge education</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeEducationPreviousYear"
                     onChange={handleChange}
-                    value={formData.bridgeEducation.previousYear || ""}
-                    required
+                    value={formData.bridgeEducationPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeEducationPresentYear"
                     onChange={handleChange}
-                    value={formData.bridgeEducation.presentYear || ""}
-                    required
+                    value={formData.bridgeEducationPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -674,20 +790,18 @@ const EditHIV = () => {
                 <Td>Kindergarten</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="kindergartenPreviousYear"
                     onChange={handleChange}
-                    value={formData.kindergarten.previousYear || ""}
-                    required
+                    value={formData.kindergartenPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="kindergartenPresentYear"
                     onChange={handleChange}
-                    value={formData.kindergarten.presentYear || ""}
-                    required
+                    value={formData.kindergartenPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -697,20 +811,18 @@ const EditHIV = () => {
                 <Td>Other:</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducationPreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation.previousYear || ""}
-                    required
+                    value={formData.otherEducationPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducationPresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation.presentYear || ""}
-                    required
+                    value={formData.otherEducationPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -735,20 +847,18 @@ const EditHIV = () => {
                 <Td>Bridge School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeSchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.bridgeSchool.previousYear || ""}
-                    required
+                    value={formData.bridgeSchoolPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="bridgeSchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.bridgeSchool.presentYear || ""}
-                    required
+                    value={formData.bridgeSchoolPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -758,20 +868,18 @@ const EditHIV = () => {
                 <Td>Primary School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="primarySchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.primarySchool.previousYear || ""}
-                    required
+                    value={formData.primarySchoolPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="primarySchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.primarySchool.presentYear || ""}
-                    required
+                    value={formData.primarySchoolPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -781,20 +889,18 @@ const EditHIV = () => {
                 <Td>Other</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation610PreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation610.previousYear || ""}
-                    required
+                    value={formData.otherEducation610PreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation610PresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation610.presentYear || ""}
-                    required
+                    value={formData.otherEducation610PresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -819,20 +925,18 @@ const EditHIV = () => {
                 <Td>Secondary School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="secondarySchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.secondarySchool.previousYear}
-                    required
+                    value={formData.secondarySchoolPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="secondarySchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.secondarySchool.presentYear || ""}
-                    required
+                    value={formData.secondarySchoolPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -842,20 +946,18 @@ const EditHIV = () => {
                 <Td>High School</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="highSchoolPreviousYear"
                     onChange={handleChange}
-                    value={formData.highSchool.previousYear || ""}
-                    required
+                    value={formData.highSchoolPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="highSchoolPresentYear"
                     onChange={handleChange}
-                    value={formData.highSchool.presentYear || ""}
-                    required
+                    value={formData.highSchoolPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -865,20 +967,18 @@ const EditHIV = () => {
                 <Td>Other</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation1115PreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation1115.previousYear || ""}
-                    required
+                    value={formData.otherEducation1115PreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation1115PresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation1115.presentYear || ""}
-                    required
+                    value={formData.otherEducation1115PresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -902,20 +1002,18 @@ const EditHIV = () => {
                 <Td>Undergraduate</Td>
                 <Td>
                   <Input
-                    type="text"
-                    name="undergraduate.previousYear"
+                    type="number"
+                    name="undergraduatePreviousYear"
                     onChange={handleChange}
-                    value={formData.undergraduate.previousYear || ""}
-                    required
+                    value={formData.undergraduatePreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="undergraduatePresentYear"
                     onChange={handleChange}
-                    value={formData.undergraduate.presentYear || ""}
-                    required
+                    value={formData.undergraduatePresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -923,24 +1021,22 @@ const EditHIV = () => {
                 <Td>Technical/Vocational education</Td>
                 <Td>
                   <Input
-                    type="text"
-                    name="technicalVocationalEducation.previousYear"
+                    type="number"
+                    name="technicalVocationalEducationPreviousYear"
                     onChange={handleChange}
                     value={
-                      formData.technicalVocationalEducation.previousYear || ""
+                      formData.technicalVocationalEducationPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="technicalVocationalEducationPresentYear"
                     onChange={handleChange}
                     value={
-                      formData.technicalVocationalEducation.presentYear || ""
+                      formData.technicalVocationalEducationPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -948,24 +1044,22 @@ const EditHIV = () => {
                 <Td>Bridge School</Td>
                 <Td>
                   <Input
-                    type="text"
-                    name="youth16AndAbovebridgeSchool.previousYear"
+                    type="number"
+                    name="youth16AndAbovebridgeSchoolPreviousYear"
                     onChange={handleChange}
                     value={
-                      formData.youth16AndAbovebridgeSchool.previousYear || ""
+                      formData.youth16AndAbovebridgeSchoolPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="youth16AndAbovebridgeSchoolPresentYear"
                     onChange={handleChange}
                     value={
-                      formData.youth16AndAbovebridgeSchool.presentYear || ""
+                      formData.youth16AndAbovebridgeSchoolPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -973,20 +1067,18 @@ const EditHIV = () => {
                 <Td>Other</Td>
                 <Td>
                   <Input
-                    type="text"
-                    name="otherEducation16Above.previousYear"
+                    type="number"
+                    name="otherEducation16AbovePreviousYear"
                     onChange={handleChange}
-                    value={formData.otherEducation16Above.previousYear || ""}
-                    required
+                    value={formData.otherEducation16AbovePreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherEducation16AbovePresentYear"
                     onChange={handleChange}
-                    value={formData.otherEducation16Above.presentYear || ""}
-                    required
+                    value={formData.otherEducation16AbovePresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -1012,8 +1104,8 @@ const EditHIV = () => {
                 <Td>Children/students with parents</Td>
                 <Td>
                   <Input
-                    type="text"
-                    name="childrenWithParents.previousYear"
+                    type="number"
+                    name="childrenWithParentsPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
                         e,
@@ -1022,15 +1114,14 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.childrenWithParents
-                        .previousYear || ""
+                      formData.personalSituation
+                        .childrenWithParentsPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="childrenWithParentsPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1040,10 +1131,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.childrenWithParents
-                        .presentYear || ""
+                      formData.personalSituation
+                        .childrenWithParentsPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1053,7 +1143,7 @@ const EditHIV = () => {
                 <Td>Semi-orphans (living with relatives)</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="semiOrphansPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1063,14 +1153,13 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.semiOrphans.previousYear || ""
+                      formData.personalSituation.semiOrphansPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="semiOrphansPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1080,9 +1169,8 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.semiOrphans.presentYear || ""
+                      formData.personalSituation.semiOrphansPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1092,7 +1180,7 @@ const EditHIV = () => {
                 <Td>Orphans</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="orphansPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1101,21 +1189,17 @@ const EditHIV = () => {
                         "PreviousYear"
                       )
                     }
-                    value={
-                      formData.personalSituation.orphans.previousYear || ""
-                    }
-                    required
+                    value={formData.personalSituation.orphansPreviousYear || ""}
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="orphansPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(e, "orphans", "PresentYear")
                     }
-                    value={formData.personalSituation.orphans.presentYear || ""}
-                    required
+                    value={formData.personalSituation.orphansPresentYear || ""}
                   />
                 </Td>
               </Tr>
@@ -1125,7 +1209,7 @@ const EditHIV = () => {
                 <Td>HIV-infected/affected</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="hivInfectedAffectedPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1135,15 +1219,14 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.hivInfectedAffected
-                        .previousYear || ""
+                      formData.personalSituation
+                        .hivInfectedAffectedPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="hivInfectedAffectedPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1153,10 +1236,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.hivInfectedAffected
-                        .presentYear || ""
+                      formData.personalSituation
+                        .hivInfectedAffectedPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1166,7 +1248,7 @@ const EditHIV = () => {
                 <Td>Differently-abled children</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="differentlyAbledChildrenPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1176,15 +1258,14 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.differentlyAbledChildren
-                        .previousYear || ""
+                      formData.personalSituation
+                        .differentlyAbledChildrenPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="differentlyAbledChildrenPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1194,10 +1275,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.differentlyAbledChildren
-                        .presentYear || ""
+                      formData.personalSituation
+                        .differentlyAbledChildrenPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1207,7 +1287,7 @@ const EditHIV = () => {
                 <Td>Parents in conflict</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="parentsInConflictPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1217,15 +1297,14 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.parentsInConflict
-                        .previousYear || ""
+                      formData.personalSituation
+                        .parentsInConflictPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="parentsInConflictPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1235,10 +1314,9 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.parentsInConflict
-                        .presentYear || ""
+                      formData.personalSituation.parentsInConflictPresentYear ||
+                      ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1248,7 +1326,7 @@ const EditHIV = () => {
                 <Td>Other aliments</Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherAlimentsPreviousYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1258,15 +1336,13 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.otherAliments.previousYear ||
-                      ""
+                      formData.personalSituation.otherAlimentsPreviousYear || ""
                     }
-                    required
                   />
                 </Td>
                 <Td>
                   <Input
-                    type="text"
+                    type="number"
                     name="otherAlimentsPresentYear"
                     onChange={(e) =>
                       handleChangePersonalSituation(
@@ -1276,9 +1352,8 @@ const EditHIV = () => {
                       )
                     }
                     value={
-                      formData.personalSituation.otherAliments.presentYear || ""
+                      formData.personalSituation.otherAlimentsPresentYear || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1309,7 +1384,6 @@ const EditHIV = () => {
                       handleChangeEconomicBackground(e, "agriculturalLabour")
                     }
                     value={formData.economicBackground.agriculturalLabour || ""}
-                    required
                   />
                 </Td>
               </Tr>
@@ -1328,7 +1402,6 @@ const EditHIV = () => {
                       handleChangeEconomicBackground(e, "marginalFarmers")
                     }
                     value={formData.economicBackground.marginalFarmers || ""}
-                    required
                   />
                 </Td>
               </Tr>
@@ -1346,7 +1419,6 @@ const EditHIV = () => {
                     value={
                       formData.economicBackground.parentsSelfEmployed || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1364,7 +1436,6 @@ const EditHIV = () => {
                     value={
                       formData.economicBackground.parentsInformalSector || ""
                     }
-                    required
                   />
                 </Td>
               </Tr>
@@ -1380,7 +1451,6 @@ const EditHIV = () => {
                       handleChangeEconomicBackground(e, "anyOther")
                     }
                     value={formData.economicBackground.anyOther || ""}
-                    required
                   />
                 </Td>
               </Tr>
@@ -1393,12 +1463,11 @@ const EditHIV = () => {
               Challenges Faced By The Benificiary
             </Heading>
             <Textarea
-              name="challengesFacedByTheBenificiary"
+              name="challengesFaced"
               value={formData.challengesFaced}
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
-              required
             />
           </Box>
           {/* Focus Areas in the Present Year */}
@@ -1419,7 +1488,6 @@ const EditHIV = () => {
               onChange={handleChange}
               placeholder="Enter text..."
               size="md"
-              required
             />
           </Box>
 
@@ -1488,12 +1556,12 @@ const EditHIV = () => {
                         }
                         required
                       />
-                      {/* <Button
+                      <Button
                         onClick={() => handleAddResult(index)}
                         colorScheme="teal"
                       >
                         Add Result
-                      </Button> */}
+                      </Button>
                     </VStack>
                   ))}
                 </FormControl>
@@ -1544,7 +1612,7 @@ const EditHIV = () => {
                           </Td>
                           <Td>
                             {/* Timeframe */}
-                            <FormControl isRequired>
+                            <FormControl>
                               <FormLabel>Timeframe</FormLabel>
                               {activity.timeframe.map((value, monthIndex) => (
                                 <Checkbox
@@ -1556,7 +1624,6 @@ const EditHIV = () => {
                                       !activity.timeframe[monthIndex];
                                     console.log(activity.timeframe);
                                   }}
-                                  required
                                 >
                                   {new Date(2024, monthIndex).toLocaleString(
                                     "default",
@@ -1571,21 +1638,21 @@ const EditHIV = () => {
                     </Tbody>
                   </Table>
 
-                  {/* <Button
+                  <Button
                     onClick={() => handleAddActivity(index)}
                     colorScheme="teal"
                   >
                     Add Activity
-                  </Button> */}
+                  </Button>
                 </FormControl>
 
-                {/* <Button
+                <Button
                   onClick={handleAddObjective}
                   colorScheme="purple"
                   ml="auto"
                 >
                   Add Objective
-                </Button> */}
+                </Button>
                 <hr />
               </VStack>
             </Box>
@@ -1618,7 +1685,7 @@ const EditHIV = () => {
             </FormLabel>
             <Textarea
               name="monitoringProcess"
-              value={formData.monitoringAndEvaluation}
+              value={formData.monitoringProcess}
               onChange={(e) => handleChange(e)}
               required
             />
@@ -1637,70 +1704,70 @@ const EditHIV = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {budgetRows.map((row, index) => {
-                return (
-                  <Tr key={index}>
-                    <Td>
-                      <Input type="text" value={row.description} required />
-                    </Td>
-                    <Td>
-                      <Input type="number" value={row.costsLastYear} required />
-                    </Td>
-                    <Td>
-                      <Input
-                        type="number"
-                        value={row.budgetCurrentYear}
-                        required
-                      />
-                    </Td>
-                  </Tr>
-                );
-              })}
+              {budgetRows.map((row, index) => (
+                <Tr key={index}>
+                  <Td>
+                    <Input
+                      type="text"
+                      value={row.description}
+                      onChange={(e) =>
+                        handleBudgetChange(index, "description", e.target.value)
+                      }
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      value={row.costsLastYear}
+                      onChange={(e) =>
+                        handleBudgetChange(
+                          index,
+                          "costsLastYear",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Td>
+                  <Td>
+                    <Input
+                      type="number"
+                      value={row.budgetCurrentYear}
+                      onChange={(e) =>
+                        handleBudgetChange(
+                          index,
+                          "budgetCurrentYear",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
-          <FormControl isRequired>
+
+          {/* Add row button */}
+          <Button colorScheme="teal" onClick={handleAddBudgetRow}>
+            Add Expense
+          </Button>
+
+          {/* Total Costs */}
+
+          <FormControl>
             <FormLabel>Total Costs Last Year</FormLabel>
-            <Input value={calculateTotalCosts("costsLastYear")} readOnly />
+            <Input value={calculateTotalCosts("costsLastYear")} isReadOnly />
           </FormControl>
-          <FormControl isRequired mt={2}>
+          <FormControl mt={2}>
             <FormLabel>Total Budget Current Year</FormLabel>
             <Input
               value={calculateTotalCosts("budgetCurrentYear")}
-              readOnly
+              isReadOnly
             />
           </FormControl>
-
-          <Heading as="h1" size="xl" mb={6}>
-            Signatures
-          </Heading>
-
-          {/* Project-In-Charge agreement */}
-          <FormControl isRequired>
-            Project-In Charge Agree
-            <Input
-              type="date"
-              name="projectInChargeAgreementDate"
-              onChange={handleChange}
-              value={formData.mailingList.projectInCharge.date.substring(0, 10)}
-              required
-            />
-          </FormControl>
-
-         
-          
 
           {/* Submit Button */}
-          <Button
-            colorScheme="blue"
-            mx={3}
-            type="submit"
-            onClick={() => (formData.provincialSuperiorAgreement = true)}
-          >
+          <Button colorScheme="blue" type="submit">
             Submit
-          </Button>
-          {/* decline Button */}
-          <Button colorScheme="red" mx={3} type="submit">
-            Decline
           </Button>
         </form>
       </Box>

@@ -1,60 +1,300 @@
-// ApprovedProjects.jsx
-
-
-import React, { useEffect,useState } from 'react';
+// projectsToBeReviewed.jsx
+import React, { useEffect, useReducer, useState } from "react";
 import {
   ChakraProvider,
   Box,
   Heading,
+  Text,
   Button,
   VStack,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-} from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
-import authAxios from '../../AuthAxios';
+  useToast,
+} from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import authAxios from "../../AuthAxios";
+import { useParams } from "react-router-dom";
 
-// Dummy data, replace this with your actual data
-const initialApprovedProjects = [
-  { id: 1, title: 'Approved Project 1' },
-  { id: 2, title: 'Approved Project 2' },
-  // Add more approved projects as needed
-];
+const ApproveProjects = () => {
+  const approverProfile = JSON.parse(decodeURIComponent(useParams().profile));
+  // const [yearFilter, setYearFilter] = useState(0);
+  // const [typeFilter, setTypeFilter] = useState(null);
 
-const ApprovedProjects = () => {
-  const [approvedProjects, setApprovedProjects] = useState(initialApprovedProjects);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  // What I want is a filtering feature
+  // the selected feature filter shall determine the course of action
+  // filter by type can be one
+  // filter by year can be other
+  // by default one of the updated at or created at shall be made the default thingy
+  // that will affect the code at the end
 
+  // Code ??
 
-  
+  // const filterByYear = (object, year) => {
+  //   // this shall modify the project list
+  //   // filter will work as follows
+  //   //mapped project.filter((project)=>project.created_at.getFullYear() === year)
+  // };
+
+  const showToast = useToast();
+  const [projectList, setProjectList] = useReducer(
+    (prev, next) => {
+      const newProjectList = { ...prev, ...next };
+      return newProjectList;
+    },
+    {
+      getAllHOI: [],
+      getAllEOI: [],
+    }
+  );
+
+  // what Happens if one projectCoordinator decides to revert while other does not care
+  // Tough nut that becomes hard to crack
+  console.log(approverProfile._id);
+  const approved = (projectCoordinator) => projectCoordinator;
+
+  const individualFilter = (value) =>
+    value.comment_box_project_coordinator !== null &&
+    value.provincial_superior_agree.agree &&
+    value.project_coordinator_agree.agree;
+
   useEffect(() => {
     const getAllProject = async () => {
       // get all the three types of projects
+      async function fetchDataForApproverRoute(route) {
+        try {
+          const response = await authAxios.get(`projects/${route}`);
+          console.log(route, response);
+          const data = response.data.data ?? [];
+          return data;
+        } catch (error) {
+          console.log(route, error);
+          return [];
+        }
+      }
+
       try {
-        const getAllHOI = (await authAxios.get("projects/getallHOIapprover"))
-          .data.data;
-        const getAllEOI =
-          (await authAxios.get("projects/getallEOIapprover")).data.data ?? [];
+        const getAllHOIData = await fetchDataForApproverRoute(
+          "getAllHOIApprover"
+        );
+        const getAllHOI = getAllHOIData ?? [];
 
+        const getAllEGData = await fetchDataForApproverRoute(
+          "getAllEGApprover"
+        );
+        const getAllEGApprover = getAllEGData ?? [];
 
-        const newProjectList = [...getAllHOI , ...getAllEOI].filter(
-          (val)=>val.project_coordinator_agree.agree === true,
-        ).map(
-          (project) => {
+        const getAllEIApproverData = await fetchDataForApproverRoute(
+          "getallEIApprover"
+        );
+        const getAllEIApprover = getAllEIApproverData ?? [];
+
+        const getAllSIApproverData = await fetchDataForApproverRoute(
+          "getallSIApprover"
+        );
+        const getAllSIApprover = getAllSIApproverData ?? [];
+
+        const getAllDPLGApproverData = await fetchDataForApproverRoute(
+          "getallDPLGApprover"
+        );
+        const getAllDPLGApprover = getAllDPLGApproverData ?? [];
+
+        const getAllHIVApproverData = await fetchDataForApproverRoute(
+          "getAllHIVApprover"
+        );
+        const getAllHIVApprover = getAllHIVApproverData ?? [];
+
+        const getAllWHFCApproverData = await fetchDataForApproverRoute(
+          "getAllWHFCApprover"
+        );
+        const getAllWHFCApprover = getAllWHFCApproverData ?? [];
+
+        const getAllEGSApproverData = await fetchDataForApproverRoute(
+          "getAllEGSApprover"
+        );
+        const getAllEGSApprover = getAllEGSApproverData ?? [];
+
+        const getAllNPDPApproverData = await fetchDataForApproverRoute(
+          "getAllNPDPApprover"
+        );
+        const getAllNPDPApprover = getAllNPDPApproverData ?? [];
+
+        const getAllEOIApproverData = await fetchDataForApproverRoute(
+          "getallEOIApprover"
+        );
+        const getAllEOIApprover = getAllEOIApproverData ?? [];
+
+        const getAllISGApproverData = await fetchDataForApproverRoute(
+          "/getallISGApprover"
+        );
+        const getAllISGApprover = getAllISGApproverData ?? [];
+
+        const getAllCGApproverData = await fetchDataForApproverRoute(
+          "/getallCGApprover"
+        );
+        const getAllCGApprover = getAllCGApproverData ?? [];
+
+        // Anyone approving individual projects is good
+        // for group projects you have two approver
+
+        // approved projects shall only be those whose comment is not null and
+        // agree field is true for both
+
+        const newProjectList = {
+          // individual
+          // provincial supperior should agree and rp
+          HOI: getAllHOI.filter(individualFilter).map((project) => {
             return {
               id: project.project_code,
               project: project,
             };
-          }
-        );
+          }),
+          // group project - education group
+          EGS: getAllEGSApprover
+            .filter((value) =>
+              // logic
+              value?.general_information?.project_coordinators?.find(approved)
+                ? false
+                : true &&
+                  value?.general_information?.provincial_superior.agree &&
+                  value?.general_information?.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              console.log(approverProfile._id);
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          EI: getAllEIApprover.filter(individualFilter).map((project) => {
+            return {
+              id: project.project_code,
+              project: project,
+            };
+          }),
+          SI: getAllSIApprover.filter(individualFilter).map((project) => {
+            return {
+              id: project.project_code,
+              project: project,
+            };
+          }),
+          DPLG: getAllDPLGApprover
+            .filter((value) =>
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          HIV: getAllHIVApprover
+            .filter((value) =>
+              value.mailing_list.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          WHFC: getAllWHFCApprover
+            .filter((value) => {
+              console.log(
+                approverProfile._id,
+                value.mailing_list.project_coordinators
+              );
+              return value.mailing_list.project_coordinators.find(approved)
+                ? false
+                : true &&
+                    value?.mailing_list.provincial_superior.agree &&
+                    value.mailing_list.project_coordinators.length >= 2;
+            })
+            .map((project) => {
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          NPDP: getAllNPDPApprover
+            .filter((value) =>
+              value.mailing_list.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.mailing_list.provincial_superior.agree &&
+                  value.mailing_list.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              return {
+                id: project.project_number,
+                project: project,
+              };
+            }),
+          EOI: getAllEOIApprover.filter(individualFilter).map((project) => {
+            return {
+              id: project.project_code,
+              project: project,
+            };
+          }),
+          ISG: getAllISGApprover
+            .filter((value) =>
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          CG: getAllCGApprover
+            .filter((value) =>
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+          EG: getAllEGApprover
+            .filter((value) =>
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length >= 2
+            )
+            .map((project) => {
+              return {
+                id: project.project_code,
+                project: project,
+              };
+            }),
+        };
 
-        setApprovedProjects(newProjectList);
+        setProjectList(newProjectList);
+        console.log("projectList", projectList);
       } catch (error) {
+        showToast({
+          title: "Error",
+          description: "Error fetching projects",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
         console.log(error);
       }
     };
@@ -63,28 +303,7 @@ const ApprovedProjects = () => {
 
     return () => {};
   }, []);
-  
-
-  const onDelete = (projectId) => {
-    setSelectedProject(projectId);
-    setIsDeleteAlertOpen(true);
-  };
-
-  const handleDelete = () => {
-    // Handle project deletion logic here
-    const updatedProjects = approvedProjects.filter((project) => project.id !== selectedProject);
-    setApprovedProjects(updatedProjects);
-
-    setIsDeleteAlertOpen(false);
-    // Display an alert or perform any other necessary actions after deletion
-    alert(`Project ${selectedProject} deleted successfully.`);
-  };
-
-  const onCloseDeleteAlert = () => {
-    setSelectedProject(null);
-    setIsDeleteAlertOpen(false);
-  };
-
+  console.log(projectList);
   return (
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
@@ -93,72 +312,40 @@ const ApprovedProjects = () => {
         </Heading>
 
         <VStack spacing={6} align="stretch">
-          {approvedProjects.map((project) => (
-            <Box
-              key={project.id}
-              bg="white"
-              p={6}
-              borderRadius="lg"
-              boxShadow="md"
-              width="100%"
-            >
-              <Heading size="md" mb={2} color="blue.500">
-                {project.id}
-              </Heading>
-              <Button
-                colorScheme="blue"
-                as={Link}
-                to={`/viewProject/${encodeURIComponent(JSON.stringify(project.project))}`} // Update this route as needed for downloading PDF
-                mb={2}
-                borderRadius="full"
-              >
-                Download PDF
-              </Button>
+          {Object.keys(projectList).map((key) => (
+            <React.Fragment key={key}>
+              {projectList[key].map((project) => (
+                <Box
+                  key={project.id}
+                  bg="white"
+                  p={6}
+                  borderRadius="lg"
+                  boxShadow="md"
+                  width="100%"
+                >
+                  <Heading size="md" mb={2} color="blue.500">
+                    {project.id}
+                  </Heading>
 
-              <Button
-                colorScheme="teal"
-                as={Link}
-                // to={`/viewProject/${encodeURIComponent(JSON.stringify(project.project))}`} // Update this route as needed for downloading PDF
-                mb={2}
-                borderRadius="full"
-              >
-                View Report 
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => onDelete(project.id)}
-                mb={2}
-                borderRadius="full"
-              >
-                Delete Project
-              </Button>
-            </Box>
+                  <Button
+                    colorScheme="blue"
+                    as={Link}
+                    to={`/View${key}/${encodeURIComponent(
+                      JSON.stringify(project.project)
+                    )}`} // Update this route as needed
+                    mb={2}
+                    borderRadius="full"
+                  >
+                    View
+                  </Button>
+                </Box>
+              ))}
+            </React.Fragment>
           ))}
         </VStack>
-
-        <AlertDialog isOpen={isDeleteAlertOpen} onClose={onCloseDeleteAlert}>
-          <AlertDialogOverlay>
-            <AlertDialogContent>
-              <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Confirm Delete
-              </AlertDialogHeader>
-
-              <AlertDialogBody>
-                Are you sure you want to delete this project? This action cannot be undone.
-              </AlertDialogBody>
-
-              <AlertDialogFooter>
-                <Button onClick={onCloseDeleteAlert}>Cancel</Button>
-                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                  Delete
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
-        </AlertDialog>
       </Box>
     </ChakraProvider>
   );
 };
 
-export default ApprovedProjects;
+export default ApproveProjects;

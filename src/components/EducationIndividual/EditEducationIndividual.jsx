@@ -21,10 +21,15 @@ import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
 import cloudAxios from "../../CloudAxios";
 
-const ReviewEI = () => {
+/**
+ * EditEI component for editing education individual data.
+ *
+ * @returns {JSX.Element} The EditEI component.
+ */
+
+const EditEI = () => {
   const showToast = useToast();
   const projectData = JSON.parse(decodeURIComponent(useParams().project));
-  console.log(projectData);
   const imageMappings = {
     photographUrl: projectData.photograph_benificary,
     aadharCardCopy: projectData.aadhar_img,
@@ -41,8 +46,6 @@ const ReviewEI = () => {
 
   const [formData, setFormData] = useState({
     ...imageMappings,
-    provincialSuperiorName: "", // Assuming not present in req
-    provincialSuperiorContact: "", // Assuming not present in req
     projectInchargeName: projectData.applicant.name,
     projectInchargeContact: projectData.applicant.mobile, // Assuming not present in req
     projectInchargeEmail: projectData.applicant.email, // Assuming not present in req
@@ -97,15 +100,7 @@ const ReviewEI = () => {
     balanceAmountRequested: projectData.balanceAmountRequested || 0, // Assuming 0 as the default value
     beneficiaryAgreement: projectData.benificary_agree.agree || false,
     beneficiaryAgreementDate: projectData.benificary_agree.date || "",
-    projectInChargeAgreement:
-      projectData.project_in_charge_agree.agree || false,
-    projectInChargeAgreementDate:
-      projectData.project_in_charge_agree.date || "",
-    provincialSuperiorAgreement: "", // Assuming not present in req
-    provincialSuperiorAgreementDate: "", // Assuming not present in req
-    comment: "", // Assuming not present in req
   });
-  console.log(formData);
   // Populate formData from req
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -114,6 +109,13 @@ const ReviewEI = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleImageChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.files[0],
     });
   };
 
@@ -138,52 +140,64 @@ const ReviewEI = () => {
       }
     };
 
+    // Comment and all logic for the form submission
+    // To be used in some later phase 
+    // formData.projectInChargeAgreement = true;
+    // formData.projectInChargeAgreementDate = new Date();
+    // formData.commentBoxProvincialSuperior = `*Reverted: ${projectData.comment_box_provincial_superior}*`;
+    // formData.provincialSuperiorAgreement = false;
+    // formData.commentBoxProjectCooredinator = `*Reverted: ${projectData.comment_box_project_coordinator}*`;
+    // formData.projectCoordinatorAgreement = false;
+
+    /**
+     * Converts the images in the form data to URLs by uploading them to Cloudinary.
+     * @param {Event} e - The event object.
+     * @returns {Promise<Object>} - A promise that resolves to an object containing URLs for all the images.
+     */
     const convertImagesToUrls = async (e) => {
       const image = {};
 
       try {
         image.photograph_benificary =
-          (await handleImageUpload(e.target.photographUrl.files[0])) ??
-          imageMappings.photographUrl;
-
+          formData.photographUrl instanceof File
+            ? await handleImageUpload(formData.photographUrl)
+            : imageMappings.photographUrl;
         image.aadhar_img =
-          (await handleImageUpload(e.target.aadharCardCopy.files[0])) ??
-          imageMappings.aadharCardCopy;
-        console.log("image1");
+          formData.aadharCardCopy instanceof File
+            ? await handleImageUpload(formData.aadharCardCopy)
+            : imageMappings.aadharCardCopy;
         image.fee_quotation_from_the_institution_img =
-          (await handleImageUpload(e.target.feeQuotationOriginal.files[0])) ??
-          imageMappings.feeQuotationOriginal;
-        console.log("image2");
-        image.proof_of_scholarship_received_from_government_img = e.target
-          .proof_of_scholarship_recieved_from_government_img
-          ? await handleImageUpload(e.target.scholarshipProof.files[0])
-          : imageMappings.scholarshipProof;
-        image.medical_confirmation_img = e.target.medicalConfirmationOriginal
-          .files[0]
-          ? await handleImageUpload(
-              e.target.medicalConfirmationOriginal.files[0]
-            )
-          : imageMappings.medicalConfirmationOriginal;
-        console.log("image4");
-        image.caste_certificate_img = await handleImageUpload(
-          e.target.casteCertificateCopy.files[0]
-        );
-        console.log("image5");
-        image.affidavit_proof_img = e.target.affidavitProofOriginal.files[0]
-          ? await handleImageUpload(e.target.affidavitProofOriginal.files[0])
-          : "";
-        image.request_letter_img = await handleImageUpload(
-          e.target.requestLetterOriginal.files[0]
-        );
-        console.log("image6");
-        image.death_certificate_img = e.target.deathCertificateCopy.files[0]
-          ? await handleImageUpload(e.target.deathCertificateCopy.files[0])
-          : "";
-        console.log("image7");
-        image.mark_list_of_previous_year = await handleImageUpload(
-          e.target.markListPreviousYear.files[0]
-        );
-        console.log("image8");
+          formData.feeQuotationOriginal instanceof File
+            ? await handleImageUpload(formData.a)
+            : imageMappings.feeQuotationOriginal;
+        image.proof_of_scholarship_received_from_government_img =
+          formData.scholarshipProof instanceof File
+            ? await handleImageUpload(formData.scholarshipProof)
+            : imageMappings.scholarshipProof;
+        image.medical_confirmation_img =
+          formData.medicalConfirmationOriginal instanceof File
+            ? await handleImageUpload(formData.medicalConfirmationOriginal)
+            : imageMappings.medicalConfirmationOriginal;
+        image.caste_certificate_img =
+          formData.casteCertificateCopy instanceof File
+            ? await handleImageUpload(formData.casteCertificateCopy)
+            : imageMappings.casteCertificateCopy;
+        image.affidavit_proof_img =
+          formData.affidavitProofOriginal instanceof File
+            ? await handleImageUpload(formData.affidavitProofOriginal)
+            : imageMappings.affidavitProofOriginal;
+        image.request_letter_img =
+          formData.requestLetterOriginal instanceof File
+            ? await handleImageUpload(formData.requestLetterOriginal)
+            : imageMappings.requestLetterOriginal;
+        image.death_certificate_img =
+          formData.deathCertificateCopy instanceof File
+            ? await handleImageUpload(formData.deathCertificateCopy)
+            : imageMappings.deathCertificateCopy;
+        image.mark_list_of_previous_year =
+          formData.markListPreviousYear instanceof File
+            ? await handleImageUpload(formData.markListPreviousYear)
+            : imageMappings.markListPreviousYear;
 
         // At this point, the image object contains URLs for all the images
         return image;
@@ -206,70 +220,58 @@ const ReviewEI = () => {
       console.log(image);
 
       const req = {
-        name: e.target.beneficiaryName.value,
-        mobile: e.target.beneficiaryContact.value,
-        email: e.target.beneficiaryEmail.value,
-        address: e.target.beneficiaryAddress.value,
-        aadhar_no: parseInt(e.target.aadharCardNo.value),
-        gender: e.target.gender.value,
-        DOB: e.target.dob.value,
-        father: e.target.fatherName.value,
-        mother: e.target.motherName.value,
-        mother_tongue: e.target.motherTongue.value,
-        religion: e.target.religion.value,
-        caste: e.target.casteTribe.value,
-        occupation_of_father: e.target.fatherOccupation.value,
-        monthly_income_of_father: parseInt(e.target.fatherMonthlyIncome.value),
-        monthly_income_of_mother: parseInt(e.target.motherMonthlyIncome.value),
-        occupation_of_mother: e.target.motherOccupation.value,
-        motherIs: e.target.motherStatus.value,
-        fatherIs: e.target.fatherStatus.value,
-        grandmother_support: e.target.grandmotherSupport.value,
-        grandfather_support: e.target.grandfatherSupport.value,
-        health_status_of_father: e.target.fatherHealthStatus.value,
-        health_status_of_father_others: e.target.fatherHealthStatusOthers
-          ? e.target.fatherHealthStatusOthers.value
-          : "",
-        health_status_of_mother: e.target.motherHealthStatus.value,
-        health_status_of_mother_others: e.target.motherHealthStatusOthers
-          ? e.target.motherHealthStatusOthers.value
-          : "",
-        residential_status: e.target.residentialStatus?.value ?? "",
-        residential_status_others: e.target.residentialStatusOthers
-          ? e.target.residentialStatusOthers.value
-          : "",
-        family_situation_of_the_beneficiary:
-          e.target.familySituationDetails.value,
-        financialSupportDetails: e.target.financialSupportDetails.value,
-        familyEmploymentDetails: e.target.familyEmploymentDetails.value,
-        previousEducationDetails: e.target.previousEducationDetails.value,
-        previousInstitutionDetails: e.target.previousInstitutionDetails.value,
-        previousMarksPercentage: parseInt(
-          e.target.previousMarksPercentage.value
-        ),
-        presentEducationDetails: e.target.presentEducationDetails.value,
-        presentInstitutionDetails: e.target.presentInstitutionDetails.value,
-        educationalAspiration: e.target.educationalAspiration.value,
-        sustainabilityDetails: e.target.sustainabilityDetails.value,
-        eligibleForScholarship: e.target.eligibleForScholarship.value,
-        expectedScholarshipAmount: parseInt(
-          e.target.expectedScholarshipAmount.value
-        ),
+        projectID: projectData.project_code,
+        name: formData.beneficiaryName,
+        mobile: formData.beneficiaryContact,
+        email: formData.beneficiaryEmail,
+        address: formData.beneficiaryAddress,
+        aadhar_no: parseInt(formData.aadharCardNo),
+        gender: formData.gender,
+        DOB: formData.dob,
+        father: formData.fatherName,
+        mother: formData.motherName,
+        mother_tongue: formData.motherTongue,
+        religion: formData.religion,
+        caste: formData.casteTribe,
+        occupation_of_father: formData.fatherOccupation,
+        monthly_income_of_father: parseInt(formData.fatherMonthlyIncome),
+        monthly_income_of_mother: parseInt(formData.motherMonthlyIncome),
+        occupation_of_mother: formData.motherOccupation,
+        motherIs: formData.motherIs,
+        fatherIs: formData.fatherIs,
+        grandmother_support: formData.grandmotherSupport ?? "Supportive",
+        grandfather_support: formData.grandfatherSupport,
+        health_status_of_father: formData.fatherHealthStatus,
+        health_status_of_father_others: formData.fatherHealthStatus,
+        health_status_of_mother: formData.motherHealthStatus,
+        health_status_of_mother_others: formData.motherHealthStatusOthers,
+        residential_status: formData.residentialStatus,
+        residential_status_others: formData.residentialStatusOthers,
+        family_situation_of_the_beneficiary: formData.familySituationDetails,
+        financialSupportDetails: formData.financialSupportDetails,
+        familyEmploymentDetails: formData.familyEmploymentDetails,
+        previousEducationDetails: formData.previousEducationDetails,
+        previousInstitutionDetails: formData.previousInstitutionDetails,
+        previousMarksPercentage: parseInt(formData.previousMarksPercentage),
+        presentEducationDetails: formData.presentEducationDetails,
+        presentInstitutionDetails: formData.presentInstitutionDetails,
+        educationalAspiration: formData.educationalAspiration,
+        sustainabilityDetails: formData.sustainabilityDetails,
+        eligibleForScholarship: formData.eligibleForScholarship,
+        expectedScholarshipAmount: parseInt(formData.expectedScholarshipAmount),
         familyFinancialContribution: parseInt(
-          e.target.familyFinancialContribution.value
+          formData.familyFinancialContribution
         ),
-        noFamilySupportReasons: e.target.noFamilySupportReasons.value,
-        presentStudy: e.target.presentStudy.value,
-        budgetDetails: e.target.budgetDetails.value,
-        totalCostOfStudy: parseInt(e.target.totalCostOfStudy.value),
-        scholarshipExpected: parseInt(e.target.scholarshipExpected.value),
-        beneficiaryContribution: parseInt(
-          e.target.beneficiaryContribution.value
-        ),
+        noFamilySupportReasons: formData.noFamilySupportReasons,
+        presentStudy: formData.presentStudy,
+        budgetDetails: formData.budgetDetails,
+        totalCostOfStudy: formData.totalCostOfStudy,
+        scholarshipExpected: parseInt(formData.scholarshipExpected),
+        beneficiaryContribution: parseInt(formData.beneficiaryContribution),
         totalScholarshipAndContribution: parseInt(
-          e.target.totalScholarshipAndContribution.value
+          formData.totalScholarshipAndContribution
         ),
-        balanceAmountRequested: parseInt(e.target.balanceAmountRequested.value),
+        balanceAmountRequested: parseInt(formData.balanceAmountRequested),
         benificary_agree: {
           agree: true,
         },
@@ -277,11 +279,15 @@ const ReviewEI = () => {
           agree: true,
         },
         ...image,
+        // comment_box_project_coordinator: formData.commentBoxProjectCooredinator,
+        // comment_box_provincial_superior: formData.commentBoxProvincialSuperior,
+        comment_box_project_coordinator: null,
+        comment_box_provincial_superior: null,
+        project_coordinator_agree: { agree: false },
+        provincial_superior_agree: { agree: false },
       };
 
-      console.log(req);
-
-      const res = await authAxios.post("projects/createEI", req);
+      const res = await authAxios.put("projects/editEI", req);
       console.log(res.data);
       setIsLoading(false);
       if (res.data.success) {
@@ -332,44 +338,6 @@ const ReviewEI = () => {
 
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
-            {/* Name of Project Incharge */}
-            <FormControl>
-              <FormLabel>Name of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeName"
-                onChange={handleChange}
-                value={formData.projectInchargeName}
-                required
-              />
-            </FormControl>
-
-            {/* Contact of Project Incharge */}
-            <FormControl>
-              <FormLabel>Contact of Project Incharge</FormLabel>
-              <Input
-                type="text"
-                name="projectInchargeContact"
-                onChange={handleChange}
-                value={formData.projectInchargeContact}
-                required
-              />
-            </FormControl>
-
-            {/* Email of Project Incharge */}
-            <FormControl>
-              <FormLabel>Email of Project Incharge</FormLabel>
-              <Input
-                type="email"
-                name="projectInchargeEmail"
-                onChange={handleChange}
-                value={formData.projectInchargeEmail}
-                required
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
             {/*Personal Information of the Beneficiary */}
             <Heading as="h1" size="xl" mb={6}>
               Personal Information of the Beneficiary
@@ -378,18 +346,33 @@ const ReviewEI = () => {
             <FormControl>
               <FormLabel>Photograph</FormLabel>
               <Box>
-                {formData.photographFile && (
+                {formData.photographUrl && (
                   <Box>
                     <strong>Uploaded File:</strong>{" "}
-                    {formData.photographFile.name}
+                    {formData.photographUrl?.name ??
+                      formData.photographUrl.split("/")[
+                        formData.photographUrl.split("/").length - 1
+                      ]}
                   </Box>
                 )}
                 <Image
                   boxSize="40%"
-                  src={formData.photographUrl}
+                  src={
+                    // Determine if formData.photographUrl is a fake path or a URL and if a fake path convert into file
+                    formData.photographUrl instanceof File
+                      ? URL.createObjectURL(formData.photographUrl)
+                      : formData.photographUrl
+                  }
                   alt="Beneficiary Image"
                   mx="auto"
                   fit="contain"
+                />
+                {/* component to upload image */}
+                <Input
+                  type="file"
+                  name="photographUrl"
+                  onChange={handleImageChange}
+                  accept="image/*"
                 />
               </Box>
             </FormControl>
@@ -517,7 +500,7 @@ const ReviewEI = () => {
             </FormControl>
 
             {/* Religion */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Religion</FormLabel>
               <Input
                 type="text"
@@ -870,6 +853,7 @@ const ReviewEI = () => {
               />
             </FormControl>
 
+
             {/* Sustainability of the support */}
             <FormControl>
               <FormLabel>
@@ -941,9 +925,8 @@ const ReviewEI = () => {
                 name="noFamilySupportReasons"
                 onChange={handleChange}
                 value={formData.noFamilySupportReasons}
-                required
-                // required={formData.familyFinancialContribution === 0}
-                // disabled={formData.familyFinancialContribution > 0}
+                required={formData.familyFinancialContribution === 0}
+                disabled={formData.familyFinancialContribution > 0}
               />
             </FormControl>
           </VStack>
@@ -1045,19 +1028,31 @@ const ReviewEI = () => {
             </Heading>
 
             {/* Aadhar Card (True Copy) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Aadhar Card (True Copy)</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.aadharCardCopy}
-                alt="Dan Abramov"
+                src={
+                  formData.aadharCardCopy instanceof File
+                    ? URL.createObjectURL(formData.aadharCardCopy)
+                    : formData.aadharCardCopy
+                }
+                alt="Aadhar Card"
+              />
+              {/* component to upload image */}
+              <Input
+                required={false}
+                type="file"
+                name="aadharCardCopy"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Fee Quotation from the Institution (Original) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Fee Quotation from the Institution (Original)
               </FormLabel>
@@ -1065,13 +1060,27 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.feeQuotationOriginal}
-                alt="Dan Abramov"
+                src={
+                  // formData.feeQuotationOriginal is not instance of file we get file after doing .files[0]
+
+                  formData.feeQuotationOriginal instanceof File
+                    ? URL.createObjectURL(formData.feeQuotationOriginal)
+                    : formData.feeQuotationOriginal
+                }
+                alt="Fee Quotation from the Institution"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="feeQuotationOriginal"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Proof of Scholarship Received from Government */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>
                 Proof of Scholarship Received from Government
               </FormLabel>
@@ -1079,8 +1088,20 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.scholarshipProof}
-                alt="Dan Abramov"
+                src={
+                  formData.scholarshipProof instanceof File
+                    ? URL.createObjectURL(formData.scholarshipProof)
+                    : formData.scholarshipProof
+                }
+                alt="Scholarship Proof"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="scholarshipProof"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1094,20 +1115,44 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.medicalConfirmationOriginal}
-                alt="Dan Abramov"
+                src={
+                  formData.medicalConfirmationOriginal instanceof File
+                    ? URL.createObjectURL(formData.medicalConfirmationOriginal)
+                    : formData.medicalConfirmationOriginal
+                }
+                alt="Medical Confirmation"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="medicalConfirmationOriginal"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Caste Certificate (True Copy) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Caste Certificate (True Copy)</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.casteCertificateCopy}
-                alt="Dan Abramov"
+                src={
+                  formData.casteCertificateCopy instanceof File
+                    ? URL.createObjectURL(formData.casteCertificateCopy)
+                    : formData.casteCertificateCopy
+                }
+                alt="Caste Certificate"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="casteCertificateCopy"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1120,20 +1165,44 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.affidavitProofUrl}
-                alt="Dan Abramov"
+                src={
+                  formData.affidavitProofOriginal instanceof File
+                    ? URL.createObjectURL(formData.affidavitProofOriginal)
+                    : formData.affidavitProofOriginal
+                }
+                alt="Affidavit Proof"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="affidavitProofOriginal"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Request Letter (Original Copy) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Request Letter (Original Copy)</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.requestLetterOriginal}
-                alt="Dan Abramov"
+                src={
+                  formData.requestLetterOriginal instanceof File
+                    ? URL.createObjectURL(formData.requestLetterOriginal)
+                    : formData.requestLetterOriginal
+                }
+                alt="Request Letter"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="requestLetterOriginal"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
@@ -1146,108 +1215,55 @@ const ReviewEI = () => {
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.deathCertificateCopy}
-                alt="Dan Abramov"
+                src={
+                  formData.deathCertificateCopy instanceof File
+                    ? URL.createObjectURL(formData.deathCertificateCopy)
+                    : formData.deathCertificateCopy
+                }
+                alt="Death Certificate"
+              />
+              {/* component to upload image */}
+              <Input
+                type="file"
+                required={false}
+                name="deathCertificateCopy"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
 
             {/* Mark List of Previous Year */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Mark List of Previous Year</FormLabel>
               <Image
                 mx="auto"
                 boxSize="50%"
                 objectFit="contain"
-                src={formData.markListPreviousYear}
-                alt="Dan Abramov"
-              />
-            </FormControl>
-          </VStack>
-
-          <VStack align="start" spacing={4} mb={8}>
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Beneficiary / Family member agreement */}
-            <FormControl>
-              <Checkbox
-                name="beneficiaryAgreement"
-                onChange={handleChange}
-                isChecked={formData.beneficiaryAgreement}
-                required
-                size="lg"
-              >
-                The Beneficiary / Family member agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="beneficiaryAgreementDate"
-                onChange={handleChange}
-                value={formData.beneficiaryAgreementDate.substring(0, 10) || ""}
-                required
-              />
-            </FormControl>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl>
-              <Checkbox
-                name="projectInChargeAgreement"
-                onChange={handleChange}
-                size="lg"
-                isChecked={formData.projectInChargeAgreement}
-                required
-              >
-                The Project-In-Charge agree
-              </Checkbox>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                value={
-                  formData.projectInChargeAgreementDate.substring(0, 10) || ""
+                src={
+                  formData.markListPreviousYear instanceof File
+                    ? URL.createObjectURL(formData.markListPreviousYear)
+                    : formData.markListPreviousYear
                 }
-                required
+                alt="Mark List of Previous Year"
               />
-            </FormControl>
-          </VStack>
-          <VStack align="start" spacing={4} mb={8}>
-            {/* Comment */}
-            <FormControl isRequired>
-              <FormLabel>Comment(For Reviewer)</FormLabel>
+              {/* component to upload image */}
               <Input
-                type="text"
-                name="comment"
-                onChange={handleChange}
-                required
+                type="file"
+                required={false}
+                name="markListPreviousYear"
+                onChange={handleImageChange}
+                accept="image/*"
               />
             </FormControl>
           </VStack>
 
           {/* Submit Button */}
-          <Button
-            mx="3"
-            colorScheme="blue"
-            type="submit"
-            onClick={() => {
-              formData.provincialSuperiorAgreement = true;
-            }}
-          >
-            Accept
-          </Button>
-          <Button
-            colorScheme="red"
-            type="submit"
-            mx={3}
-            onClick={() => {
-              formData.provincialSuperiorAgreement = false;
-            }}
-          >
-            Revert
+          <Button mx="3" colorScheme="blue" type="submit">
+            Submit
           </Button>
         </form>
       </Box>
     </ChakraProvider>
   );
 };
-export default ReviewEI;
+export default EditEI;

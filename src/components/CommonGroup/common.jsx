@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 import {
   ChakraProvider,
   Box,
@@ -23,12 +22,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import authAxios from "../../AuthAxios";
-import { useNavigate } from "react-router-dom";
-
+import {useNavigate} from 'react-router-dom'
 
 export const Common = () => {
   const navigate = useNavigate();
-
   const [formData, setformData] = useState({
     NAMEOFTHESOCIETY: "",
     dATEOFSUBMISSION: "",
@@ -134,7 +131,7 @@ export const Common = () => {
      formData.projectInChargeAgreement=true
     const req = {
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
+      DateOfSubmission: JSON.stringify(Date.now()).substring(0,10),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,
@@ -162,6 +159,7 @@ export const Common = () => {
     };
 
     try {
+      console.log('req' ,  req);
       setIsLoading((prevLoading) => !prevLoading);
       const response = await authAxios.post("/projects/createCG", req);
       setIsLoading((prevLoading) => !prevLoading);
@@ -171,14 +169,13 @@ export const Common = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        }); 
-        navigate("/dashboardApplicant");  
-
+        });
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
-          description: "Please login again session may have expired",
+          description: response.data.msg,
           duration: 5000,
         });
       }
@@ -202,10 +199,11 @@ export const Common = () => {
     };
 
     const calculateTotalAmount = () => {
-      return budgetData.reduce(
+      formData.overallProjectBudget =  budgetData.reduce(
         (total, row) => total + parseFloat(row.cost) || 0,
         0
       );
+      return formData.overallProjectBudget;
     };
 
     return (
@@ -242,10 +240,22 @@ export const Common = () => {
                     }
                   />
                 </Td>
+                {/* Overall Project Budget */}
               </Tr>
             ))}
           </Tbody>
         </Table>
+        <FormControl isRequired>
+          <FormLabel>Overall Project Budget</FormLabel>
+          <Input
+            type="number"
+            name="overallProjectBudget"
+            readOnly
+            onChange={handleChange}
+            value={calculateTotalAmount()}
+            required
+          />
+        </FormControl>
 
         <Button onClick={handleAddBudgetRow} mt={4}>
           Add Row
@@ -289,17 +299,6 @@ export const Common = () => {
                 name="NAMEOFTHESOCIETY"
                 onChange={handleChange}
                 value={formData.NAMEOFTHESOCIETY}
-                required
-              />
-            </FormControl>
-            {/* DATE OF SUBMISSION */}
-            <FormControl isRequired>
-              <FormLabel>DATE OF SUBMISSION</FormLabel>
-              <Input
-                type="date"
-                name="dATEOFSUBMISSION"
-                onChange={handleChange}
-                value={formData.dATEOFSUBMISSION}
                 required
               />
             </FormControl>
@@ -363,17 +362,6 @@ export const Common = () => {
               />
             </FormControl>
 
-            {/* Overall Project Budget */}
-            <FormControl isRequired>
-              <FormLabel>Overall Project Budget</FormLabel>
-              <Input
-                type="number"
-                name="overallProjectBudget"
-                onChange={handleChange}
-                value={formData.overallProjectBudget}
-                required
-              />
-            </FormControl>
             {/* Project Area */}
             <FormControl isRequired>
               <FormLabel>Project Area</FormLabel>
@@ -497,14 +485,15 @@ export const Common = () => {
                           onChange={(e) => handleChange(e, index, subIndex)}
                           required
                         />
-                        <Button
+                       
+                      </VStack>
+                    ))}
+                     <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
                         </Button>
-                      </VStack>
-                    ))}
                   </FormControl>
 
                   {/* Activities and Means of Verification */}
@@ -542,7 +531,7 @@ export const Common = () => {
                             </Td>
                             <Td>
                               {/* Timeframe */}
-                              <FormControl >
+                              <FormControl>
                                 <FormLabel>Timeframe</FormLabel>
                                 {activity.timeframe.map((value, monthIndex) => (
                                   <Checkbox
@@ -618,22 +607,6 @@ export const Common = () => {
             </FormControl>
 
             {BudgetTable()}
-
-            <Heading as="h1" size="xl" mb={6}>
-              Signatures
-            </Heading>
-
-            {/* Project-In-Charge agreement */}
-            <FormControl isRequired>
-            <FormLabel>Project In Charge Agrees</FormLabel>
-              <Input
-                type="date"
-                name="projectInChargeAgreementDate"
-                onChange={handleChange}
-                value={formData.projectInChargeAgreementDate}
-                required
-              />
-            </FormControl>
           </VStack>
           {/* Submit Button */}
           <Button colorScheme="blue" type="submit"

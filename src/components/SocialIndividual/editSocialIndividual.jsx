@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
 import {
-  ChakraProvider,
   Box,
   Heading,
+  VStack,
   FormControl,
   FormLabel,
   Input,
@@ -12,45 +10,124 @@ import {
   Select,
   Checkbox,
   Button,
-  VStack,
-  InputGroup,
-  Table,
   Modal,
   ModalContent,
-  ModalOverlay,
   ModalBody,
   CircularProgress,
+  ModalOverlay,
+  Flex,
+  Table,
+  InputGroup,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  useToast,
+  Image,
   useDisclosure,
+  ChakraProvider,
+  useToast,
 } from "@chakra-ui/react";
-import cloudAxios from "../../CloudAxios";
+import { useParams, useNavigate } from "react-router-dom";
 import authAxios from "../../AuthAxios";
+import cloudAxios from "../../CloudAxios";
 
-const SocialIndividual = () => {
-  const navigate =useNavigate();
-  const [formData, setFormData] = useState({});
-  const [budgetData, setBudgetData] = useState([{ budget: '', cost: 0 }]);
-  const [revenueData, setRevenueData] = useState([
-    { businessPlan: "", currentYear: "", year1: "", year2: "", year3: "" },
-  ]);
+// This is the main component for editing the Social Individual project application form
+/**
+ * Submission has not been tested yet because backend is not ready
+ *
+ * EditSocialIndividual component.
+ * Renders a form for editing social individual project details.
+ *
+ * @component
+ * @returns {JSX.Element} EditSocialIndividual component
+ */
+const EditSocialIndividual = () => {
+  const navigate = useNavigate();
+
+  const projectData = JSON.parse(
+    decodeURIComponent(useParams()?.project ?? "{}")
+  );
+
+  console.log(projectData);
+
+  const [formData, setFormData] = useState({
+    photographFile: projectData.photograph_benificary,
+    nameOfSelfEmployment: projectData.nameOfSelfEmployment,
+    projectInchargeName: projectData.applicant.name,
+    projectInchargeContact: projectData.applicant.mobile,
+    projectInchargeEmail: projectData.applicant.email,
+    beneficiaryName: projectData.name,
+    beneficiaryContact: projectData.mobile,
+    beneficiaryEmail: projectData.email,
+    beneficiaryAddress: projectData.address,
+    aadharCardNo: projectData.aadhar_no,
+    beneficiaryContribution: projectData.beneficiary_contribution,
+    amountRequested: projectData.amount_requested,
+    gender: projectData.gender,
+    dob: projectData.DOB,
+    projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
+    projectInChargeAgreement: projectData.project_in_charge_agree.agree,
+    benificiaryAgree: projectData.benificary_agree.agree,
+    benificiaryAgreeDate: projectData.benificary_agree.date,
+    maritalStatus: projectData.married,
+    spouseName: projectData.spouse_name,
+    child: projectData.no_of_children,
+    eduStatus: projectData.education_status,
+    religion: projectData.religion,
+    casteTribe: projectData.caste,
+    presentFamilySituationDetails: projectData.present_family_situation,
+    smallScaleBusinessDetails: projectData.smallScaleBusinessDetails,
+    monthlyEarnings: projectData.monthlyEarnings,
+    businessIdeaDetails: projectData.businessIdeaDetails,
+    businessStrengthsPreviousYear: projectData.businessStrengthsPreviousYear,
+    businessWeaknessesPreviousYear: projectData.businessWeaknessesPreviousYear,
+    riskIdentification: projectData.riskIdentification,
+    riskMitigationMeasures: projectData.riskMitigationMeasures,
+    businessSustainability: projectData.businessSustainability,
+    expectedBenefits: projectData.expectedBenefits,
+    // Revenue Goals
+    revenueData: projectData.revenueGoals.map(({ _id, ...rest }) => rest),
+    // Budget Details
+
+    // get budgetData to be projectData without the id field
+    budgetData: projectData.budget_cost_table.map(({ _id, ...rest }) => rest),
+    // Document Upload
+    documents: [
+      { name: "aadhar_img", file: projectData.aadhar_img },
+      { name: "request_letter_img", file: projectData.request_letter_img },
+      {
+        name: "quotations_regarding_the_purchase_img",
+        file: projectData.quotations_regarding_the_purchase_img,
+      },
+      {
+        name: "other_supporting_documents",
+        file: projectData.other_supporting_documents,
+      },
+    ],
+
+    estimatedIncome: projectData.estimated_income ?? {
+      currentYear: 0,
+      year1: 0,
+      year2: 0,
+      year3: 0,
+    },
+  });
+
+  const [budgetData, setBudgetData] = useState(formData.budgetData);
+  const [revenueData, setRevenueData] = useState(formData.revenueData);
+  const [documents, setDocuments] = useState(formData.documents);
   const [isLoading, setIsLoading] = useState(false);
-  const [documents, setDocuments] = useState([
-    { name: "Aadhar Card", file: null },
-    { name: "Request Letter", file: null },
-    { name: "Quotations regarding the purchase", file: null },
-    { name: "Other supporting documents", file: null },
-  ]);
   const showToast = useToast();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Define formData object
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value || 0,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -71,31 +148,39 @@ const SocialIndividual = () => {
     }
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  /**
-   * Handles the form submission.
-   * @param {Event} e - The form submit event.
-   * @returns {Promise<void>} - A promise that resolves when the form submission is complete.
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add your form submission logic here
     try {
       setIsLoading(true);
+      console.log(documents);
+      const photographUrl =
+        formData.photographFile instanceof File
+          ? await handleImageUpload(formData.photographFile)
+          : formData.photographFile;
+      const aadharCardUrl =
+        formData.documents[0].file instanceof File
+          ? await handleImageUpload(formData.documents[0].file)
+          : formData.documents[0].file;
+      const requestLetterUrl =
+        formData.documents[1].file instanceof File
+          ? await handleImageUpload(formData.documents[1].file)
+          : formData.documents[1].file;
+      const quotationRegardingPurchase =
+        formData.documents[2].file instanceof File
+          ? await handleImageUpload(formData.documents[2].file)
+          : formData.documents[2].file;
 
-      // Images uploaded to cloudinary 
-      const photographUrl = await handleImageUpload(
-        e.target.photographFile.files[0]
-      );
-      const aadharCardUrl = await handleImageUpload(documents[0].file);
-      const requestLetterUrl = await handleImageUpload(documents[1].file);
-      const quotationRegardingPurchase = await handleImageUpload(
-        documents[2].file
-      );
-      const otherDocumentsUrl = await handleImageUpload(documents[3].file);
+      const otherDocumentsUrl =
+        formData.documents[3].file instanceof File
+          ? await handleImageUpload(formData.documents[3].file)
+          : formData.documents[3].file;
 
       const req = {
+        estimated_income: formData.estimatedIncome,
+        projectID: projectData.project_code,
+        beneficiary_contribution: formData.beneficiaryContribution || 0,
+        amount_requested: formData.amountRequested,
         revenueGoals: revenueData,
         nameOfSelfEmployment: e.target.nameOfSelfEmployment.value,
         photograph_benificary: photographUrl,
@@ -116,8 +201,6 @@ const SocialIndividual = () => {
         smallScaleBusinessDetails: e.target.smallScaleBusinessDetails.value,
         monthlyEarnings: e.target.monthlyEarnings.value,
         businessIdeaDetails: e.target.businessIdeaDetails.value,
-        beneficiary_contribution: e.target.beneficiaryContribution.value,
-        amount_requested: e.target.amountRequested.value,
         businessStrengthsPreviousYear:
           e.target.businessStrengthsPreviousYear.value,
         businessWeaknessesPreviousYear:
@@ -137,17 +220,13 @@ const SocialIndividual = () => {
         project_in_charge_agree: {
           agree: true,
         },
-        estimated_income: {
-          currentYear : e.target.estimatedIncomeCurrentYear.value,
-          year1: e.target.estimatedIncomeYear1.value,
-          year2: e.target.estimatedIncomeYear2.value,
-          year3: e.target.estimatedIncomeYear3.value,
-        },
       };
 
-      // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
       console.log(req);
-      const response = await authAxios.post("/projects/createSI", req);
+
+      // Now, `req` contains all the form field values mapped to the corresponding validation schema field names.
+
+      const response = await authAxios.put("/projects/editSI", req);
       setIsLoading((prevLoading) => !prevLoading);
       console.log(response.data);
       if (response.data.success) {
@@ -155,25 +234,24 @@ const SocialIndividual = () => {
           title: "Successfull form submission",
           status: "success",
           duration: 5000,
-        }); navigate("/dashboardApplicant");
+        });
+        navigate("/dashboardApplicant");
       } else {
-        console.log('Error is here')
         showToast({
           title: "Unsuccessful form submission",
           status: "error",
+          description: response.data.message,
           duration: 5000,
-          description: response.data.msg,
         });
       }
     } catch (err) {
       setIsLoading(false);
-      showToast(
-        {
-          title: "Error submitting form",
-          status: "error",
-          duration: 5000,
-        }
-      )
+      showToast({
+        title: "Unsuccessful form submission",
+        status: "error",
+        description: "Please try again",
+        duration: 5000,
+      });
       console.log(err);
     }
   };
@@ -181,7 +259,9 @@ const SocialIndividual = () => {
   // Revenue Table
   const RevenueGoalsTable = () => {
     const handleRevenueChange = (index, field, value) => {
+      console.log(index, field, value);
       const newData = [...revenueData];
+      console.log(newData[index]);
       newData[index][field] = value;
       setRevenueData(newData);
     };
@@ -204,7 +284,6 @@ const SocialIndividual = () => {
       newData.splice(index, 1);
       setRevenueData(newData);
     };
-
 
     return (
       <Box p={4}>
@@ -304,24 +383,68 @@ const SocialIndividual = () => {
             <Tr>
               <Td>Estimated Income per Year</Td>
               <Td>
-                <Input type="number" name='estimatedIncomeCurrentYear' placeholder="Enter value" />
-              </Td>
-              <Td>
-                <Input type="number" 
-                name="estimatedIncomeYear1"
-                placeholder="Enter value" 
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        currentYear: e.target.value,
+                      },
+                    })
+                  }
+                  value={formData.estimatedIncome.currentYear}
+                  placeholder="Enter value"
                 />
-                
               </Td>
               <Td>
-                <Input type="number" 
-                name="estimatedIncomeYear2"
-                placeholder="Enter value" />
+                <Input
+                  type="number"
+                  value={formData.estimatedIncome.year1}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        year1: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Enter value"
+                />
               </Td>
               <Td>
-                <Input type="number" 
-                name="estimatedIncomeYear3"
-                placeholder="Enter value" />
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        year2: e.target.value,
+                      },
+                    })
+                  }
+                  value={formData.estimatedIncome.year2}
+                  placeholder="Enter value"
+                />
+              </Td>
+              <Td>
+                <Input
+                  type="number"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      estimatedIncome: {
+                        ...formData.estimatedIncome,
+                        year3: e.target.value,
+                      },
+                    })
+                  }
+                  value={formData.estimatedIncome.year3}
+                  placeholder="Enter value"
+                />
               </Td>
             </Tr>
           </Tbody>
@@ -351,10 +474,10 @@ const SocialIndividual = () => {
     };
 
     const calculateTotalAmount = () => {
-      return budgetData.reduce(
-        (total, row) => total + parseFloat(row.cost) || 0,
-        0
-      );
+      const total = budgetData.reduce((acc, row) => {
+        return acc + (parseInt(row.cost, 10) || 0);
+      }, 0);
+      return total;
     };
 
     return (
@@ -419,6 +542,7 @@ const SocialIndividual = () => {
             <FormLabel>Beneficiary's Contribution</FormLabel>
             <Input
               type="number"
+              value={formData.beneficiaryContribution}
               name="beneficiaryContribution"
               onChange={handleChange}
               required
@@ -430,9 +554,12 @@ const SocialIndividual = () => {
             <Input
               type="number"
               name="amountRequested"
+              value={
+                (formData.amountRequested =
+                  calculateTotalAmount() - formData.beneficiaryContribution ||
+                  0)
+              }
               readOnly
-              value={calculateTotalAmount() - formData.beneficiaryContribution}
-              onChange={handleChange}
               required
             />
           </FormControl>
@@ -445,6 +572,11 @@ const SocialIndividual = () => {
     /*documents needed */
   }
 
+  /**
+   * Renders a component for uploading documents.
+   *
+   * @returns {JSX.Element} The DocumentUpload component.
+   */
   const DocumentUpload = () => {
     const handleFileChange = (index, file) => {
       const newDocuments = [...documents];
@@ -467,9 +599,18 @@ const SocialIndividual = () => {
                 <Td>{doc.name}</Td>
                 <Td>
                   <FormControl>
+                    <Image
+                      src={
+                        doc.file instanceof File
+                          ? URL.createObjectURL(doc.file)
+                          : doc.file
+                      }
+                      boxSize="100px"
+                      objectFit="cover"
+                    />
                     <Input
                       type="file"
-                      accept=".pdf, .doc, .docx, .jpeg, .jpg, .png"
+                      accept=".jpeg, .jpg, .png"
                       onChange={(e) =>
                         handleFileChange(index, e.target.files[0])
                       }
@@ -523,20 +664,13 @@ const SocialIndividual = () => {
         <form onSubmit={handleSubmit}>
           <VStack align="start" spacing={4} mb={8}>
             {/* Name of society*/}
-            <FormControl isRequired>
-              <FormLabel>Name of society</FormLabel>
-              <Input
-                type="text"
-                name="nameofSociety"
-                onChange={handleChange}
-                required
-              />
-            </FormControl>
+
             {/* Name of self employment */}
             <FormControl isRequired>
               <FormLabel>Name of self employment</FormLabel>
               <Input
                 type="text"
+                value={formData.nameOfSelfEmployment}
                 name="nameOfSelfEmployment"
                 onChange={handleChange}
                 required
@@ -550,15 +684,29 @@ const SocialIndividual = () => {
               Personal Information of the Beneficiary
             </Heading>
             {/* Photograph (URL) */}
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel>Photograph</FormLabel>
               <InputGroup>
+                <Image
+                  src={
+                    formData.photographFile instanceof File
+                      ? URL.createObjectURL(formData.photographFile)
+                      : formData.photographFile
+                  }
+                  alt="Beneficiary Photograph"
+                  boxSize="100px"
+                  objectFit="cover"
+                />
                 <Input
                   type="file"
                   name="photographFile"
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      photographFile: e.target.files[0],
+                    });
+                  }}
                   accept="image/*"
-                  required
                 />
                 {/* <InputRightElement width="4.5rem">
       <Button
@@ -579,6 +727,7 @@ const SocialIndividual = () => {
               <FormLabel>Name</FormLabel>
               <Input
                 type="text"
+                value={formData.beneficiaryName}
                 name="beneficiaryName"
                 onChange={handleChange}
                 required
@@ -590,6 +739,7 @@ const SocialIndividual = () => {
               <FormLabel>Contact</FormLabel>
               <Input
                 type="tel"
+                value={formData.beneficiaryContact}
                 name="beneficiaryContact"
                 onChange={handleChange}
                 required
@@ -601,6 +751,7 @@ const SocialIndividual = () => {
               <FormLabel>Email</FormLabel>
               <Input
                 type="email"
+                value={formData.beneficiaryEmail}
                 name="beneficiaryEmail"
                 onChange={handleChange}
                 required
@@ -611,6 +762,7 @@ const SocialIndividual = () => {
             <FormControl isRequired>
               <FormLabel>Address</FormLabel>
               <Textarea
+                value={formData.beneficiaryAddress}
                 name="beneficiaryAddress"
                 onChange={handleChange}
                 required
@@ -621,6 +773,7 @@ const SocialIndividual = () => {
             <FormControl isRequired>
               <FormLabel>Aadhar Card No.</FormLabel>
               <Input
+                value={formData.aadharCardNo}
                 type="text"
                 name="aadharCardNo"
                 onChange={handleChange}
@@ -631,7 +784,12 @@ const SocialIndividual = () => {
             {/* Gender */}
             <FormControl isRequired>
               <FormLabel>Gender</FormLabel>
-              <Select name="gender" onChange={handleChange} required>
+              <Select
+                name="gender"
+                onChange={handleChange}
+                defaultValue={formData.gender}
+                required
+              >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -641,13 +799,24 @@ const SocialIndividual = () => {
             {/* Date of Birth */}
             <FormControl isRequired>
               <FormLabel>Date of Birth</FormLabel>
-              <Input type="date" name="dob" onChange={handleChange} required />
+              <Input
+                type="date"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                required
+              />
             </FormControl>
 
             {/*Marital Status*/}
             <FormControl isRequired>
               <FormLabel>Marital Status</FormLabel>
-              <Select name="maritalStatus" onChange={handleChange} required>
+              <Select
+                name="maritalStatus"
+                defaultValue={formData.maritalStatus}
+                onChange={handleChange}
+                required
+              >
                 <option value="married">married</option>
                 <option value="unmarried">unmarried</option>
                 <option value="divorced">Divorced</option>
@@ -659,6 +828,7 @@ const SocialIndividual = () => {
             <FormControl isRequired>
               <FormLabel>Spouse's name</FormLabel>
               <Input
+                value={formData.spouseName}
                 type="text"
                 name="spouseName"
                 onChange={handleChange}
@@ -669,13 +839,24 @@ const SocialIndividual = () => {
             {/* number  of children*/}
             <FormControl>
               <FormLabel>Number of Children</FormLabel>
-              <Input type="number" name="child" onChange={handleChange} />
+              <Input
+                type="number"
+                value={formData.child}
+                name="child"
+                onChange={handleChange}
+              />
             </FormControl>
 
             {/* educational status of children*/}
             <FormControl>
               <FormLabel>Educational status of children</FormLabel>
-              <Input type="text" name="eduStatus" onChange={handleChange} required/>
+              <Input
+                type="text"
+                name="eduStatus"
+                value={formData.eduStatus}
+                onChange={handleChange}
+                required
+              />
             </FormControl>
 
             {/* Religion */}
@@ -683,6 +864,7 @@ const SocialIndividual = () => {
               <FormLabel>Religion</FormLabel>
               <Input
                 type="text"
+                value={formData.religion}
                 name="religion"
                 onChange={handleChange}
                 required
@@ -695,6 +877,7 @@ const SocialIndividual = () => {
               <Input
                 type="text"
                 name="casteTribe"
+                value={formData.casteTribe}
                 onChange={handleChange}
                 required
               />
@@ -711,6 +894,7 @@ const SocialIndividual = () => {
                 Give details of the present family situation:
               </FormLabel>
               <Textarea
+                value={formData.presentFamilySituationDetails}
                 name="presentFamilySituationDetails"
                 onChange={handleChange}
                 required
@@ -724,6 +908,7 @@ const SocialIndividual = () => {
                 yes, give the details.
               </FormLabel>
               <Textarea
+                value={formData.smallScaleBusinessDetails}
                 name="smallScaleBusinessDetails"
                 onChange={handleChange}
                 required
@@ -734,6 +919,7 @@ const SocialIndividual = () => {
             <FormControl isRequired>
               <FormLabel>Current (average) monthly earnings?</FormLabel>
               <Input
+                value={formData.monthlyEarnings}
                 type="number"
                 name="monthlyEarnings"
                 onChange={handleChange}
@@ -747,6 +933,7 @@ const SocialIndividual = () => {
                 Explain the Beneficiary's present business idea:
               </FormLabel>
               <Textarea
+                value={formData.businessIdeaDetails}
                 name="businessIdeaDetails"
                 onChange={handleChange}
                 required
@@ -761,6 +948,7 @@ const SocialIndividual = () => {
                 Strengths of Business Activity in the Previous Year
               </FormLabel>
               <Textarea
+                value={formData.businessStrengthsPreviousYear}
                 name="businessStrengthsPreviousYear"
                 onChange={handleChange}
                 required
@@ -773,6 +961,7 @@ const SocialIndividual = () => {
                 Weaknesses of Business Activity in the Previous Year
               </FormLabel>
               <Textarea
+                value={formData.businessWeaknessesPreviousYear}
                 name="businessWeaknessesPreviousYear"
                 onChange={handleChange}
                 required
@@ -791,6 +980,7 @@ const SocialIndividual = () => {
                 Identify risks involved in this small business/enterprise:
               </FormLabel>
               <Textarea
+                value={formData.riskIdentification}
                 name="riskIdentification"
                 onChange={handleChange}
                 required
@@ -804,6 +994,7 @@ const SocialIndividual = () => {
                 limit the risks?
               </FormLabel>
               <Textarea
+                value={formData.riskMitigationMeasures}
                 name="riskMitigationMeasures"
                 onChange={handleChange}
                 required
@@ -816,6 +1007,7 @@ const SocialIndividual = () => {
                 Explain the sustainability of the business / enterprise:
               </FormLabel>
               <Textarea
+                value={formData.businessSustainability}
                 name="businessSustainability"
                 onChange={handleChange}
                 required
@@ -829,6 +1021,7 @@ const SocialIndividual = () => {
                 this initiative?
               </FormLabel>
               <Textarea
+                value={formData.expectedBenefits}
                 name="expectedBenefits"
                 onChange={handleChange}
                 required
@@ -846,8 +1039,7 @@ const SocialIndividual = () => {
           </VStack>
 
           {/* Submit Button */}
-          <Button colorScheme="blue" type="submit" 
-           onClick={() => (formData.projectInChargeAgreement = true)}>
+          <Button colorScheme="blue" type="submit">
             Submit
           </Button>
         </form>
@@ -855,4 +1047,5 @@ const SocialIndividual = () => {
     </ChakraProvider>
   );
 };
-export default SocialIndividual;
+
+export default EditSocialIndividual;

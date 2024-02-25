@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import authAxios from "../../AuthAxios";
 
 export default function EmailOtp() {
   const [password, setPassword] = useState("");
@@ -54,7 +55,7 @@ export default function EmailOtp() {
     if (pin === "") {
       toast({
         title: "please Enter OTP",
-        description: "some fiels are not valid",
+        description: "some fields are not valid",
         position: "top",
         status: "error",
         duration: 1000,
@@ -84,20 +85,10 @@ export default function EmailOtp() {
         navigate("/");
       }
 
-      const result = await fetch(
-        `http://localhost:5000/api/v1/users/varifyemail${selectedValue}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authtoken}`,
-          },
-          body: JSON.stringify({
-            otp: pin,
-            password: password,
-          }),
-        }
-      );
+      const result = await authAxios.post(`users/varifyemail${selectedValue}`, {
+        otp: pin,
+        password: password,
+      });
       const data = await result.json();
       setLoading(false);
       if (data.success === true) {
@@ -222,9 +213,10 @@ export default function EmailOtp() {
             loadingText="Sending"
             fontSize={"12px"}
             style={{ marginTop: 15 }}
-            onClick={()=>{
-              localStorage.removeItem('token')
-              navigate('/forgetpassword')}}
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/forgetpassword");
+            }}
           >
             Resend
           </Button>

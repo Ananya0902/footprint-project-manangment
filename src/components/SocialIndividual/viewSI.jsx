@@ -33,7 +33,6 @@ const ViewSI = () => {
   console.log(projectData);
   // Define formData object
   const [formData, setFormData] = useState({
-    
     photographFile: projectData.photograph_benificary,
     nameOfSelfEmployment: projectData.nameOfSelfEmployment,
     projectInchargeName: projectData.applicant.name,
@@ -49,6 +48,8 @@ const ViewSI = () => {
     aadharCardNo: projectData.aadhar_no,
     gender: projectData.gender,
     dob: projectData.DOB,
+    amountRequested: projectData.amount_requested,
+    beneficiaryContribution: projectData.beneficiary_contribution,
     projectInChargeAgreementDate: projectData.project_in_charge_agree.date,
     projectInChargeAgreement: projectData.project_in_charge_agree.agree,
     benificiaryAgree: projectData.benificary_agree.agree,
@@ -73,6 +74,7 @@ const ViewSI = () => {
     revenueData: projectData.revenueGoals,
     // Budget Details
     budgetData: projectData.budget_cost_table,
+    estimatedIncome : projectData.estimated_income , 
     // Document Upload
     documents: [
       { name: "aadhar_img", file: projectData.aadhar_img },
@@ -91,10 +93,8 @@ const ViewSI = () => {
     provincialSuperiorComment: projectData.comment_box_provincial_superior,
     comment: projectData.comment_box_project_coordinator,
     projectCoordinatorAgreement: projectData.project_coordinator_agree,
-    projectCoordinatorAgreeDate:projectData.project_coordinator_agree.date,
-    amountApproved:projectData.amount_approved,
-
-    
+    projectCoordinatorAgreeDate: projectData.project_coordinator_agree.date,
+    amountApproved: projectData.amount_approved,
   });
 
   const calculateTotals = (column) => {
@@ -110,7 +110,7 @@ const ViewSI = () => {
         amount_approved: formData.amountApproved,
         projectID: projectData._id,
         comment_box_project_coordinator: formData.comment,
-        project_coordinator_agree : formData.projectCoordinatorAgree,
+        project_coordinator_agree: formData.projectCoordinatorAgree,
       });
       if (res.data.success) {
         showToast({
@@ -356,10 +356,10 @@ const ViewSI = () => {
               </Tr>
               <Tr>
                 <Td>Estimated Income per Year</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
-                <Td>{/* Display calculated values */}</Td>
+                <Td>{formData.estimatedIncome.currentYear}</Td>
+                <Td>{formData.estimatedIncome.year1}</Td>
+                <Td>{formData.estimatedIncome.year2}</Td>
+                <Td>{formData.estimatedIncome.year3}</Td>
               </Tr>
             </Tbody>
           </Table>
@@ -390,6 +390,25 @@ const ViewSI = () => {
               </Tbody>
             </Table>
           </Box>
+
+          {/*Beneficiary Contribution and Amount Requested*/}
+          <VStack align="start" spacing={4} mb={8}>
+            {/* Beneficiary Contribution */}
+            <FormControl isReadOnly>
+              <FormLabel>Beneficiary Contribution</FormLabel>
+              <Input
+                type="number"
+                value={formData.beneficiaryContribution}
+                readOnly
+              />
+            </FormControl>
+            {/* Amount Requested */}
+            <FormControl isReadOnly>
+              <FormLabel>Amount Requested</FormLabel>
+              <Input type="number" value={formData.amountRequested} readOnly />
+            </FormControl>
+          </VStack>
+
           {/* Document Upload */}
           <Heading as="h1" size="xl" mb={6}>
             Uploaded Documents
@@ -432,7 +451,10 @@ const ViewSI = () => {
                 <Input
                   type="date"
                   name="projectInChargeAgree"
-                  value={formData.projectInChargeAgreementDate?.substring(0, 10)}
+                  value={formData.projectInChargeAgreementDate?.substring(
+                    0,
+                    10
+                  )}
                   readOnly
                 />
               </FormControl>
@@ -462,10 +484,7 @@ const ViewSI = () => {
                 />
               </FormControl>
 
-
-             
-
-              <FormControl >
+              <FormControl>
                 Provincial Superior Comment
                 <Textarea
                   required
@@ -476,7 +495,7 @@ const ViewSI = () => {
                 />
               </FormControl>
 
-              <FormControl >
+              <FormControl>
                 <Checkbox
                   name="projectCoordinatorAgreement"
                   isChecked={formData.projectCoordinatorAgree}
@@ -492,8 +511,7 @@ const ViewSI = () => {
                 />
               </FormControl>
 
-
-              <FormControl >
+              <FormControl>
                 Comment(Project Coordinator)
                 <Textarea
                   readOnly
@@ -508,7 +526,7 @@ const ViewSI = () => {
                   value={formData.comment}
                 />
               </FormControl>
-              <FormControl >
+              <FormControl>
                 Amount Approved
                 <Input
                   readOnly
@@ -517,7 +535,6 @@ const ViewSI = () => {
                     setFormData((prevData) => {
                       prevData.amountApproved = e.target.value;
                       return { ...prevData };
-                      
                     });
                   }}
                   name="amountApproved"
@@ -562,14 +579,14 @@ const ViewSI = () => {
 
           </HStack>
 
-           {/* Print Button */}
-           <Button
-              onClick={() => window.print()}
-              colorScheme="blue"
-              type="submit"
-            >
-              Print
-            </Button>
+          {/* Print Button */}
+          <Button
+            onClick={() => window.print()}
+            colorScheme="blue"
+            type="submit"
+          >
+            Print
+          </Button>
           {/* The submit button can be hidden or disabled for read-only view */}
         </form>
       </Box>

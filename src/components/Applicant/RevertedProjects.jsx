@@ -66,11 +66,6 @@ const RevertedProjects = () => {
         );
         const getAllHOI = getAllHOIData ?? [];
 
-        const getAllEGSData = await fetchDataForApplicantRoute(
-          "getAllEGSApplicant"
-        );
-        const getAllEGS = getAllEGSData ?? [];
-
         const getAllEIApplicantData = await fetchDataForApplicantRoute(
           "getallEIapplicant"
         );
@@ -131,16 +126,16 @@ const RevertedProjects = () => {
           // Get call 
           // Mongo DB document 
           // doc.general_information.provincial_superiors
-          EGS: getAllEGS
+          EGS: getAllEGSApplicant
             .filter(
               // models 
               (value) =>
                 (!value.general_information.provincial_superior.agree &&
-                  value.general_information.provincial_superior.comment) ||
+                  value.general_information.provincial_superior.comment ) ||
                   // That should not be an empty array -- false 
                 value.general_information.project_coordinators.filter(
                   groupFilterApprover
-                ) 
+                ).length
             )
             .map((project) => {
               return {
@@ -165,7 +160,7 @@ const RevertedProjects = () => {
               (value) =>
                 (!value.provincial_superior_agree.agree &&
                   value.comment_box_provincial_superior) ||
-                value.project_coordinators.filter(groupFilterApprover)
+                value.project_coordinators.filter(groupFilterApprover).length
             )
             .map((project) => {
               return {
@@ -229,7 +224,7 @@ const RevertedProjects = () => {
               (value) =>
                 (!value.provincial_superior_agree.agree &&
                   value.comment_box_provincial_superior) ||
-                value.project_coordinators.filter(groupFilterApprover)
+                value.project_coordinators.filter(groupFilterApprover).length
             )
             .map((project) => {
               return {
@@ -239,10 +234,13 @@ const RevertedProjects = () => {
             }),
           CG: getAllCGApplicant
             .filter(
-              (value) =>
-                (!value.provincial_superior_agree.agree &&
+              (value) =>{
+
+                console.log(value.project_coordinators.filter(groupFilterApprover).length);
+
+                return (!value.provincial_superior_agree.agree &&
                   value.comment_box_provincial_superior) ||
-                value.project_coordinators.filter(groupFilterApprover)
+                value.project_coordinators.filter(groupFilterApprover).length }
             )
             .map((project) => {
               return {

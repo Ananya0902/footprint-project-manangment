@@ -22,8 +22,10 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import authAxios from "../../AuthAxios";
+import {useNavigate} from 'react-router-dom';
 
-const ReviewEduRUTG = () => {
+const EditEduRUTG = () => {
+  const navigate = useNavigate() ; 
   const showToast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const projectData = JSON.parse(decodeURIComponent(useParams().project)); // Document 
@@ -129,7 +131,7 @@ const ReviewEduRUTG = () => {
 
     const req = {
       project_title: formData.projectTitle,
-      project_number: formData.projectNumber,
+      project_number: projectData.project_number,
       general_information: {
         full_address: formData.address,
         overall_project_period: formData.overallProjectPeriod,
@@ -146,6 +148,9 @@ const ReviewEduRUTG = () => {
         problems_identified_and_consequences:
           formData.projectSummary.identifiedProblems,
         need_of_the_project: formData.projectSummary.needOfProject,
+        sustainability: formData.projectSummary.sustainability,
+        monitoring_process_of_the_project: formData.projectSummary.monitoringProcess,
+        mode_of_evaluation: formData.projectSummary.evaluation,
 
         target_group: formData.targetGroup.map((target) => ({
           name: target.name,
@@ -171,9 +176,6 @@ const ReviewEduRUTG = () => {
             })),
           })),
         },
-        sustainability: formData.sustainability,
-        monitoring_process_of_the_project: formData.monitoringProcess,
-        mode_of_evaluation: formData.evaluation,
         budget: {
           expenses: formData.budget.expenses.map((item) => ({
             description: item.description,
@@ -186,6 +188,7 @@ const ReviewEduRUTG = () => {
 
     try {
       const res = await authAxios.put("/projects/editEGSApplicant", req);
+      console.log(res);
       setIsLoading(false);
       if (res.data.success) {
         showToast({
@@ -194,6 +197,7 @@ const ReviewEduRUTG = () => {
           status: "success",
         });
         setIsSubmitted(true);
+        navigate("/dashboardApplicant");
       } else {
         showToast({
           title: "Unsuccessful submission",
@@ -301,7 +305,7 @@ const ReviewEduRUTG = () => {
     updatedData.logicalFramework.objectives[index].activities.push({
       activity: "",
       verification: "",
-      timeframe: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
+      months: Array.from({ length: 12 }).fill(false), // Initialize a new array for the timeframe
     });
     setFormData(updatedData);
   };
@@ -397,8 +401,8 @@ const ReviewEduRUTG = () => {
                 type="text"
                 name="overallProjectBudget"
                 onChange={handleChange}
-                value={formData.overallProjectBudget || ""}
-                required
+                value={calculateTotalCosts("costs") || 0}
+                readOnly
               />
             </FormControl>
 
@@ -451,7 +455,7 @@ const ReviewEduRUTG = () => {
                 name="projectLocation"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.projectLocation || ""}
-                isrequired
+                isRequired
               />
             </FormControl>
 
@@ -463,7 +467,7 @@ const ReviewEduRUTG = () => {
                 name="workOfSisters"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.workOfSisters || ""}
-                isrequired
+                isRequired
               />
             </FormControl>
 
@@ -475,7 +479,7 @@ const ReviewEduRUTG = () => {
                 name="socioEconomicConditions"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.socioEconomicConditions || ""}
-                isrequired
+                isRequired
               />
             </FormControl>
 
@@ -485,7 +489,7 @@ const ReviewEduRUTG = () => {
                 name="identifiedProblems"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.identifiedProblems || ""}
-                isrequired
+                isRequired
               />
             </FormControl>
 
@@ -495,7 +499,7 @@ const ReviewEduRUTG = () => {
                 name="needOfProject"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.needOfProject || ""}
-                isrequired
+                isRequired
               />
             </FormControl>
 
@@ -508,7 +512,7 @@ const ReviewEduRUTG = () => {
                 name="beneficiarySelection"
                 onChange={handleProjectSummaryChange}
                 value={formData.projectSummary.beneficiarySelection || ""}
-                isrequired
+                isRequired
               />
             </FormControl> */}
 
@@ -660,6 +664,7 @@ const ReviewEduRUTG = () => {
               <FormLabel>Goal of the Project</FormLabel>
               <Textarea
                 name="goal"
+                onChange={handleChangeObjective}
                 value={formData.logicalFramework.goal}
                 required
               />
@@ -710,12 +715,12 @@ const ReviewEduRUTG = () => {
                           }
                           required
                         />
-                        {/* <Button
+                        <Button
                           onClick={() => handleAddResult(index)}
                           colorScheme="teal"
                         >
                           Add Result
-                        </Button> */}
+                        </Button>
                       </VStack>
                     ))}
                   </FormControl>
@@ -812,7 +817,11 @@ const ReviewEduRUTG = () => {
               <Textarea
                 name="sustainability"
                 value={formData.projectSummary.sustainability}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => {
+                  console.log('Sustaiability');
+                  formData.projectSummary.sustainability = e.target.value ;   
+                  setFormData({...formData , projectSummary : formData.projectSummary})
+                }}
                 required
               />
             </FormControl>
@@ -825,7 +834,11 @@ const ReviewEduRUTG = () => {
               <Textarea
                 name="monitoringProcess"
                 value={formData.projectSummary.monitoringProcess}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => {
+                  formData.projectSummary.monitoringProcess = e.target.value ; 
+                  setFormData({...formData , projectSummary : formData.projectSummary})
+
+                }}
                 required
               />
             </FormControl>
@@ -836,7 +849,11 @@ const ReviewEduRUTG = () => {
               <Textarea
                 name="evaluation"
                 value={formData.projectSummary.evaluation}
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => {
+                  formData.projectSummary.evaluation = e.target.value ; 
+                  setFormData({...formData , projectSummary : formData.projectSummary})
+
+                }}
                 required
               />
             </FormControl>
@@ -919,4 +936,4 @@ const ReviewEduRUTG = () => {
   );
 };
 
-export default ReviewEduRUTG;
+export default EditEduRUTG;

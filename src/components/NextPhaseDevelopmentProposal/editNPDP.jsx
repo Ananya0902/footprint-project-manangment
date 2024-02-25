@@ -63,7 +63,7 @@ const EditNPDP = () => {
       onSubmit={async (values) => {
         console.log(values);
         try {
-          const res = await authAxios.post("projects/createNPDP", values);
+          const res = await authAxios.put("projects/editNPDPApplicant", values);
           console.log(res);
         } catch (error) {
           console.log(error);
