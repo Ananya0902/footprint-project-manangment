@@ -131,7 +131,7 @@ export const Common = () => {
      formData.projectInChargeAgreement=true
     const req = {
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: JSON.stringify(Date.now()).substring(0,8),
+      DateOfSubmission: JSON.stringify(Date.now()).substring(0,10),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,

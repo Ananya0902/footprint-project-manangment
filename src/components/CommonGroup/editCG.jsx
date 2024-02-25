@@ -32,7 +32,6 @@ export const EditCommon = () => {
     projectInChargeEmail: projectData.applicant.email,
     projectInChargeCellNumber: projectData.applicant.mobile,
     NAMEOFTHESOCIETY: projectData.nameOfSociety || "",
-    dATEOFSUBMISSION: projectData.DateOfSubmission || "",
     TITLEOFTHEPROJECT: projectData.TitleOfProject || "",
     address: projectData.address || "",
     overallProjectPeriod: projectData.OverallProjectPeriod || "",
@@ -132,7 +131,7 @@ export const EditCommon = () => {
     const req = {
       projectID: projectData.project_code,
       nameOfSociety: formData.NAMEOFTHESOCIETY,
-      DateOfSubmission: formData.dATEOFSUBMISSION,
+      DateOfSubmission: JSON.stringify(Date.now()).substring(0,10),
       TitleOfProject: formData.TITLEOFTHEPROJECT,
       address: formData.address,
       OverallProjectPeriod: formData.overallProjectPeriod,
