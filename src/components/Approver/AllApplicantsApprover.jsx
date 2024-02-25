@@ -12,6 +12,7 @@ import {
   ListIcon,
   Flex,
   useToast,
+  HStack,
 } from "@chakra-ui/react";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import axios from "../../AuthAxios.js";
@@ -35,7 +36,10 @@ const AllApplicantsApprover = ({ loggedInReviewerId }) => {
               return {
                 id: applicant._id,
                 name: applicant.name,
-                status: "pending",
+                email: applicant.email,
+                contact: applicant.mobile,
+                apostolate: applicant.apostolate,
+                province: applicant.nameOfProvince,
               };
             })
         );
@@ -72,34 +76,26 @@ const AllApplicantsApprover = ({ loggedInReviewerId }) => {
                 width="100%"
               >
                 <Flex justify="space-between" align="center">
-                  <Heading size="md" color="blue.500">
-                    {applicant.name}
-                  </Heading>
-                  <Text fontSize="md" color="gray.600">
-                    Email: {applicant.email}
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    Contact: {applicant.contact}
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    Appostolate: {applicant.apostolate}
-                  </Text>
+                  <VStack align="flex-start">
+                    <Heading size="md" color="blue.500">
+                      {applicant.name}
+                    </Heading>
+                    <Text fontSize="md" color="gray.600">
+                      {`Apostolate: ${applicant.apostolate}`}
+                    </Text>
+                    <Text fontSize="md" color="gray.600">
+                      {`Province: ${applicant.province}`}
+                    </Text>
+                    {/**Space bwtween items in the HStack */}
+                    <Text fontSize="md" color="gray.600">
+                      {`Email : ${applicant.email}`}
+                    </Text>
+                    <Text fontSize="md" color="gray.600">
+                      {`Contact : ${applicant.contact}`}
+                    </Text>
+                  </VStack>
                 </Flex>
                 <Divider mt={4} mb={4} />
-                <VStack spacing={3}>
-                  <Button
-                    leftIcon={<ListIcon as={FaCheck} />}
-                    colorScheme="green"
-                  >
-                    Verify
-                  </Button>
-                  <Button
-                    leftIcon={<ListIcon as={FaTimes} />}
-                    colorScheme="red"
-                  >
-                    Decline
-                  </Button>
-                </VStack>
               </Box>
             ))
           ) : (

@@ -100,6 +100,8 @@ import AllApplicantsReviewer from "./components/Reviewer/AllApplicantsReviewer";
 import EmailOtp from "./components/Auth/EmailOtp";
 import ForgetPassword from "./components/Auth/ForgetPassword";
 import EditSocialIndividual from "./components/SocialIndividual/editSocialIndividual";
+import AllApplicantsApprover from "./components/Approver/AllApplicantsApprover";
+import ReviewersUnderMe from "./components/Approver/AllReviewers";
 
 // Token checking in protected
 // Token expiry - 1 hour
@@ -218,7 +220,7 @@ const App = () => {
             element={<ProjectsToBeApproved />}
           />
           <Route path="/MyReviewedProject" element={<MyReviewedProject />} />
-          <Route path="/ApprovedProjects" element={<ApprovedProjects />} />
+          <Route path="/ApprovedProjects/:profile" element={<ApprovedProjects />} />
           <Route
             path="/ApprovedProjectsForReviewer"
             element={<ApprovedProjectsForReviewer reviewerProvince="north" />}
@@ -293,6 +295,18 @@ const App = () => {
           <Route path="/ViewSG/:project" element={<ViewISG />} />
           <Route path="/ViewWHFC/:project" element={<ViewWHFC />} />
           <Route path="/ViewSI/:project" element={<ViewSI />} />
+
+          {/**Approver Special Section */}
+          <Route
+            path="/allApplicantsApprover"
+            element={<AllApplicantsApprover />}
+          />
+
+          <Route
+          path="/allReviewersApprover"
+          element={<ReviewersUnderMe />}
+        />
+
 
           {/**Report routes */}
           <Route

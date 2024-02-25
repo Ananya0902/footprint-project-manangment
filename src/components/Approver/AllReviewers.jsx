@@ -25,7 +25,7 @@ const ReviewersUnderMe = ({ loggedInReviewerId }) => {
 
   useEffect(() => {
     axios
-      .get("/users/allreviewers")
+      .get("/users/allreviewer")
       .then((response) => {
         console.log(response.data);
         setReviewers(
@@ -36,7 +36,8 @@ const ReviewersUnderMe = ({ loggedInReviewerId }) => {
                 id: applicant._id,
                 name: applicant.name,
                 email: applicant.email , 
-                contact: applicant.mobile
+                contact: applicant.mobile,
+                province : applicant.nameOfProvince,
               };
             })
         );
@@ -72,32 +73,22 @@ const ReviewersUnderMe = ({ loggedInReviewerId }) => {
                 boxShadow="md"
                 width="100%"
               >
-                <Flex justify="space-between" align="center">
-                  <Heading size="md" color="blue.500">
-                    {applicant.name}
-                  </Heading>
-                  <Text fontSize="md" color="gray.600">
-                    Email: {applicant.email}
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    Contact: {applicant.contact}
-                  </Text>
-                </Flex>
+                    <VStack align="flex-start">
+                    <Heading size="md" color="blue.500">
+                      {applicant.name}
+                    </Heading>
+                    {/**Space bwtween items in the HStack */}
+                    <Text fontSize="md" color="gray.600">
+                      {`Province : ${applicant.province}`}
+                    </Text>
+                    <Text fontSize="md" color="gray.600">
+                      {`Email : ${applicant.email}`}
+                    </Text>
+                    <Text fontSize="md" color="gray.600">
+                      {`Contact : ${applicant.contact}`}
+                    </Text>
+                  </VStack>
                 <Divider mt={4} mb={4} />
-                <VStack spacing={3}>
-                  <Button
-                    leftIcon={<ListIcon as={FaCheck} />}
-                    colorScheme="green"
-                  >
-                    Verify
-                  </Button>
-                  <Button
-                    leftIcon={<ListIcon as={FaTimes} />}
-                    colorScheme="red"
-                  >
-                    Decline
-                  </Button>
-                </VStack>
               </Box>
             ))
           ) : (

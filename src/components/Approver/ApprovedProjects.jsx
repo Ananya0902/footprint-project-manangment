@@ -270,13 +270,13 @@ const ApproveProjects = () => {
               };
             }),
           EG: getAllEGApprover
-            // .filter((value) =>
-            //   value.project_coordinators.find(approved)
-            //     ? false
-            //     : true &&
-            //       value?.provincial_superior_agree.agree &&
-            //       value.project_coordinators.length < 2
-            // )
+            .filter((value) =>
+              value.project_coordinators.find(approved)
+                ? false
+                : true &&
+                  value?.provincial_superior_agree.agree &&
+                  value.project_coordinators.length >= 2
+            )
             .map((project) => {
               return {
                 id: project.project_code,
@@ -308,7 +308,7 @@ const ApproveProjects = () => {
     <ChakraProvider>
       <Box p={8} maxW="xl" mx="auto" bg="gray.100" borderRadius="lg">
         <Heading as="h1" size="xl" mb={6} textAlign="center" color="blue.500">
-          Projects to Be Approved
+          Approved Projects
         </Heading>
 
         <VStack spacing={6} align="stretch">
@@ -336,7 +336,7 @@ const ApproveProjects = () => {
                     mb={2}
                     borderRadius="full"
                   >
-                    Approve
+                    View
                   </Button>
                 </Box>
               ))}
